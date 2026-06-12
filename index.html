@@ -20,7 +20,7 @@
             padding: 24px;
         }
         .card {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(10px);
@@ -45,13 +45,14 @@
         .project-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
         }
         .project-item {
             background: rgba(255,255,255,0.03);
             border-radius: 16px;
             transition: all 0.2s;
             border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden;
         }
         .project-item:hover {
             background: rgba(255,255,255,0.08);
@@ -80,6 +81,31 @@
             transform: translateX(4px);
             transition: all 0.2s;
         }
+        /* 文档链接区域样式 */
+        .project-docs {
+            padding: 0 20px 16px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 0;
+        }
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+            font-size: 13px;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.03);
+            transition: all 0.2s;
+        }
+        .doc-link:hover {
+            color: #60a5fa;
+            background: rgba(96,165,250,0.15);
+        }
         .footer-note {
             margin-top: 32px;
             padding-top: 20px;
@@ -92,6 +118,7 @@
             .card { padding: 24px 20px; }
             .project-link { padding: 12px 16px; }
             .project-name { font-size: 15px; }
+            .project-docs { padding: 0 16px 12px 16px; }
         }
     </style>
 </head>
@@ -100,30 +127,48 @@
         <h1>📁 唯安的项目集合</h1>
         <div class="sub">交互演示 · 持续更新</div>
         <div class="project-list">
+
+            <!-- ========== 项目1：骨科AI ========== -->
             <div class="project-item">
                 <a class="project-link" href="/骨科AI/骨科AI医院平台整体框架讨论稿.html">
                     <span class="project-name">🏥 骨科AI医院平台整体框架讨论稿</span>
                     <span class="project-arrow">→</span>
                 </a>
+                <div class="project-docs">
+                    <a class="doc-link" href="/骨科AI/骨科医院AI员工系统.pdf" target="_blank">📄 骨科医院AI员工系统（PDF）</a>
+                    <!-- 后续如有更多文档，在这里继续加 a 标签即可 -->
+                </div>
             </div>
-             <div class="project-item">
-                <a class="project-link" href="/海牛工作台/海牛工作台2.0讨论稿.html">
-                    <span class="project-name">海牛工作台2.0讨论稿</span>
-                    <span class="project-arrow">→</span>
-                </a>
-            </div>
-            <!-- 后续新增项目复制下面这一块，修改 href 和 项目名称即可 -->
-            <!--
+
+            <!-- ========== 项目2：海牛工作台 ========== -->
             <div class="project-item">
-                <a class="project-link" href="/你的文件夹/你的文件.html">
-                    <span class="project-name">📄 新项目名称</span>
+                <a class="project-link" href="/海牛工作台/海牛工作台2.0讨论稿.html">
+                    <span class="project-name">⚙️ 海牛工作台2.0讨论稿</span>
                     <span class="project-arrow">→</span>
                 </a>
+                <div class="project-docs">
+                    <!-- 如果海牛工作台也有配套文档，在这里加链接，如果没有就留空 -->
+                    <!-- <a class="doc-link" href="/海牛工作台/PRD.md" target="_blank">📄 PRD</a> -->
+                </div>
+            </div>
+
+            <!-- ========== 后续新增项目请参考下面模板 ========== -->
+            <!-- 
+            <div class="project-item">
+                <a class="project-link" href="/项目文件夹/index.html">
+                    <span class="project-name">📌 项目名称</span>
+                    <span class="project-arrow">→</span>
+                </a>
+                <div class="project-docs">
+                    <a class="doc-link" href="/项目文件夹/配套文档.md" target="_blank">📄 配套文档</a>
+                    <a class="doc-link" href="/项目文件夹/设计稿.pdf" target="_blank">📑 设计稿</a>
+                </div>
             </div>
             -->
+
         </div>
         <div class="footer-note">
-            💡 提示：点击项目卡片即可跳转查看
+            💡 点击项目卡片跳转查看交互原型 | 点击下方文档链接查看配套资料
         </div>
     </div>
 </body>
