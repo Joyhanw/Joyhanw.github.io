@@ -17,10 +17,9 @@
             padding: 32px 24px;
         }
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
         }
-        /* 头部 */
         .header {
             margin-bottom: 32px;
             text-align: center;
@@ -35,26 +34,22 @@
             color: #94a3b8;
             font-size: 14px;
         }
-        /* 项目卡片 */
         .project-card {
             background: rgba(255,255,255,0.03);
             backdrop-filter: blur(10px);
-            border-radius: 24px;
+            border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.08);
             margin-bottom: 20px;
             overflow: hidden;
-            transition: all 0.2s;
         }
         .project-card:hover {
             border-color: rgba(59,130,246,0.3);
-            background: rgba(255,255,255,0.05);
         }
-        /* 项目标题（可点击折叠） */
         .project-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 24px;
+            padding: 16px 20px;
             cursor: pointer;
             user-select: none;
             transition: background 0.2s;
@@ -65,36 +60,33 @@
         .project-title {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .project-icon {
-            font-size: 28px;
+            font-size: 24px;
         }
         .project-name {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: #fff;
         }
         .toggle-icon {
             color: #60a5fa;
-            font-size: 20px;
-            transition: transform 0.2s;
+            font-size: 16px;
         }
-        /* 项目内容（折叠区域） */
         .project-content {
-            padding: 0 24px 20px 24px;
+            padding: 0 20px 16px 20px;
             display: none;
             border-top: 1px solid rgba(255,255,255,0.06);
         }
         .project-card.expanded .project-content {
             display: block;
         }
-        /* 文件列表 */
         .file-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 16px;
+            gap: 8px;
+            margin-top: 12px;
         }
         .file-item {
             display: flex;
@@ -108,12 +100,12 @@
             color: #e2e8f0;
         }
         .file-item:hover {
-            background: rgba(59,130,246,0.15);
-            transform: translateX(6px);
+            background: rgba(59,130,246,0.12);
+            transform: translateX(4px);
         }
         .file-icon {
-            font-size: 20px;
-            width: 32px;
+            font-size: 18px;
+            width: 28px;
             text-align: center;
         }
         .file-name {
@@ -131,20 +123,12 @@
             transform: translateX(3px);
             transition: all 0.2s;
         }
-        /* 分组小标题 */
-        .section-title {
-            color: #94a3b8;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 16px 0 8px 0;
-            padding-left: 8px;
+        .empty-tip {
+            color: #6b7280;
+            font-size: 13px;
+            padding: 16px 0;
+            text-align: center;
         }
-        .section-title:first-of-type {
-            margin-top: 0;
-        }
-        /* 底部 */
         .footer-note {
             margin-top: 32px;
             padding-top: 20px;
@@ -155,9 +139,9 @@
         }
         @media (max-width: 600px) {
             body { padding: 20px 16px; }
-            .project-header { padding: 14px 18px; }
-            .project-name { font-size: 18px; }
-            .project-content { padding: 0 18px 16px 18px; }
+            .project-header { padding: 12px 16px; }
+            .project-name { font-size: 16px; }
+            .project-content { padding: 0 16px 12px 16px; }
             .file-item { padding: 8px 10px; }
         }
     </style>
@@ -166,74 +150,55 @@
     <div class="container">
         <div class="header">
             <h1>📁 唯安的项目集合</h1>
-            <div class="sub">交互原型 · 产品文档 · 持续更新</div>
+            <div class="sub">点击项目标题展开/收起 · 点击文件在新标签页打开</div>
         </div>
 
-        <!-- 项目列表容器 -->
         <div id="project-list"></div>
 
         <div class="footer-note">
-            💡 点击项目标题展开/收起 | 点击文件在新标签页打开
+            💡 提示：点击项目标题展开文件列表
         </div>
     </div>
 
     <script>
-        // ==================== 项目数据配置 ====================
-        // 在这里添加/修改项目，后续新增项目只需往 projects 数组里加对象即可
         const projects = [
             {
                 id: 1,
-                name: "骨科AI医院平台",
-                icon: "🏥",
-                items: [
-                    { type: "discussion", name: "讨论稿（PDF）", path: "/骨科AI/骨科医院AI员工系统.pdf", icon: "📄" },
-                    { type: "prototype", name: "原型demo（HTML）", path: "/骨科AI/骨科AI医院平台整体框架讨论稿.html", icon: "🖥️" },
-                    { type: "prd", name: "PRD", path: "/骨科AI/PRD.md", icon: "📋" },
-                    { type: "requirement", name: "需求来源文档", path: "/骨科AI/需求来源.md", icon: "📎" }
+                name: "数字员工",
+                icon: "🤖",
+                files: [
+                    { name: "MCPUI-Ai生成.html", path: "/数字员工/MCPUI-Ai生成.html", icon: "🖥️" }
                 ]
             },
             {
                 id: 2,
                 name: "海牛工作台",
                 icon: "⚙️",
-                items: [
-                    { type: "prototype", name: "原型demo（HTML）", path: "/海牛工作台/海牛工作台2.0讨论稿.html", icon: "🖥️" }
-                    // 后续有配套文档，在这里继续加即可
-                    // { type: "prd", name: "PRD", path: "/海牛工作台/PRD.md", icon: "📋" }
+                files: [
+                    { name: "海牛工作台2.0讨论稿.html", path: "/海牛工作台/海牛工作台2.0讨论稿.html", icon: "🖥️" }
+                ]
+            },
+            {
+                id: 3,
+                name: "骨科AI",
+                icon: "🏥",
+                files: [
+                    { name: "骨科AI医院平台整体框架讨论稿.html", path: "/骨科AI/骨科AI医院平台整体框架讨论稿.html", icon: "🖥️" },
+                    { name: "骨科医院AI员工系统.pdf", path: "/骨科AI/骨科医院AI员工系统.pdf", icon: "📄" }
                 ]
             }
-            // ==================== 新增项目示例 ====================
-            // {
-            //     id: 3,
-            //     name: "新项目名称",
-            //     icon: "🚀",
-            //     items: [
-            //         { type: "prototype", name: "原型demo", path: "/新项目/index.html", icon: "🖥️" },
-            //         { type: "prd", name: "PRD", path: "/新项目/PRD.md", icon: "📋" }
-            //     ]
-            // }
         ];
 
-        // 渲染项目列表
         function renderProjects() {
             const container = document.getElementById('project-list');
             container.innerHTML = '';
 
             projects.forEach(project => {
-                // 分组文件：按类型分组显示
-                const discussionFiles = project.items.filter(item => item.type === 'discussion');
-                const prototypeFiles = project.items.filter(item => item.type === 'prototype');
-                const prdFiles = project.items.filter(item => item.type === 'prd');
-                const requirementFiles = project.items.filter(item => item.type === 'requirement');
-                const otherFiles = project.items.filter(item => !['discussion', 'prototype', 'prd', 'requirement'].includes(item.type));
-
-                // 生成文件列表HTML
-                const renderFileGroup = (files, groupTitle) => {
-                    if (files.length === 0) return '';
-                    return `
-                        <div class="section-title">${groupTitle}</div>
+                let filesHtml = '';
+                if (project.files && project.files.length > 0) {
+                    filesHtml = `
                         <div class="file-list">
-                            ${files.map(file => `
+                            ${project.files.map(file => `
                                 <a class="file-item" href="${file.path}" target="_blank">
                                     <span class="file-icon">${file.icon}</span>
                                     <span class="file-name">${file.name}</span>
@@ -242,18 +207,12 @@
                             `).join('')}
                         </div>
                     `;
-                };
-
-                const contentHtml = `
-                    ${renderFileGroup(discussionFiles, '📌 讨论稿')}
-                    ${renderFileGroup(prototypeFiles, '🎨 原型demo')}
-                    ${renderFileGroup(prdFiles, '📋 PRD')}
-                    ${renderFileGroup(requirementFiles, '📎 需求来源')}
-                    ${renderFileGroup(otherFiles, '📂 其他文档')}
-                `;
+                } else {
+                    filesHtml = '<div class="empty-tip">暂无文件</div>';
+                }
 
                 const card = document.createElement('div');
-                card.className = 'project-card';  // 默认不展开，需要点击才展开
+                card.className = 'project-card';
                 card.innerHTML = `
                     <div class="project-header">
                         <div class="project-title">
@@ -263,13 +222,11 @@
                         <span class="toggle-icon">▶</span>
                     </div>
                     <div class="project-content">
-                        ${contentHtml || '<div style="color:#6b7280; padding:16px 0; text-align:center;">暂无文档</div>'}
+                        ${filesHtml}
                     </div>
                 `;
 
-                // 点击标题展开/收起
                 const header = card.querySelector('.project-header');
-                const content = card.querySelector('.project-content');
                 const toggleIcon = header.querySelector('.toggle-icon');
 
                 header.addEventListener('click', (e) => {
@@ -278,11 +235,9 @@
                     if (isExpanded) {
                         card.classList.remove('expanded');
                         toggleIcon.textContent = '▶';
-                        toggleIcon.style.transform = 'rotate(0deg)';
                     } else {
                         card.classList.add('expanded');
                         toggleIcon.textContent = '▼';
-                        toggleIcon.style.transform = 'rotate(0deg)';
                     }
                 });
 
