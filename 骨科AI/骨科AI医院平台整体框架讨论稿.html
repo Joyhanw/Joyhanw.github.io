@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -373,38 +374,56 @@
       </section>
 
       <section class="slide" data-index="11">
-        <div class="page-header"><h2>12 项目推进规划</h2><p>先确认客户现状和一期范围，再进入Demo、接口评估、MVP建设和二期扩展。</p></div>
+        <div class="page-header"><h2>12 下一轮汇报准备与推进计划</h2><p>恢复为会议纪要确认的汇报顺序：先讲客户痛点、角色价值、科室价值，再讲一期场景、真实演示、配置能力和公司能力。</p></div>
         <div class="center-wrap">
           <div class="report-chain">
-            <div class="report-node">现状确认 <button class="node-tip" onclick="openBrief('statusCheck')">?</button></div><span class="arrow">→</span>
-            <div class="report-node">一期场景 <button class="node-tip" onclick="openBrief('phaseOne')">?</button></div><span class="arrow">→</span>
-            <div class="report-node">Demo验证 <button class="node-tip" onclick="openBrief('demoPlan')">?</button></div><span class="arrow">→</span>
-            <div class="report-node">接口评估 <button class="node-tip" onclick="openBrief('interfacePlan')">?</button></div><span class="arrow">→</span>
-            <div class="report-node">MVP建设 <button class="node-tip" onclick="openBrief('mvpPlan')">?</button></div><span class="arrow">→</span>
-            <div class="report-node">二期扩展 <button class="node-tip" onclick="openBrief('phaseTwo')">?</button></div>
+            <div class="report-node">客户痛点 <button class="node-tip" onclick="openBrief('pain')">?</button></div><span class="arrow">→</span>
+            <div class="report-node">角色价值 <button class="node-tip" onclick="openBrief('role')">?</button></div><span class="arrow">→</span>
+            <div class="report-node">科室价值 <button class="node-tip" onclick="openBrief('dept')">?</button></div><span class="arrow">→</span>
+            <div class="report-node">一期场景闭环 <button class="node-tip" onclick="openBrief('phaseOne')">?</button></div><span class="arrow">→</span>
+            <div class="report-node">真实案例 <button class="node-tip" onclick="openBrief('case')">?</button></div><span class="arrow">→</span>
+            <div class="report-node">现场演示 <button class="node-tip" onclick="openBrief('demo')">?</button></div><span class="arrow">→</span>
+            <div class="report-node">智能体配置能力 <button class="node-tip" onclick="openBrief('config')">?</button></div><span class="arrow">→</span>
+            <div class="report-node">公司介绍 <button class="node-tip" onclick="openBrief('company')">?</button></div>
           </div>
 
           <div class="prep-grid">
-            <div class="prep-card"><h3>一、客户现状确认</h3><div class="prep-list">
-              <div class="prep-item"><span><b>系统现状：</b>确认HIS、EMR、PACS、预约、排班、CRM、短信、外呼、公众号/小程序是否已有。</span><button class="node-tip" onclick="openBrief('sysStatus')">?</button></div>
-              <div class="prep-item"><span><b>角色现状：</b>确认患者服务人员实际是客服、导医、医助还是护士承担。</span><button class="node-tip" onclick="openBrief('roleStatus')">?</button></div>
-              <div class="prep-item"><span><b>业务现状：</b>确认导诊、预约、康复、随访、患者运营、健康档案现在怎么跑。</span><button class="node-tip" onclick="openBrief('bizStatus')">?</button></div>
+            <div class="prep-card"><h3>一、先讲清客户视角价值</h3><div class="prep-list">
+              <div class="prep-item"><span><b>客户痛点：</b>围绕私立骨科医院获客难、预约转化低、术后失联、康复依从性差、患者数据分散展开。</span><button class="node-tip" onclick="openBrief('pain')">?</button></div>
+              <div class="prep-item"><span><b>角色价值：</b>患者、医生、护士、康复师、患者服务人员、市场运营人员、院领导分别能获得什么价值。</span><button class="node-tip" onclick="openBrief('role')">?</button></div>
+              <div class="prep-item"><span><b>科室价值：</b>门诊、康复科、客服/患者服务、市场运营、院领导驾驶舱分别怎么使用AI能力。</span><button class="node-tip" onclick="openBrief('dept')">?</button></div>
+              <div class="prep-item"><span><b>现状确认：</b>确认医院已有系统、角色分工、患者入口、康复流程、随访方式和运营团队现状。</span><button class="node-tip" onclick="openBrief('sysStatus')">?</button></div>
             </div></div>
-            <div class="prep-card"><h3>二、一期Demo准备</h3><div class="prep-list">
-              <div class="prep-item"><span><b>导诊预约：</b>患者症状咨询 → AI分诊 → 推荐医生 → 预约/登记 → 医院端查看。</span><button class="node-tip" onclick="openBrief('demoS01')">?</button></div>
-              <div class="prep-item"><span><b>康复随访：</b>出院 → 康复计划 → 打卡/随访 → 异常预警 → 医护处理。</span><button class="node-tip" onclick="openBrief('demoS02')">?</button></div>
-              <div class="prep-item"><span><b>品牌增长：</b>公域咨询 → AI承接 → 留资/预约 → 运营端转化统计。</span><button class="node-tip" onclick="openBrief('demoS03')">?</button></div>
-              <div class="prep-item"><span><b>健康档案：</b>患者数据沉淀 → AI摘要 → 标签画像 → 支撑康复与运营。</span><button class="node-tip" onclick="openBrief('demoS04')">?</button></div>
+            <div class="prep-card"><h3>二、一期四个场景汇报口径</h3><div class="prep-list">
+              <div class="prep-item"><span><b>S01 智能导诊预约：</b>患者咨询 → AI分诊 → 推荐科室/医生 → 预约/登记 → 医院端查看。</span><button class="node-tip" onclick="openBrief('demoS01')">?</button></div>
+              <div class="prep-item"><span><b>S02 智能康复管理：</b>出院 → 康复计划 → 打卡/随访 → 风险预警 → 医护处理 → 复诊。</span><button class="node-tip" onclick="openBrief('demoS02')">?</button></div>
+              <div class="prep-item"><span><b>S03 AI品牌增长：</b>公域咨询 → AI承接 → 留资/预约 → 运营跟进 → 转化统计。</span><button class="node-tip" onclick="openBrief('demoS03')">?</button></div>
+              <div class="prep-item"><span><b>S04 健康档案：</b>导诊、就诊、康复、随访数据沉淀 → AI摘要 → 标签画像 → 支撑运营。</span><button class="node-tip" onclick="openBrief('demoS04')">?</button></div>
             </div></div>
           </div>
 
-          <div class="prep-card" style="margin-top:16px"><h3>三、客户可能追问与应答准备</h3>
+          <div class="prep-grid" style="margin-top:16px">
+            <div class="prep-card"><h3>三、真实案例/录屏准备</h3><div class="prep-list">
+              <div class="prep-item"><span><b>导诊预约Demo：</b>模拟“膝盖疼/腰疼/运动损伤”，展示AI追问、科室推荐、预约登记和医院端查看。</span><button class="node-tip" onclick="openBrief('demo')">?</button></div>
+              <div class="prep-item"><span><b>康复随访Demo：</b>模拟术后患者康复计划、每日打卡、随访问卷、异常预警和医护处理闭环。</span><button class="node-tip" onclick="openBrief('record3')">?</button></div>
+              <div class="prep-item"><span><b>品牌增长Demo：</b>模拟公域咨询进入AI助手，AI识别高意向、引导留资/预约，运营端查看线索。</span><button class="node-tip" onclick="openBrief('record4')">?</button></div>
+              <div class="prep-item"><span><b>配置能力Demo：</b>现场展示按客户临时提出的场景，配置一个智能体或Skill流程。</span><button class="node-tip" onclick="openBrief('config')">?</button></div>
+            </div></div>
+            <div class="prep-card"><h3>四、正常/异常场景兜底</h3><div class="prep-list">
+              <div class="prep-item"><span><b>无患者端：</b>短信链接、独立H5、微信公众号消息、AI电话外呼或人工电话触达。</span><button class="node-tip" onclick="openBrief('noPatientApp')">?</button></div>
+              <div class="prep-item"><span><b>无挂号/排班接口：</b>先用预约登记表和后台维护排班兜底，接口开放后再做系统直连。</span><button class="node-tip" onclick="openBrief('interfacePlan')">?</button></div>
+              <div class="prep-item"><span><b>AI识别不确定：</b>继续追问、提示信息不足、建议人工确认，避免AI硬答。</span><button class="node-tip" onclick="openBrief('uncertain')">?</button></div>
+              <div class="prep-item"><span><b>患者异常反馈：</b>按照黄/橙/红分级预警，分别推送康复师、护士、医生处理。</span><button class="node-tip" onclick="openBrief('risk')">?</button></div>
+            </div></div>
+          </div>
+
+          <div class="prep-card" style="margin-top:16px"><h3>五、客户可能追问与应答准备</h3>
             <table class="qa-table"><thead><tr><th>客户可能问</th><th>建议应答口径</th><th>需要准备的材料</th></tr></thead><tbody>
+              <tr><td>你们到底能先解决什么问题？</td><td>一期先围绕导诊预约、康复管理、品牌增长、健康档案四个闭环，解决咨询转化、术后失联、获客运营和数据沉淀问题。</td><td>一期场景闭环图、功能清单</td></tr>
               <tr><td>没有患者端怎么办？</td><td>可以通过独立H5、短信链接、公众号消息或AI电话外呼先跑通，后续再接入正式患者端。</td><td>多通道触达方案</td></tr>
-              <tr><td>没有挂号/排班接口怎么办？</td><td>先用预约登记表和后台维护排班兜底，接口开放后再做系统直连。</td><td>标准流程+兜底流程图</td></tr>
-              <tr><td>康复风险谁处理？</td><td>AI只做识别和分级提醒，医生、护士、康复师负责确认和处理，形成闭环记录。</td><td>预警分级规则</td></tr>
-              <tr><td>增长运营是不是一期必须做？</td><td>对私立医院价值很高，但是否放P0需结合客户运营团队和获客目标确认。</td><td>S03价值说明、运营功能清单</td></tr>
-              <tr><td>病历、影像为什么不放一期？</td><td>属于深度临床支持能力，对EMR/PACS依赖强，可作为二期重点扩展。</td><td>二期规划与接口依赖说明</td></tr>
+              <tr><td>增长运营是不是一期必须做？</td><td>对私立医院价值很高，是否放P0需要结合客户是否有运营团队、获客目标和预算确认。</td><td>S03价值说明、运营功能清单</td></tr>
+              <tr><td>病历、影像为什么不放一期？</td><td>病历和影像属于深度临床支持，对EMR/PACS依赖更强，建议作为二期重点扩展。</td><td>二期规划与接口依赖说明</td></tr>
+              <tr><td>39个智能体都能落地吗？</td><td>39岗是能力规划，一期先落地8个核心岗位相关闭环，其他通过配置平台逐步训练和扩展。</td><td>8岗分布说明、配置平台录屏</td></tr>
             </tbody></table>
           </div>
         </div>
