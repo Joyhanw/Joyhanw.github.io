@@ -1,0 +1,4284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数字员工平台 - 工具管理与AI开发集成原型</title>
+  <style>
+    :root {
+      --nav-bg: #0f2b5b;
+      --nav-bg-hover: #163a78;
+      --nav-active: #1f4fa3;
+      --page-bg: #f3f5f8;
+      --card-bg: #ffffff;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --text-light: #94a3b8;
+      --border-color: #e5e7eb;
+      --border-deep: #d8e0eb;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success-bg: #eaf8ef;
+      --success-text: #17803d;
+      --draft-bg: #f1f5f9;
+      --draft-text: #475569;
+      --warning-bg: #fff4e8;
+      --warning-text: #c96c12;
+      --danger-bg: #fdecec;
+      --danger-text: #cb2f2f;
+      --info-bg: #eaf2ff;
+      --info-text: #2b63d9;
+      --shadow-sm: 0 2px 8px rgba(15, 43, 91, 0.06);
+      --shadow-md: 0 8px 24px rgba(15, 43, 91, 0.12);
+      --radius: 10px;
+      --content-width: 1440px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--page-bg);
+      color: var(--text-primary);
+    }
+
+    body {
+      min-width: 1200px;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.manatee-mode {
+      overflow: hidden;
+      background: #f4f7fb;
+    }
+
+    .app.manatee-mode {
+      min-height: 100vh;
+      background: #f4f7fb;
+    }
+
+    .app.manatee-mode .topbar {
+      display: none;
+    }
+
+    .app.manatee-mode .main {
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .app.manatee-mode .main-inner {
+      width: 100%;
+      max-width: none;
+    }
+
+    .app.manatee-mode .page-shell {
+      min-height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      background: #f4f7fb;
+    }
+
+    .topbar {
+      height: 64px;
+      background: var(--nav-bg);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-inner {
+      width: 100%;
+      max-width: var(--content-width);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-width: 220px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #4f8df7, #1fd0ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.18);
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .nav-item {
+      height: 40px;
+      padding: 0 18px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 14px;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .nav-item:hover {
+      background: var(--nav-bg-hover);
+      color: #fff;
+    }
+
+    .nav-item.active {
+      background: var(--nav-active);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .user-entry {
+      min-width: 88px;
+      display: flex;
+      justify-content: flex-end;
+      position: relative;
+    }
+
+    .user-chip {
+      height: 38px;
+      min-width: 38px;
+      padding: 0 14px;
+      border-radius: 19px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .user-chip:hover,
+    .user-entry.open .user-chip {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .user-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .user-caret {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .user-menu {
+      position: absolute;
+      top: 46px;
+      right: 0;
+      width: 156px;
+      background: #fff;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      box-shadow: 0 10px 28px rgba(15, 43, 91, 0.16);
+      overflow: hidden;
+      display: none;
+      z-index: 120;
+    }
+
+    .user-entry.open .user-menu {
+      display: block;
+    }
+
+    .user-menu-item {
+      width: 100%;
+      height: 42px;
+      border: 0;
+      background: #fff;
+      color: #334155;
+      text-align: left;
+      padding: 0 14px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .user-menu-item:hover {
+      background: #f5f8fd;
+      color: #0f2b5b;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .main-inner {
+      width: 100%;
+      max-width: var(--content-width);
+    }
+
+    .page-shell {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      min-height: calc(100vh - 64px - 48px);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .page-header {
+      padding: 24px 28px 16px;
+      border-bottom: 1px solid #eef1f5;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+    }
+
+    .page-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .page-header-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .config-page-header {
+      padding: 18px 28px 0;
+      border-bottom: 0;
+      background: #fff;
+    }
+
+    .config-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .config-breadcrumb-link {
+      color: #94a3b8;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .config-breadcrumb-link:hover {
+      color: #2563eb;
+    }
+
+    .config-breadcrumb-sep {
+      color: #cbd5e1;
+    }
+
+    .config-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .config-page-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #132238;
+    }
+
+    .config-page-subtitle {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .config-page-content {
+      padding-top: 24px;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #132238;
+    }
+
+    .page-subtitle {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .page-content {
+      padding: 20px 28px 28px;
+    }
+
+    .card-section {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: #fff;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .filter-bar {
+      padding: 18px 20px;
+      background: #fafbfd;
+      border-bottom: 1px solid #eff3f8;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 280px 180px 180px 180px 100px 100px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .field,
+    .field-select,
+    .field-input {
+      width: 100%;
+    }
+
+    .field-input,
+    .field-select,
+    .textarea {
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--border-deep);
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+      color: var(--text-primary);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .textarea {
+      min-height: 96px;
+      resize: vertical;
+      padding: 10px 12px;
+    }
+
+    .field-input:focus,
+    .field-select:focus,
+    .textarea:focus {
+      border-color: #7aa2f7;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .btn {
+      height: 40px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+      box-shadow: none;
+    }
+
+    .btn-primary:disabled {
+      background: #94a3b8;
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: #334155;
+      border-color: var(--border-deep);
+    }
+
+    .btn-secondary:hover {
+      background: #f8fafc;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .schema-table-wrap {
+      overflow: visible;
+    }
+
+    .schema-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid #d8e0eb;
+      border-radius: 8px;
+      background: #fff;
+      color: #334155;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .schema-input:focus {
+      border-color: #7aa2f7;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .schema-cell {
+      position: relative;
+      overflow: visible;
+    }
+
+    .schema-select {
+      position: relative;
+      width: 100%;
+    }
+
+    .schema-select-trigger {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid #d8e0eb;
+      border-radius: 8px;
+      background: #fff;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 14px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .schema-select.open .schema-select-trigger {
+      border-color: #7aa2f7;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .schema-select-panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      width: 100%;
+      min-width: 120px;
+      background: #fff;
+      border: 1px solid #d8e0eb;
+      border-radius: 10px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      padding: 6px;
+      z-index: 4000;
+      display: none;
+    }
+
+    .schema-select.open .schema-select-panel {
+      display: block;
+    }
+
+    .schema-select-option {
+      width: 100%;
+      height: 34px;
+      border: 0;
+      border-radius: 8px;
+      background: #fff;
+      color: #334155;
+      text-align: left;
+      padding: 0 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .schema-select-option:hover {
+      background: #f5f8fd;
+    }
+
+    .schema-select-option.active {
+      background: #eaf2ff;
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    .schema-switch-cell {
+      text-align: center;
+    }
+
+    .pagination-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 20px 18px;
+      background: #fff;
+    }
+
+    .pagination-btn,
+    .pagination-page {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid #d8e0eb;
+      background: #fff;
+      color: #334155;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .pagination-btn:hover,
+    .pagination-page:hover {
+      border-color: #9db8f4;
+      color: #2563eb;
+    }
+
+    .pagination-page.active {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .pagination-btn:disabled,
+    .pagination-page:disabled {
+      cursor: not-allowed;
+      color: #94a3b8;
+      border-color: #e5e7eb;
+      background: #f8fafc;
+    }
+
+    .pagination-jump {
+      width: 76px;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid #d8e0eb;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .pagination-size {
+      width: 110px;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid #d8e0eb;
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+    }
+
+    .pagination-text {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .table th,
+    .table td {
+      padding: 16px 14px;
+      border-bottom: 1px solid #eef2f7;
+      text-align: left;
+      font-size: 14px;
+      color: #334155;
+      vertical-align: middle;
+      word-break: break-word;
+    }
+
+    .table th {
+      background: #fbfcfe;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .table tr:hover td {
+      background: #fcfdff;
+    }
+
+    .tool-id {
+      font-weight: 600;
+      color: #0f2b5b;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tag-success {
+      background: var(--success-bg);
+      color: var(--success-text);
+    }
+
+    .tag-draft {
+      background: var(--draft-bg);
+      color: var(--draft-text);
+    }
+
+    .tag-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+    }
+
+    .tag-danger {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+    }
+
+    .tag-info {
+      background: var(--info-bg);
+      color: var(--info-text);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 26px;
+      vertical-align: middle;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      inset: 0;
+      background: #cbd5e1;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .switch-slider::before {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+      transition: 0.2s ease;
+    }
+
+    .switch input:checked + .switch-slider {
+      background: #2563eb;
+    }
+
+    .switch input:checked + .switch-slider::before {
+      transform: translateX(22px);
+    }
+
+    .action-links {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      white-space: nowrap;
+    }
+
+    .link-btn {
+      border: 0;
+      background: transparent;
+      color: var(--primary);
+      cursor: pointer;
+      padding: 0;
+      font-size: 14px;
+    }
+
+    .link-btn.delete {
+      color: #dc2626;
+    }
+
+    .link-btn:hover {
+      opacity: 0.85;
+    }
+
+    .empty-table {
+      padding: 48px 16px;
+      text-align: center;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(320px, 1fr));
+      gap: 18px 20px;
+    }
+
+    .form-section-title {
+      margin: 0;
+      padding: 18px 20px;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 16px;
+      font-weight: 700;
+      color: #132238;
+      background: #fbfcfe;
+    }
+
+    .form-section-body {
+      padding: 20px;
+    }
+
+    .radio-group {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .radio-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #334155;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .radio-item input {
+      accent-color: #2563eb;
+      cursor: pointer;
+    }
+
+    .collapse-block {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .advanced-config-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .config-card {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .config-card-header {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      background: #f8fafc;
+      color: #334155;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .config-card-body {
+      padding: 16px 14px;
+      border-top: 1px solid #eef2f7;
+      background: #fff;
+    }
+
+    .config-arrow {
+      font-size: 14px;
+      color: #64748b;
+      flex-shrink: 0;
+    }
+
+    .field-desc {
+      font-size: 12px;
+      line-height: 1.7;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .label-inline-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+    }
+
+    .label-inline-note small {
+      font-size: 12px;
+      font-weight: 400;
+      color: #94a3b8;
+    }
+
+    .config-textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .collapse-header {
+      width: 100%;
+      height: 44px;
+      border: 0;
+      background: #f8fafc;
+      color: #334155;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .collapse-body {
+      padding: 16px 14px;
+      border-top: 1px solid #eef2f7;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.8;
+      background: #fff;
+    }
+
+    .bind-card {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+      padding: 20px;
+    }
+
+    .bind-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 16px 20px;
+      margin-bottom: 18px;
+    }
+
+    .bind-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bind-status-switch {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border: 1px dashed #d8e0eb;
+      border-radius: 10px;
+      background: #f8fbff;
+    }
+
+    .bind-status-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .bind-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-danger-secondary {
+      background: #fff;
+      color: #dc2626;
+      border-color: #fecaca;
+    }
+
+    .btn-danger-secondary:hover {
+      background: #fff5f5;
+    }
+
+    .bind-label {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .bind-value {
+      font-size: 14px;
+      color: #1f2937;
+      word-break: break-all;
+    }
+
+    .form-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-item.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .required-mark {
+      color: #dc2626;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .form-actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .placeholder-panel {
+      min-height: 420px;
+      border: 1px dashed #d7deea;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fcfdff 0%, #f8fbff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .placeholder-content {
+      text-align: center;
+      max-width: 520px;
+      padding: 24px;
+    }
+
+    .placeholder-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 18px;
+      border-radius: 14px;
+      background: rgba(31, 79, 163, 0.08);
+      color: #1f4fa3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .placeholder-title {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .placeholder-desc {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #6b7280;
+    }
+
+    .logout-panel {
+      min-height: 620px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+    }
+
+    .logout-card {
+      width: 420px;
+      padding: 48px 32px;
+      border: 1px solid #e5eaf2;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+
+    .logout-title {
+      margin: 0 0 24px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #132238;
+    }
+
+    .manatee-page {
+      height: 100vh;
+      min-height: 100vh;
+      margin: 0;
+      background: #f4f7fb;
+      color: #1f2937;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .manatee-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      height: 48px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid rgba(15, 43, 91, 0.08);
+      background: #163b7a;
+      box-shadow: 0 6px 18px rgba(15, 43, 91, 0.12);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .manatee-titlebar {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.92);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 12px;
+    }
+
+    .manatee-status-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .manatee-status-tag.info {
+      background: rgba(59, 130, 246, 0.16);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.24);
+    }
+
+    .manatee-status-tag.warning {
+      background: rgba(245, 158, 11, 0.14);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.22);
+    }
+
+    .manatee-status-tag.success {
+      background: rgba(34, 197, 94, 0.14);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+    }
+
+    .manatee-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .btn-dark {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-dark:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .manatee-body {
+      flex: 1;
+      display: flex;
+      height: calc(100vh - 48px);
+      min-height: 0;
+      padding-top: 0;
+      overflow: hidden;
+    }
+
+    .manatee-center {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 24px 24px;
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .manatee-empty {
+      width: 100%;
+      max-width: 960px;
+      text-align: left;
+    }
+
+    .manatee-empty-title {
+      margin: 0 0 10px;
+      font-size: 30px;
+      font-weight: 700;
+      color: #132238;
+    }
+
+    .manatee-empty-desc {
+      margin: 0 0 24px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #6b7280;
+    }
+
+    .manatee-input-wrap {
+      background: #ffffff;
+      border: 1px solid #e5eaf3;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .manatee-textarea {
+      width: 100%;
+      min-height: 180px;
+      resize: none;
+      border: 1px solid #d8e2f0;
+      border-radius: 12px;
+      outline: none;
+      background: #ffffff;
+      color: #334155;
+      font-size: 15px;
+      line-height: 1.8;
+      padding: 14px 16px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .manatee-textarea:focus {
+      border-color: #2f6bff;
+      box-shadow: 0 0 0 4px rgba(47, 107, 255, 0.12);
+    }
+
+    .manatee-textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .manatee-input-actions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .manatee-generating {
+      width: 100%;
+      max-width: 860px;
+      text-align: left;
+      background: #ffffff;
+      border: 1px solid #e5eaf3;
+      border-radius: 16px;
+      padding: 28px 30px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .manatee-generating h2 {
+      margin: 0 0 10px;
+      font-size: 26px;
+      color: #132238;
+    }
+
+    .manatee-generating p {
+      margin: 0 0 24px;
+      color: #6b7280;
+    }
+
+    .manatee-steps {
+      display: grid;
+      gap: 14px;
+      text-align: left;
+    }
+
+    .manatee-step {
+      padding: 16px 18px;
+      border: 1px solid #d8e2f0;
+      border-radius: 12px;
+      background: #f8fbff;
+      color: #334155;
+    }
+
+    .manatee-studio {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 20px;
+      align-items: stretch;
+      min-height: 0;
+    }
+
+    .manatee-canvas {
+      background: #f4f7fb;
+      border-radius: 18px;
+      padding: 24px;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .manatee-sidebar {
+      width: 320px;
+      min-width: 320px;
+      max-width: 320px;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: visible;
+    }
+
+    .manatee-assistant-anchor {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .draft-form {
+      width: 100%;
+      max-width: 780px;
+      max-height: 85%;
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 24px 26px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+      overflow: auto;
+    }
+
+    .draft-form-title {
+      margin: 0 0 18px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #132238;
+    }
+
+    .draft-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 16px;
+    }
+
+    .draft-field {
+      margin-bottom: 0;
+    }
+
+    .draft-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .draft-field-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #334155;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .draft-field-box {
+      height: 36px;
+      border: 1px solid #d8e0eb;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .draft-field-box.textarea {
+      height: 72px;
+    }
+
+    .draft-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 18px;
+      padding-bottom: 2px;
+    }
+
+    .manatee-props {
+      flex: 1;
+      min-height: 0;
+      background: #ffffff;
+      border: 1px solid #e5eaf3;
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .manatee-props-title {
+      margin: 0 0 18px;
+      font-size: 18px;
+      color: #132238;
+    }
+
+    .manatee-prop-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .manatee-prop-tab {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 13px;
+      border: 1px solid #2563eb;
+      font-weight: 600;
+    }
+
+    .manatee-prop-item {
+      margin-bottom: 0;
+      border-top: 1px solid #eef2f7;
+    }
+
+    .manatee-prop-item:first-of-type {
+      border-top: 0;
+    }
+
+    .manatee-prop-label {
+      margin: 0;
+      font-size: 13px;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .manatee-prop-value {
+      display: none;
+    }
+
+    .manatee-style-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 0;
+    }
+
+    .manatee-style-plus {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid #d8e2f0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      font-size: 16px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .manatee-layout-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .manatee-layout-btn {
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid #d8e2f0;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .manatee-inline-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #334155;
+      font-size: 13px;
+    }
+
+    .manatee-inline-check input {
+      accent-color: #2563eb;
+    }
+
+    .manatee-ai-fab {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 0;
+      background: #2563eb;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+      cursor: pointer;
+      z-index: 20;
+      pointer-events: auto;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .manatee-ai-fab:hover {
+      transform: scale(1.05);
+      filter: brightness(1.03);
+      box-shadow: 0 10px 22px rgba(59, 130, 246, 0.28);
+    }
+
+    .manatee-assistant {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      height: 360px;
+      background: #ffffff;
+      border: 1px solid #e5eaf3;
+      border-radius: 12px;
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      isolation: isolate;
+      z-index: 20;
+      pointer-events: auto;
+    }
+
+    .manatee-assistant.hidden {
+      display: none;
+    }
+
+    .manatee-assistant::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 0;
+      background: transparent;
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .assistant-header {
+      position: relative;
+      z-index: 2;
+      height: 40px;
+      padding: 0 12px 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eef2f7;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .assistant-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #132238;
+    }
+
+    .assistant-title-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #4f8df7);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.18);
+      flex-shrink: 0;
+    }
+
+    .assistant-header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .assistant-icon-btn {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .assistant-icon-btn:hover {
+      background: #eef3f8;
+      color: #334155;
+    }
+
+    .assistant-body {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #ffffff;
+    }
+
+    .assistant-msg {
+      max-width: 88%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .assistant-msg.bot {
+      align-self: flex-start;
+      background: #f5f7fb;
+      color: #334155;
+      border: 1px solid #e5eaf3;
+    }
+
+    .assistant-msg.user {
+      align-self: flex-end;
+      background: #eaf2ff;
+      color: #1f4fa3;
+      border: 1px solid #bfd4fb;
+    }
+
+    .assistant-footer {
+      padding: 10px 12px 12px;
+      border-top: 1px solid #eef2f7;
+      background: #ffffff;
+    }
+
+    .assistant-input {
+      width: 100%;
+      min-height: 72px;
+      max-height: 72px;
+      resize: none;
+      border: 1px solid #d8e2f0;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #334155;
+      padding: 10px 12px;
+      outline: none;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .assistant-input:focus {
+      border-color: #2f6bff;
+      box-shadow: 0 0 0 3px rgba(47, 107, 255, 0.12);
+    }
+
+    .assistant-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .assistant-footer-actions {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .assistant-attach {
+      height: 34px;
+      padding: 0 12px;
+      border: 1px solid #d8e2f0;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .assistant-attach:hover {
+      background: #f8fafc;
+    }
+
+    .assistant-send {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: #2f6bff;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(47, 107, 255, 0.22);
+    }
+
+    .assistant-send:hover {
+      background: #1d5beb;
+    }
+
+    .mcp-page {
+      width: 100%;
+      max-width: 1280px;
+      margin: 20px auto 0;
+    }
+
+    .mcp-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .mcp-title {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      color: #132238;
+      line-height: 1.2;
+    }
+
+    .mcp-reset-btn {
+      height: 40px;
+      padding: 0 16px;
+      border: 1px solid #d8e0eb;
+      border-radius: 10px;
+      background: #fff;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .mcp-reset-btn:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .mcp-chat-shell {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      min-height: 500px;
+      padding: 36px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mcp-welcome-card {
+      width: 680px;
+      max-width: 100%;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+      padding: 44px 52px;
+      text-align: center;
+    }
+
+    .mcp-avatar {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 22px;
+      border-radius: 16px;
+      background: #eaf2ff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .mcp-welcome-text {
+      max-width: 560px;
+      margin: 0 auto;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #475569;
+      white-space: normal;
+    }
+
+    .mcp-input-shell {
+      margin-top: 18px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      height: 92px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: stretch;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mcp-input {
+      flex: 1;
+      border: 0;
+      outline: none;
+      resize: none;
+      background: transparent;
+      color: #334155;
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 2px 0 0;
+    }
+
+    .mcp-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .mcp-send-wrap {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .mcp-send-btn {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 50%;
+      background: #2563eb;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .mcp-send-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .toast-dark {
+      background: rgba(15, 23, 42, 0.86);
+      color: #fff;
+    }
+
+    .preview-modal {
+      width: 80vw;
+      max-width: 1280px;
+      min-width: 960px;
+      height: auto;
+      max-height: calc(100vh - 64px);
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e5eaf3;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-header {
+      padding: 20px 22px 0;
+      border-bottom: 0;
+      background: #fff;
+    }
+
+    .preview-title {
+      margin: 0 0 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #132238;
+    }
+
+    .preview-meta {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding-bottom: 14px;
+      font-size: 13px;
+      color: #64748b;
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    .preview-meta strong {
+      color: #334155;
+    }
+
+    .preview-tabbar {
+      padding: 12px 22px 0;
+      background: #fff;
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    .preview-tabs {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .preview-tab {
+      height: 36px;
+      padding: 0 16px;
+      border: 1px solid #d8e0eb;
+      border-bottom: 0;
+      border-radius: 10px 10px 0 0;
+      background: #fff;
+      color: #475569;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .preview-tab:hover {
+      color: #2563eb;
+      border-color: #bfd4fb;
+      background: #fcfdff;
+    }
+
+    .preview-tab.active {
+      background: #fff;
+      color: #2563eb;
+      font-weight: 600;
+      border-color: #d8e0eb;
+      box-shadow: inset 0 3px 0 #2563eb;
+    }
+
+    .preview-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 0;
+      min-height: 0;
+      flex: 1;
+      overflow: hidden;
+      border-top: 0;
+    }
+
+    .preview-main {
+      padding: 22px;
+      background: #f4f7fb;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .preview-frame {
+      width: 100%;
+      min-height: 560px;
+      background: #fff;
+      border: 1px solid #dbe3ef;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    }
+
+    .preview-frame-inner {
+      height: 100%;
+      padding: 26px;
+    }
+
+    .preview-side {
+      border-left: 1px solid #eef2f7;
+      background: #fff;
+      padding: 22px;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .preview-side-title {
+      margin: 0 0 18px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #132238;
+    }
+
+    .preview-info-item {
+      margin-bottom: 16px;
+    }
+
+    .preview-info-label {
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .preview-info-value {
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.7;
+      word-break: break-all;
+    }
+
+    .preview-error {
+      height: 100%;
+      min-height: 508px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .preview-error-card {
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .preview-error-title {
+      margin: 0 0 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #cb2f2f;
+    }
+
+    .preview-error-desc {
+      margin: 0 0 18px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #64748b;
+    }
+
+    .preview-error-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .preview-footer {
+      padding: 16px 22px 22px;
+      border-top: 1px solid #eef2f7;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 1200px) {
+      .preview-modal {
+        width: 90vw;
+        min-width: 860px;
+      }
+    }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 32px 24px;
+      overflow: hidden;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 540px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .modal-body {
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #475569;
+    }
+
+    .modal-footer {
+      padding: 16px 20px 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .toast-wrap {
+      position: fixed;
+      top: 82px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .toast {
+      min-width: 280px;
+      max-width: 420px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: var(--shadow-md);
+      animation: fadeIn 0.2s ease;
+      pointer-events: auto;
+    }
+
+    .toast-warning {
+      background: #d97706;
+    }
+
+    .toast-success {
+      background: #15803d;
+    }
+
+    .toast-info {
+      background: #1d4ed8;
+    }
+
+    .toast-dark {
+      background: rgba(15, 23, 42, 0.86);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes modalPopIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand-area">
+          <div class="brand-logo">DE</div>
+          <div class="brand-title">数字员工平台</div>
+        </div>
+
+        <nav class="nav" id="topNav">
+          <div class="nav-item active" data-route="tool-management">工具管理</div>
+          <div class="nav-item" data-route="mcp-chat">MCP Chat</div>
+        </nav>
+
+        <div class="user-entry" id="userEntry">
+          <div class="user-chip" id="userChip">
+            <span class="user-avatar">我</span>
+            <span>我</span>
+            <span class="user-caret">▾</span>
+          </div>
+          <div class="user-menu" id="userMenu">
+            <button class="user-menu-item" data-user-action="profile">个人信息</button>
+            <button class="user-menu-item" data-user-action="logout">退出登录</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="main-inner">
+        <div id="pageContainer" class="page-shell"></div>
+      </div>
+    </main>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot" class="toast-wrap"></div>
+
+  <script>
+    const initialToolList = [
+      {
+        toolId: "tripApply",
+        title: "出差申请",
+        description: "打开出差申请单，填写后提交审批。",
+        contentType: "rawHtml",
+        pageGenerationMethod: "AI开发",
+        configStatus: "已完成",
+        enabled: true,
+        modifier: "张三",
+        updateTime: "2026-05-13 10:30",
+        pageUrl: "https://mcp.manatee.com/page_trip_apply_001/index.html",
+        previewHeight: "760",
+        allowedOrigin: "https://mcp.manatee.com",
+        manateeStatus: "已完成",
+        inputSchema: [
+          { name: "travelerName", type: "string", description: "出差人", required: "是" }
+        ]
+      },
+      {
+        toolId: "queryBalance",
+        title: "查询余额",
+        contentType: "externalUrl",
+        pageGenerationMethod: "无",
+        configStatus: "已完成",
+        enabled: true,
+        modifier: "李四",
+        updateTime: "2026-05-12 16:20",
+        pageUrl: "https://example.com/balance",
+        previewHeight: "",
+        allowedOrigin: "",
+        manateeStatus: "未创建",
+        inputSchema: []
+      },
+      {
+        toolId: "transferMoney",
+        title: "转账汇款",
+        contentType: "rawHtml",
+        pageGenerationMethod: "手动URL",
+        configStatus: "已完成",
+        enabled: false,
+        modifier: "王五",
+        updateTime: "2026-05-11 09:45",
+        pageUrl: "https://example.com/transfer",
+        previewHeight: "760",
+        allowedOrigin: "https://example.com",
+        manateeStatus: "未创建",
+        inputSchema: []
+      },
+      {
+        toolId: "reimbursement",
+        title: "报销申请",
+        contentType: "rawHtml",
+        pageGenerationMethod: "AI开发",
+        configStatus: "草稿",
+        enabled: false,
+        modifier: "赵六",
+        updateTime: "2026-05-10 14:05",
+        pageUrl: "",
+        previewHeight: "",
+        allowedOrigin: "",
+        manateeStatus: "草稿",
+        inputSchema: []
+      },
+      {
+        toolId: "leaveApply",
+        title: "请假申请",
+        contentType: "rawHtml",
+        pageGenerationMethod: "AI开发",
+        configStatus: "异常",
+        enabled: false,
+        modifier: "钱七",
+        updateTime: "2026-05-09 11:30",
+        pageUrl: "",
+        previewHeight: "",
+        allowedOrigin: "",
+        manateeStatus: "异常",
+        inputSchema: []
+      },
+      {
+        toolId: "overtimeApply",
+        title: "加班申请",
+        contentType: "rawHtml",
+        pageGenerationMethod: "AI开发",
+        configStatus: "已完成",
+        enabled: true,
+        modifier: "孙八",
+        updateTime: "2026-05-08 18:10",
+        pageUrl: "",
+        previewHeight: "",
+        allowedOrigin: "",
+        manateeStatus: "已完成",
+        inputSchema: []
+      },
+      {
+        toolId: "meetingRoom",
+        title: "会议室预订",
+        contentType: "externalUrl",
+        pageGenerationMethod: "无",
+        configStatus: "已完成",
+        enabled: true,
+        modifier: "周九",
+        updateTime: "2026-05-08 09:20",
+        pageUrl: "https://example.com/meeting-room",
+        previewHeight: "",
+        allowedOrigin: "",
+        manateeStatus: "未创建",
+        inputSchema: []
+      },
+      {
+        toolId: "sealApply",
+        title: "用印申请",
+        contentType: "rawHtml",
+        pageGenerationMethod: "AI开发",
+        configStatus: "草稿",
+        enabled: false,
+        modifier: "吴十",
+        updateTime: "2026-05-07 15:40",
+        pageUrl: "",
+        previewHeight: "",
+        allowedOrigin: "",
+        manateeStatus: "草稿",
+        inputSchema: []
+      },
+      {
+        toolId: "vehicleApply",
+        title: "用车申请",
+        contentType: "rawHtml",
+        pageGenerationMethod: "手动URL",
+        configStatus: "已完成",
+        enabled: false,
+        modifier: "郑十一",
+        updateTime: "2026-05-07 11:25",
+        pageUrl: "https://example.com/vehicle",
+        previewHeight: "760",
+        allowedOrigin: "https://example.com",
+        manateeStatus: "未创建",
+        inputSchema: []
+      },
+      {
+        toolId: "assetBorrow",
+        title: "资产借用",
+        contentType: "rawHtml",
+        pageGenerationMethod: "AI开发",
+        configStatus: "异常",
+        enabled: false,
+        modifier: "王十二",
+        updateTime: "2026-05-06 16:45",
+        pageUrl: "",
+        previewHeight: "",
+        allowedOrigin: "",
+        manateeStatus: "异常",
+        inputSchema: []
+      },
+      {
+        toolId: "contractApprove",
+        title: "合同审批",
+        contentType: "externalUrl",
+        pageGenerationMethod: "无",
+        configStatus: "已完成",
+        enabled: true,
+        modifier: "冯十三",
+        updateTime: "2026-05-06 10:15",
+        pageUrl: "https://example.com/contract",
+        previewHeight: "",
+        allowedOrigin: "",
+        manateeStatus: "未创建",
+        inputSchema: []
+      },
+      {
+        toolId: "paymentApply",
+        title: "付款申请",
+        contentType: "rawHtml",
+        pageGenerationMethod: "AI开发",
+        configStatus: "草稿",
+        enabled: false,
+        modifier: "陈十四",
+        updateTime: "2026-05-05 14:30",
+        pageUrl: "",
+        previewHeight: "",
+        allowedOrigin: "",
+        manateeStatus: "草稿",
+        inputSchema: []
+      }
+    ];
+
+    const appState = {
+      currentRoute: "tool-management",
+      tools: initialToolList.map((item) => ({ ...item })),
+      filters: {
+        keyword: "",
+        contentType: "全部",
+        configStatus: "全部",
+        enabledStatus: "全部"
+      },
+      editingToolId: null,
+      deleteTargetId: null,
+      userMenuOpen: false,
+      formDraft: {
+        toolId: "",
+        title: "",
+        description: "",
+        pageUrl: "",
+        previewHeight: "",
+        allowedOrigin: "",
+        contentType: "rawHtml",
+        rawHtmlSource: "manatee",
+        manateeStatus: "未创建",
+        inputSchema: [],
+        activeTypeDropdown: null,
+        postMessageExpanded: true,
+        callbackChainExpanded: true,
+        initAction: "",
+        callbackAction: "",
+        nextToolId: "",
+        paramMappingJson: ""
+      },
+      manateeMode: {
+        status: "未创建",
+        returnRoute: "tool-create"
+      },
+      manateeAssistant: {
+        open: false,
+        collapsed: false,
+        input: "",
+        messages: [
+          { role: "bot", text: "您好，我是智能助手，请详细描述您的需求" }
+        ]
+      },
+      previewModal: {
+        activeTab: "page1",
+        failedTabs: []
+      },
+      pagination: {
+        currentPage: 1,
+        pageSize: 5,
+        pageSizeOptions: [5, 10, 20]
+      },
+      mcpChat: {
+        input: ""
+      }
+    };
+
+    const routes = {
+      "tool-management": {
+        render: () => renderToolManagementPage()
+      },
+      "tool-create": {
+        render: () => renderToolFormPage("create")
+      },
+      "tool-edit": {
+        render: () => renderToolFormPage("edit")
+      },
+      "mcp-chat": {
+        render: () => renderMcpChatPage()
+      },
+      "profile": {
+        render: () => createPlaceholderPage("个人信息", "用户信息页面容器预留中。", "我", "个人信息占位区", "后续可在此扩展个人信息、权限、设置、消息等内容。")
+      },
+      "manatee-controlled": {
+        render: () => renderManateeControlledPage()
+      },
+      "logged-out": {
+        render: () => renderLoggedOutPage()
+      }
+    };
+
+    function renderLoggedOutPage() {
+      return `
+        <div class="logout-panel">
+          <div class="logout-card">
+            <h1 class="logout-title">已退出登录</h1>
+            <button class="btn btn-primary" data-action="back-login">返回登录页</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderManateeControlledPage() {
+      const status = appState.manateeMode.status;
+      const statusTag = status === "已完成"
+        ? '<span class="manatee-status-tag success">已完成</span>'
+        : status === "草稿"
+          ? '<span class="manatee-status-tag warning">草稿</span>'
+          : '<span class="manatee-status-tag info">' + (status === "开发中" ? '开发中' : '未创建') + '</span>';
+
+      return `
+        <div class="manatee-page">
+          <div class="manatee-topbar">
+            <div class="manatee-titlebar">
+              <span>来自数字员工平台</span>
+              <span>｜</span>
+              <span>工具名称：出差申请</span>
+              <span>｜</span>
+              <span>页面状态：</span>
+              ${statusTag}
+            </div>
+            <div class="manatee-actions">
+              <button class="btn btn-dark" data-action="manatee-back">返回数字员工</button>
+              <button class="btn btn-secondary" data-action="manatee-save">保存</button>
+              <button class="btn btn-primary" data-action="manatee-finish">开发完成并返回</button>
+            </div>
+          </div>
+          <div class="manatee-body">
+            <div class="manatee-center">
+              ${status === "未创建" ? renderManateeInitialState() : status === "开发中" ? renderManateeGeneratingState() : renderManateeDraftState()}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderManateeInitialState() {
+      return `
+        <div class="manatee-empty">
+          <h2 class="manatee-empty-title">AI生成页面</h2>
+          <p class="manatee-empty-desc">描述页面结构与业务需求，AI 将自动生成业务页面原型。</p>
+          <div class="manatee-input-wrap">
+            <textarea class="manatee-textarea" id="manateePrompt" placeholder="请尽量详细描述您的需求，或者上传图片作为补充">创建一个出差申请单，包含出差人、所属部门、出差城市、开始时间、结束时间、出差原因、附件上传和提交按钮</textarea>
+            <div class="manatee-input-actions">
+              <button class="btn btn-primary" data-action="manatee-send">发送</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderManateeGeneratingState() {
+      return `
+        <div class="manatee-generating">
+          <h2>AI正在生成业务页面，请稍候...</h2>
+          <p>预计需要 10~30 秒</p>
+          <div class="manatee-steps">
+            <div class="manatee-step">1. 正在理解需求</div>
+            <div class="manatee-step">2. 正在生成页面结构</div>
+            <div class="manatee-step">3. 正在生成表单字段</div>
+            <div class="manatee-step">4. 正在生成交互逻辑</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderManateeDraftState() {
+      return `
+        <div class="manatee-studio">
+          <div class="manatee-canvas">
+            <div class="draft-form">
+              <h2 class="draft-form-title">出差申请单</h2>
+              <div class="draft-form-grid">
+                <div class="draft-field">
+                  <label class="draft-field-label">出差人</label>
+                  <div class="draft-field-box"></div>
+                </div>
+                <div class="draft-field">
+                  <label class="draft-field-label">所属部门</label>
+                  <div class="draft-field-box"></div>
+                </div>
+                <div class="draft-field">
+                  <label class="draft-field-label">出差城市</label>
+                  <div class="draft-field-box"></div>
+                </div>
+                <div class="draft-field">
+                  <label class="draft-field-label">开始时间</label>
+                  <div class="draft-field-box"></div>
+                </div>
+                <div class="draft-field">
+                  <label class="draft-field-label">结束时间</label>
+                  <div class="draft-field-box"></div>
+                </div>
+                <div class="draft-field">
+                  <label class="draft-field-label">附件上传</label>
+                  <div class="draft-field-box"></div>
+                </div>
+                <div class="draft-field full">
+                  <label class="draft-field-label">出差原因</label>
+                  <div class="draft-field-box textarea"></div>
+                </div>
+              </div>
+              <div class="draft-actions">
+                <button class="btn btn-secondary">取消</button>
+                <button class="btn btn-primary">提交申请</button>
+              </div>
+            </div>
+          </div>
+          <div class="manatee-sidebar">
+            <div class="manatee-props">
+              <h3 class="manatee-props-title">属性面板</h3>
+              <div class="manatee-prop-tabs">
+                <div class="manatee-prop-tab active">样式</div>
+              </div>
+              <div class="manatee-prop-item">
+                <div class="manatee-style-section">
+                  <div>
+                    <div class="manatee-prop-label">布局</div>
+                    <div class="manatee-layout-actions">
+                      <span class="manatee-layout-btn">横向排列</span>
+                      <span class="manatee-layout-btn">纵向排列</span>
+                      <span class="manatee-layout-btn">自适应排列</span>
+                    </div>
+                  </div>
+                  <span class="manatee-style-plus">+</span>
+                </div>
+              </div>
+              <div class="manatee-prop-item">
+                <div class="manatee-style-section">
+                  <label class="manatee-inline-check">
+                    <input type="checkbox" />
+                    <span>超出容器不显示</span>
+                  </label>
+                  <span class="manatee-style-plus">+</span>
+                </div>
+              </div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">尺寸</div><span class="manatee-style-plus">+</span></div></div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">背景</div><span class="manatee-style-plus">+</span></div></div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">边框</div><span class="manatee-style-plus">+</span></div></div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">外边距</div><span class="manatee-style-plus">+</span></div></div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">内边距</div><span class="manatee-style-plus">+</span></div></div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">内容溢出</div><span class="manatee-style-plus">+</span></div></div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">不透明度</div><span class="manatee-style-plus">+</span></div></div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">阴影</div><span class="manatee-style-plus">+</span></div></div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">光标</div><span class="manatee-style-plus">+</span></div></div>
+              <div class="manatee-prop-item"><div class="manatee-style-section"><div class="manatee-prop-label">层级</div><span class="manatee-style-plus">+</span></div></div>
+            </div>
+            <div class="manatee-assistant-anchor">
+              ${renderManateeAssistantEntry()}
+              ${renderManateeAssistantPanel()}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderManateeAssistantEntry() {
+      return appState.manateeAssistant.open ? "" : '<button class="manatee-ai-fab" type="button" data-action="open-assistant">AI</button>';
+    }
+
+    function renderManateeAssistantPanel() {
+      return `
+        <div class="manatee-assistant ${appState.manateeAssistant.open ? "" : "hidden"}">
+          <div class="assistant-header">
+            <div class="assistant-title"><span class="assistant-title-icon"></span><span>智能助手</span></div>
+            <div class="assistant-header-actions">
+              <button class="assistant-icon-btn" type="button" data-action="minimize-assistant">—</button>
+              <button class="assistant-icon-btn" type="button" data-action="close-assistant">×</button>
+            </div>
+          </div>
+          <div class="assistant-body" id="assistantBody">
+            ${appState.manateeAssistant.messages.map((msg) => `
+              <div class="assistant-msg ${msg.role}">${escapeHtml(msg.text)}</div>
+            `).join("")}
+          </div>
+          <div class="assistant-footer">
+            <textarea class="assistant-input" id="assistantInput" placeholder="请输入页面修改需求">${escapeHtml(appState.manateeAssistant.input)}</textarea>
+            <div class="assistant-footer-actions">
+              <button class="assistant-attach" type="button">附件</button>
+              <button class="assistant-send" type="button" data-action="send-assistant">➤</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getPreviewPages() {
+      return {
+        page1: {
+          tabName: "出差申请1",
+          pageName: "出差申请1",
+          pageUrl: "https://mcp.manatee.com/page_trip_apply_001/index.html",
+          updateTime: "2026-05-13 10:30",
+          editor: "张三",
+          content: `
+            <div class="draft-form" style="max-width: 100%; box-shadow: none; border: 0; padding: 0;">
+              <h2 class="draft-form-title">出差申请单</h2>
+              <div class="draft-field"><label class="draft-field-label">出差人</label><div class="draft-field-box"></div></div>
+              <div class="draft-field"><label class="draft-field-label">所属部门</label><div class="draft-field-box"></div></div>
+              <div class="draft-field"><label class="draft-field-label">出差城市</label><div class="draft-field-box"></div></div>
+              <div class="draft-field"><label class="draft-field-label">开始时间</label><div class="draft-field-box"></div></div>
+              <div class="draft-field"><label class="draft-field-label">结束时间</label><div class="draft-field-box"></div></div>
+              <div class="draft-field"><label class="draft-field-label">出差原因</label><div class="draft-field-box textarea"></div></div>
+              <div class="draft-field"><label class="draft-field-label">附件上传</label><div class="draft-field-box"></div></div>
+              <div class="draft-actions"><button class="btn btn-secondary">取消</button><button class="btn btn-primary">提交申请</button></div>
+            </div>
+          `
+        },
+        page2: {
+          tabName: "出差申请2",
+          pageName: "出差申请2",
+          pageUrl: "https://mcp.manatee.com/page_trip_apply_002/index.html",
+          updateTime: "2026-05-13 10:32",
+          editor: "张三",
+          content: `
+            <div class="draft-form" style="max-width: 100%; box-shadow: none; border: 0; padding: 0;">
+              <h2 class="draft-form-title">出差申请详情页</h2>
+              <div class="draft-field"><label class="draft-field-label">申请编号</label><div class="draft-field-box"></div></div>
+              <div class="draft-field"><label class="draft-field-label">审批状态</label><div class="draft-field-box"></div></div>
+              <div class="draft-field"><label class="draft-field-label">审批人</label><div class="draft-field-box"></div></div>
+              <div class="draft-field"><label class="draft-field-label">审批意见</label><div class="draft-field-box textarea"></div></div>
+              <div class="draft-actions"><button class="btn btn-secondary">返回</button><button class="btn btn-primary">撤销申请</button></div>
+            </div>
+          `
+        }
+      };
+    }
+
+    function openPreviewModal() {
+      const pages = getPreviewPages();
+      const activeTab = appState.previewModal.activeTab || "page1";
+      const current = pages[activeTab] || pages.page1;
+      const failed = appState.previewModal.failedTabs.includes(activeTab);
+      const modalRoot = document.getElementById("modalRoot");
+      modalRoot.innerHTML = `
+        <div class="modal-mask" id="previewModalMask">
+          <div class="preview-modal" role="dialog" aria-modal="true">
+            <div class="preview-header">
+              <h3 class="preview-title">预览页面 - 出差申请</h3>
+              <div class="preview-meta">
+                <span><strong>页面状态：</strong>已完成</span>
+                <span><strong>来源：</strong>AI开发</span>
+              </div>
+            </div>
+            <div class="preview-tabbar">
+              <div class="preview-tabs" id="previewTabs">
+                <button class="preview-tab ${activeTab === "page1" ? "active" : ""}" data-action="switch-preview-tab" data-tab="page1">出差申请1</button>
+                <button class="preview-tab ${activeTab === "page2" ? "active" : ""}" data-action="switch-preview-tab" data-tab="page2">出差申请2</button>
+              </div>
+            </div>
+            <div class="preview-body">
+              <div class="preview-main" id="previewMain">
+                <div class="preview-frame">
+                  <div class="preview-frame-inner">
+                    ${failed ? renderPreviewErrorState() : current.content}
+                  </div>
+                </div>
+              </div>
+              <div class="preview-side" id="previewSide">
+                ${renderPreviewInfo(current)}
+              </div>
+            </div>
+            <div class="preview-footer">
+              <button class="btn btn-secondary" data-action="close-preview">关闭</button>
+              <button class="btn btn-primary" data-action="preview-continue-dev">继续开发</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      bindPreviewEvents();
+    }
+
+    function renderPreviewInfo(current) {
+      return `
+        <h4 class="preview-side-title">页面信息</h4>
+        <div class="preview-info-item">
+          <div class="preview-info-label">页面名称</div>
+          <div class="preview-info-value">${current.pageName}</div>
+        </div>
+        <div class="preview-info-item">
+          <div class="preview-info-label">页面URL</div>
+          <div class="preview-info-value">${current.pageUrl}</div>
+        </div>
+        <div class="preview-info-item">
+          <div class="preview-info-label">更新时间</div>
+          <div class="preview-info-value">${current.updateTime}</div>
+        </div>
+        <div class="preview-info-item">
+          <div class="preview-info-label">最后编辑人</div>
+          <div class="preview-info-value">${current.editor}</div>
+        </div>
+      `;
+    }
+
+    function updatePreviewTabContent() {
+      const pages = getPreviewPages();
+      const activeTab = appState.previewModal.activeTab || "page1";
+      const current = pages[activeTab] || pages.page1;
+      const failed = appState.previewModal.failedTabs.includes(activeTab);
+
+      const tabs = document.querySelectorAll(".preview-tab");
+      tabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.tab === activeTab);
+      });
+
+      const previewMain = document.getElementById("previewMain");
+      const previewSide = document.getElementById("previewSide");
+      if (previewMain) {
+        previewMain.innerHTML = `
+          <div class="preview-frame">
+            <div class="preview-frame-inner">
+              ${failed ? renderPreviewErrorState() : current.content}
+            </div>
+          </div>
+        `;
+      }
+      if (previewSide) {
+        previewSide.innerHTML = renderPreviewInfo(current);
+      }
+
+      const modalRoot = document.getElementById("modalRoot");
+      modalRoot.querySelectorAll("[data-action]").forEach((element) => {
+        element.removeEventListener("click", handleActionClick);
+        element.addEventListener("click", handleActionClick);
+      });
+    }
+
+    function renderPreviewErrorState() {
+      return `
+        <div class="preview-error">
+          <div class="preview-error-card">
+            <h4 class="preview-error-title">页面加载失败</h4>
+            <p class="preview-error-desc">页面加载失败，请返回AI开发重新生成页面。</p>
+            <div class="preview-error-actions">
+              <button class="btn btn-secondary" data-action="reload-preview">重新加载</button>
+              <button class="btn btn-primary" data-action="preview-continue-dev">继续开发</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function bindPreviewEvents() {
+      const modalRoot = document.getElementById("modalRoot");
+      modalRoot.querySelectorAll("[data-action]").forEach((element) => {
+        element.addEventListener("click", handleActionClick);
+      });
+      const mask = document.getElementById("previewModalMask");
+      if (mask) {
+        mask.addEventListener("click", (event) => {
+          if (event.target.id === "previewModalMask") {
+            closeModal();
+          }
+        });
+      }
+    }
+
+    function renderMcpChatPage() {
+      return `
+        <div class="mcp-page">
+          <div class="mcp-header">
+            <h1 class="mcp-title">MCP Chat</h1>
+            <button class="mcp-reset-btn" data-action="reset-mcp-chat">
+              <span>↻</span>
+              <span>重置会话</span>
+            </button>
+          </div>
+          <div class="mcp-chat-shell">
+            <div class="mcp-welcome-card">
+              <div class="mcp-avatar">AI</div>
+              <p class="mcp-welcome-text">您好！我是您的专属 AI 助手。我已深度集成企业办公系统，可以协助您一键提交出差申请、智能过滤并回复邮件、实时更新 CRM 客户进度，或快速生成业务分析报表。</p>
+            </div>
+          </div>
+          <div class="mcp-input-shell">
+            <textarea class="mcp-input" id="mcpChatInput" placeholder="输入消息...">${escapeHtml(appState.mcpChat.input)}</textarea>
+            <div class="mcp-send-wrap">
+              <button class="mcp-send-btn" type="button">➤</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openMcpResetConfirm() {
+      const modalRoot = document.getElementById("modalRoot");
+      modalRoot.innerHTML = `
+        <div class="modal-mask" id="mcpResetMask">
+          <div class="modal" role="dialog" aria-modal="true" style="transform: scale(1); animation: modalPopIn 0.18s ease;">
+            <div class="modal-header">确认重置会话？</div>
+            <div class="modal-body">当前会话记录将被清空，<br />且不可恢复，是否继续？</div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" id="cancelMcpResetBtn">取消</button>
+              <button class="btn btn-primary" id="confirmMcpResetBtn" style="background:#dc2626;">确认重置</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("cancelMcpResetBtn").addEventListener("click", closeModal);
+      document.getElementById("confirmMcpResetBtn").addEventListener("click", confirmMcpReset);
+      document.getElementById("mcpResetMask").addEventListener("click", (event) => {
+        if (event.target.id === "mcpResetMask") {
+          closeModal();
+        }
+      });
+    }
+
+    function confirmMcpReset() {
+      appState.mcpChat.input = "";
+      closeModal();
+      renderPage("mcp-chat");
+      showToast("会话已重置", "dark");
+    }
+
+    function createPlaceholderPage(title, subtitle, icon, blockTitle, blockDesc) {
+      return `
+        <div class="page-header">
+          <h1 class="page-title">${title}</h1>
+          <div class="page-subtitle">${subtitle}</div>
+        </div>
+        <div class="page-content">
+          <div class="placeholder-panel">
+            <div class="placeholder-content">
+              <div class="placeholder-icon">${icon}</div>
+              <h3 class="placeholder-title">${blockTitle}</h3>
+              <p class="placeholder-desc">${blockDesc}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLoggedOutPage() {
+      return `
+        <div class="logout-panel">
+          <div class="logout-card">
+            <h1 class="logout-title">已退出登录</h1>
+            <button class="btn btn-primary" data-action="back-login">返回登录页</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function getFilteredTools() {
+      const statusPriority = { "草稿": 1, "已完成": 2, "异常": 3 };
+      return appState.tools
+        .filter((tool) => {
+          const keyword = appState.filters.keyword.trim().toLowerCase();
+          const keywordMatched = !keyword || tool.title.toLowerCase().includes(keyword);
+          const contentTypeMatched = appState.filters.contentType === "全部" || tool.contentType === appState.filters.contentType;
+          const configStatusMatched = appState.filters.configStatus === "全部" || tool.configStatus === appState.filters.configStatus;
+          const enabledStatusMatched =
+            appState.filters.enabledStatus === "全部" ||
+            (appState.filters.enabledStatus === "启用" && tool.enabled) ||
+            (appState.filters.enabledStatus === "禁用" && !tool.enabled);
+
+          return keywordMatched && contentTypeMatched && configStatusMatched && enabledStatusMatched;
+        })
+        .sort((a, b) => {
+          const aPriority = statusPriority[a.configStatus] || 99;
+          const bPriority = statusPriority[b.configStatus] || 99;
+          if (aPriority !== bPriority) return aPriority - bPriority;
+          return b.updateTime.localeCompare(a.updateTime);
+        });
+    }
+
+    function getTagClassByConfigStatus(status) {
+      if (status === "已完成") return "tag tag-success";
+      if (status === "草稿") return "tag tag-draft";
+      return "tag tag-danger";
+    }
+
+    function getTagClassByContentType(type) {
+      if (type === "rawHtml") return "tag tag-warning";
+      return "tag tag-info";
+    }
+
+    function getCurrentPageRows(list) {
+      const start = (appState.pagination.currentPage - 1) * appState.pagination.pageSize;
+      const end = start + appState.pagination.pageSize;
+      return list.slice(start, end);
+    }
+
+    function getTotalPages(total) {
+      return Math.max(1, Math.ceil(total / appState.pagination.pageSize));
+    }
+
+    function getPaginationPages(totalPages) {
+      return [1, 2, 3].filter((page) => page <= totalPages);
+    }
+
+    function renderPagination(total) {
+      const totalPages = getTotalPages(total);
+      const pages = getPaginationPages(totalPages);
+      return `
+        <div class="pagination-bar">
+          <button class="pagination-btn" data-action="prev-page" ${appState.pagination.currentPage === 1 ? "disabled" : ""}>上一页</button>
+          ${pages.map((page) => `
+            <button class="pagination-page ${page === appState.pagination.currentPage ? "active" : ""}" data-action="go-page" data-page="${page}">${page}</button>
+          `).join("")}
+          <button class="pagination-btn" data-action="next-page" ${appState.pagination.currentPage === totalPages ? "disabled" : ""}>下一页</button>
+          <span class="pagination-text">跳转到</span>
+          <input class="pagination-jump" id="paginationJump" placeholder="页码" />
+          <span class="pagination-text">页</span>
+          <select class="pagination-size" id="paginationSize">
+            ${appState.pagination.pageSizeOptions.map((size) => `<option value="${size}" ${size === appState.pagination.pageSize ? "selected" : ""}>${size}条/页</option>`).join("")}
+          </select>
+        </div>
+      `;
+    }
+
+    function renderToolManagementPage() {
+      const rows = getFilteredTools();
+      const totalPages = getTotalPages(rows.length);
+      if (appState.pagination.currentPage > totalPages) {
+        appState.pagination.currentPage = totalPages;
+      }
+      const pagedRows = getCurrentPageRows(rows);
+      return `
+        <div class="page-header">
+          <div class="page-header-row">
+            <h1 class="page-title">工具管理</h1>
+            <button class="btn btn-primary" data-action="go-create">+ 新增工具</button>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="card-section">
+            <div class="filter-bar">
+              <div class="filter-grid">
+                <input class="field-input" id="filterKeyword" value="${escapeHtml(appState.filters.keyword)}" placeholder="请输入工具名称" />
+                <select class="field-select" id="filterContentType">
+                  ${renderSelectOptions(["全部", "rawHtml", "externalUrl"], appState.filters.contentType)}
+                </select>
+                <select class="field-select" id="filterConfigStatus">
+                  ${renderSelectOptions(["全部", "草稿", "已完成", "异常"], appState.filters.configStatus)}
+                </select>
+                <select class="field-select" id="filterEnabledStatus">
+                  ${renderSelectOptions(["全部", "启用", "禁用"], appState.filters.enabledStatus)}
+                </select>
+                <button class="btn btn-primary" data-action="query-tools">查询</button>
+                <button class="btn btn-secondary" data-action="reset-tools">重置</button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 160px;">标题</th>
+                    <th style="width: 120px;">内容类型</th>
+                    <th style="width: 140px;">页面生成方式</th>
+                    <th style="width: 120px;">配置状态</th>
+                    <th style="width: 110px;">启用状态</th>
+                    <th style="width: 100px;">修改人</th>
+                    <th style="width: 160px;">更新时间</th>
+                    <th style="width: 120px;">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${pagedRows.length ? pagedRows.map(renderToolRow).join("") : `
+                    <tr>
+                      <td colspan="8">
+                        <div class="empty-table">暂无符合条件的数据</div>
+                      </td>
+                    </tr>
+                  `}
+                </tbody>
+              </table>
+            </div>
+            ${rows.length ? renderPagination(rows.length) : ""}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderToolRow(tool) {
+      return `
+        <tr>
+          <td>${escapeHtml(tool.title)}</td>
+          <td><span class="${getTagClassByContentType(tool.contentType)}">${escapeHtml(tool.contentType)}</span></td>
+          <td>${escapeHtml(tool.pageGenerationMethod)}</td>
+          <td><span class="${getTagClassByConfigStatus(tool.configStatus)}">${escapeHtml(tool.configStatus)}</span></td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" ${tool.enabled ? "checked" : ""} data-action="toggle-enabled" data-tool-id="${escapeHtml(tool.toolId)}" />
+              <span class="switch-slider"></span>
+            </label>
+          </td>
+          <td>${escapeHtml(tool.modifier)}</td>
+          <td>${escapeHtml(tool.updateTime)}</td>
+          <td>
+            <div class="action-links">
+              <button class="link-btn" data-action="edit-tool" data-tool-id="${escapeHtml(tool.toolId)}">编辑</button>
+              <button class="link-btn delete" data-action="delete-tool" data-tool-id="${escapeHtml(tool.toolId)}">删除</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderToolFormPage(mode) {
+      const isEdit = mode === "edit";
+      const tool = isEdit ? getCurrentEditingTool() : null;
+      const pageTitle = isEdit ? "编辑工具" : "新增工具";
+      const contentType = appState.formDraft.contentType;
+      const rawHtmlSource = appState.formDraft.rawHtmlSource;
+      const enableDisabled = contentType === "rawHtml" && rawHtmlSource === "manatee" && appState.formDraft.manateeStatus !== "已完成";
+
+      return `
+        <div class="page-header config-page-header">
+          <div class="config-breadcrumb">
+            <span class="config-breadcrumb-link" data-action="back-to-list">工具管理</span>
+            <span class="config-breadcrumb-sep">/</span>
+            <span>${pageTitle}</span>
+          </div>
+          <div class="config-title-row">
+            <h1 class="config-page-title">${pageTitle}</h1>
+          </div>
+        </div>
+        <div class="page-content config-page-content">
+          <div class="card-section">
+            <div class="form-section-title">基础信息</div>
+            <div class="form-section-body">
+              <div class="form-grid">
+                <div class="form-item">
+                  <label class="form-label"><span class="required-mark">*</span><span>标题</span></label>
+                  <input class="field-input" id="formTitle" value="${escapeHtml(appState.formDraft.title)}" placeholder="请输入标题" />
+                </div>
+                <div class="form-item full">
+                  <label class="form-label"><span class="required-mark">*</span><span>描述</span></label>
+                  <textarea class="textarea" id="formDescription" placeholder="请输入描述">${escapeHtml(appState.formDraft.description)}</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-section">
+            <div class="form-section-title">内容配置</div>
+            <div class="form-section-body">
+              <div class="form-grid">
+                <div class="form-item full">
+                  <label class="form-label"><span class="required-mark">*</span><span>内容类型</span></label>
+                  <div class="radio-group">
+                    <label class="radio-item">
+                      <input type="radio" name="contentType" value="externalUrl" data-action="change-content-type" ${contentType === "externalUrl" ? "checked" : ""} />
+                      <span>externalUrl</span>
+                    </label>
+                    <label class="radio-item">
+                      <input type="radio" name="contentType" value="rawHtml" data-action="change-content-type" ${contentType === "rawHtml" ? "checked" : ""} />
+                      <span>rawHtml</span>
+                    </label>
+                  </div>
+                </div>
+
+                ${contentType === "externalUrl" ? renderExternalUrlFields() : renderRawHtmlFields(rawHtmlSource)}
+              </div>
+            </div>
+          </div>
+
+          <div class="card-section">
+            <div class="form-section-title">输入参数配置</div>
+            <div class="form-section-body">
+              ${renderInputSchemaTable()}
+              <div style="margin-top: 16px;">
+                <button class="btn btn-secondary" data-action="add-input-param">+ 添加参数</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-secondary" data-action="back-to-list">取消</button>
+            <button class="btn btn-secondary" data-action="save-draft">保存草稿</button>
+            <button class="btn btn-primary" data-action="save-enable" ${enableDisabled ? "disabled" : ""}>保存并启用</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderExternalUrlFields() {
+      return `
+        <div class="form-item full">
+          <label class="form-label">页面 URL</label>
+          <input class="field-input" id="formPageUrl" value="${escapeHtml(appState.formDraft.pageUrl)}" placeholder="https://example.com/page" />
+        </div>
+        <div class="form-item">
+          <label class="form-label">预览高度</label>
+          <input class="field-input" id="formPreviewHeight" type="number" value="${escapeHtml(appState.formDraft.previewHeight)}" placeholder="默认 500" />
+        </div>
+        <div class="form-item">
+          <label class="form-label">是否弹窗</label>
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+      `;
+    }
+
+    function renderRawHtmlFields(rawHtmlSource) {
+      return `
+        <div class="form-item full">
+          <label class="form-label"><span class="required-mark">*</span><span>页面来源方式</span></label>
+          <div class="radio-group">
+            <label class="radio-item">
+              <input type="radio" name="rawHtmlSource" value="manual" data-action="change-rawhtml-source" ${rawHtmlSource === "manual" ? "checked" : ""} />
+              <span>手动填写页面URL</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="rawHtmlSource" value="manatee" data-action="change-rawhtml-source" ${rawHtmlSource === "manatee" ? "checked" : ""} />
+              <span>AI开发生成</span>
+            </label>
+          </div>
+        </div>
+
+        ${rawHtmlSource === "manual" ? renderRawHtmlManualFields() : renderRawHtmlManateeFields()}
+      `;
+    }
+
+    function renderRawHtmlManualFields() {
+      return `
+        <div class="form-item full">
+          <label class="form-label"><span class="required-mark">*</span><span>页面 URL</span></label>
+          <input class="field-input" id="formPageUrl" value="${escapeHtml(appState.formDraft.pageUrl)}" placeholder="请输入页面 URL" />
+        </div>
+        <div class="form-item">
+          <label class="form-label">预览高度</label>
+          <input class="field-input" id="formPreviewHeight" type="number" value="${escapeHtml(appState.formDraft.previewHeight)}" placeholder="默认 500" />
+        </div>
+        <div class="form-item">
+          <label class="form-label">是否弹窗</label>
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+        <div class="form-item full">
+          <div class="advanced-config-stack">
+            ${renderPostMessageConfig()}
+            ${renderCallbackChainConfig()}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPostMessageConfig() {
+      return `
+        <div class="config-card">
+          <button class="config-card-header" type="button" data-action="toggle-postmessage-config">
+            <span>页面通信配置</span>
+            <span class="config-arrow">${appState.formDraft.postMessageExpanded ? "⌄" : "›"}</span>
+          </button>
+          ${appState.formDraft.postMessageExpanded ? `
+            <div class="config-card-body">
+              <div class="form-grid">
+                <div class="form-item full">
+                  <label class="form-label label-inline-note">初始化指令 <small>（注意：需要页面先 postMessage 通知 ready 后才会发送该消息）</small></label>
+                  <input class="field-input" id="formInitAction" value="${escapeHtml(appState.formDraft.initAction)}" placeholder="init-data" />
+                </div>
+                <div class="form-item full">
+                  <label class="form-label">回调指令</label>
+                  <input class="field-input" id="formCallbackAction" value="${escapeHtml(appState.formDraft.callbackAction)}" placeholder="请输入回调指令" />
+                </div>
+              </div>
+            </div>
+          ` : ""}
+        </div>
+      `;
+    }
+
+    function renderCallbackChainConfig() {
+      return `
+        <div class="config-card">
+          <button class="config-card-header" type="button" data-action="toggle-callback-chain-config">
+            <span>回调后链式调用</span>
+            <span class="config-arrow">${appState.formDraft.callbackChainExpanded ? "⌄" : "›"}</span>
+          </button>
+          ${appState.formDraft.callbackChainExpanded ? `
+            <div class="config-card-body">
+              <div class="form-grid">
+                <div class="form-item full">
+                  <label class="form-label">调用目标工具</label>
+                  <input class="field-input" id="formNextToolId" value="${escapeHtml(appState.formDraft.nextToolId)}" placeholder="请输入调用工具ID" />
+                </div>
+                <div class="form-item full">
+                  <label class="form-label">参数映射配置</label>
+                  <textarea class="textarea config-textarea" id="formParamMappingJson" placeholder='{"username":"username"}'>${escapeHtml(appState.formDraft.paramMappingJson)}</textarea>
+                </div>
+              </div>
+            </div>
+          ` : ""}
+        </div>
+      `;
+    }
+
+    function renderRawHtmlManateeFields() {
+      const status = appState.formDraft.manateeStatus;
+      const statusMap = {
+        "未创建": {
+          pageId: "-",
+          pageName: "-",
+          pageUrl: "-",
+          pageStatus: "未创建",
+          updateTime: "-",
+          errorReason: "-",
+          actions: [
+            { label: "前往AI开发生成", action: "go-manatee", type: "primary" }
+          ]
+        },
+        "草稿": {
+          pageId: "page_trip_apply_001",
+          pageName: "出差申请单",
+          pageUrl: "https://mcp.manatee.com/page_trip_apply_001/index.html",
+          pageStatus: "草稿",
+          updateTime: "2026-05-13 10:20",
+          errorReason: "-",
+          actions: [
+            { label: "继续开发", action: "continue-manatee", type: "secondary" },
+            { label: "预览页面", action: "preview-manatee", type: "secondary" },
+            { label: "重新生成", action: "regenerate-manatee", type: "secondary" },
+            { label: "解除绑定", action: "unbind-manatee", type: "danger" }
+          ]
+        },
+        "已完成": {
+          pageId: "page_trip_apply_001",
+          pageName: "出差申请单",
+          pageUrl: "https://mcp.manatee.com/page_trip_apply_001/index.html",
+          pageStatus: "已完成",
+          updateTime: "2026-05-13 10:30",
+          errorReason: "-",
+          actions: [
+            { label: "继续开发", action: "continue-manatee", type: "secondary" },
+            { label: "预览页面", action: "preview-manatee", type: "secondary" },
+            { label: "重新生成", action: "regenerate-manatee", type: "secondary" },
+            { label: "解除绑定", action: "unbind-manatee", type: "danger" }
+          ]
+        },
+        "异常": {
+          pageId: "page_trip_apply_001",
+          pageName: "出差申请单",
+          pageUrl: "https://mcp.manatee.com/page_trip_apply_001/index.html",
+          pageStatus: "异常",
+          updateTime: "-",
+          errorReason: "页面URL无法访问",
+          actions: [
+            { label: "继续开发", action: "continue-manatee", type: "secondary" },
+            { label: "重新生成", action: "regenerate-manatee", type: "secondary" },
+            { label: "解除绑定", action: "unbind-manatee", type: "danger" }
+          ]
+        }
+      };
+
+      const current = statusMap[status] || statusMap["未创建"];
+
+      return `
+        <div class="form-item full">
+          <div class="bind-status-switch">
+            <div class="bind-status-label">页面绑定状态：</div>
+            <label class="radio-item">
+              <input type="radio" name="manateeStatus" value="未创建" data-action="change-manatee-status" ${status === "未创建" ? "checked" : ""} />
+              <span>未创建</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="manateeStatus" value="草稿" data-action="change-manatee-status" ${status === "草稿" ? "checked" : ""} />
+              <span>草稿</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="manateeStatus" value="已完成" data-action="change-manatee-status" ${status === "已完成" ? "checked" : ""} />
+              <span>已完成</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="manateeStatus" value="异常" data-action="change-manatee-status" ${status === "异常" ? "checked" : ""} />
+              <span>异常</span>
+            </label>
+          </div>
+
+          <div class="bind-card">
+            <div class="bind-grid">
+              <div class="bind-item">
+                <div class="bind-label">页面名称</div>
+                <div class="bind-value">${escapeHtml(current.pageName)}</div>
+              </div>
+              <div class="bind-item">
+                <div class="bind-label">页面URL</div>
+                <div class="bind-value">${escapeHtml(current.pageUrl)}</div>
+              </div>
+              <div class="bind-item">
+                <div class="bind-label">页面状态</div>
+                <div class="bind-value">${renderManateeStatusTag(current.pageStatus)}</div>
+              </div>
+              ${status === "草稿" || status === "已完成" ? `
+                <div class="bind-item">
+                  <div class="bind-label">更新时间</div>
+                  <div class="bind-value">${escapeHtml(current.updateTime)}</div>
+                </div>
+              ` : ""}
+              ${status === "异常" ? `
+                <div class="bind-item">
+                  <div class="bind-label">异常原因</div>
+                  <div class="bind-value">${escapeHtml(current.errorReason)}</div>
+                </div>
+              ` : ""}
+            </div>
+            <div class="bind-actions">
+              ${current.actions.map(renderBindActionButton).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderInputSchemaTable() {
+      const rows = appState.formDraft.inputSchema;
+      if (!rows.length) {
+        return '<div class="empty-table">暂无参数配置，请先添加输入参数。</div>';
+      }
+
+      return `
+        <div class="table-wrap schema-table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>字段名</th>
+                <th style="width: 160px;">类型</th>
+                <th>描述</th>
+                <th style="width: 100px;">必填</th>
+                <th style="width: 120px;">不挂URL</th>
+                <th style="width: 100px;">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map((item, index) => `
+                <tr>
+                  <td class="schema-cell">
+                    <input class="schema-input" value="${escapeHtml(item.name)}" data-action="schema-name-input" data-index="${index}" />
+                  </td>
+                  <td class="schema-cell">
+                    <div class="schema-select ${appState.formDraft.activeTypeDropdown === index ? "open" : ""}">
+                      <button class="schema-select-trigger" type="button" data-action="toggle-type-dropdown" data-index="${index}">
+                        <span>${escapeHtml(item.type || "string")}</span>
+                        <span>▾</span>
+                      </button>
+                      <div class="schema-select-panel">
+                        ${["string", "number", "boolean"].map((type) => `
+                          <button class="schema-select-option ${item.type === type ? "active" : ""}" type="button" data-action="select-type" data-index="${index}" data-value="${type}">${type}</button>
+                        `).join("")}
+                      </div>
+                    </div>
+                  </td>
+                  <td class="schema-cell">
+                    <input class="schema-input" value="${escapeHtml(item.description)}" data-action="schema-desc-input" data-index="${index}" />
+                  </td>
+                  <td class="schema-switch-cell">
+                    <label class="switch">
+                      <input type="checkbox" ${item.required ? "checked" : ""} data-action="toggle-required" data-index="${index}" />
+                      <span class="switch-slider"></span>
+                    </label>
+                  </td>
+                  <td class="schema-switch-cell">
+                    <label class="switch">
+                      <input type="checkbox" ${item.noUrl ? "checked" : ""} data-action="toggle-no-url" data-index="${index}" />
+                      <span class="switch-slider"></span>
+                    </label>
+                  </td>
+                  <td><button class="link-btn delete" data-action="delete-input-param" data-index="${index}">删除</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderBindActionButton(item) {
+      const className = item.type === "primary"
+        ? "btn btn-primary"
+        : item.type === "danger"
+          ? "btn btn-danger-secondary"
+          : "btn btn-secondary";
+      return `<button class="${className}" type="button" data-action="${item.action}">${item.label}</button>`;
+    }
+
+    function renderManateeStatusTag(status) {
+      if (status === "已完成") return '<span class="tag tag-success">已完成</span>';
+      if (status === "草稿") return '<span class="tag tag-warning">草稿</span>';
+      if (status === "异常") return '<span class="tag tag-danger">异常</span>';
+      return '<span class="tag tag-warning">未创建</span>';
+    }
+
+    function renderSelectOptions(list, currentValue) {
+      return list
+        .map((item) => `<option value="${escapeHtml(item)}" ${item === currentValue ? "selected" : ""}>${escapeHtml(item)}</option>`)
+        .join("");
+    }
+
+    function getCurrentEditingTool() {
+      return appState.tools.find((item) => item.toolId === appState.editingToolId) || null;
+    }
+
+    function syncFormDraftFromInputs() {
+      appState.formDraft.title = document.getElementById("formTitle")?.value.trim() || "";
+      appState.formDraft.description = document.getElementById("formDescription")?.value.trim() || "";
+      appState.formDraft.pageUrl = document.getElementById("formPageUrl")?.value.trim() || "";
+      appState.formDraft.previewHeight = document.getElementById("formPreviewHeight")?.value.trim() || "";
+      appState.formDraft.allowedOrigin = document.getElementById("formAllowedOrigin")?.value.trim() || "";
+      appState.formDraft.initAction = document.getElementById("formInitAction")?.value.trim() || appState.formDraft.initAction || "";
+      appState.formDraft.callbackAction = document.getElementById("formCallbackAction")?.value.trim() || appState.formDraft.callbackAction || "";
+      appState.formDraft.nextToolId = document.getElementById("formNextToolId")?.value.trim() || appState.formDraft.nextToolId || "";
+      appState.formDraft.paramMappingJson = document.getElementById("formParamMappingJson")?.value.trim() || appState.formDraft.paramMappingJson || "";
+    }
+
+    function generateToolId() {
+      const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+      let candidate = "";
+      do {
+        let suffix = "";
+        for (let index = 0; index < 6; index += 1) {
+          suffix += chars[Math.floor(Math.random() * chars.length)];
+        }
+        candidate = `tool_${suffix}`;
+      } while (appState.tools.some((item) => item.toolId === candidate));
+      return candidate;
+    }
+
+    function resetFormDraft(mode) {
+      const tool = mode === "edit" ? getCurrentEditingTool() : null;
+      appState.formDraft = {
+        toolId: tool ? tool.toolId : generateToolId(),
+        title: tool ? tool.title : "",
+        description: tool ? tool.description || "" : "",
+        pageUrl: tool ? tool.pageUrl || "" : "",
+        previewHeight: tool ? tool.previewHeight || "" : "",
+        allowedOrigin: tool ? tool.allowedOrigin || "" : "",
+        contentType: tool ? tool.contentType : "rawHtml",
+        rawHtmlSource: tool && tool.pageGenerationMethod === "手动URL" ? "manual" : "manatee",
+        manateeStatus: tool ? tool.manateeStatus || "未创建" : appState.formDraft.manateeStatus || "未创建",
+        inputSchema: tool ? (tool.inputSchema || []).map((item) => ({
+          ...item,
+          type: item.type || "string",
+          required: typeof item.required === "boolean" ? item.required : item.required === "是",
+          noUrl: Boolean(item.noUrl)
+        })) : [],
+        activeTypeDropdown: null,
+        postMessageExpanded: true,
+        callbackChainExpanded: true,
+        initAction: tool ? tool.initAction || "" : "",
+        callbackAction: tool ? tool.callbackAction || "" : "",
+        nextToolId: tool ? tool.nextToolId || "" : "",
+        paramMappingJson: tool ? tool.paramMappingJson || "" : ""
+      };
+    }
+
+    function getCurrentToolConfigStatus() {
+      if (appState.currentRoute === "tool-create") {
+        return "草稿";
+      }
+      const currentTool = getCurrentEditingTool();
+      return currentTool?.configStatus || "草稿";
+    }
+
+    function renderPage(routeName) {
+      const container = document.getElementById("pageContainer");
+      const route = routes[routeName] || routes["tool-management"];
+      appState.currentRoute = routeName in routes ? routeName : "tool-management";
+      closeUserMenu();
+      document.body.classList.toggle("manatee-mode", appState.currentRoute === "manatee-controlled");
+      document.getElementById("app").classList.toggle("manatee-mode", appState.currentRoute === "manatee-controlled");
+      container.innerHTML = route.render();
+      updateNavState();
+      bindPageEvents();
+
+      if (appState.currentRoute === "manatee-controlled" && appState.manateeMode.status === "开发中") {
+        window.clearTimeout(window.__manateeGeneratingTimer);
+        window.__manateeGeneratingTimer = window.setTimeout(() => {
+          appState.manateeMode.status = "草稿";
+          renderPage("manatee-controlled");
+        }, 2000);
+      }
+
+      if (appState.currentRoute === "manatee-controlled" && appState.manateeAssistant.open) {
+        const assistantBody = document.getElementById("assistantBody");
+        if (assistantBody) {
+          assistantBody.scrollTop = assistantBody.scrollHeight;
+        }
+      }
+    }
+
+    function updateNavState() {
+      document.querySelectorAll(".nav-item").forEach((item) => {
+        item.classList.toggle(
+          "active",
+          item.dataset.route === appState.currentRoute ||
+            (appState.currentRoute.startsWith("tool-") && item.dataset.route === "tool-management") ||
+            (appState.currentRoute === "manatee-controlled" && item.dataset.route === "tool-management")
+        );
+      });
+    }
+
+    function navigateTo(routeName) {
+      if (routeName === "tool-create") {
+        resetFormDraft("create");
+      }
+      if (routeName === "tool-edit") {
+        resetFormDraft("edit");
+      }
+      renderPage(routeName);
+    }
+
+    function bindGlobalEvents() {
+      document.getElementById("topNav").addEventListener("click", (event) => {
+        const navItem = event.target.closest(".nav-item");
+        if (!navItem) return;
+        navigateTo(navItem.dataset.route);
+      });
+
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+
+        if (target.closest("#userChip")) {
+          toggleUserMenu();
+          return;
+        }
+
+        if (target.closest('[data-user-action="profile"]')) {
+          closeUserMenu();
+          navigateTo("profile");
+          return;
+        }
+
+        if (target.closest('[data-user-action="logout"]')) {
+          closeUserMenu();
+          openLogoutConfirm();
+          return;
+        }
+
+        if (!target.closest("#userEntry")) {
+          closeUserMenu();
+        }
+
+        if (!target.closest(".schema-select")) {
+          if (appState.formDraft.activeTypeDropdown !== null) {
+            appState.formDraft.activeTypeDropdown = null;
+            if (appState.currentRoute === "tool-create" || appState.currentRoute === "tool-edit") {
+              renderPage(appState.currentRoute);
+            }
+          }
+        }
+      });
+    }
+
+    function bindPageEvents() {
+      const container = document.getElementById("pageContainer");
+      if (!container) return;
+
+      const keywordInput = document.getElementById("filterKeyword");
+      if (keywordInput) {
+        keywordInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            applyFilters();
+          }
+        });
+      }
+
+      const paginationJump = document.getElementById("paginationJump");
+      if (paginationJump) {
+        paginationJump.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            const total = getFilteredTools().length;
+            const totalPages = getTotalPages(total);
+            const nextPage = Number(event.target.value);
+            if (!Number.isNaN(nextPage) && nextPage >= 1 && nextPage <= totalPages) {
+              appState.pagination.currentPage = nextPage;
+              renderPage("tool-management");
+            }
+          }
+        });
+      }
+
+      const paginationSize = document.getElementById("paginationSize");
+      if (paginationSize) {
+        paginationSize.addEventListener("change", (event) => {
+          appState.pagination.pageSize = Number(event.target.value);
+          appState.pagination.currentPage = 1;
+          renderPage("tool-management");
+        });
+      }
+
+      container.querySelectorAll("[data-action]").forEach((element) => {
+        element.addEventListener("click", handleActionClick);
+      });
+
+      container.querySelectorAll('[data-action="schema-name-input"]').forEach((element) => {
+        element.addEventListener("input", (event) => {
+          const index = Number(event.target.dataset.index);
+          appState.formDraft.inputSchema[index].name = event.target.value;
+        });
+      });
+
+      container.querySelectorAll('[data-action="schema-desc-input"]').forEach((element) => {
+        element.addEventListener("input", (event) => {
+          const index = Number(event.target.dataset.index);
+          appState.formDraft.inputSchema[index].description = event.target.value;
+        });
+      });
+    }
+
+    function updateToolState(status, enabled) {
+      syncFormDraftFromInputs();
+      const payload = {
+        toolId: appState.formDraft.toolId,
+        title: appState.formDraft.title,
+        description: appState.formDraft.description,
+        contentType: appState.formDraft.contentType,
+        pageGenerationMethod:
+          appState.formDraft.contentType === "externalUrl"
+            ? "无"
+            : appState.formDraft.rawHtmlSource === "manual"
+              ? "手动URL"
+              : "AI开发",
+        configStatus: status,
+        enabled,
+        modifier: "我",
+        updateTime: "2026-05-19 18:30",
+        pageUrl: appState.formDraft.pageUrl,
+        previewHeight: appState.formDraft.contentType === "externalUrl" || appState.formDraft.rawHtmlSource === "manual"
+          ? appState.formDraft.previewHeight
+          : "",
+        allowedOrigin: appState.formDraft.rawHtmlSource === "manual" ? appState.formDraft.allowedOrigin : "",
+        manateeStatus: appState.formDraft.manateeStatus,
+        inputSchema: appState.formDraft.inputSchema.map((item) => ({ ...item })),
+        initAction: appState.formDraft.rawHtmlSource === "manual" ? appState.formDraft.initAction : "",
+        callbackAction: appState.formDraft.rawHtmlSource === "manual" ? appState.formDraft.callbackAction : "",
+        nextToolId: appState.formDraft.rawHtmlSource === "manual" ? appState.formDraft.nextToolId : "",
+        paramMappingJson: appState.formDraft.rawHtmlSource === "manual" ? appState.formDraft.paramMappingJson : ""
+      };
+
+      const existingIndex = appState.tools.findIndex((item) => item.toolId === payload.toolId);
+      if (existingIndex >= 0) {
+        appState.tools[existingIndex] = { ...appState.tools[existingIndex], ...payload };
+      } else {
+        appState.tools.unshift(payload);
+      }
+    }
+
+    function validateBeforeEnable() {
+      syncFormDraftFromInputs();
+
+      if (!appState.formDraft.title) {
+        showToast("标题不能为空", "warning");
+        return false;
+      }
+      if (!appState.formDraft.description) {
+        showToast("描述不能为空", "warning");
+        return false;
+      }
+      if (!appState.formDraft.contentType) {
+        showToast("请选择内容类型", "warning");
+        return false;
+      }
+      if (
+        appState.formDraft.contentType === "rawHtml" &&
+        appState.formDraft.rawHtmlSource === "manual" &&
+        !appState.formDraft.pageUrl
+      ) {
+        showToast("页面 URL 不能为空", "warning");
+        return false;
+      }
+      if (
+        appState.formDraft.contentType === "rawHtml" &&
+        appState.formDraft.rawHtmlSource === "manatee" &&
+        appState.formDraft.manateeStatus !== "已完成"
+      ) {
+        showToast("当前页面尚未开发完成，请完成页面开发后再启用。", "warning");
+        return false;
+      }
+
+      if (appState.formDraft.paramMappingJson) {
+        try {
+          JSON.parse(appState.formDraft.paramMappingJson);
+        } catch (error) {
+          showToast("参数映射 JSON 格式错误，请检查后重试。", "warning");
+          return false;
+        }
+      }
+
+      if (appState.formDraft.nextToolId && appState.formDraft.nextToolId !== "openProcessList") {
+        showToast("调用工具 ID 不存在，请检查后重试。", "warning");
+        return false;
+      }
+
+      return true;
+    }
+
+    function handleActionClick(event) {
+      const action = event.currentTarget.dataset.action;
+      const toolId = event.currentTarget.dataset.toolId;
+      const dataIndex = Number(event.currentTarget.dataset.index);
+
+      if (action === "go-create") {
+        appState.editingToolId = null;
+        navigateTo("tool-create");
+        return;
+      }
+
+      if (action === "query-tools") {
+        appState.pagination.currentPage = 1;
+        applyFilters();
+        return;
+      }
+
+      if (action === "reset-tools") {
+        appState.pagination.currentPage = 1;
+        resetFilters();
+        return;
+      }
+
+      if (action === "prev-page") {
+        if (appState.pagination.currentPage > 1) {
+          appState.pagination.currentPage -= 1;
+          renderPage("tool-management");
+        }
+        return;
+      }
+
+      if (action === "next-page") {
+        const totalPages = getTotalPages(getFilteredTools().length);
+        if (appState.pagination.currentPage < totalPages) {
+          appState.pagination.currentPage += 1;
+          renderPage("tool-management");
+        }
+        return;
+      }
+
+      if (action === "go-page") {
+        appState.pagination.currentPage = Number(event.currentTarget.dataset.page);
+        renderPage("tool-management");
+        return;
+      }
+
+      if (action === "edit-tool") {
+        appState.editingToolId = toolId;
+        navigateTo("tool-edit");
+        return;
+      }
+
+      if (action === "delete-tool") {
+        openDeleteConfirm(toolId);
+        return;
+      }
+
+      if (action === "toggle-enabled") {
+        toggleToolEnabled(toolId, event.currentTarget.checked, event.currentTarget);
+        return;
+      }
+
+      if (action === "back-to-list") {
+        navigateTo("tool-management");
+        return;
+      }
+
+      if (action === "change-content-type") {
+        appState.formDraft.contentType = event.currentTarget.value;
+        appState.formDraft.pageUrl = "";
+        renderPage(appState.currentRoute);
+        return;
+      }
+
+      if (action === "change-rawhtml-source") {
+        appState.formDraft.rawHtmlSource = event.currentTarget.value;
+        appState.formDraft.pageUrl = "";
+        renderPage(appState.currentRoute);
+        return;
+      }
+
+      if (action === "toggle-postmessage-config") {
+        syncFormDraftFromInputs();
+        appState.formDraft.postMessageExpanded = !appState.formDraft.postMessageExpanded;
+        renderPage(appState.currentRoute);
+        return;
+      }
+
+      if (action === "toggle-callback-chain-config") {
+        syncFormDraftFromInputs();
+        appState.formDraft.callbackChainExpanded = !appState.formDraft.callbackChainExpanded;
+        renderPage(appState.currentRoute);
+        return;
+      }
+
+      if (action === "change-manatee-status") {
+        appState.formDraft.manateeStatus = event.currentTarget.value;
+        renderPage(appState.currentRoute);
+        return;
+      }
+
+      if (action === "go-manatee") {
+        appState.manateeMode.status = "未创建";
+        appState.manateeMode.returnRoute = appState.currentRoute;
+        navigateTo("manatee-controlled");
+        return;
+      }
+
+      if (action === "continue-manatee") {
+        appState.manateeMode.status = "草稿";
+        appState.manateeMode.returnRoute = appState.currentRoute;
+        navigateTo("manatee-controlled");
+        return;
+      }
+
+      if (action === "preview-manatee") {
+        appState.previewModal.activeTab = "page1";
+        appState.previewModal.failedTabs = appState.formDraft.manateeStatus === "异常" ? ["page2"] : [];
+        openPreviewModal();
+        return;
+      }
+
+      if (action === "switch-preview-tab") {
+        appState.previewModal.activeTab = event.currentTarget.dataset.tab;
+        updatePreviewTabContent();
+        return;
+      }
+
+      if (action === "reload-preview") {
+        appState.previewModal.failedTabs = appState.previewModal.failedTabs.filter((item) => item !== appState.previewModal.activeTab);
+        updatePreviewTabContent();
+        return;
+      }
+
+      if (action === "close-preview") {
+        closeModal();
+        return;
+      }
+
+      if (action === "preview-continue-dev") {
+        closeModal();
+        appState.manateeMode.status = "草稿";
+        appState.manateeMode.returnRoute = appState.currentRoute.startsWith("tool-") ? appState.currentRoute : appState.manateeMode.returnRoute;
+        navigateTo("manatee-controlled");
+        return;
+      }
+
+      if (action === "regenerate-manatee") {
+        openConfirmModal("重新生成", "重新生成将覆盖当前页面草稿，是否继续？", "继续", () => {
+          appState.formDraft.manateeStatus = "未创建";
+          appState.manateeMode.status = "未创建";
+          navigateTo("manatee-controlled");
+        });
+        return;
+      }
+
+      if (action === "unbind-manatee") {
+        openConfirmModal("解除绑定", "解除绑定后，当前Tool将不再关联该页面，但不会删除AI开发页面。是否确认解除？", "确认解除", () => {
+          appState.formDraft.manateeStatus = "未创建";
+          appState.manateeMode.status = "未创建";
+          renderPage(appState.currentRoute);
+          showToast("已解除绑定", "success");
+        });
+        return;
+      }
+
+      if (action === "add-input-param") {
+        appState.formDraft.inputSchema.push({
+          name: "",
+          type: "string",
+          description: "",
+          required: false,
+          noUrl: false
+        });
+        appState.formDraft.activeTypeDropdown = null;
+        renderPage(appState.currentRoute);
+        return;
+      }
+
+      if (action === "toggle-type-dropdown") {
+        event.stopPropagation();
+        const nextIndex = Number(event.currentTarget.dataset.index);
+        appState.formDraft.activeTypeDropdown = appState.formDraft.activeTypeDropdown === nextIndex ? null : nextIndex;
+        renderPage(appState.currentRoute);
+        return;
+      }
+
+      if (action === "select-type") {
+        event.stopPropagation();
+        const index = Number(event.currentTarget.dataset.index);
+        appState.formDraft.inputSchema[index].type = event.currentTarget.dataset.value;
+        appState.formDraft.activeTypeDropdown = null;
+        renderPage(appState.currentRoute);
+        return;
+      }
+
+      if (action === "toggle-required") {
+        const index = Number(event.currentTarget.dataset.index);
+        appState.formDraft.inputSchema[index].required = event.currentTarget.checked;
+        return;
+      }
+
+      if (action === "toggle-no-url") {
+        const index = Number(event.currentTarget.dataset.index);
+        appState.formDraft.inputSchema[index].noUrl = event.currentTarget.checked;
+        return;
+      }
+
+      if (action === "delete-input-param") {
+        appState.formDraft.inputSchema.splice(dataIndex, 1);
+        appState.formDraft.activeTypeDropdown = null;
+        renderPage(appState.currentRoute);
+        return;
+      }
+
+      if (action === "save-draft") {
+        updateToolState("草稿", false);
+        showToast("保存草稿成功", "success");
+        navigateTo("tool-management");
+        return;
+      }
+
+      if (action === "save-enable") {
+        if (!validateBeforeEnable()) {
+          return;
+        }
+        updateToolState("已完成", true);
+        showToast("保存并启用成功", "success");
+        navigateTo("tool-management");
+        return;
+      }
+
+      if (action === "manatee-send") {
+        appState.manateeMode.status = "开发中";
+        renderPage("manatee-controlled");
+        return;
+      }
+
+      if (action === "manatee-save") {
+        if (appState.manateeMode.status === "未创建") {
+          showToast("当前暂无可保存页面。", "warning");
+          return;
+        }
+        showToast("页面已保存为草稿。", "success");
+        appState.formDraft.manateeStatus = "草稿";
+        appState.manateeMode.status = "草稿";
+        return;
+      }
+
+      if (action === "manatee-back") {
+        if (appState.manateeMode.status === "未创建") {
+          openConfirmModal("返回数字员工", "当前页面尚未保存，返回后本次修改将丢失，是否继续返回？", "继续返回", () => {
+            navigateTo(appState.manateeMode.returnRoute || "tool-create");
+          });
+          return;
+        }
+        appState.formDraft.manateeStatus = "草稿";
+        navigateTo(appState.manateeMode.returnRoute || "tool-create");
+        return;
+      }
+
+      if (action === "manatee-finish") {
+        if (appState.manateeMode.status === "未创建") {
+          showToast("当前页面尚未生成，无法完成开发。", "warning");
+          return;
+        }
+        appState.formDraft.manateeStatus = "已完成";
+        appState.manateeMode.status = "已完成";
+        navigateTo(appState.manateeMode.returnRoute || "tool-create");
+        return;
+      }
+
+      if (action === "open-assistant") {
+        appState.manateeAssistant.open = true;
+        renderPage("manatee-controlled");
+        return;
+      }
+
+      if (action === "close-assistant" || action === "minimize-assistant") {
+        const input = document.getElementById("assistantInput");
+        if (input) {
+          appState.manateeAssistant.input = input.value;
+        }
+        appState.manateeAssistant.open = false;
+        renderPage("manatee-controlled");
+        return;
+      }
+
+      if (action === "send-assistant") {
+        const input = document.getElementById("assistantInput");
+        const message = input?.value.trim() || "";
+        if (!message) {
+          showToast("请输入需求内容", "warning");
+          return;
+        }
+        appState.manateeAssistant.messages.push({ role: "user", text: message });
+        appState.manateeAssistant.messages.push({ role: "bot", text: "已收到需求，正在为你调整页面" });
+        appState.manateeAssistant.input = "";
+        renderPage("manatee-controlled");
+        return;
+      }
+
+      if (action === "reset-mcp-chat") {
+        const input = document.getElementById("mcpChatInput");
+        if (input) {
+          appState.mcpChat.input = input.value;
+        }
+        openMcpResetConfirm();
+        return;
+      }
+
+      if (action === "back-login") {
+        navigateTo("tool-management");
+      }
+    }
+
+    function applyFilters() {
+      appState.filters.keyword = document.getElementById("filterKeyword")?.value || "";
+      appState.filters.contentType = document.getElementById("filterContentType")?.value || "全部";
+      appState.filters.configStatus = document.getElementById("filterConfigStatus")?.value || "全部";
+      appState.filters.enabledStatus = document.getElementById("filterEnabledStatus")?.value || "全部";
+      renderPage("tool-management");
+    }
+
+    function resetFilters() {
+      appState.filters = {
+        keyword: "",
+        contentType: "全部",
+        configStatus: "全部",
+        enabledStatus: "全部"
+      };
+      renderPage("tool-management");
+    }
+
+    function toggleToolEnabled(toolId, nextEnabled, checkboxElement) {
+      const tool = appState.tools.find((item) => item.toolId === toolId);
+      if (!tool) return;
+
+      if (tool.configStatus !== "已完成") {
+        checkboxElement.checked = tool.enabled;
+        showToast("当前工具配置未完成，请完成配置后再启用。", "warning");
+        return;
+      }
+
+      tool.enabled = nextEnabled;
+      showToast(nextEnabled ? `已启用工具：${tool.title}` : `已禁用工具：${tool.title}`, "success");
+    }
+
+    function toggleUserMenu() {
+      appState.userMenuOpen = !appState.userMenuOpen;
+      syncUserMenu();
+    }
+
+    function closeUserMenu() {
+      appState.userMenuOpen = false;
+      syncUserMenu();
+    }
+
+    function syncUserMenu() {
+      const userEntry = document.getElementById("userEntry");
+      if (!userEntry) return;
+      userEntry.classList.toggle("open", appState.userMenuOpen);
+    }
+
+    function openDeleteConfirm(toolId) {
+      appState.deleteTargetId = toolId;
+      const modalRoot = document.getElementById("modalRoot");
+      modalRoot.innerHTML = `
+        <div class="modal-mask" id="deleteModalMask">
+          <div class="modal" role="dialog" aria-modal="true">
+            <div class="modal-header">确认删除</div>
+            <div class="modal-body">
+              删除后，该工具将无法被数字员工调用。如已绑定AI开发页面，仅解除绑定关系，不会删除页面。是否确认删除？
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" id="cancelDeleteBtn">取消</button>
+              <button class="btn btn-primary" id="confirmDeleteBtn">确认删除</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("cancelDeleteBtn").addEventListener("click", closeModal);
+      document.getElementById("confirmDeleteBtn").addEventListener("click", confirmDelete);
+      document.getElementById("deleteModalMask").addEventListener("click", (event) => {
+        if (event.target.id === "deleteModalMask") {
+          closeModal();
+        }
+      });
+    }
+
+    function openConfirmModal(title, content, confirmText, onConfirm) {
+      const modalRoot = document.getElementById("modalRoot");
+      modalRoot.innerHTML = `
+        <div class="modal-mask" id="genericConfirmMask">
+          <div class="modal" role="dialog" aria-modal="true">
+            <div class="modal-header">${escapeHtml(title)}</div>
+            <div class="modal-body">${escapeHtml(content)}</div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" id="genericCancelBtn">取消</button>
+              <button class="btn btn-primary" id="genericConfirmBtn">${escapeHtml(confirmText)}</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("genericCancelBtn").addEventListener("click", closeModal);
+      document.getElementById("genericConfirmBtn").addEventListener("click", () => {
+        closeModal();
+        if (typeof onConfirm === "function") {
+          onConfirm();
+        }
+      });
+      document.getElementById("genericConfirmMask").addEventListener("click", (event) => {
+        if (event.target.id === "genericConfirmMask") {
+          closeModal();
+        }
+      });
+    }
+
+    function openLogoutConfirm() {
+      const modalRoot = document.getElementById("modalRoot");
+      modalRoot.innerHTML = `
+        <div class="modal-mask" id="logoutModalMask">
+          <div class="modal" role="dialog" aria-modal="true">
+            <div class="modal-header">退出登录</div>
+            <div class="modal-body">确认退出当前数字员工平台？</div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" id="cancelLogoutBtn">取消</button>
+              <button class="btn btn-primary" id="confirmLogoutBtn">退出登录</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("cancelLogoutBtn").addEventListener("click", closeModal);
+      document.getElementById("confirmLogoutBtn").addEventListener("click", confirmLogout);
+      document.getElementById("logoutModalMask").addEventListener("click", (event) => {
+        if (event.target.id === "logoutModalMask") {
+          closeModal();
+        }
+      });
+    }
+
+    function closeModal() {
+      document.getElementById("modalRoot").innerHTML = "";
+      appState.deleteTargetId = null;
+    }
+
+    function confirmDelete() {
+      const tool = appState.tools.find((item) => item.toolId === appState.deleteTargetId);
+      if (tool) {
+        appState.tools = appState.tools.filter((item) => item.toolId !== appState.deleteTargetId);
+        showToast(`已删除工具：${tool.title}`, "success");
+      }
+      closeModal();
+      renderPage("tool-management");
+    }
+
+    function confirmLogout() {
+      closeModal();
+      renderPage("logged-out");
+    }
+
+    function showToast(message, type = "info") {
+      const toastRoot = document.getElementById("toastRoot");
+      const toast = document.createElement("div");
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      toastRoot.appendChild(toast);
+
+      window.setTimeout(() => {
+        toast.remove();
+      }, 2200);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    window.appRouter = {
+      navigateTo,
+      getCurrentRoute: () => appState.currentRoute,
+      getTools: () => appState.tools.map((item) => ({ ...item })),
+      routes
+    };
+
+    bindGlobalEvents();
+    renderPage(appState.currentRoute);
+  </script>
+</body>
+</html>
