@@ -1,384 +1,225 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>海牛 AI 智能体平台</title>
-<link rel="stylesheet" href="./assets/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唯安的项目集合</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            min-height: 100vh;
+            padding: 48px 24px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .project-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .project-card:hover {
+            border-color: rgba(59,130,246,0.3);
+            background: rgba(255,255,255,0.05);
+        }
+        .project-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .project-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .project-icon {
+            font-size: 22px;
+        }
+        .project-name {
+            font-size: 17px;
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+        .toggle-icon {
+            color: #60a5fa;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        .project-content {
+            display: none;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 12px 16px;
+        }
+        .project-card.expanded .project-content {
+            display: block;
+        }
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #94a3b8;
+            transition: all 0.2s;
+        }
+        .file-item:hover {
+            background: rgba(59,130,246,0.1);
+            color: #e2e8f0;
+        }
+        .file-icon {
+            font-size: 16px;
+            width: 24px;
+        }
+        .file-name {
+            flex: 1;
+            font-size: 14px;
+        }
+        .file-arrow {
+            color: #3b82f6;
+            font-size: 12px;
+            opacity: 0.5;
+        }
+        .file-item:hover .file-arrow {
+            opacity: 1;
+        }
+        @media (max-width: 600px) {
+            body { padding: 32px 20px; }
+            .project-header { padding: 12px 16px; }
+            .project-name { font-size: 15px; }
+        }
+    </style>
 </head>
 <body>
-
-<!-- ============== 顶部导航 ============== -->
-<header class="topbar">
-    <div class="topbar-left">
-        <div class="logo">
-            <div class="logo-mark">
-                <svg viewBox="0 0 32 32" width="28" height="28">
-                    <defs>
-                        <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#2E6BFF"/>
-                            <stop offset="100%" stop-color="#7B5BFF"/>
-                        </linearGradient>
-                    </defs>
-                    <path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/>
-                    <path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/>
-                    <circle cx="13.5" cy="15" r="1.2" fill="#2E6BFF"/>
-                    <circle cx="18.5" cy="15" r="1.2" fill="#2E6BFF"/>
-                </svg>
-            </div>
-            <div class="logo-text">
-                <div class="logo-name">海牛 <span>AI</span></div>
-                <div class="logo-sub">企业智能体平台</div>
-            </div>
+    <div class="container">
+        <div class="header">
+            <h1>📁 唯安的项目集合</h1>
         </div>
-        <nav class="topnav" id="topnav">
-            <a class="topnav-item active" data-view="home">智能体广场</a>
-            <a class="topnav-item" data-view="cases">案例</a>
-            <a class="topnav-item" data-view="kb">知识库</a>
-            <a class="topnav-item" data-view="admin">运营后台</a>
-        </nav>
+
+        <div id="project-list"></div>
     </div>
-    <div class="topbar-right">
-        <div class="search-mini">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input placeholder="搜索智能体、数据、知识..." />
-            <span class="kbd">⌘K</span>
-        </div>
-        <button class="icon-btn" title="通知"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><i class="dot"></i></button>
-        <button class="icon-btn" title="帮助"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
-        <div class="avatar-chip">
-            <div class="avatar">唯</div>
-            <div class="avatar-info">
-                <div class="avatar-name">唯安</div>
-                <div class="avatar-role">海牛 · 管理员</div>
-            </div>
-        </div>
-    </div>
-</header>
 
-<!-- ============== 首页：智能体广场 ============== -->
-<main class="view-home" data-view="home">
-    <section class="hero">
-        <div class="hero-inner">
-            <div class="hero-left">
-                <div class="hero-tag">海牛 AI · 行业数字员工平台</div>
-                <h1 class="hero-title">为每个行业，<br/>打造<span class="hl">专属</span>数字员工</h1>
-                <p class="hero-desc">已服务 <strong>银行 · 政府 · 供应链</strong> 等行业，接入 <strong>钉钉 · 企业微信 · 飞书</strong>，为采购、经营分析、仓管等岗位提供 AI 数字员工，覆盖 <strong>缺货预警 · 周转分析 · 毛利测算 · 经营日报</strong>。</p>
-                <div class="hero-stats">
-                    <div><b>6</b><span>核心智能体</span></div>
-                    <div class="sp"></div>
-                    <div><b>30+</b><span>合作企业</span></div>
-                    <div class="sp"></div>
-                    <div><b>~120h</b><span>月节省人工</span></div>
-                </div>
-                <div class="hero-actions">
-                    <button class="btn btn-primary" id="quickStart">▶ 开始与"存货分析智能体"对话</button>
-                </div>
-            </div>
-            <div class="hero-right">
-                <div class="hero-mock">
-                    <div class="mock-head">
-                        <span class="d r"></span><span class="d y"></span><span class="d g"></span>
-                        <div class="mock-title">存货分析智能体 · 实时</div>
-                    </div>
-                    <div class="mock-msg user">📊 今天发货区有哪些 SKU 进入缺货预警？</div>
-                    <div class="mock-msg ai">
-                        <div class="mock-line">📍 已扫描 <b>1,578 个 SKU</b>，命中 <b style="color:#E5484D">23 个</b>缺货预警</div>
-                        <div class="mock-bar">
-                            <div class="mock-bar-row"><span>安大100克整条鱿鱼串(黄胶带)</span><i style="width:88%"></i><b>88%</b></div>
-                            <div class="mock-bar-row"><span>安大35克鱿鱼须串(红胶带)</span><i style="width:74%"></i><b>74%</b></div>
-                            <div class="mock-bar-row"><span>川荣香辣鸭胗</span><i style="width:62%"></i><b>62%</b></div>
+    <script>
+        const projects = [
+            {
+                id: 1,
+                name: "数字员工",
+                icon: "🤖",
+                files: [
+                    { name: "数字员工-Ai生成.html", path: "/数字员工/数字员工-Ai生成.html", icon: "🖥️" },
+                    { name: "海牛AI智能体平台.html", path: "/海牛AI智能体平台.html", icon: "🖥️" }
+                ]
+            },
+            {
+                id: 2,
+                name: "海牛工作台",
+                icon: "⚙️",
+                files: [
+                    { name: "海牛工作台2.0讨论稿.html", path: "/海牛工作台/海牛工作台2.0讨论稿.html", icon: "🖥️" },
+                    { name: "AI应用生成器.html", path: "/海牛工作台/AI应用生成器.html", icon: "🖥️" }
+                ]
+            },
+            {
+                id: 3,
+                name: "骨科AI",
+                icon: "🏥",
+                files: [
+                    { name: "骨科AI医院平台整体框架讨论稿.html", path: "/骨科AI/骨科AI医院平台整体框架讨论稿.html", icon: "🖥️" },
+                    { name: "一期功能清单", path: "https://docs.qq.com/sheet/DWUJHbkVub1JYeWhs?tab=xzvjop", icon: "📊" }
+                ]
+            },
+            {
+                id: 4,
+                name: "宁波天使投资",
+                icon: "🏛️",
+                files: [
+                    { name: "功能清单", path: "https://docs.qq.com/sheet/DWXVPeFVIRm1LTXVS?tab=BB08J2", icon: "📊" }
+                ]
+            },
+            {
+                id: 5,
+                name: "味冠项目",
+                icon: "🍲",
+                files: [
+                    { name: "存货逻辑说明文档", path: "https://docs.qq.com/doc/DWXV6aG5ybXZWSVN6", icon: "📄" }
+                ]
+            }
+        ];
+
+        function renderProjects() {
+            const container = document.getElementById('project-list');
+            container.innerHTML = '';
+
+            projects.forEach(project => {
+                const filesHtml = project.files.map(file => `
+                    <a class="file-item" href="${file.path}" target="_blank">
+                        <span class="file-icon">${file.icon}</span>
+                        <span class="file-name">${file.name}</span>
+                        <span class="file-arrow">→</span>
+                    </a>
+                `).join('');
+
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML = `
+                    <div class="project-header">
+                        <div class="project-title">
+                            <span class="project-icon">${project.icon}</span>
+                            <span class="project-name">${project.name}</span>
                         </div>
-                        <div class="mock-tip">建议优先补货 TOP3，预估缺货影响 ¥ 38,200</div>
+                        <span class="toggle-icon">▶</span>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                    <div class="project-content">
+                        <div class="file-list">${filesHtml}</div>
+                    </div>
+                `;
 
-    <section class="section">
-        <div class="section-head">
-            <div>
-                <h2>核心智能体</h2>
-            </div>
-            <div class="seg">
-                <button class="seg-item active">全部</button>
-                <button class="seg-item">采购</button>
-                <button class="seg-item">财务</button>
-                <button class="seg-item">运营</button>
-                <button class="seg-item">管理层</button>
-            </div>
-        </div>
+                const header = card.querySelector('.project-header');
+                const toggleIcon = header.querySelector('.toggle-icon');
 
-        <div class="agent-grid">
-            <!-- 存货分析智能体（主入口）-->
-            <div class="agent-card featured" data-action="open-chat" data-category="采购">
-                <div class="agent-card-top">
-                    <div class="agent-icon" style="background:linear-gradient(135deg,#2E6BFF,#7B5BFF)">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg>
-                    </div>
-                    <div class="agent-card-meta">
-                        <div class="agent-card-title">存货分析智能体 <span class="badge-pink">主推</span></div>
-                        <div class="agent-card-sub">采购 · 经营分析</div>
-                    </div>
-                </div>
-                <p class="agent-card-desc">自动跑通缺货、滞销、周转、毛利四类分析，支持自然语言问答与多仓库维度。</p>
-                <div class="agent-tags">
-                    <span>缺货预警</span><span>周转率</span><span>滞销识别</span><span>毛利测算</span>
-                </div>
-                <div class="agent-card-foot">
-                    <div class="agent-stat">
-                        <span>👥 在用</span><b>12 人</b>
-                    </div>
-                    <div class="agent-stat">
-                        <span>🔁 今日</span><b>74 次</b>
-                    </div>
-                    <button class="btn-mini" data-action="open-chat">开始对话 →</button>
-                </div>
-            </div>
+                header.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isExpanded = card.classList.contains('expanded');
+                    if (isExpanded) {
+                        card.classList.remove('expanded');
+                        toggleIcon.textContent = '▶';
+                    } else {
+                        card.classList.add('expanded');
+                        toggleIcon.textContent = '▼';
+                    }
+                });
 
-            <div class="agent-card" data-category="管理层">
-                <div class="agent-card-top">
-                    <div class="agent-icon" style="background:linear-gradient(135deg,#10B981,#34D399)">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="12" y1="12" x2="16" y2="14"/></svg>
-                    </div>
-                    <div class="agent-card-meta">
-                        <div class="agent-card-title">经营日报智能体</div>
-                        <div class="agent-card-sub">管理层 · 自动推送</div>
-                    </div>
-                </div>
-                <p class="agent-card-desc">每日 9:00 自动生成经营日报，推送至企业微信群与邮箱。</p>
-                <div class="agent-tags"><span>日报</span><span>同比</span><span>异常下钻</span></div>
-                <div class="agent-card-foot">
-                    <div class="agent-stat">
-                        <span>👥 在用</span><b>8 人</b>
-                    </div>
-                    <div class="agent-stat">
-                        <span>🔁 今日</span><b>32 次</b>
-                    </div>
-                    <button class="btn-mini placeholder-agent">开始对话 →</button>
-                </div>
-            </div>
+                container.appendChild(card);
+            });
+        }
 
-            <div class="agent-card" data-category="采购">
-                <div class="agent-card-top">
-                    <div class="agent-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24)">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                    </div>
-                    <div class="agent-card-meta">
-                        <div class="agent-card-title">采购建议智能体</div>
-                        <div class="agent-card-sub">采购 · P1</div>
-                    </div>
-                </div>
-                <p class="agent-card-desc">基于历史销量、周转率与库存水位，给出单品进货数量建议。</p>
-                <div class="agent-tags"><span>补货</span><span>预测</span><span>供应商</span></div>
-                <div class="agent-card-foot">
-                    <div class="agent-stat">
-                        <span>👥 在用</span><b>6 人</b>
-                    </div>
-                    <div class="agent-stat">
-                        <span>🔁 今日</span><b>18 次</b>
-                    </div>
-                    <button class="btn-mini placeholder-agent">开始对话 →</button>
-                </div>
-            </div>
-
-            <div class="agent-card" data-category="财务">
-                <div class="agent-card-top">
-                    <div class="agent-icon" style="background:linear-gradient(135deg,#EF4444,#F87171)">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
-                    </div>
-                    <div class="agent-card-meta">
-                        <div class="agent-card-title">财务对账智能体</div>
-                        <div class="agent-card-sub">财务 · 规划中</div>
-                    </div>
-                </div>
-                <p class="agent-card-desc">存货净利润分析、应收应付对账，等待财务侧字段对接。</p>
-                <div class="agent-tags"><span>净利润</span><span>对账</span></div>
-                <div class="agent-card-foot">
-                    <div class="agent-stat">
-                        <span>👥 在用</span><b>3 人</b>
-                    </div>
-                    <div class="agent-stat">
-                        <span>🔁 今日</span><b>5 次</b>
-                    </div>
-                    <button class="btn-mini disabled">敬请期待</button>
-                </div>
-            </div>
-
-            <div class="agent-card" data-category="运营">
-                <div class="agent-card-top">
-                    <div class="agent-icon" style="background:linear-gradient(135deg,#8B5CF6,#A78BFA)">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                    </div>
-                    <div class="agent-card-meta">
-                        <div class="agent-card-title">客户问询智能体</div>
-                        <div class="agent-card-sub">运营 · 规划中</div>
-                    </div>
-                </div>
-                <p class="agent-card-desc">面向连锁餐饮客户的智能问答，下单、查货、催货一站完成。</p>
-                <div class="agent-tags"><span>客服</span><span>下单</span></div>
-                <div class="agent-card-foot">
-                    <div class="agent-stat">
-                        <span>👥 在用</span><b>5 人</b>
-                    </div>
-                    <div class="agent-stat">
-                        <span>🔁 今日</span><b>11 次</b>
-                    </div>
-                    <button class="btn-mini disabled">敬请期待</button>
-                </div>
-            </div>
-
-            <div class="agent-card add-card">
-                <div class="add-plus">＋</div>
-                <div class="add-title">自定义智能体</div>
-                <div class="add-desc">基于现有数据源，拖拽 5 分钟构建专属智能体</div>
-            </div>
-        </div>
-    </section>
-
-
-    <footer class="foot">海牛 AI 智能体平台</footer>
-</main>
-
-
-<!-- ============== 对话页 ============== -->
-<main class="view-chat hidden" data-view="chat">
-    <!-- 左侧 -->
-    <aside class="chat-sidebar">
-        <button class="new-chat-btn" id="newChatBtn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            新建对话
-        </button>
-
-        <div class="history-section">
-            <div class="history-section-title"><span>最近 7 天</span><span class="hs-count">9</span></div>
-            <div class="history-list" id="historyList"></div>
-        </div>
-    </aside>
-
-    <!-- 主区 -->
-    <section class="chat-main">
-        <div class="chat-header">
-            <div class="chat-header-left">
-                <div class="agent-icon-sm" style="background:linear-gradient(135deg,#2E6BFF,#7B5BFF)">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg>
-                </div>
-                <div>
-                    <div class="chat-title" id="chatTitle">存货分析智能体</div>
-                </div>
-            </div>
-            <div class="chat-header-right">
-                <button class="back-home-header" id="backHomeHeader" title="返回广场">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                    返回广场
-                </button>
-            </div>
-        </div>
-
-        <!-- 对话流 -->
-        <div class="chat-stream" id="chatStream">
-            <!-- 欢迎屏 -->
-            <div class="welcome" id="welcome">
-                <div class="welcome-avatar">
-                    <svg viewBox="0 0 32 32" width="44" height="44">
-                        <path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/>
-                        <path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/>
-                        <circle cx="13.5" cy="15" r="1.2" fill="#2E6BFF"/>
-                        <circle cx="18.5" cy="15" r="1.2" fill="#2E6BFF"/>
-                    </svg>
-                </div>
-                <h2>你好，唯安 👋</h2>
-                <p>我是<strong>存货分析智能体</strong>，试着问我吧——</p>
-
-                <div class="suggest-grid">
-                    <button class="suggest-card" data-q="今天发货区缺货 TOP10 是哪些 SKU？">
-                        <div class="sc-tag" style="background:#FEE2E2;color:#C81E1E">缺货预警</div>
-                        <div class="sc-title">今天发货区缺货 TOP10 是哪些 SKU？</div>
-                        <div class="sc-sub">基于近 15 天日均销量与当前可用量</div>
-                    </button>
-                    <button class="suggest-card" data-q="安大100克整条鱿鱼串（黄胶带）的周转率怎么样？同比变化？">
-                        <div class="sc-tag" style="background:#DBEAFE;color:#1E5BD6">周转率</div>
-                        <div class="sc-title">安大整条鱿鱼串（黄胶带）周转率 + 同比</div>
-                        <div class="sc-sub">完整展示计算公式与同比逻辑</div>
-                    </button>
-                    <button class="suggest-card" data-q="本周滞销商品有哪些？按金额排序">
-                        <div class="sc-tag" style="background:#E0E7FF;color:#4338CA">滞销分析</div>
-                        <div class="sc-title">本周滞销商品有哪些？按金额排序</div>
-                        <div class="sc-sub">15 天库存 vs 平均销量识别</div>
-                    </button>
-                    <button class="suggest-card" data-q="安大100克翅中串的毛利情况">
-                        <div class="sc-tag" style="background:#FEF3C7;color:#92400E">毛利分析</div>
-                        <div class="sc-title">安大翅中串 系列 毛利测算</div>
-                        <div class="sc-sub">加权平均进价 → 真实毛利</div>
-                    </button>
-                    <button class="suggest-card" data-q="对比三个仓库的整体周转率">
-                        <div class="sc-tag" style="background:#D1FAE5;color:#065F46">仓库维度</div>
-                        <div class="sc-title">对比三个仓库的整体周转率</div>
-                        <div class="sc-sub">发货区 / 西库一楼 / 天环101</div>
-                    </button>
-                    <button class="suggest-card" data-q="帮我生成今天的经营分析日报">
-                        <div class="sc-tag" style="background:#F3E8FF;color:#6B21A8">日报</div>
-                        <div class="sc-title">生成今天的经营分析日报</div>
-                        <div class="sc-sub">缺货 + 滞销 + 周转 + 毛利</div>
-                    </button>
-                </div>
-
-                <div class="welcome-foot">
-                    💡 也可以试试：<a class="welcome-link" data-q="查一下 SKU AD100KZTYYC（HSJD）8 的库存">查 SKU 库存</a> ·
-                    <a class="welcome-link" data-q="商品「白雪公主咖喱牛肉饭」的库存">查不存在的 SKU</a> ·
-                    <a class="welcome-link" data-q="安井袋装潮汕风味卷章 最近半年没有采购吗？">异常场景（半年无采购）</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 输入区 -->
-        <div class="chat-input-wrap">
-            <div class="quick-cmds" id="quickCmds">
-                <button class="qc" data-q="今天发货区缺货 TOP10 是哪些 SKU？"><span class="qc-ico">📦</span>缺货 TOP10</button>
-                <button class="qc" data-q="本周滞销商品有哪些？按金额排序"><span class="qc-ico">🧊</span>本周滞销</button>
-                <button class="qc" data-q="安大100克整条鱿鱼串（黄胶带）的周转率怎么样？同比变化？"><span class="qc-ico">🔁</span>周转 + 同比</button>
-                <button class="qc" data-q="安大100克翅中串的毛利情况"><span class="qc-ico">💰</span>毛利分析</button>
-                <button class="qc" data-q="帮我生成今天的经营分析日报"><span class="qc-ico">📑</span>经营日报</button>
-            </div>
-
-            <div class="input-box">
-                <textarea id="chatInput" rows="1" placeholder="输入问题，或试试 / 调用快捷指令...   例：今天发货区缺货 TOP10" style="padding-left:12px"></textarea>
-                <div class="input-foot">
-                    <div class="input-tools">
-                        <button class="input-icon-btn" id="uploadBtn" title="上传文件">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-                        </button>
-                        <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg" style="display:none" />
-                        <button class="input-icon-btn" id="micBtn" title="语音输入">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-                        </button>
-                    </div>
-                    <div class="input-actions">
-                        <div class="model-selector" id="modelSelector">
-                            <button class="model-btn" id="modelBtn">
-                                <span class="model-dot"></span>
-                                <span class="model-name">海牛 Pro</span>
-                                <svg class="model-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                            </button>
-                            <div class="model-dropdown hidden" id="modelDropdown">
-                                <button class="model-option active" data-model="hainiu-pro"><span class="model-dot" style="background:#2E6BFF"></span> 海牛 Pro</button>
-                                <button class="model-option" data-model="hainiu-lite"><span class="model-dot" style="background:#10B981"></span> 海牛 Lite</button>
-                                <button class="model-option" data-model="deepseek-v4"><span class="model-dot" style="background:#7B5BFF"></span> DeepSeek V4</button>
-                            </div>
-                        </div>
-                        <button class="send-btn" id="sendBtn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="input-disclaim">AI 输出仅供参考，关键决策请结合业务核对 · 计算逻辑可点击每条结果查看明细</div>
-        </div>
-    </section>
-</main>
-
-<script src="./assets/data.js"></script>
-<script src="./assets/app.js"></script>
+        renderProjects();
+    </script>
 </body>
 </html>
