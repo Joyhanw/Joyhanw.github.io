@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -1219,7 +1220,7 @@ const SCENARIOS = [
     /* ──── 下载 Excel ──── */
     function downloadExcel(block, rows) {
         let csv = '﻿';
-        csv += block.columns.map(function(c) { return c.label || c.k || ''; }).join(',') + '\\n';
+        csv += block.columns.map(function(c) { return c.label || c.k || ''; }).join(',') + '\n';
         rows.forEach(function(r) {
             const vals = block.columns.map(function(c) {
                 let v = r[c.k];
@@ -1231,12 +1232,12 @@ const SCENARIOS = [
                     else { v = ''; }
                 }
                 v = String(v);
-                if (v.includes(',') || v.includes('"') || v.includes('\\n')) {
+                if (v.includes(',') || v.includes('"') || v.includes('\n')) {
                     return '"' + v.replace(/"/g, '""') + '"';
                 }
                 return v;
             });
-            csv += vals.join(',') + '\\n';
+            csv += vals.join(',') + '\n';
         });
 
         const blob = new Blob([csv], { type: 'application/vnd.ms-excel;charset=utf-8' });
