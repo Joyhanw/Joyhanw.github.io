@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -129,7 +130,7 @@
         <div class="settings-panel active" data-settings-panel="usage"><div class="settings-title">订阅用量</div><div class="settings-desc">查看当前套餐、本月生成额度和剩余可用次数。一期只做展示和升级入口占位。</div><div class="usage-card"><div class="usage-row"><span>当前套餐</span><strong>渠道体验版</strong></div><div class="usage-row"><span>本月已用 152 次</span><span>共 400 次</span></div><div class="usage-bar"><i></i></div></div><div class="settings-list"><div class="settings-item"><span><b>剩余额度</b><br>248 次可用生成</span><button class="settings-action primary">升级套餐</button></div><div class="settings-item"><span><b>下次重置</b><br>2026-07-01 自动重置</span><button class="settings-action">查看规则</button></div></div></div>
         <div class="settings-panel" data-settings-panel="credits"><div class="settings-title">积分管理</div><div class="settings-desc">用于展示生成、发布、模板复用等消耗记录；当前为 Demo 占位。</div><div class="settings-list"><div class="settings-item"><span><b>当前积分</b><br>2,480 分</span><button class="settings-action primary">充值积分</button></div><div class="settings-item"><span><b>今日消耗</b><br>生成应用 -20 分，模板预览 0 分</span><button class="settings-action">查看明细</button></div></div></div>
         <div class="settings-panel" data-settings-panel="orders"><div class="settings-title">订单记录</div><div class="settings-desc">订单中心不作为一级导航，一期收敛到设置弹窗中展示。</div><div class="settings-list"><div class="settings-item"><span><b>渠道体验版套餐</b><br>2026-06-18 · 已生效</span><button class="settings-action">查看订单</button></div><div class="settings-item"><span><b>积分包 1000 分</b><br>2026-06-12 · 已完成</span><button class="settings-action">查看发票</button></div></div></div>
-        <div class="settings-panel" data-settings-panel="account"><div class="settings-title">账号设置</div><div class="settings-desc">管理头像、企业信息和基础偏好；一期仅展示入口。</div><div class="settings-list"><div class="settings-item"><span><b>王经理</b><br>渠道体验账号</span><button class="settings-action">编辑资料</button></div><div class="settings-item"><span><b>默认模型</b><br>海牛 Pro</span><button class="settings-action">修改</button></div></div></div>
+        <div class="settings-panel" data-settings-panel="account"><div class="settings-title">账号设置</div><div class="settings-desc">管理头像、企业信息和基础偏好。</div><div class="settings-list"><div class="settings-item"><span><b id="authUserName">王经理</b><br><span id="authUserPhone">渠道体验账号</span></span><button class="settings-action" onclick="__hn_showToast('编辑资料为 Demo 占位')">编辑资料</button></div><div class="settings-item"><span><b>默认模型</b><br>海牛 Pro</span><button class="settings-action" onclick="__hn_showToast('修改模型为 Demo 占位')">修改</button></div><div class="settings-item" style="border-color:var(--line);margin-top:8px;"><span style="color:#8A8A93;font-size:13px;">登录状态</span><button class="settings-action" style="color:#ef4444;" onclick="__hn_logout()">退出登录</button></div></div></div>
       </div>
     </div>
   </div>
@@ -756,7 +757,7 @@ document.getElementById('templateModal').addEventListener('click', function(e){
       content.insertAdjacentHTML('beforeend',`<div class="settings-panel" data-settings-panel="theme"><div class="settings-title">主题模式</div><div class="settings-desc">一期保留主题入口，支持浅色、深色、跟随系统的展示。</div><div class="settings-list"><div class="settings-item"><span><b>浅色模式</b><br>当前使用，适合渠道演示和办公场景</span><button class="settings-action primary">当前</button></div><div class="settings-item"><span><b>深色模式</b><br>适合低光环境，后续开放</span><button class="settings-action">切换</button></div><div class="settings-item"><span><b>跟随系统</b><br>根据电脑系统自动切换，后续开放</span><button class="settings-action">设置</button></div></div></div>`);
     }
     if(!content.querySelector('[data-settings-panel="logout"]')){
-      content.insertAdjacentHTML('beforeend',`<div class="settings-panel" data-settings-panel="logout"><div class="settings-title">退出登录</div><div class="settings-desc">退出当前渠道体验账号。</div><div class="settings-list"><div class="settings-item"><span><b>王经理</b><br>当前登录账号</span><button class="settings-action primary" onclick="__hn_showToast('已退出登录（演示）')">退出登录</button></div></div></div>`);
+      content.insertAdjacentHTML('beforeend',`<div class="settings-panel" data-settings-panel="logout"><div class="settings-title">退出登录</div><div class="settings-desc">退出当前渠道体验账号。</div><div class="settings-list"><div class="settings-item"><span><b>王经理</b><br>当前登录账号</span><button class="settings-action primary" onclick="__hn_logout()">退出登录</button></div></div></div>`);
     }
     document.querySelectorAll('.settings-tab').forEach(t=>{ t.onclick=function(){ window.__hn_switchSettings && window.__hn_switchSettings(t.dataset.settingsTab); }; });
   }
@@ -1351,7 +1352,7 @@ document.getElementById('templateModal').addEventListener('click', function(e){
       closeUserMenu();
       if(action === 'account') window.__hn_openSettings && window.__hn_openSettings('account');
       else if(action === 'profile') toast('个人中心为 Demo 占位，可在设置中完善账号信息');
-      else if(action === 'logout') toast('已退出登录（演示）');
+      else if(action === 'logout') window.parent.__hn_logout();
     };
     d.addEventListener('click', e=>{ if(!e.target.closest('#hnUserMenu') && !e.target.closest('.avatar')) closeUserMenu(); }, true);
     d.addEventListener('scroll', closeUserMenu, true);
@@ -1407,7 +1408,7 @@ document.getElementById('templateModal').addEventListener('click', function(e){
       closeUserMenu();
       if(action === 'account') window.__hn_openSettings && window.__hn_openSettings('account');
       else if(action === 'profile') toast('个人中心为 Demo 占位，可在设置中完善账号信息');
-      else if(action === 'logout') toast('已退出登录（演示）');
+      else if(action === 'logout') window.parent.__hn_logout();
     };
     d.addEventListener('click', e=>{ if(!e.target.closest('#hnUserMenu') && !e.target.closest('.avatar')) closeUserMenu(); }, true);
     d.addEventListener('scroll', closeUserMenu, true);
@@ -1507,7 +1508,7 @@ document.getElementById('templateModal').addEventListener('click', function(e){
       const item=e.target.closest('.hn-user-item'); if(!item) return;
       e.preventDefault(); e.stopPropagation(); close();
       if(item.dataset.userAction==='profile') window.__hn_openProfile && window.__hn_openProfile();
-      if(item.dataset.userAction==='logout') parentToast('已退出登录（演示）');
+      if(item.dataset.userAction==='logout') window.parent.__hn_logout();
     };
     d.addEventListener('click',e=>{ if(!e.target.closest('#hnUserMenu') && !e.target.closest('.avatar')) close(); },true);
     d.addEventListener('scroll',close,true);
@@ -1832,7 +1833,7 @@ document.getElementById('templateModal').addEventListener('click', function(e){
     bind('hnCreditDetailBtnV8',()=>window.__hn_openCreditDetail());
     bind('hnOrderDetailBtnV8',()=>window.__hn_openOrderDetail());
     bind('hnInvoiceBtnV8',()=>toast('发票功能后续开放'));
-    bind('hnLogoutConfirmV8',()=>toast('已退出登录（演示）'));
+    bind('hnLogoutConfirmV8',()=>window.parent.__hn_logout());
     window.__hn_switchSettings = function(tab){
       document.querySelectorAll('.settings-tab').forEach(x=>x.classList.toggle('active', x.dataset.settingsTab===tab));
       document.querySelectorAll('.settings-panel').forEach(x=>x.classList.toggle('active', x.dataset.settingsPanel===tab));
@@ -1846,7 +1847,7 @@ document.getElementById('templateModal').addEventListener('click', function(e){
     menu.innerHTML='<div class="hn-user-item" data-user-action="profile">👤 个人资料</div><div class="hn-user-item danger" data-user-action="logout">↩ 退出登录</div>';
     function close(){ menu.classList.remove('show'); }
     d.querySelectorAll('.avatar').forEach(av=>{ av.onclick=function(e){ e.preventDefault(); e.stopPropagation(); const r=av.getBoundingClientRect(); menu.style.left=Math.max(8,Math.min(r.right-136,d.defaultView.innerWidth-146))+'px'; menu.style.top=(r.bottom+10)+'px'; menu.classList.toggle('show'); }; });
-    menu.onclick=function(e){ const item=e.target.closest('.hn-user-item'); if(!item) return; e.preventDefault(); e.stopPropagation(); close(); if(item.dataset.userAction==='profile') window.__hn_openProfile(); if(item.dataset.userAction==='logout') toast('已退出登录（演示）'); };
+    menu.onclick=function(e){ const item=e.target.closest('.hn-user-item'); if(!item) return; e.preventDefault(); e.stopPropagation(); close(); if(item.dataset.userAction==='profile') window.__hn_openProfile(); if(item.dataset.userAction==='logout') window.parent.__hn_logout(); };
     d.addEventListener('click',e=>{ if(!e.target.closest('#hnUserMenu') && !e.target.closest('.avatar')) close(); },true);
   }
 
@@ -1939,7 +1940,7 @@ document.getElementById('templateModal').addEventListener('click', function(e){
         if(!item) return;
         e.preventDefault(); e.stopPropagation(); close();
         if(item.dataset.userAction==='profile'){ window.__hn_openProfile(); }
-        if(item.dataset.userAction==='logout'){ parentToast('已退出登录（演示）'); }
+        if(item.dataset.userAction==='logout'){ window.parent.__hn_logout(); }
       };
       d.addEventListener('click',function(e){ if(!e.target.closest('#hnUserMenu') && !e.target.closest('.avatar')) close(); },true);
     }catch(err){}
@@ -2468,6 +2469,248 @@ document.getElementById('templateModal').addEventListener('click', function(e){
   setTimeout(function(){ parentToast('详情页工具栏已精简'); }, 1200);
 })();
 </script>
+<script id="hn-auth-system">
 
+// ============ Auth System ============
+(function(){
+  const AUTH_KEY = 'hainiu_auth_user';
+  const LOGIN_STATE_KEY = 'hainiu_login_state';
+
+  function getAuthUsers() {
+    try { return JSON.parse(localStorage.getItem(AUTH_KEY) || '{}'); }
+    catch(e) { return {}; }
+  }
+  function setAuthUsers(users) {
+    localStorage.setItem(AUTH_KEY, JSON.stringify(users));
+  }
+  function getLoginState() {
+    try { return JSON.parse(localStorage.getItem(LOGIN_STATE_KEY) || '{}'); }
+    catch(e) { return {}; }
+  }
+  function setLoginState(state) {
+    localStorage.setItem(LOGIN_STATE_KEY, JSON.stringify(state));
+  }
+
+  function showAuthError(msg) {
+    const el = document.getElementById('authError');
+    if(el) el.textContent = msg || '';
+  }
+  function clearAuthError() {
+    showAuthError('');
+  }
+
+  window.__hn_switchAuthTab = function(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.authTab === tab));
+    document.querySelectorAll('.auth-panel').forEach(p => p.classList.toggle('active', p.id === 'authPanel' + (tab==='login'?'Login':'Register')));
+    clearAuthError();
+  };
+
+  window.__hn_sendCode = function(type) {
+    const phoneInput = document.getElementById(type==='login'?'loginPhone':'regPhone');
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+    if(!phone || !/^1[3-9]\d{9}$/.test(phone)) {
+      showAuthError('请输入正确的11位手机号'); return;
+    }
+    const btn = document.getElementById(type==='login'?'loginGetCodeBtn':'regGetCodeBtn');
+    if(btn) {
+      btn.disabled = true;
+      btn.textContent = '已发送 (60)';
+      let sec = 60;
+      const timer = setInterval(function(){
+        sec--; btn.textContent = '已发送 (' + sec + ')';
+        if(sec <= 0){ clearInterval(timer); btn.disabled = false; btn.textContent = '获取验证码'; }
+      }, 1000);
+    }
+    showAuthError('验证码已发送：123456（演示用，任意6位数字均可）');
+  };
+
+  window.__hn_doRegister = function() {
+    clearAuthError();
+    const phone = document.getElementById('regPhone').value.trim();
+    const code = document.getElementById('regCode').value.trim();
+    const pwd = document.getElementById('regPassword').value;
+    const pwd2 = document.getElementById('regPassword2').value;
+
+    if(!phone || !/^1[3-9]\d{9}$/.test(phone)){ showAuthError('请输入正确的11位手机号'); return; }
+    if(!code || code.length !== 6){ showAuthError('请输入6位验证码'); return; }
+    if(!pwd || pwd.length < 6){ showAuthError('密码至少6位'); return; }
+    if(pwd !== pwd2){ showAuthError('两次密码输入不一致'); return; }
+
+    const users = getAuthUsers();
+    if(users[phone]){ showAuthError('该手机号已注册，请直接登录'); return; }
+
+    users[phone] = { phone: phone, password: pwd, createdAt: new Date().toISOString() };
+    setAuthUsers(users);
+    setLoginState({ phone: phone, isLoggedIn: true });
+
+    __hn_applyLoginState();
+    __hn_showToast('注册成功，已自动登录');
+  };
+
+  window.__hn_doLogin = function() {
+    clearAuthError();
+    const phone = document.getElementById('loginPhone').value.trim();
+    const pwd = document.getElementById('loginPassword').value;
+    const code = document.getElementById('loginCode').value.trim();
+
+    if(!phone || !/^1[3-9]\d{9}$/.test(phone)){ showAuthError('请输入正确的11位手机号'); return; }
+
+    const users = getAuthUsers();
+    const user = users[phone];
+
+    if(code && code.length === 6) {
+      // Code login: accept any 6-digit code for demo
+      if(!user){ showAuthError('该手机号未注册，请先注册'); return; }
+      setLoginState({ phone: phone, isLoggedIn: true });
+      __hn_applyLoginState();
+      __hn_showToast('验证码登录成功');
+      return;
+    }
+
+    if(!pwd){ showAuthError('请输入密码或验证码'); return; }
+    if(!user){ showAuthError('该手机号未注册，请先注册'); return; }
+    if(user.password !== pwd){ showAuthError('密码错误'); return; }
+
+    setLoginState({ phone: phone, isLoggedIn: true });
+    __hn_applyLoginState();
+    __hn_showToast('登录成功');
+  };
+
+  window.__hn_logout = function() {
+    setLoginState({});
+    __hn_applyLoginState();
+    __hn_closeSettings();
+    __hn_showToast('已退出登录');
+  };
+
+  window.__hn_applyLoginState = function() {
+    const state = getLoginState();
+    const modal = document.getElementById('authModal');
+    const isLoggedIn = state.isLoggedIn && state.phone;
+
+    if(isLoggedIn) {
+      if(modal) modal.style.display = 'none';
+      document.body.style.overflow = '';
+      // Update account panel
+      const nameEl = document.getElementById('authUserName');
+      const phoneEl = document.getElementById('authUserPhone');
+      if(nameEl) nameEl.textContent = state.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+      if(phoneEl) phoneEl.textContent = '已登录账号';
+    } else {
+      if(modal) modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      // Reset account panel
+      const nameEl = document.getElementById('authUserName');
+      const phoneEl = document.getElementById('authUserPhone');
+      if(nameEl) nameEl.textContent = '访客';
+      if(phoneEl) phoneEl.textContent = '未登录';
+      // Clear inputs
+      document.getElementById('loginPhone').value = '';
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginCode').value = '';
+      document.getElementById('regPhone').value = '';
+      document.getElementById('regCode').value = '';
+      document.getElementById('regPassword').value = '';
+      document.getElementById('regPassword2').value = '';
+      clearAuthError();
+    }
+  };
+
+  // Pre-seed default account
+  (function seedDefaultAccount(){
+    const users = getAuthUsers();
+    if(!users['13700000001']){
+      users['13700000001'] = { phone:'13700000001', password:'123456', createdAt:'2026-07-01T00:00:00Z' };
+      setAuthUsers(users);
+    }
+  })();
+
+  // Init auth state on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    __hn_applyLoginState();
+  });
+})();
+
+</script>
+
+
+<!-- Login / Register Modal -->
+<div class="auth-modal-mask" id="authModal">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">海牛</div>
+      <h2>海牛 · AI应用生成器</h2>
+      <p>登录或注册以继续使用</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-auth-tab="login" onclick="__hn_switchAuthTab('login')">登录</button>
+      <button class="auth-tab" data-auth-tab="register" onclick="__hn_switchAuthTab('register')">注册</button>
+    </div>
+    <!-- Login Form -->
+    <div class="auth-panel active" id="authPanelLogin">
+      <div class="auth-form">
+        <label>手机号</label>
+        <input type="tel" id="loginPhone" placeholder="请输入手机号" maxlength="11">
+        <label>密码</label>
+        <input type="password" id="loginPassword" placeholder="请输入密码">
+        <div class="auth-or">
+          <span>或</span>
+        </div>
+        <div class="auth-code-row">
+          <input type="text" id="loginCode" placeholder="验证码" maxlength="6">
+          <button id="loginGetCodeBtn" onclick="__hn_sendCode('login')">获取验证码</button>
+        </div>
+        <button class="auth-submit" onclick="__hn_doLogin()">登录</button>
+      </div>
+    </div>
+    <!-- Register Form -->
+    <div class="auth-panel" id="authPanelRegister">
+      <div class="auth-form">
+        <label>手机号</label>
+        <input type="tel" id="regPhone" placeholder="请输入手机号" maxlength="11">
+        <label>验证码</label>
+        <div class="auth-code-row">
+          <input type="text" id="regCode" placeholder="验证码" maxlength="6">
+          <button id="regGetCodeBtn" onclick="__hn_sendCode('register')">获取验证码</button>
+        </div>
+        <label>设置密码</label>
+        <input type="password" id="regPassword" placeholder="请设置6位以上密码">
+        <label>确认密码</label>
+        <input type="password" id="regPassword2" placeholder="请再次输入密码">
+        <button class="auth-submit" onclick="__hn_doRegister()">注册</button>
+      </div>
+    </div>
+    <div class="auth-footer">
+      <p id="authError" style="color:#ef4444;font-size:12px;min-height:18px;"></p>
+    </div>
+  </div>
+</div>
+
+<style>
+.auth-modal-mask{position:fixed;inset:0;background:#FAFAF7;display:flex;align-items:center;justify-content:center;z-index:99999;}
+.auth-card{width:420px;max-width:calc(100vw - 40px);background:#fff;border:1px solid #ECECEA;border-radius:22px;box-shadow:0 12px 40px rgba(15,15,20,.08);padding:36px 32px 28px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Segoe UI","Microsoft YaHei",sans-serif;}
+.auth-header{text-align:center;margin-bottom:24px;}
+.auth-logo{width:48px;height:48px;border-radius:12px;background:#0E0E10;color:#E8FF4A;display:grid;place-items:center;font-weight:700;font-size:16px;margin:0 auto 12px;}
+.auth-header h2{font-size:20px;margin:0 0 6px;color:#0E0E10;letter-spacing:-.3px;}
+.auth-header p{margin:0;color:#8A8A93;font-size:13px;}
+.auth-tabs{display:flex;gap:4px;background:#F3F3F0;border-radius:10px;padding:3px;margin-bottom:22px;}
+.auth-tab{flex:1;padding:9px 0;border:0;background:transparent;border-radius:8px;font-size:14px;color:#8A8A93;cursor:pointer;font-family:inherit;}
+.auth-tab.active{background:#fff;color:#0E0E10;box-shadow:0 1px 3px rgba(15,15,20,.06);}
+.auth-panel{display:none;}
+.auth-panel.active{display:block;}
+.auth-form label{display:block;font-size:12px;color:#8A8A93;margin:14px 0 6px;}
+.auth-form input{width:100%;padding:11px 12px;border:1px solid #ECECEA;border-radius:10px;font-size:14px;font-family:inherit;outline:none;color:#0E0E10;background:#FAFAF7;}
+.auth-form input:focus{border-color:#0E0E10;background:#fff;}
+.auth-or{text-align:center;margin:16px 0 8px;color:#C8C8CE;font-size:12px;position:relative;}
+.auth-or span{background:#fff;padding:0 10px;position:relative;z-index:1;}
+.auth-or::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:#ECECEA;}
+.auth-code-row{display:flex;gap:10px;}
+.auth-code-row input{flex:1;}
+.auth-code-row button{padding:11px 14px;border:1px solid #ECECEA;background:#fff;border-radius:10px;font-size:13px;color:#4A4A52;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.auth-code-row button:disabled{color:#C8C8CE;cursor:not-allowed;}
+.auth-submit{width:100%;padding:13px;border:0;background:#0E0E10;color:#fff;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-top:18px;font-family:inherit;}
+.auth-submit:hover{background:#000;}
+.auth-footer{text-align:center;margin-top:12px;}
+</style>
 </body>
 </html>
