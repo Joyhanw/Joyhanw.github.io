@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>味冠海牛智慧经营总蓝图</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#2563eb;--blue-dark:#1d4ed8;--blue-light:#eff6ff;--blue-soft:#dbeafe;
+  --amber:#d97706;--amber-light:#fffbeb;--amber-soft:#fef3c7;
+  --emerald:#059669;--emerald-light:#ecfdf5;--emerald-soft:#d1fae5;
+  --violet:#7c3aed;--violet-light:#f5f3ff;--violet-soft:#ede9fe;
+  --rose:#e11d48;--rose-light:#fff1f2;--rose-soft:#ffe4e6;
+  --cyan:#0891b2;--cyan-light:#ecfeff;
+  --slate:#475569;--slate-light:#f8fafc;--slate-border:#e2e8f0;
+  --text:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
+  --bg:#fafbfc;--card:#ffffff;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 6px rgba(0,0,0,.05),0 2px 4px rgba(0,0,0,.04);
+  --radius:10px;--radius-lg:16px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+.topnav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:50px}
+.topnav-brand{font-size:14px;font-weight:700;color:var(--blue);letter-spacing:-.3px;white-space:nowrap}
+.topnav-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.topnav-tabs::-webkit-scrollbar{display:none}
+.topnav-tab{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;border:none;background:none;white-space:nowrap;flex-shrink:0}
+.topnav-tab:hover{background:var(--blue-light);color:var(--blue)}
+.topnav-tab.active{background:var(--blue);color:#fff}
+
+.page-wrap{padding-top:50px}
+.page{display:none;min-height:calc(100vh - 50px);padding:32px 20px 100px;max-width:1080px;margin:0 auto;width:100%}
+.page.active{display:block}
+
+.page-title{text-align:center;margin-bottom:22px}
+.page-title h1{font-size:26px;font-weight:700;letter-spacing:-.5px}
+.page-title p{font-size:14px;color:var(--text-secondary);margin-top:4px;max-width:600px;margin-left:auto;margin-right:auto}
+
+.flow-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:1000px;margin:0 auto}
+.flow-node{flex:1;min-width:110px;max-width:170px;padding:14px 10px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);text-align:center;transition:transform .15s,box-shadow .15s}
+.flow-node:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.flow-node .fn-icon{font-size:20px;margin-bottom:4px}
+.flow-node .fn-title{font-size:12px;font-weight:600;margin-bottom:2px}
+.flow-node .fn-desc{font-size:10px;color:var(--text-muted);line-height:1.4}
+
+.sc-flow{max-width:1000px;margin:0 auto 24px;padding:18px 22px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-left:4px solid var(--blue)}
+.sc-flow h3{font-size:15px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sc-flow .sc-steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px}
+.sc-step{padding:4px 10px;border-radius:12px;font-weight:500;white-space:nowrap}
+.sc-step.ai{background:var(--blue-light);color:var(--blue)}
+.sc-step.human{background:var(--amber-light);color:var(--amber)}
+.sc-step.result{background:var(--emerald-light);color:var(--emerald)}
+.sc-arrow{color:var(--text-muted);font-size:10px}
+.sc-boundary{margin-top:8px;font-size:11px;color:var(--text-muted);padding:5px 10px;background:var(--slate-light);border-radius:6px}
+.sc-highlights{margin-top:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}
+.sc-hl{padding:7px 10px;background:var(--slate-light);border-radius:6px;font-size:10px}
+.sc-hl strong{display:block;font-size:11px;color:var(--text);margin-bottom:2px}
+
+.scenario-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:1000px;margin:0 auto}
+@media(max-width:768px){.scenario-grid{grid-template-columns:repeat(2,1fr)}}
+.scenario-card{padding:16px 12px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);text-align:center;transition:transform .15s}
+.scenario-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.scenario-card .sc-icon{font-size:26px;margin-bottom:4px}
+.scenario-card .sc-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.scenario-card .sc-desc{font-size:10px;color:var(--text-muted);line-height:1.4;margin-bottom:6px}
+.scenario-card .sc-role-main{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:600;background:var(--blue-light);color:var(--blue)}
+.scenario-card .sc-role-coord{display:block;margin-top:3px;font-size:10px;color:var(--text-muted)}
+
+.matrix-wrap{max-width:1000px;margin:0 auto;overflow-x:auto}
+.matrix-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);font-size:12px}
+.matrix-table th{text-align:center;padding:10px 8px;font-weight:600;background:var(--slate-light);border-bottom:1px solid var(--slate-border);font-size:11px}
+.matrix-table th:first-child{text-align:left;min-width:90px}
+.matrix-table td{text-align:center;padding:9px 8px;border-bottom:1px solid var(--slate-border);font-size:11px}
+.matrix-table tr:last-child td{border-bottom:none}
+.matrix-table .role-col{font-weight:600;text-align:left;color:var(--text)}
+.matrix-label{font-size:9px;color:var(--text-muted);display:block;margin-top:1px}
+
+.role-scenarios{max-width:1000px;margin:0 auto 20px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.role-scenarios .rs-label{font-size:12px;font-weight:600;color:var(--text-secondary)}
+.role-scenarios .rs-tag{padding:4px 12px;border-radius:14px;font-size:11px;font-weight:500;background:var(--blue-light);color:var(--blue)}
+
+.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:860px;margin:0 auto}
+@media(max-width:768px){.value-grid{grid-template-columns:1fr}}
+.value-card{padding:18px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);text-align:center;border-top:3px solid var(--blue)}
+.value-card .vc-icon{font-size:26px;margin-bottom:6px}
+.value-card .vc-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.value-card .vc-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
+
+.boundary-box{max-width:860px;margin:22px auto;padding:16px 18px;background:linear-gradient(135deg,var(--amber-light),#fff);border-radius:var(--radius-lg);border:1px solid var(--amber-soft)}
+.boundary-box h4{font-size:13px;font-weight:600;color:var(--amber);margin-bottom:6px}
+.boundary-box ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px}
+.boundary-box li{font-size:11px;color:var(--text-secondary);padding:3px 0 3px 12px;position:relative}
+.boundary-box li::before{content:'•';position:absolute;left:0;color:var(--amber)}
+
+.phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1000px;margin:0 auto}
+@media(max-width:768px){.phase-grid{grid-template-columns:1fr}}
+.phase-card{padding:18px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--blue)}
+.phase-card .ph-num{font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px}
+.phase-card .ph-title{font-size:15px;font-weight:600;margin-bottom:6px}
+.phase-card .ph-items{list-style:none}
+.phase-card .ph-items li{font-size:11px;color:var(--text-secondary);padding:2px 0 2px 10px;position:relative}
+.phase-card .ph-items li::before{content:'-';position:absolute;left:0;color:var(--text-muted)}
+.phase-card.p2{border-top-color:var(--amber)}
+.phase-card.p3{border-top-color:var(--emerald)}
+
+.collab-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:1000px;margin:0 auto}
+@media(max-width:900px){.collab-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
+.collab-card{padding:12px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);text-align:center;transition:transform .15s}
+.collab-card:hover{transform:translateY(-2px)}
+.cc-step{display:inline-block;padding:2px 10px;border-radius:12px;font-size:10px;font-weight:700;color:#fff;margin-bottom:4px}
+.cc-ai{font-size:10px;color:var(--text-secondary);line-height:1.4;margin-bottom:4px;padding-bottom:4px;border-bottom:1px dashed var(--slate-border)}
+.cc-human{font-size:9px;color:var(--text-muted);margin-bottom:3px}
+.cc-value{font-size:9px;color:var(--emerald);font-weight:500}
+
+.summary-hero{max-width:760px;margin:22px auto;padding:24px;background:linear-gradient(135deg,var(--blue-light),#f0f9ff);border-radius:var(--radius-lg);text-align:center}
+.summary-hero .sh-title{font-size:16px;font-weight:700;color:var(--blue-dark);margin-bottom:6px}
+.summary-hero .sh-desc{font-size:13px;color:var(--text-secondary);line-height:1.7}
+
+/* Boss 5 questions table */
+.q-table{max-width:860px;margin:22px auto;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
+.q-table table{width:100%;border-collapse:collapse}
+.q-table th{padding:10px 16px;background:var(--blue-light);color:var(--blue-dark);font-size:12px;font-weight:600;text-align:left;border-bottom:1px solid var(--blue-soft)}
+.q-table td{padding:10px 16px;border-bottom:1px solid var(--slate-border);font-size:12px;vertical-align:top}
+.q-table tr:last-child td{border-bottom:none}
+.q-table .q-q{font-weight:600;color:var(--text);width:30%}
+.q-table .q-a{color:var(--text-secondary)}
+
+/* Demo screen */
+.demo-section{max-width:1000px;margin:20px auto 0;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--cyan)}
+.demo-section .ds-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--slate-border)}
+.demo-section .ds-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.demo-section .ds-badge{font-size:10px;padding:2px 10px;border-radius:10px;background:var(--cyan-light);color:var(--cyan);font-weight:500}
+.demo-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:768px){.demo-stats{grid-template-columns:repeat(2,1fr)}}
+.demo-stat{padding:12px;background:var(--slate-light);border-radius:var(--radius);text-align:center}
+.demo-stat .ds-num{font-size:20px;font-weight:700;color:var(--text)}
+.demo-stat .ds-label{font-size:10px;color:var(--text-muted);margin-top:2px}
+.demo-stat.warn .ds-num{color:#dc2626}
+.demo-stat.info .ds-num{color:var(--blue)}
+.demo-table{width:100%;border-collapse:collapse;font-size:11px}
+.demo-table th{text-align:left;padding:7px 10px;background:var(--slate-light);color:var(--text-muted);font-weight:600;border-bottom:1px solid var(--slate-border);font-size:10px}
+.demo-table td{padding:7px 10px;border-bottom:1px solid var(--slate-border);color:var(--text-secondary)}
+.demo-table tr:last-child td{border-bottom:none}
+.tag{display:inline-block;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:500}
+.tag.red{background:#fef2f2;color:#dc2626}
+.tag.amber{background:var(--amber-light);color:var(--amber)}
+.tag.violet{background:var(--violet-light);color:var(--violet)}
+.tag.green{background:var(--emerald-light);color:var(--emerald)}
+.tag.blue{background:var(--blue-light);color:var(--blue)}
+.tag.slate{background:var(--slate-light);color:var(--slate)}
+.status{display:inline-flex;align-items:center;gap:4px;font-size:10px}
+.status::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%}
+.status.pending::before{background:#dc2626}
+.status.doing::before{background:var(--amber)}
+.status.done::before{background:var(--emerald)}
+
+.pagination{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--slate-border);padding:8px 20px;display:flex;align-items:center;justify-content:center;gap:6px}
+.pg-dot{width:7px;height:7px;border-radius:50%;background:var(--slate-border);cursor:pointer;transition:all .2s}
+.pg-dot.active{background:var(--blue);width:18px;border-radius:4px}
+.pg-prev,.pg-next{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:500;color:var(--text-secondary);cursor:pointer;border:1px solid var(--slate-border);background:var(--card);transition:all .15s}
+.pg-prev:hover,.pg-next:hover{border-color:var(--blue);color:var(--blue)}
+.pg-label{font-size:10px;color:var(--text-muted);margin:0 4px;white-space:nowrap}
+
+@media print{.topnav,.pagination{display:none}.page{display:block!important;page-break-after:always;padding:16px}.page-wrap{padding-top:0}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="topnav-brand">味冠海牛智慧经营总蓝图</span>
+  <div class="topnav-tabs" id="topnavTabs"></div>
+</nav>
+
+<div class="page-wrap" id="pageWrap"></div>
+
+<div class="pagination" id="pagination">
+  <button class="pg-prev" id="pgPrev" onclick="nav(-1)">← 上一页</button>
+  <span id="pgDots"></span>
+  <span class="pg-label" id="pgLabel"></span>
+  <button class="pg-next" id="pgNext" onclick="nav(1)">下一页 →</button>
+</div>
+
+<script>
+var pages = [
+  {id:'pos',title:'项目定位'},
+  {id:'loop',title:'闭环全景图'},
+  {id:'sc8',title:'九大场景'},
+  {id:'matrix',title:'场景×角色'},
+  {id:'inv',title:'库存类场景'},
+  {id:'profit',title:'利润销售类'},
+  {id:'boss',title:'老板'},
+  {id:'pur',title:'采购'},
+  {id:'sales',title:'销售'},
+  {id:'wh',title:'仓库'},
+  {id:'fin',title:'财务'},
+  {id:'ops',title:'运营方'},
+  {id:'phase',title:'一期范围'}
+];
+
+function node(icon,title,desc,color){
+  return '<div class="flow-node" style="border-top:3px solid '+color+'"><div class="fn-icon">'+icon+'</div><div class="fn-title">'+title+'</div><div class="fn-desc">'+desc+'</div></div>';
+}
+function collab(step,color,ai,human,value){
+  return '<div class="collab-card"><div class="cc-step" style="background:'+color+'">'+step+'</div><div class="cc-ai">'+ai+'</div><div class="cc-human">'+human+'</div><div class="cc-value">'+value+'</div></div>';
+}
+function scFlow(icon,title,color,steps,highlights,boundary){
+  var h='<div class="sc-flow" style="border-left-color:'+color+'"><h3>'+icon+' '+title+'</h3><div class="sc-steps">';
+  for(var i=0;i<steps.length;i++){
+    if(i>0)h+='<span class="sc-arrow">→</span>';
+    var cls=(i<=1?'ai':(i>=steps.length-2?'result':'human'));
+    h+='<span class="sc-step '+cls+'">'+(i+1)+'. '+steps[i]+'</span>';
+  }
+  h+='</div>';
+  if(highlights&&highlights.length){
+    h+='<div class="sc-highlights">';
+    var labels=['风险发现','原因/依据','人工确认','结果跟踪'];
+    for(var j=0;j<Math.min(highlights.length,labels.length);j++){
+      h+='<div class="sc-hl"><strong>'+labels[j]+'</strong>'+highlights[j]+'</div>';
+    }
+    h+='</div>';
+  }
+  if(boundary)h+='<div class="sc-boundary">'+boundary+'</div>';
+  h+='</div>';return h;
+}
+
+function buildPage(id){
+  var h='';
+  if(id==='pos')h=pagePos();
+  else if(id==='loop')h=pageLoop();
+  else if(id==='sc8')h=pageSc8();
+  else if(id==='matrix')h=pageMatrix();
+  else if(id==='inv')h=pageInv();
+  else if(id==='profit')h=pageProfit();
+  else if(id==='boss')h=pageRole('boss');
+  else if(id==='pur')h=pageRole('pur');
+  else if(id==='sales')h=pageRole('sales');
+  else if(id==='wh')h=pageRole('wh');
+  else if(id==='fin')h=pageRole('fin');
+  else if(id==='ops')h=pageRole('ops');
+  else if(id==='phase')h=pagePhase();
+  return '<section class="page" id="page_'+id+'">'+h+'</section>';
+}
+
+function pagePos(){
+  return '<div class="page-title"><h1>味冠海牛智慧经营总蓝图</h1><p>让进销存系统从"记账工具"升级为"经营助手"</p></div>'+
+  '<div class="summary-hero"><div class="sh-title">不是做一个会聊天的报表系统<br>而是打造一组懂进销存经营场景的 AI 数字员工</div><div class="sh-desc">在现有 ERP / WMS / 财务系统之上叠加 AI 经营分析层<br>AI 主动发现 · 人确认执行 · 结果持续跟踪</div></div>'+
+  // 老板最关心的5个问题
+  '<div class="q-table"><table><thead><tr><th>老板关心的问题</th><th>图上怎么体现</th></tr></thead><tbody>'+
+    '<tr><td class="q-q">这套系统做什么？</td><td class="q-a">围绕九大经营场景做 AI 闭环：智能开单、缺货、滞销、周转、毛利、补货、销售建议、客户流失、经营问数</td></tr>'+
+    '<tr><td class="q-q">能解决什么？</td><td class="q-a">库存、毛利、客户、销售、采购效率问题</td></tr>'+
+    '<tr><td class="q-q">怎么解决？</td><td class="q-a">AI 发现问题 → 分析原因 → 给出建议 → 触达负责人 → 跟踪结果</td></tr>'+
+    '<tr><td class="q-q">谁解决？</td><td class="q-a">不同场景分派给采购、销售、仓库、财务处理，老板看全局</td></tr>'+
+    '<tr><td class="q-q">结果怎么看？</td><td class="q-a">老板看处理状态、改善结果、规则沉淀</td></tr>'+
+  '</tbody></table></div>'+
+  '<div class="value-grid" style="margin-top:22px">'+
+    '<div class="value-card"><div class="vc-icon">👁️</div><div class="vc-title">看得清</div><div class="vc-desc">库存、毛利、客户、销售风险更透明，不再依赖人工导表汇报</div></div>'+
+    '<div class="value-card"><div class="vc-icon">⚡</div><div class="vc-title">判断快</div><div class="vc-desc">AI 帮助解释异常原因，从"看到数据"升级为"理解问题"</div></div>'+
+    '<div class="value-card"><div class="vc-icon">📋</div><div class="vc-title">推得动</div><div class="vc-desc">异常自动触达负责人，超时自动升级，形成责任闭环</div></div>'+
+  '</div>'+
+  '<div class="boundary-box"><h4>关键边界</h4><ul>'+
+    '<li>AI 不是聊天机器人，不是单纯问数工具</li><li>AI 不替代 ERP，不自动替客户做采购、调价、授信等关键决策</li>'+
+    '<li>AI 提供辅助建议，关键动作由人确认</li><li>指标公式和业务口径必须客户确认后才能固化</li>'+
+  '</ul></div>';
+}
+
+function pageLoop(){
+  return '<div class="page-title"><h1>业务闭环全景图</h1><p>AI 围绕九大核心场景形成经营闭环，让每个经营问题都能被发现、被处理、被跟踪</p></div>'+
+  '<div class="flow-row" style="margin-bottom:18px">'+
+    node('📊','原有系统数据','ERP·WMS·财务·CRM·Excel','#64748b')+
+    node('🧠','AI 经营大脑','持续监测库存、销售、采购、毛利、客户','var(--blue)')+
+    node('⚡','九大核心场景','智能开单·缺货·滞销·周转·毛利·补货·销售建议·客户流失·经营问数','var(--violet)')+
+    node('🔄','场景闭环处理','发现→分析→建议→触达→确认→跟踪→复盘','var(--amber)')+
+    node('👥','业务角色协同','老板·采购·销售·仓库·财务','var(--emerald)')+
+    node('📈','老板经营结果','库存风险↓·毛利质量↑·人效↑·客户风险提前发现','var(--rose)')+
+  '</div>'+
+  '<h3 style="text-align:center;font-size:15px;margin:22px 0 12px">AI 与人的协作机制</h3>'+
+  '<div class="collab-grid">'+
+    collab('监测','var(--blue)','AI 持续关注库存、销售、毛利、客户交易等关键变化','人确认关注规则和重点对象','重要问题不再完全依赖人工发现')+
+    collab('判断','var(--rose)','AI 识别缺货、滞销、毛利异常、客户流失等风险','人判断业务背景，确认是否需要处理','从"看到数据"升级为"理解问题"')+
+    collab('触达','var(--amber)','AI 将重要提醒推送给采购、销售、仓库、财务等角色','人接收提醒并判断优先级','关键事项及时被看见，超时自动升级')+
+    collab('驱动','var(--emerald)','AI 生成建议动作：补货跟进、客户回访、滞销处理','人执行、确认、调整或关闭任务','问题不只停留在提醒，而是进入处理过程')+
+    collab('反馈','var(--violet)','AI 汇总处理进展、结果和后续影响','人反馈处理结果和实际业务情况','形成可复盘、可优化的经营闭环')+
+  '</div>'+
+  '<div class="summary-hero"><div class="sh-desc">九大场景不是九个功能按钮，而是九条经营问题处理闭环。<br>AI 不是只回答问题，而是把经营问题推给对应的人处理，并让老板看到处理过程和改善结果。</div></div>';
+}
+
+function pageSc8(){
+  // 角色：主责 + 协同
+  var scs=[
+    {icon:'🧾',name:'智能开单',desc:'开单时提示客户历史/库存/价格/毛利/搭配,提高开单质量',main:'销售',coord:'协同仓库+财务'},
+    {icon:'⚠️',name:'缺货预警',desc:'识别库存不足/销量上升/在途不足，提前发现断货风险',main:'采购',coord:'协同仓库+销售'},
+    {icon:'📦',name:'滞销预警',desc:'识别高库存低动销/长库龄/销量下降，降低资金占用',main:'采购+销售',coord:'协同仓库'},
+    {icon:'🔄',name:'存货周转分析',desc:'分析商品/仓库/采购员维度周转，判断库存健康度',main:'采购',coord:'协同仓库'},
+    {icon:'📊',name:'毛利分析',desc:'分析商品/客户/品类毛利变化，识别毛利下降和成本异常',main:'财务',coord:'协同采购+销售'},
+    {icon:'🛒',name:'补货建议',desc:'结合库存/销量/采购周期/在途，生成补货关注清单',main:'采购',coord:'协同仓库+销售'},
+    {icon:'💡',name:'销售建议',desc:'推荐高毛利/滞销消化/替代品/复购机会，提高成交质量',main:'销售',coord:'协同采购+仓库'},
+    {icon:'🔔',name:'客户流失预警',desc:'发现下单变远/频次下降/金额下降/常购中断',main:'销售',coord:'协同财务+老板'},
+    {icon:'💬',name:'经营问数',desc:'老板自然语言追问，关联具体场景和处理状态',main:'老板',coord:'AI联动各角色'}
+  ];
+  var cards='';
+  for(var i=0;i<scs.length;i++){var s=scs[i];cards+='<div class="scenario-card"><div class="sc-icon">'+s.icon+'</div><div class="sc-name">'+s.name+'</div><div class="sc-desc">'+s.desc+'</div><div class="sc-role-main">'+s.main+'</div><div class="sc-role-coord">'+s.coord+'</div></div>';}
+  return '<div class="page-title"><h1>九大核心应用场景</h1><p>每个场景都是完整的经营闭环：AI发现 → 分析 → 建议 → 角色确认 → 业务处理 → 结果反馈 → 老板复盘</p></div><div class="scenario-grid">'+cards+'</div>';
+}
+
+function pageMatrix(){
+  var rows=[
+    {scene:'缺货预警',dots:['','●','○','○',''],boss:'哪些商品可能断货、影响客户、谁在跟进'},
+    {scene:'滞销预警',dots:['','●','●','○',''],boss:'哪些商品积压、库存金额多少、处理进度'},
+    {scene:'存货周转分析',dots:['○','●','','○',''],boss:'哪些SKU/采购员/仓库周转慢'},
+    {scene:'毛利分析',dots:['','○','○','','●'],boss:'哪些商品毛利异常、原因是什么'},
+    {scene:'智能开单',dots:['','○','●','○','○'],boss:'开单效率、开单毛利、客单价变化'},
+    {scene:'补货建议',dots:['','●','○','○',''],boss:'哪些商品建议关注补货，是否已确认'},
+    {scene:'销售建议',dots:['','○','●','○',''],boss:'哪些商品适合重点销售、是否产生跟进'},
+    {scene:'客户流失预警',dots:['○','','●','','○'],boss:'哪些客户下单变少、是否已回访'},
+    {scene:'经营问数',dots:['●','','','',''],boss:'老板可追问各类经营问题和处理进度'}
+  ];
+  var roles=['老板','采购','销售','仓库','财务'];
+  var h='<div class="page-title"><h1>九大核心场景 × 角色协同关系</h1><p>每个场景都不是孤立功能，背后都有明确的责任人和处理闭环</p></div>';
+  h+='<div class="matrix-wrap"><table class="matrix-table"><thead><tr><th>核心场景</th>';
+  for(var i=0;i<roles.length;i++)h+='<th>'+roles[i]+'</th>';
+  h+='<th>老板看到什么</th></tr></thead><tbody>';
+  for(var r=0;r<rows.length;r++){
+    var row=rows[r];
+    h+='<tr><td class="role-col">'+row.scene+'</td>';
+    for(var j=0;j<roles.length;j++){
+      var d=row.dots[j];
+      if(d==='●')h+='<td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--blue)"></span><span class="matrix-label">主要责任</span></td>';
+      else if(d==='○')h+='<td><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--slate-border)"></span><span class="matrix-label">协同</span></td>';
+      else h+='<td></td>';
+    }
+    h+='<td style="font-size:11px;color:var(--text-secondary);text-align:left">'+row.boss+'</td></tr>';
+  }
+  h+='</tbody></table></div>';
+  h+='<div style="max-width:1000px;margin:10px auto;display:flex;gap:16px;font-size:10px;color:var(--text-muted)"><span>● 主要责任角色</span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--slate-border)"></span> 协同角色</div>';
+  return h;
+}
+
+function pageInv(){
+  return '<div class="page-title"><h1>库存类场景闭环</h1><p>缺货预警 · 滞销预警 · 存货周转分析 · 补货建议</p></div>'+
+  scFlow('⚠️','缺货预警闭环','var(--rose)',
+    ['AI发现库存不足/销量上升/在途不足','AI判断缺货风险和影响客户','推送采购员，同步仓库核实','采购确认是否补货','仓库确认库存准确性','AI跟踪到货后风险是否解除','老板查看缺货关闭情况'],
+    ['缺货商品清单','销量/库存/在途/可售天数','采购确认、仓库核实','已处理、待到货、风险解除'],
+    '🚧 AI 提示缺货风险和建议关注补货区间，不直接决定采购数量。')+
+  scFlow('📦','滞销预警闭环','var(--amber)',
+    ['AI发现高库存低动销/长库龄/销量下降','AI判断滞销风险和库存占用','推送采购员和销售员','采购确认是否暂停采购','销售确认促销/组合销售','AI跟踪库存是否下降','老板查看滞销处理效果'],
+    ['滞销SKU清单','库存金额/库龄/近30天销量','暂停采购、销售处理、调拨','库存下降、销量恢复、风险关闭'],
+    '🚧 AI 只给出处理建议，是否促销、调拨、清仓由业务人员确认。')+
+  scFlow('🔄','存货周转分析闭环','var(--blue)',
+    ['AI定期分析商品/仓库/采购员维度周转','识别周转慢/库存金额高/库龄长商品','生成采购员SKU健康清单','采购查看负责商品健康情况','仓库核实库存和库龄','AI跟踪周转改善','老板查看周转排行'],
+    ['商品/采购员/仓库周转排行','周转慢SKU清单','采购员负责商品健康卡','周转率变化、库存金额变化'],
+    '🚧 周转率公式当前不能直接固化，需客户确认。页面先展示"周转异常趋势"和"健康状态"。')+
+  scFlow('🛒','补货建议闭环','var(--emerald)',
+    ['AI结合库存/销量/采购周期/在途/客户需求','生成建议关注补货商品','采购查看补货依据和建议区间','采购人工确认补货计划','仓库确认库存/销售确认需求','AI跟踪是否缺货或积压','老板查看补货采纳效果'],
+    ['建议关注补货清单','库存/销量/在途/采购周期','采纳、调整、暂不处理','是否避免缺货、是否形成积压'],
+    '🚧 补货建议仅供辅助参考，实际采购计划由采购人员确认。AI 不直接替客户决定采购数量。');
+}
+
+function pageProfit(){
+  return '<div class="page-title"><h1>销售与利润类场景闭环</h1><p>智能开单 · 毛利分析 · 销售建议 · 客户流失预警 · 经营问数</p></div>'+
+  scFlow('🧾','智能开单闭环','var(--emerald)',
+    ['销售选客户选商品,发起开单','AI识别客户历史购买习惯','AI匹配商品并提示库存可售','AI提示历史成交价和毛利情况','AI推荐搭配商品/高毛利替代品','销售确认采纳或调整','开单完成,AI跟踪开单结果','老板查看开单质量'],
+    ['开单过程库存/价格/毛利风险','客户历史/库存可售/价格记录','销售确认采纳或调整','开单毛利/客单价变化'],
+    '🚧 智能开单由销售主动触发,AI 在开单过程中实时辅助,区别于其他场景的 AI 主动监测推送。AI 不替销售做报价、不替销售决定折扣。涉及 ERP 写入需 ERP 厂商配合。')+
+  scFlow('📊','毛利分析闭环','var(--violet)',
+    ['AI分析商品/客户/品类毛利变化','识别毛利下降/成本异常/售价异常','AI提示可能原因：成本上涨/售价下降/出库未审/费用未归集','推送财务复核','财务确认成本/含税/退货/费用口径','同步采购核成本/销售核售价','AI跟踪毛利是否恢复','老板查看毛利异常处理结果'],
+    ['商品/客户/品类毛利排行','AI提示可能原因：成本上涨、出库未审等','财务复核成本口径/费用口径','已复核、待销售处理、待采购确认'],
+    '🚧 毛利失真与出库未审、结存成本、费用归集缺失有关，必须把财务复核节点画出来。')+
+  scFlow('💡','销售建议闭环','var(--emerald)',
+    ['AI识别高毛利/滞销/替代品/复购机会','生成销售建议清单','推送销售员','销售确认跟进客户或推荐商品','记录沟通结果','AI跟踪成交/库存消化/毛利改善','老板查看销售建议转化结果'],
+    ['高毛利/滞销/替代品/复购机会','推荐给哪些客户','电话/微信/报价/上门','已成交、有意向、暂无需求'],
+    '🚧 AI 不替销售做报价、不替销售决定折扣。')+
+  scFlow('🔔','客户流失预警闭环','var(--rose)',
+    ['AI发现最近交易变远/频次下降/金额下降/常购中断','识别客户流失风险','推送销售员，重要客户同步老板','销售跟进客户','记录客户反馈','AI跟踪客户是否恢复下单','老板查看重要客户风险变化'],
+    ['客户风险清单','最近下单/频次/金额/常购商品','销售回访记录','是否恢复下单、是否继续预警'],
+    '🚧 AI 只提示客户交易变化和回访建议，不直接判断客户一定流失。')+
+  scFlow('💬','经营问数闭环','var(--cyan)',
+    ['老板自然语言提问','AI查询并解释','关联到具体风险场景','老板查看详情和处理状态','必要时催办负责人','AI继续跟踪结果','老板查看追问事项处理进展'],
+    ['自然语言输入','AI返回经营判断而非数字','跳转对应风险详情','查看负责人和处理状态'],
+    '🚧 经营问数不是独立业务动作，而是老板追问和下钻入口。仅做问数意义不大，真正价值在业务闭环。');
+}
+
+function pageRole(role){
+  var data={
+    boss:{
+      title:'老板 / 管理层',icon:'👤',color:'var(--amber)',
+      scenes:['智能开单','缺货预警','滞销预警','存货周转分析','毛利分析','补货建议','销售建议','客户流失预警','经营问数'],
+      desc:'承接九大场景的总览，不处理单个业务细节',
+      flow:[
+        {icon:'📊',title:'九大场景风险汇总',desc:'每日智能开单/缺货/滞销/周转/毛利/客户风险总览'},
+        {icon:'🔍',title:'查看经营驾驶舱',desc:'各场景影响金额、影响客户、责任人状态'},
+        {icon:'💬',title:'追问AI/催办',desc:'自然语言追问具体场景，超时任务催办'},
+        {icon:'📈',title:'查看改善结果',desc:'处理前后对比，指标是否改善'},
+        {icon:'⚙️',title:'规则调整',desc:'沉淀为企业经营规则'}
+      ],
+      look:['开单质量 → 智能开单','今日缺货风险 → 缺货预警','今日滞销风险 → 滞销预警','周转异常排行 → 存货周转','毛利异常排行 → 毛利分析','建议关注补货 → 补货建议','销售机会 → 销售建议','客户流失风险 → 客户流失','自然语言追问 → 经营问数'],
+      demo:demoBoss()
+    },
+    pur:{
+      title:'采购',icon:'🛒',color:'var(--blue)',
+      scenes:['缺货预警','滞销预警','存货周转分析','补货建议'],
+      desc:'主要承接 4 个库存类场景',
+      flow:[
+        {icon:'🔔',title:'AI推送采购场景',desc:'缺货/滞销/周转慢/补货建议自动推送'},
+        {icon:'📋',title:'查看SKU健康清单',desc:'当前库存、销量、在途、周转、历史进价'},
+        {icon:'🧠',title:'查看AI建议',desc:'建议补货区间、暂停采购、滞销原因'},
+        {icon:'✅',title:'人工确认处理',desc:'采纳/调整数量/暂不处理/发起核实'},
+        {icon:'📊',title:'AI跟踪反馈',desc:'补货后库存恢复、滞销消化、周转改善'}
+      ],
+      demo:demoPur()
+    },
+    sales:{
+      title:'销售',icon:'📞',color:'var(--emerald)',
+      scenes:['智能开单','销售建议','客户流失预警','滞销预警'],
+      desc:'主要承接 4 个销售类场景',
+      flow:[
+        {icon:'🧾',title:'智能开单辅助',desc:'开单时提示客户历史/库存/价格/毛利/搭配'},
+        {icon:'🔔',title:'AI推送销售机会/风险',desc:'客户流失/销售建议/滞销商品自动推送'},
+        {icon:'👤',title:'查看客户与商品详情',desc:'历史购买、最近下单、采购金额、常购商品'},
+        {icon:'💡',title:'确认跟进方式',desc:'电话/微信/上门/报价，销售自主决定'},
+        {icon:'📝',title:'记录跟进结果',desc:'已成交、有意向、暂无需求'},
+        {icon:'📊',title:'AI跟踪效果',desc:'是否成交、库存消化、客户回购'}
+      ],
+      demo:demoSales()
+    },
+    wh:{
+      title:'仓库',icon:'🏭',color:'var(--slate)',
+      scenes:['缺货预警','滞销预警','存货周转分析','补货建议'],
+      desc:'主要承接 4 个场景的库存核实动作',
+      flow:[
+        {icon:'🔍',title:'AI推送库存核实任务',desc:'缺货核实/库龄核实/多仓不均/库存异常'},
+        {icon:'📋',title:'查看库存明细',desc:'系统库存、库龄、批次、仓位信息'},
+        {icon:'🔬',title:'实物核实或盘点',desc:'确认系统库存与实际库存是否一致'},
+        {icon:'📤',title:'反馈库存状态',desc:'标记盘点差异、调拨协调、数据修正'},
+        {icon:'🔄',title:'AI更新判断',desc:'基于准确数据重新分析，同步采购/销售/老板'}
+      ],
+      demo:demoWh()
+    },
+    fin:{
+      title:'财务',icon:'🧮',color:'var(--violet)',
+      scenes:['毛利分析','客户流失预警（延展）','经营问数'],
+      desc:'主要承接 2-3 个场景的复核动作',
+      flow:[
+        {icon:'🔍',title:'AI推送财务异常',desc:'毛利异常/成本异常/客户账期异常'},
+        {icon:'🧠',title:'AI提示可能原因',desc:'成本上涨/售价下降/出库未审/费用未归集'},
+        {icon:'🧮',title:'查看异常详情',desc:'成本变化、售价变化、出库状态、费用归集'},
+        {icon:'📐',title:'复核业务口径',desc:'含税/不含税、成本取值、退货冲减、费用纳入'},
+        {icon:'📊',title:'AI跟踪变化',desc:'毛利恢复、应收变化、老板查看结果'}
+      ],
+      demo:demoFin()
+    },
+    ops:{
+      title:'味冠/海牛 运营方',icon:'🚀',color:'var(--cyan)',
+      scenes:['产品功能迭代','行业模板沉淀','客户成功管理','对外推广复制'],
+      desc:'共建产品与对外推广',
+      flow:[
+        {icon:'🔬',title:'味冠业务验证',desc:'真实进销存场景跑通核心能力，积累规则'},
+        {icon:'📐',title:'行业模板沉淀',desc:'预制菜供应链/餐饮配送/批发贸易通用模板'},
+        {icon:'🏢',title:'客户接入运营',desc:'ERP对接、数据初始化、角色配置、使用培训'},
+        {icon:'🚀',title:'对外推广复制',desc:'标杆案例、行业活动、渠道合作、市场拓展'},
+        {icon:'🔄',title:'持续迭代',desc:'多客户反馈驱动产品优化，规则持续升级'}
+      ],
+      demo:demoOps()
+    }
+  };
+  var d=data[role];
+  var h='<div class="page-title"><h1>'+d.icon+' '+d.title+'流程</h1><p>'+d.desc+'</p></div>';
+  h+='<div class="role-scenarios"><span class="rs-label">承接场景：</span>';
+  for(var i=0;i<d.scenes.length;i++)h+='<span class="rs-tag">'+d.scenes[i]+'</span>';
+  h+='</div>';
+  h+='<div class="flow-row">';
+  for(var j=0;j<d.flow.length;j++){var f=d.flow[j];h+='<div class="flow-node"><div class="fn-icon">'+f.icon+'</div><div class="fn-title">'+(j+1)+'. '+f.title+'</div><div class="fn-desc">'+f.desc+'</div></div>';}
+  h+='</div>';
+  if(d.look){
+    h+='<div style="max-width:1000px;margin:18px auto;padding:16px 18px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow)"><h4 style="font-size:13px;font-weight:600;margin-bottom:8px">👁️ 老板看到的内容 → 对应场景</h4><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px">';
+    for(var k=0;k<d.look.length;k++)h+='<div style="font-size:11px;color:var(--text-secondary);padding:3px 0">'+d.look[k]+'</div>';
+    h+='</div></div>';
+  }
+  if(d.demo)h+=d.demo;
+  return h;
+}
+
+// Demo screens
+function demoBoss(){
+  return '<div class="demo-section"><div class="ds-header"><div class="ds-title">🖥️ 系统界面示例 · 经营驾驶舱</div><div class="ds-badge">老板视图</div></div>'+
+    '<div class="demo-stats">'+
+      '<div class="demo-stat warn"><div class="ds-num">12</div><div class="ds-label">缺货风险</div></div>'+
+      '<div class="demo-stat warn"><div class="ds-num">8</div><div class="ds-label">滞销预警</div></div>'+
+      '<div class="demo-stat info"><div class="ds-num">5</div><div class="ds-label">毛利异常</div></div>'+
+      '<div class="demo-stat info"><div class="ds-num">3</div><div class="ds-label">客户流失风险</div></div>'+
+    '</div>'+
+    '<table class="demo-table"><thead><tr><th>风险事项</th><th>类型</th><th>影响</th><th>责任人</th><th>状态</th></tr></thead><tbody>'+
+      '<tr><td>速冻鸡腿排 10kg</td><td><span class="tag red">缺货预警</span></td><td>影响 ¥28,500</td><td>张采购</td><td><span class="status doing">处理中</span></td></tr>'+
+      '<tr><td>奥尔良腌料 5kg</td><td><span class="tag amber">滞销预警</span></td><td>积压 ¥42,000</td><td>李销售</td><td><span class="status pending">超时</span></td></tr>'+
+      '<tr><td>火锅底料套装</td><td><span class="tag violet">毛利下降</span></td><td>毛利降 8.2%</td><td>王财务</td><td><span class="status doing">处理中</span></td></tr>'+
+      '<tr><td>味冠餐饮连锁</td><td><span class="tag green">客户流失</span></td><td>月降 ¥18,000</td><td>赵销售</td><td><span class="status done">已回访</span></td></tr>'+
+    '</tbody></table></div>';
+}
+function demoPur(){
+  return '<div class="demo-section"><div class="ds-header"><div class="ds-title">🖥️ 系统界面示例 · SKU健康清单</div><div class="ds-badge">采购视图</div></div>'+
+    '<table class="demo-table"><thead><tr><th>商品</th><th>风险类型</th><th>当前库存</th><th>近30天日均</th><th>可售天数</th><th>AI建议</th><th>状态</th></tr></thead><tbody>'+
+      '<tr><td>速冻鸡腿排 10kg</td><td><span class="tag red">缺货</span></td><td>32箱</td><td>18箱</td><td style="color:#dc2626;font-weight:600">1.8天</td><td>补货 80-120箱</td><td><span class="status pending">待处理</span></td></tr>'+
+      '<tr><td>奥尔良腌料 5kg</td><td><span class="tag amber">滞销</span></td><td>156桶</td><td>2桶</td><td>78天</td><td>暂停采购</td><td><span class="status doing">处理中</span></td></tr>'+
+      '<tr><td>速冻鸡米花 2.5kg</td><td><span class="tag red">缺货</span></td><td>18箱</td><td>9箱</td><td style="color:#dc2626;font-weight:600">2天</td><td>补货 50箱</td><td><span class="status doing">已下单</span></td></tr>'+
+      '<tr><td>火锅丸子 1kg</td><td><span class="tag blue">周转慢</span></td><td>240包</td><td>4包</td><td>60天</td><td>关注周转</td><td><span class="status pending">待处理</span></td></tr>'+
+    '</tbody></table></div>';
+}
+function demoSales(){
+  return '<div class="demo-section"><div class="ds-header"><div class="ds-title">🖥️ 系统界面示例 · 客户跟进清单</div><div class="ds-badge">销售视图</div></div>'+
+    '<table class="demo-table"><thead><tr><th>客户</th><th>风险/机会</th><th>上次下单</th><th>近30天采购</th><th>变化</th><th>建议动作</th><th>状态</th></tr></thead><tbody>'+
+      '<tr><td>味冠餐饮连锁</td><td><span class="tag green">流失风险</span></td><td>18天前</td><td>¥4,200</td><td style="color:#dc2626">↓ 62%</td><td>电话回访</td><td><span class="status done">已回访</span></td></tr>'+
+      '<tr><td>李记快餐店</td><td><span class="tag blue">复购机会</span></td><td>12天前</td><td>¥1,800</td><td style="color:#dc2626">↓ 35%</td><td>推荐常购商品</td><td><span class="status doing">跟进中</span></td></tr>'+
+      '<tr><td>老王烧烤</td><td><span class="tag amber">高毛利推荐</span></td><td>3天前</td><td>¥3,500</td><td style="color:var(--emerald)">↑ 12%</td><td>推荐毛利品</td><td><span class="status pending">待跟进</span></td></tr>'+
+      '<tr><td>张姐小吃店</td><td><span class="tag violet">滞销消化</span></td><td>5天前</td><td>¥2,100</td><td>-</td><td>推荐滞销品</td><td><span class="status pending">待跟进</span></td></tr>'+
+    '</tbody></table></div>';
+}
+function demoWh(){
+  return '<div class="demo-section"><div class="ds-header"><div class="ds-title">🖥️ 系统界面示例 · 库存核实任务</div><div class="ds-badge">仓库视图</div></div>'+
+    '<table class="demo-table"><thead><tr><th>商品</th><th>核实类型</th><th>系统库存</th><th>仓位</th><th>库龄</th><th>核实状态</th></tr></thead><tbody>'+
+      '<tr><td>速冻鸡腿排 10kg</td><td><span class="tag red">缺货核实</span></td><td>32箱</td><td>A-03</td><td>5天</td><td><span class="status done">已核实</span></td></tr>'+
+      '<tr><td>奥尔良腌料 5kg</td><td><span class="tag amber">库龄核实</span></td><td>156桶</td><td>B-12</td><td style="color:#dc2626">62天</td><td><span class="status pending">待核实</span></td></tr>'+
+      '<tr><td>火锅丸子 1kg</td><td><span class="tag blue">多仓不均</span></td><td>240包</td><td>A-08/B-15</td><td>45天</td><td><span class="status doing">盘点中</span></td></tr>'+
+      '<tr><td>速冻鸡米花 2.5kg</td><td><span class="tag red">库存异常</span></td><td>-3箱</td><td>A-05</td><td>-</td><td><span class="status pending">待核实</span></td></tr>'+
+    '</tbody></table></div>';
+}
+function demoFin(){
+  return '<div class="demo-section"><div class="ds-header"><div class="ds-title">🖥️ 系统界面示例 · 毛利异常复核</div><div class="ds-badge">财务视图</div></div>'+
+    '<table class="demo-table"><thead><tr><th>商品</th><th>毛利变化</th><th>AI提示可能原因</th><th>成本口径</th><th>复核状态</th></tr></thead><tbody>'+
+      '<tr><td>火锅底料套装</td><td style="color:#dc2626">↓ 8.2%</td><td>出库单未审核3单 / 促销费用未归集</td><td>结存成本</td><td><span class="status doing">复核中</span></td></tr>'+
+      '<tr><td>奥尔良腌料 5kg</td><td style="color:#dc2626">↓ 5.6%</td><td>进货价上涨 ¥8/桶</td><td>结存成本</td><td><span class="status pending">待复核</span></td></tr>'+
+      '<tr><td>速冻鸡米花 2.5kg</td><td style="color:#dc2626">↓ 3.1%</td><td>售价下调 ¥2/箱</td><td>进货平均成本</td><td><span class="status done">已复核</span></td></tr>'+
+      '<tr><td>味冠餐饮(应收)</td><td style="color:#dc2626">账期延长 15天</td><td>客户付款能力变化</td><td>-</td><td><span class="status doing">跟进中</span></td></tr>'+
+    '</tbody></table></div>';
+}
+function demoOps(){
+  return '<div class="demo-section"><div class="ds-header"><div class="ds-title">🖥️ 系统界面示例 · 客户接入状态</div><div class="ds-badge">运营方视图</div></div>'+
+    '<table class="demo-table"><thead><tr><th>客户</th><th>行业</th><th>接入阶段</th><th>主要场景</th><th>使用时长</th><th>健康度</th></tr></thead><tbody>'+
+      '<tr><td>味冠食品</td><td>预制菜供应链</td><td><span class="tag green">已上线</span></td><td>缺货/滞销/毛利/客户流失</td><td>3个月</td><td><span class="status done">良好</span></td></tr>'+
+      '<tr><td>恒昌餐饮配送</td><td>餐饮配送</td><td><span class="tag amber">数据对接</span></td><td>周转/补货/销售建议</td><td>2周</td><td><span class="status doing">接入中</span></td></tr>'+
+      '<tr><td>丰达批发</td><td>批发贸易</td><td><span class="tag blue">需求确认</span></td><td>毛利/客户流失</td><td>-</td><td><span class="status pending">待启动</span></td></tr>'+
+      '<tr><td>鲁味坊</td><td>预制菜供应链</td><td><span class="tag amber">试点中</span></td><td>缺货/滞销/周转</td><td>1个月</td><td><span class="status doing">验证中</span></td></tr>'+
+    '</tbody></table></div>';
+}
+
+function pagePhase(){
+  return '<div class="page-title"><h1>一期实施范围与关键边界</h1><p>分阶段推进，先验证核心能力，再扩展协作与智能</p></div>'+
+  '<div class="phase-grid">'+
+    '<div class="phase-card"><div class="ph-num">第一阶段</div><div class="ph-title">核心能力先行</div><ul class="ph-items"><li>存货周转分析</li><li>缺货预警</li><li>滞销预警</li><li>存货毛利分析</li><li>基础客户流失预警</li><li>智能开单辅助(只读提示)</li><li>独立PC端部署，连接生产数据库</li><li>目标：让老板看到清晰价值</li></ul></div>'+
+    '<div class="phase-card p2"><div class="ph-num">第二阶段</div><div class="ph-title">业务协作版本</div><ul class="ph-items"><li>缺货→补货跟进任务</li><li>滞销→销售处理任务</li><li>高风险客户→回访任务</li><li>毛利异常→价格核查任务</li><li>超时未处理自动提醒管理层</li><li>目标：让问题能被推动处理</li></ul></div>'+
+    '<div class="phase-card p3"><div class="ph-num">第三阶段</div><div class="ph-title">经营智能版本</div><ul class="ph-items"><li>更精细的补货模型</li><li>客户分层与价值分析</li><li>商品生命周期分析</li><li>供应商交付表现分析</li><li>行业模板沉淀与对外复制</li><li>目标：从项目制升级为产品化</li></ul></div>'+
+  '</div>'+
+  '<div class="boundary-box"><h4>关键边界说明</h4><ul>'+
+    '<li>AI 不是聊天机器人，不是单纯问数工具</li><li>AI 不替代 ERP，不自动替客户做采购、调价、授信等关键决策</li>'+
+    '<li>AI 提供辅助建议，关键动作由人确认</li><li>涉及 ERP 写入、自动开单等能力需 ERP 厂商配合</li>'+
+    '<li>指标公式和业务口径必须客户确认后才能固化</li>'+
+    '<li>净利润分析涉及财务费用分摊，建议作为后续阶段</li>'+
+    '<li>不编造 ROI 收益，价值从减少人工统计、提高响应速度、提升管理闭环能力来表达</li>'+
+  '</ul></div>';
+}
+
+// Render
+var wrap=document.getElementById('pageWrap'),tabs=document.getElementById('topnavTabs'),dots=document.getElementById('pgDots');
+var allHtml='',tabsHtml='',dotsHtml='';
+for(var i=0;i<pages.length;i++){
+  allHtml+=buildPage(pages[i].id);
+  tabsHtml+='<button class="topnav-tab'+(i===0?' active':'')+'" data-idx="'+i+'">'+pages[i].title+'</button>';
+  dotsHtml+='<span class="pg-dot'+(i===0?' active':'')+'" data-idx="'+i+'" onclick="goPage('+i+')"></span>';
+}
+wrap.innerHTML=allHtml;tabs.innerHTML=tabsHtml;dots.innerHTML=dotsHtml;
+
+var currentPage=0,totalPages=pages.length;
+function goPage(idx){if(idx<0||idx>=totalPages||idx===currentPage)return;currentPage=idx;updateUI();}
+function nav(dir){goPage(currentPage+dir);}
+function updateUI(){
+  var allPages=document.querySelectorAll('.page');for(var i=0;i<allPages.length;i++)allPages[i].classList.toggle('active',i===currentPage);
+  var allTabs=document.querySelectorAll('.topnav-tab');for(var i=0;i<allTabs.length;i++)allTabs[i].classList.toggle('active',i===currentPage);
+  var allDots=document.querySelectorAll('.pg-dot');for(var i=0;i<allDots.length;i++)allDots[i].classList.toggle('active',i===currentPage);
+  document.getElementById('pgLabel').textContent=(currentPage+1)+' / '+totalPages;
+  document.getElementById('pgPrev').style.visibility=currentPage===0?'hidden':'visible';
+  document.getElementById('pgNext').style.visibility=currentPage===totalPages-1?'hidden':'visible';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('topnavTabs').addEventListener('click',function(e){var tab=e.target.closest('.topnav-tab');if(!tab)return;goPage(parseInt(tab.dataset.idx,10));});
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();nav(1);}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();nav(-1);}});
+updateUI();
+</script>
+</body>
+</html>
