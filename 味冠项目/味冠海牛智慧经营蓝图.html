@@ -166,11 +166,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .pg-label{font-size:10px;color:var(--text-muted);margin:0 4px;white-space:nowrap}
 
 
-.factor-panel{margin:0 auto 12px;max-width:1000px;padding:10px 14px;background:var(--slate-light);border-radius:var(--radius);border-left:3px solid var(--blue)}
+.factor-panel{margin:0 auto 12px;max-width:1000px;padding:0;background:var(--slate-light);border-radius:var(--radius);border-left:3px solid var(--blue);border-top:1px solid var(--slate-border);border-right:1px solid var(--slate-border);border-bottom:1px solid var(--slate-border);overflow:hidden}
+.factor-panel>summary{padding:7px 12px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;user-select:none;background:var(--card);border-bottom:1px solid var(--slate-border)}
+.factor-panel>summary::-webkit-details-marker{display:none}
+.factor-panel>summary::after{content:'▼';margin-left:auto;font-size:8px;transition:transform .2s;color:var(--text-muted)}
+.factor-panel[open]>summary::after{transform:rotate(180deg)}
+.fp-panel-body{padding:10px 12px}
+.fp-factor-count{font-size:9px;font-weight:400;color:var(--text-muted);margin-left:4px}
 .fp-section{margin-bottom:8px}
+.fp-section:last-child{margin-bottom:0}
 .fp-label{font-size:11px;font-weight:600;color:var(--text);margin-bottom:5px;letter-spacing:.3px}
 .fp-note{font-size:10px;color:var(--amber);font-weight:400}
-.fp-tags{display:flex;flex-wrap:wrap;gap:4px}
+.fp-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
 .fp-tag{padding:2px 8px;border-radius:6px;font-size:10px;background:var(--card);color:var(--text-secondary);border:1px solid var(--slate-border)}
 .fp-formula{font-size:10px;color:var(--text-secondary);padding:2px 0;font-family:"SF Mono",Menlo,monospace;overflow-wrap:break-word;word-break:break-all}
 .fp-formula strong{color:var(--text);font-weight:600}
@@ -281,18 +288,24 @@ function scFlow(icon,title,color,steps,highlights,boundary){
   if(boundary)h+='<div class="sc-boundary">'+boundary+'</div>';
   h+='</div>';return h;
 }
-function factorPanel(factors,formulas,evolution,status){
+function factorPanel(factors,formulas,evolution,status,specFormulas){
   var statusLabel=status||'<span class="fp-note">【当前推测，待客户确认】</span>';
-  var h='<div class="factor-panel">';
-  h+='<div class="fp-section"><div class="fp-label">影响因子</div><div class="fp-tags">';
+  var h='<details class="factor-panel"><summary>📊 影响因子 · 计算逻辑 · AI进化方向 <span class="fp-factor-count">('+factors.length+'个因子，点击展开)</span></summary>';
+  h+='<div class="fp-panel-body">';
+  h+='<div class="fp-tags">';
   for(var i=0;i<factors.length;i++)h+='<span class="fp-tag">'+factors[i]+'</span>';
-  h+='</div></div>';
+  h+='</div>';
   h+='<div class="fp-section"><div class="fp-label">核心指标与初始计算逻辑 '+statusLabel+'</div>';
   for(var j=0;j<formulas.length;j++)h+='<div class="fp-formula"><strong>'+formulas[j].name+'</strong> = '+formulas[j].formula+'</div>';
   h+='</div>';
+  if(specFormulas&&specFormulas.length){
+    h+='<div class="fp-section"><div class="fp-label">推演补充公式 <span class="fp-note" style="color:var(--amber)">【待客户确认】</span></div>';
+    for(var m=0;m<specFormulas.length;m++)h+='<div class="fp-formula" style="color:var(--text-muted)"><strong>'+specFormulas[m].name+'</strong> = '+specFormulas[m].formula+'</div>';
+    h+='</div>';
+  }
   h+='<div class="fp-section"><div class="fp-label">AI进化方向</div><div class="fp-evolve">';
   for(var k=0;k<evolution.length;k++)h+='<span class="fp-ev-item">'+evolution[k]+'</span>';
-  h+='</div></div></div>';
+  h+='</div></div></details>';
   return h;
 }
 
@@ -642,14 +655,22 @@ function pageKpi(){
       '<span class="kpi-factor">在途库存</span><span class="kpi-factor">采购周期</span><span class="kpi-factor">最低起订量</span><span class="kpi-factor">季节波动</span>'+
       '<span class="kpi-factor">活动/促销</span><span class="kpi-factor">历史同期销量</span><span class="kpi-factor">客户优先级</span><span class="kpi-factor">真实缺口</span>'+
     '</div>'+
-    '<div class="kpi-formulas-label">推演公式 <span class="kpi-formulas-note">【当前推测，待客户确认】</span></div>'+
+    '<div class="kpi-formulas-label">核心公式 <span class="kpi-formulas-note" style="color:var(--emerald)">【客户已确认计算口径】</span></div>'+
     '<div class="kpi-formulas">'+
-      '<div>可售天数 = 当前可用库存 / 日均销量</div>'+
-      '<div>日均销量(加权) = 近7天日均 x 0.5 + 近30天日均 x 0.3 + 同期日均 x 0.2</div>'+
-      '<div>安全库存 = 日均销量 x 采购周期 x 安全系数</div>'+
-      '<div>预测需求 = 日均销量(加权) x (采购周期 + 缓冲天数)</div>'+
-      '<div>净需求 = 预测需求 + 安全库存 - 可用库存 - 在途库存 + 真实缺口</div>'+
-      '<div>建议补货量 = CEILING(净需求 / 最低起订量) x 最低起订量</div>'+
+      '<div>近15天日均销量 = 近2个月总销量 ÷ 52天</div>'+
+      '<div>15天标准销量 = 日均销量 × 15天</div>'+
+      '<div>缺货判定 = 当前可用量 < 15天标准销量 → 进入缺货预警池</div>'+
+      '<div>缺货缺口 = 当前可用量 − 15天标准销量（负数为缺口）</div>'+
+      '<div>缺货SKU数量 = 满足判定条件的SKU去重计数</div>'+
+      '<div>缺货合计数量 = Σ 每个缺货SKU的缺口件数</div>'+
+    '</div>'+
+    '<div class="kpi-formulas-label" style="margin-top:6px">推演补充公式 <span class="kpi-formulas-note">【待客户确认】</span></div>'+
+    '<div class="kpi-formulas" style="color:var(--text-muted)">'+
+      '<div>安全库存 = 日均销量 × 采购周期 × 安全系数</div>'+
+      '<div>建议补货量 = CEILING(净需求 / 最低起订量) × 最低起订量</div>'+
+      '<div>缺货风险等级 = 缺口大小 × 客户影响 × 紧急程度</div>'+
+      '<div>缺货影响金额 = 缺口数量 × 售价 × 客户影响系数</div>'+
+      '<div>预计缺货时间 = 当前可用量 ÷ 日均销量</div>'+
     '</div>'+
     '<details class="kpi-exception"><summary>⚠️ 异常场景与处理建议</summary><table class="kpi-exception-table"><thead><tr><th>异常场景</th><th>处理建议</th></tr></thead><tbody>'+
       '<tr><td>库存为 0</td><td>直接进入高风险，需确认是否停采/停售</td></tr>'+
@@ -677,14 +698,20 @@ function pageKpi(){
       '<span class="kpi-factor">保质期/临期</span><span class="kpi-factor">资金利率</span><span class="kpi-factor">动销速度</span><span class="kpi-factor">采购频率</span>'+
       '<span class="kpi-factor">品类特性</span><span class="kpi-factor">季节库存</span>'+
     '</div>'+
-    '<div class="kpi-formulas-label">推演公式 <span class="kpi-formulas-note">【当前推测，待客户确认】</span></div>'+
+    '<div class="kpi-formulas-label">核心公式 <span class="kpi-formulas-note" style="color:var(--emerald)">【客户已确认计算口径】</span></div>'+
     '<div class="kpi-formulas">'+
-      '<div>滞销天数 = 当前日期 - 最近销售日期</div>'+
-      '<div>库存金额 = 当前库存数量 x 库存成本</div>'+
-      '<div>库存持有成本 = 库存金额 x 资金成本率 x 持有天数 / 365</div>'+
-      '<div>周转天数 = 周期天数 / 库存周转率</div>'+
-      '<div>临期风险 = 保质期剩余天数 < 预警阈值 ? 库存金额 x 临期折扣率 : 0</div>'+
-      '<div>库存健康度 = 周转得分 + 库龄得分 + 库存金额得分 + 销量趋势得分</div>'+
+      '<div>滞销天数 = 当前日期 − 该SKU最近一次出库日期</div>'+
+      '<div>滞销判定 = 当前库存 ≥ 近15天平均销量 → 进入滞销池</div>'+
+      '<div>平均进价 = 采购总金额 ÷ 采购总数量</div>'+
+      '<div>积压金额合计 = Σ(当前可用量 × 平均进价)</div>'+
+      '<div>滞销SKU数量 = 满足判定条件的SKU去重计数</div>'+
+    '</div>'+
+    '<div class="kpi-formulas-label" style="margin-top:6px">推演补充公式 <span class="kpi-formulas-note">【待客户确认】</span></div>'+
+    '<div class="kpi-formulas" style="color:var(--text-muted)">'+
+      '<div>库存持有成本 = 积压金额 × 资金利率 × 持有天数 / 365 + 仓储费率 × 库存数量</div>'+
+      '<div>临期损失预估 = 积压金额 × 临期折扣率</div>'+
+      '<div>资金占用率 = 积压金额 / 总库存金额 × 100%</div>'+
+      '<div>滞销严重度 = 滞销天数 × 积压金额 × 库龄权重</div>'+
     '</div>'+
     '<div class="kpi-evolve-label">AI进化方向</div>'+
     '<div class="kpi-evolve-items">'+
@@ -829,7 +856,22 @@ function pageScenes(){
       {name:'缺货合计数量',formula:'Σ 每个缺货SKU的缺口件数'}
     ],
     ['回看提醒后是否补货','回看是否仍发生缺货','回看是否补多形成积压','回看预测可售天数与实际偏差','生成安全库存/日均销量/采购周期优化建议','老板或采购负责人确认后生效'],
-    '<span class="fp-note" style="color:var(--emerald)">【客户已确认计算口径】</span>'
+    '<span class="fp-note" style="color:var(--emerald)">【客户已确认计算口径】</span>',
+    [
+      {name:'安全库存',formula:'日均销量 × 采购周期 × 安全系数（按品类/供应商）'},
+      {name:'在途库存影响',formula:'在途数量 − 预计到货日期前消耗量'},
+      {name:'采购周期',formula:'历史平均到货天数（近N次采购，按供应商统计）'},
+      {name:'建议补货量',formula:'CEILING(净需求 / 最低起订量) × 最低起订量'},
+      {name:'净需求',formula:'缺货缺口 + 安全库存 − 在途库存'},
+      {name:'季节波动系数',formula:'历史同期日均销量 / 近2月日均销量'},
+      {name:'活动/促销影响因子',formula:'活动期间预计日均销量 / 日常日均销量'},
+      {name:'客户优先级权重',formula:'按客户等级(A/B/C)分配缺货发货优先级'},
+      {name:'真实缺口',formula:'已接订单占用量 − 当前可用量'},
+      {name:'缺货风险等级',formula:'缺口大小 × 客户影响 × 紧急程度（高/中/低）'},
+      {name:'缺货影响金额',formula:'缺口数量 × 售价 × 客户影响系数'},
+      {name:'预计缺货时间',formula:'当前可用量 ÷ 日均销量（倒计时天数）'},
+      {name:'包装规格修正',formula:'建议补货量向上取整到包装规格整数倍'}
+    ]
   );
 
   // --- 滞销预警 ---
@@ -848,7 +890,19 @@ function pageScenes(){
       {name:'滞销SKU数量',formula:'满足滞销判定条件的SKU去重计数'}
     ],
     ['优化滞销天数阈值(按品类)','优化品类滞销判断规则','优化临期风险等级','学习促销对滞销消化效果','优化库存金额健康线'],
-    '<span class="fp-note" style="color:var(--emerald)">【客户已确认计算口径】</span>'
+    '<span class="fp-note" style="color:var(--emerald)">【客户已确认计算口径】</span>',
+    [
+      {name:'库存持有成本',formula:'积压金额 × 资金利率 × 持有天数 / 365 + 仓储费率 × 库存数量'},
+      {name:'临期风险等级',formula:'保质期剩余天数 < 阈值 → 临期（阈值按品类：生鲜/冻品/常温）'},
+      {name:'临期损失预估',formula:'积压金额 × 临期折扣率'},
+      {name:'滞销严重度',formula:'滞销天数 × 积压金额 × 库龄权重'},
+      {name:'品类滞销阈值',formula:'按品类设置不同滞销天数标准（生鲜3天/冻品15天/常温30天）'},
+      {name:'季节性滞销识别',formula:'季节末库存数量 / 季节销量'},
+      {name:'促销消化效果',formula:'(促销后销量 − 促销前销量) / 促销前销量 × 100%'},
+      {name:'滞销处理优先级',formula:'积压金额 × 临期紧迫度 × 处理难度'},
+      {name:'动销率',formula:'近30天有销售SKU数 / 总SKU数 × 100%'},
+      {name:'资金占用率',formula:'积压金额 / 总库存金额 × 100%'}
+    ]
   );
 
   // --- 存货周转分析 ---
@@ -867,7 +921,19 @@ function pageScenes(){
       {name:'去年日均销量',formula:'同期当天往后推17天总销量 ÷ 15天（按客户口径标准化）'}
     ],
     ['优化SKU健康评分权重','优化品类周转标准','优化库存金额健康线','学习季节性周转规律','优化采购频率建议'],
-    '<span class="fp-note" style="color:var(--emerald)">【客户已确认计算口径】</span>'
+    '<span class="fp-note" style="color:var(--emerald)">【客户已确认计算口径】</span>',
+    [
+      {name:'SKU健康度',formula:'周转得分 + 库龄得分 + 库存金额得分 + 销量趋势得分'},
+      {name:'周转异常等级',formula:'周转偏离度 × 金额影响 × 持续周期'},
+      {name:'品类周转标准',formula:'按品类设置不同周转天数基准（生鲜7天/调味料30天）'},
+      {name:'多仓周转差异',formula:'各仓库周转率标准差 / 均值'},
+      {name:'周转趋势',formula:'近4周周转率变化斜率'},
+      {name:'库存金额占比',formula:'单SKU库存金额 / 总库存金额 × 100%'},
+      {name:'采购员维度周转',formula:'按采购员负责SKU汇总周转率'},
+      {name:'周转改善率',formula:'(本期周转率 − 上期周转率) / 上期周转率 × 100%'},
+      {name:'环比变化率',formula:'(本期周转天数 − 上期周转天数) / 上期周转天数 × 100%'},
+      {name:'库龄分布',formula:'各库龄段(0-30/30-60/60-90/90+天)库存金额占比'}
+    ]
   );
 
   // --- 补货建议 ---
@@ -882,7 +948,13 @@ function pageScenes(){
       {name:'再订货点',formula:'提前期需求 + 安全库存'},
       {name:'建议补货量',formula:'目标库存 - 当前可用库存 - 在途库存'},
       {name:'目标库存',formula:'预测需求 + 安全库存 + 缓冲库存'},
-      {name:'补货紧迫度',formula:'可售天数 / 采购提前期，< 1.5 紧急，1.5-3 关注，> 3 正常'}
+      {name:'补货紧迫度',formula:'可售天数 / 采购提前期，< 1.5 紧急，1.5-3 关注，> 3 正常'},
+      {name:'安全库存',formula:'日均销量 × 采购提前期 × 安全系数（按品类）'},
+      {name:'补货建议优先级',formula:'缺货紧迫度 × 客户影响 × 积压风险'},
+      {name:'补货后预计可售天数',formula:'(当前可用量 + 建议补货量) / 日均销量'},
+      {name:'补货过量风险',formula:'建议补货量 / 历史日均销量 > 阈值 → 预警积压'},
+      {name:'缺货避免概率',formula:'1 − P(预计缺货时间 < 采购提前期)'},
+      {name:'建议补货区间',formula:'[建议补货量 × 0.8, 建议补货量 × 1.2]（给采购参考区间）'}
     ],
     ['优化安全库存系数(按品类)','优化采购周期参数(按供应商)','优化日均销量加权算法','学习季节/活动对需求影响','优化补货紧迫度阈值']
   );
@@ -901,7 +973,12 @@ function pageScenes(){
       {name:'客户匹配度',formula:'历史购买频次 × 权重 + 最近购买时间分 + 购买金额权重'},
       {name:'商品推荐分',formula:'毛利权重 + 库存权重 + 客户匹配权重 + 搭配关联权重'},
       {name:'替代匹配度',formula:'品类相似度 + 客户历史购买匹配度 + 库存可用性'},
-      {name:'开单毛利预估',formula:'Σ(商品售价 - 商品成本) × 数量，含折扣影响'}
+      {name:'开单毛利预估',formula:'Σ(商品售价 - 商品成本) × 数量，含折扣影响'},
+      {name:'库存可售提示',formula:'当前可用量 < 15天标准销量 → 提示库存紧张'},
+      {name:'价格异常检测',formula:'本次报价 < 历史成交价 × (1 − 阈值) → 预警低价'},
+      {name:'毛利风险预警',formula:'预估毛利率 < 品类基准毛利率 → 预警低毛利'},
+      {name:'搭配推荐关联度',formula:'历史同时购买频次 / 总购买频次'},
+      {name:'客户信用额度检测',formula:'应收余额 + 本次订单金额 > 信用额度 → 预警'}
     ],
     ['优化推荐权重(按客户类型)','优化替代品匹配规则','优化搭配推荐规则','学习客户购买偏好','优化毛利预估模型']
   );
@@ -918,7 +995,12 @@ function pageScenes(){
       {name:'毛利率',formula:'毛利额 / 销售收入 × 100%'},
       {name:'毛利异常等级',formula:'下降幅度 × 金额影响 × 销量权重'},
       {name:'成本异常检测',formula:'|实际成本 - 标准成本| / 标准成本 > 阈值 ? 标记异常 : 正常'},
-      {name:'费用归集完整度',formula:'已归集费用 / 应归集费用 × 100%'}
+      {name:'费用归集完整度',formula:'已归集费用 / 应归集费用 × 100%'},
+      {name:'净毛利率',formula:'(毛利额 − 促销折扣 − 退货冲减) / 销售收入 × 100%'},
+      {name:'促销折扣影响',formula:'原售价 × 折扣率 × 销量'},
+      {name:'退货冲减金额',formula:'退货数量 × 售价'},
+      {name:'品类毛利贡献',formula:'品类毛利额 / 总毛利额 × 100%'},
+      {name:'毛利趋势变化率',formula:'(本期毛利率 − 上期毛利率) / 上期毛利率 × 100%'}
     ],
     ['优化毛利异常阈值(按品类/客户)','沉淀品类毛利标准区间','优化成本口径自动识别','学习促销/折扣对毛利影响','优化费用归集检测规则']
   );
@@ -934,7 +1016,11 @@ function pageScenes(){
       {name:'销售机会分值',formula:'毛利权重 + 库存压力权重 + 客户匹配度权重 + 复购可能性权重'},
       {name:'替代匹配度',formula:'品类相似度 + 客户历史购买匹配度 + 库存可用性'},
       {name:'复购概率',formula:'距上次购买天数 / 平均复购周期，越接近1越可能复购'},
-      {name:'推荐转化率',formula:'推荐成交数 / 推荐总数 × 100%'}
+      {name:'推荐转化率',formula:'推荐成交数 / 推荐总数 × 100%'},
+      {name:'库存压力权重',formula:'当前可用量 / 15天标准销量（值越大压力越大）'},
+      {name:'滞销消化优先级',formula:'滞销天数 × 积压金额 × 临期紧迫度'},
+      {name:'推荐时机评分',formula:'距上次购买天数 / 复购周期 × 100%（接近100%时机最佳）'},
+      {name:'建议跟进方式',formula:'按客户偏好(电话/微信/上门) × 机会分值排序'}
     ],
     ['优化商品推荐权重(按客户类型)','优化客户匹配逻辑','优化销售机会评分','学习不同客户成交偏好','优化推荐时机']
   );
@@ -951,7 +1037,12 @@ function pageScenes(){
       {name:'频次变化率',formula:'(本期次数 - 历史均值) / 历史均值 × 100%'},
       {name:'金额变化率',formula:'(本期金额 - 历史均值) / 历史均值 × 100%'},
       {name:'客户风险分',formula:'未下单权重 + 频次下降权重 + 金额下降权重 + 常购变化权重'},
-      {name:'客户价值分',formula:'金额贡献 + 毛利贡献 + 合作稳定性 + 增长潜力'}
+      {name:'客户价值分',formula:'金额贡献 + 毛利贡献 + 合作稳定性 + 增长潜力'},
+      {name:'常购商品变化率',formula:'(历史常购SKU数 − 本期常购SKU数) / 历史常购SKU数 × 100%'},
+      {name:'应收逾期金额',formula:'Σ(逾期账单金额)'},
+      {name:'客户分层等级',formula:'按金额贡献 + 毛利贡献 + 合作年限分层(A/B/C)'},
+      {name:'流失风险等级',formula:'客户风险分 × 客户价值分（高价值高风险需立即处理）'},
+      {name:'回访效果跟踪',formula:'回访后30天下单金额 / 回访前30天下单金额'}
     ],
     ['优化客户风险评分权重','优化流失预警周期(按客户层级)','沉淀客户分层规则','学习不同行业客户行为模式','优化预警触发条件']
   );
@@ -967,7 +1058,11 @@ function pageScenes(){
       {name:'处理关闭率',formula:'已关闭问题数 / 总问题数 × 100%'},
       {name:'超时率',formula:'超时问题数 / 总问题数 × 100%'},
       {name:'建议采纳率',formula:'被采纳建议数 / 建议总数 × 100%'},
-      {name:'追问命中率',formula:'追问命中已有场景数 / 总追问数 × 100%'}
+      {name:'追问命中率',formula:'追问命中已有场景数 / 总追问数 × 100%'},
+      {name:'追问响应时长',formula:'责任人响应时间 − 老板追问时间'},
+      {name:'问题解决时长',formula:'问题关闭时间 − 问题创建时间'},
+      {name:'规则调整次数',formula:'统计期内规则参数被调整的次数'},
+      {name:'追问路由准确率',formula:'追问正确路由到场景数 / 总追问数 × 100%'}
     ],
     ['优化高频追问自动识别','优化规则建议生成','沉淀经营经验库','学习老板关注偏好','优化追问→场景路由准确率']
   );
