@@ -284,8 +284,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 <script>
 var pages = [
   {id:'pos',title:'项目定位'},
-  {id:'tree',title:'利润树全景'},
-  {id:'kpi',title:'五大指标体系'},
+  {id:'tree',title:'全景总览'},
+  {id:'kpi',title:'六大指标体系'},
   {id:'evolve',title:'AI自我进化'},
   {id:'loop',title:'全景+场景'},
   {id:'scenes',title:'场景闭环详解'},
@@ -363,87 +363,65 @@ function pagePos(){
     '<div class="value-card"><div class="vc-icon">⚡</div><div class="vc-title">判断快</div><div class="vc-desc">智能体 帮助解释异常原因，从"看到数据"升级为"理解问题"</div></div>'+
     '<div class="value-card"><div class="vc-icon">📋</div><div class="vc-title">推得动</div><div class="vc-desc">异常自动触达负责人，回看后提醒，形成责任闭环</div></div>'+
   '</div>'+
-  '<div class="boundary-box"><h4>关键边界</h4><ul>'+
-    '<li>智能体 不是聊天机器人，不是单纯问数工具</li><li>智能体 不替代 ERP，不自动替客户做采购、调价、授信等关键决策</li>'+
-    '<li>智能体 提供辅助建议，关键动作由人确认</li><li>指标公式和业务口径必须客户确认后才能固化</li>'+
-  '</ul></div>';
+  '</div>';
 }
 function pageLoop(){
-  return `<div class="page-title"><h1>八大智能体全景场景</h1><p>从公司利润出发，围绕五大经营指标配置八大经营智能体；一期先聚焦智能补货、滞销预警、存货周转分析、毛利分析。</p></div>
-  <div class="flow-row" style="margin-bottom:18px">
-    ${node('💰','公司利润提升','多卖 · 卖贵 · 复购 · 少压 · 少损','var(--blue)')}
-    ${node('📊','五大经营指标','缺货损失 · 库存持有成本 · 毛利质量 · 客户价值 · 采购效率','var(--emerald)')}
-    ${node('🧠','八大经营智能体','智能补货 · 滞销 · 周转 · 毛利 · 销售 · 客户 · 开单 · 问数','var(--violet)')}
-    ${node('🔄','场景闭环处理','发现问题 → 生成建议 → 触达人员 → 业务处理 → AI回看 → 规则优化','var(--amber)')}
-    ${node('👥','角色协同','老板 · 采购 · 销售 · 仓库 · 财务','var(--emerald)')}
-    ${node('📈','经营结果改善','缺货损失↓ · 积压↓ · 周转↑ · 毛利↑ · 客户复购↑','var(--rose)')}
+  return `<div class="page-title"><h1>五大智能体全景场景</h1><p>围绕六大经营指标配置五大智能体，每个智能体从"发现问题"到"推动改善"形成完整闭环</p></div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:1000px;margin:0 auto 18px">
+    <div style="padding:14px 16px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);text-align:center;flex:1;min-width:150px;max-width:180px;border-top:3px solid var(--rose)"><div style="font-size:22px;margin-bottom:4px">🤖</div><div style="font-size:13px;font-weight:600">智能采购助手</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">补货建议 / 采购风险</div></div>
+    <div style="padding:14px 16px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);text-align:center;flex:1;min-width:150px;max-width:180px;border-top:3px solid var(--amber)"><div style="font-size:22px;margin-bottom:4px">📦</div><div style="font-size:13px;font-weight:600">智能库存管家</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">滞销预警 / 周转分析</div></div>
+    <div style="padding:14px 16px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);text-align:center;flex:1;min-width:150px;max-width:180px;border-top:3px solid var(--violet)"><div style="font-size:22px;margin-bottom:4px">📊</div><div style="font-size:13px;font-weight:600">财务智能参谋</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">毛利分析 / 资金预警</div></div>
+    <div style="padding:14px 16px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);text-align:center;flex:1;min-width:150px;max-width:180px;border-top:3px solid var(--blue)"><div style="font-size:22px;margin-bottom:4px">🔔</div><div style="font-size:13px;font-weight:600">经营风险预警</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">客户流失 / 应收超期</div></div>
+    <div style="padding:14px 16px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);text-align:center;flex:1;min-width:150px;max-width:180px;border-top:3px solid var(--emerald)"><div style="font-size:22px;margin-bottom:4px">🧾</div><div style="font-size:13px;font-weight:600">多模态智能开单</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">语音开单 / 搭配推荐</div></div>
   </div>
 
-  <h3 style="text-align:center;font-size:15px;margin:22px 0 12px">八大智能体 → 五大经营指标映射</h3>
-  <div style="max-width:1000px;margin:0 auto 18px;overflow-x:auto"><table class="matrix-table"><thead><tr><th>智能体</th><th>对应经营指标</th><th>当前阶段</th><th>主责角色</th><th>核心输出</th></tr></thead><tbody>
-    <tr><td class="role-col">🤖 智能补货智能体</td><td>缺货损失 · 采购效率 · 客户价值</td><td><span class="tag green">一期重点</span></td><td>采购 + 仓库 + 销售</td><td>缺货识别、补货建议、企微触达、回看效果</td></tr>
-    <tr><td class="role-col">📦 滞销预警智能体</td><td>库存持有成本 · 毛利质量</td><td><span class="tag green">一期重点</span></td><td>采购 + 销售 + 仓库</td><td>滞销识别、停采/促销建议、库存消化回看</td></tr>
-    <tr><td class="role-col">🔄 存货周转分析智能体</td><td>库存持有成本 · 采购效率</td><td><span class="tag green">一期重点</span></td><td>采购 + 仓库</td><td>商品/仓库/采购员周转健康度</td></tr>
-    <tr><td class="role-col">📊 毛利分析智能体</td><td>毛利质量</td><td><span class="tag green">一期重点</span></td><td>财务 + 采购 + 销售</td><td>毛利异常识别、原因提示、财务复核</td></tr>
-    <tr><td class="role-col">💡 销售建议智能体</td><td>销售收入 · 毛利质量 · 客户价值</td><td><span class="tag violet">后续扩展</span></td><td>销售 + 采购</td><td>高毛利推荐、滞销消化、替代品推荐</td></tr>
-    <tr><td class="role-col">🔔 客户流失预警智能体</td><td>客户价值 · 销售收入</td><td><span class="tag violet">后续扩展</span></td><td>销售 + 老板</td><td>下单变少、金额下降、常购中断预警</td></tr>
-    <tr><td class="role-col">🧾 智能开单智能体</td><td>销售收入 · 毛利质量 · 客户价值</td><td><span class="tag slate">远期规划</span></td><td>销售 + 仓库 + 财务</td><td>开单时提示库存、价格、毛利、搭配</td></tr>
-    <tr><td class="role-col">💬 老板经营问数智能体</td><td>全部五大经营指标</td><td><span class="tag violet">贯穿增强</span></td><td>老板 + 全角色</td><td>经营追问、复盘报告、追加备注、规则调优</td></tr>
+  <h3 style="text-align:center;font-size:15px;margin:22px 0 12px">五大智能体 → 六大经营指标映射</h3>
+  <div style="max-width:1000px;margin:0 auto 18px;overflow-x:auto"><table class="matrix-table"><thead><tr><th>智能体</th><th>对应经营指标</th><th>主责角色</th><th>核心能力</th></tr></thead><tbody>
+    <tr><td class="role-col">🤖 智能采购助手</td><td>缺货损失 · 采购效率</td><td>采购 + 仓库 + 销售</td><td>补货建议、缺货预警、采购风险识别</td></tr>
+    <tr><td class="role-col">📦 智能库存管家</td><td>库存持有成本</td><td>采购 + 仓库</td><td>滞销预警、周转分析、呆滞库存处置</td></tr>
+    <tr><td class="role-col">📊 财务智能参谋</td><td>毛利质量 · 资金健康度</td><td>财务 + 采购 + 销售 + 老板</td><td>毛利分析、经营问数、资金预警</td></tr>
+    <tr><td class="role-col">🔔 经营风险预警</td><td>客户价值</td><td>销售 + 老板</td><td>客户流失预警、应收超期预警</td></tr>
+    <tr><td class="role-col">🧾 多模态智能开单</td><td>开单效率</td><td>销售 + 仓库</td><td>语音开单、图片识别、搭配推荐</td></tr>
   </tbody></table></div>
 
   <h3 style="text-align:center;font-size:15px;margin:22px 0 12px">智能体与人的协作机制</h3>
   <div class="collab-grid">
-    ${collab('发现','var(--blue)','智能体持续监测库存、销售、采购、毛利、客户交易等数据','人确认关注规则和重点对象','重要问题不再完全依赖人工发现')}
+    ${collab('发现','var(--blue)','智能体持续监测库存、销售、毛利、客户交易等数据','人确认关注规则和重点对象','重要问题不再完全依赖人工发现')}
     ${collab('判断','var(--rose)','智能体识别缺货、滞销、毛利异常、客户流失等风险','人判断业务背景，确认是否需要处理','从看到数据升级为理解问题')}
-    ${collab('触达','var(--amber)','智能体通过企业微信把建议推给采购、销售、仓库、财务','人接收提醒并判断优先级','关键事项及时被看见')}
+    ${collab('触达','var(--amber)','智能体通过企业微信把建议推送给对应角色','人接收提醒并判断优先级','关键事项及时被看见')}
     ${collab('处理','var(--emerald)','智能体生成建议动作：补货、停采、促销、回访、复核','人在线下或原系统执行、确认、调整','AI不替代业务动作')}
     ${collab('回看','var(--violet)','智能体定期回查数据，判断是否采纳、是否改善','人反馈实际情况，老板确认调优','形成可复盘、可进化的经营闭环')}
   </div>
 
-  <h3 style="text-align:center;font-size:15px;margin:22px 0 10px">八大核心应用场景</h3>
+  <h3 style="text-align:center;font-size:15px;margin:22px 0 10px">五大核心应用场景</h3>
   <div class="scenario-grid">
-    <div class="scenario-card"><div class="sc-icon">🤖</div><div class="sc-name">智能补货</div><div class="sc-desc">识别缺货风险 / 生成补货建议 / 回看建议效果</div><div class="sc-role-main">一期重点</div><div class="sc-role-coord">采购+仓库+销售</div></div>
-    <div class="scenario-card"><div class="sc-icon">📦</div><div class="sc-name">滞销预警</div><div class="sc-desc">识别高库存低动销 / 建议停采或促销</div><div class="sc-role-main">一期重点</div><div class="sc-role-coord">采购+销售+仓库</div></div>
-    <div class="scenario-card"><div class="sc-icon">🔄</div><div class="sc-name">存货周转分析</div><div class="sc-desc">按商品 / 仓库 / 采购员分析周转健康度</div><div class="sc-role-main">一期重点</div><div class="sc-role-coord">采购+仓库</div></div>
-    <div class="scenario-card"><div class="sc-icon">📊</div><div class="sc-name">毛利分析</div><div class="sc-desc">识别商品 / 客户 / 品类毛利异常</div><div class="sc-role-main">一期重点</div><div class="sc-role-coord">财务+采购+销售</div></div>
-    <div class="scenario-card"><div class="sc-icon">💡</div><div class="sc-name">销售建议</div><div class="sc-desc">高毛利推荐 / 滞销消化 / 替代品推荐</div><div class="sc-role-main">后续扩展</div><div class="sc-role-coord">销售+采购</div></div>
-    <div class="scenario-card"><div class="sc-icon">🔔</div><div class="sc-name">客户流失预警</div><div class="sc-desc">识别下单变少 / 金额下降 / 常购中断</div><div class="sc-role-main">后续扩展</div><div class="sc-role-coord">销售+老板</div></div>
-    <div class="scenario-card"><div class="sc-icon">🧾</div><div class="sc-name">智能开单</div><div class="sc-desc">开单时提示库存 / 价格 / 毛利 / 搭配</div><div class="sc-role-main">远期规划</div><div class="sc-role-coord">销售+仓库+财务</div></div>
-    <div class="scenario-card"><div class="sc-icon">💬</div><div class="sc-name">老板经营问数</div><div class="sc-desc">老板自然语言追问 / 复盘 / 规则调优</div><div class="sc-role-main">贯穿增强</div><div class="sc-role-coord">老板+全角色</div></div>
+    <div class="scenario-card"><div class="sc-icon">🤖</div><div class="sc-name">智能采购助手</div><div class="sc-desc">识别缺货风险 / 生成补货建议 / 采购风险识别</div><div class="sc-role-main">采购</div><div class="sc-role-coord">协同仓库+销售</div></div>
+    <div class="scenario-card"><div class="sc-icon">📦</div><div class="sc-name">智能库存管家</div><div class="sc-desc">滞销预警 / 周转分析 / 呆滞库存处置</div><div class="sc-role-main">采购+仓库</div><div class="sc-role-coord">协同销售</div></div>
+    <div class="scenario-card"><div class="sc-icon">📊</div><div class="sc-name">财务智能参谋</div><div class="sc-desc">毛利分析 / 经营问数 / 资金健康预警</div><div class="sc-role-main">财务</div><div class="sc-role-coord">协同采购+销售+老板</div></div>
+    <div class="scenario-card"><div class="sc-icon">🔔</div><div class="sc-name">经营风险预警</div><div class="sc-desc">客户流失预警 / 应收超期 / 资金链风险</div><div class="sc-role-main">销售</div><div class="sc-role-coord">协同财务+老板</div></div>
+    <div class="scenario-card"><div class="sc-icon">🧾</div><div class="sc-name">多模态智能开单</div><div class="sc-desc">语音开单 / 图片识别 / 搭配推荐</div><div class="sc-role-main">销售</div><div class="sc-role-coord">协同仓库+财务</div></div>
   </div>`;
-}
-
-function pageSc8(){
-  // 角色：主责 + 协同
+}function pageSc8(){
   var scs=[
-    {icon:'🤖',name:'智能补货',desc:'识别缺货风险、生成补货建议、回看建议效果',main:'一期重点',coord:'采购+仓库+销售'},
-    {icon:'📦',name:'滞销预警',desc:'识别高库存低动销、长库龄和临期风险',main:'一期重点',coord:'采购+销售+仓库'},
-    {icon:'🔄',name:'存货周转分析',desc:'按商品/仓库/采购员分析周转健康度',main:'一期重点',coord:'采购+仓库'},
-    {icon:'📊',name:'毛利分析',desc:'识别商品/客户/品类毛利异常',main:'一期重点',coord:'财务+采购+销售'},
-    {icon:'💡',name:'销售建议',desc:'高毛利推荐、滞销消化、替代品推荐',main:'后续扩展',coord:'销售+采购'},
-    {icon:'🔔',name:'客户流失预警',desc:'识别客户下单变少、金额下降和常购中断',main:'后续扩展',coord:'销售+老板'},
-    {icon:'🧾',name:'智能开单',desc:'开单时提示库存、价格、毛利和搭配',main:'远期规划',coord:'销售+仓库+财务'},
-    {icon:'💬',name:'老板经营问数',desc:'老板自然语言追问、复盘和规则调优',main:'贯穿增强',coord:'老板+全角色'}
+    {icon:'🤖',name:'智能采购助手',desc:'识别缺货风险、生成补货建议、采购风险识别',main:'采购',coord:'协同仓库+销售'},
+    {icon:'📦',name:'智能库存管家',desc:'滞销预警、周转分析、呆滞库存处置',main:'采购+仓库',coord:'协同销售'},
+    {icon:'📊',name:'财务智能参谋',desc:'毛利分析、经营问数、资金健康预警',main:'财务',coord:'协同采购+销售+老板'},
+    {icon:'🔔',name:'经营风险预警',desc:'客户流失预警、应收超期、资金链风险',main:'销售',coord:'协同财务+老板'},
+    {icon:'🧾',name:'多模态智能开单',desc:'语音开单、图片识别、搭配推荐',main:'销售',coord:'协同仓库+财务'}
   ];
   var cards='';
   for(var i=0;i<scs.length;i++){var s=scs[i];cards+='<div class="scenario-card"><div class="sc-icon">'+s.icon+'</div><div class="sc-name">'+s.name+'</div><div class="sc-desc">'+s.desc+'</div><div class="sc-role-main">'+s.main+'</div><div class="sc-role-coord">'+s.coord+'</div></div>';}
-  return '<div class="page-title"><h1>八大核心应用场景</h1><p>每个场景都是完整的经营闭环：智能体发现 → 分析 → 建议 → 角色确认 → 业务处理 → 结果反馈 → 老板复盘</p></div><div class="scenario-grid">'+cards+'</div>';
-}
-
-function pageMatrix(){
+  return '<div class="page-title"><h1>五大核心应用场景</h1><p>每个场景都是完整的经营闭环：智能体发现 → 分析 → 建议 → 角色确认 → 业务处理 → 结果反馈 → 老板复盘</p></div><div class="scenario-grid">'+cards+'</div>';
+}function pageMatrix(){
   var rows=[
-    {scene:'智能补货',dots:['','●','○','○',''],boss:'哪些商品可能断货、影响客户、谁在跟进'},
-    {scene:'滞销预警',dots:['','●','●','○',''],boss:'哪些商品积压、库存金额多少、处理进度'},
-    {scene:'存货周转分析',dots:['○','●','','○',''],boss:'哪些SKU/采购员/仓库周转慢'},
-    {scene:'毛利分析',dots:['','○','○','','●'],boss:'哪些商品毛利异常、原因是什么'},
-    {scene:'智能开单',dots:['','○','●','○','○'],boss:'开单效率、开单毛利、客单价变化'},
-    
-    {scene:'销售建议',dots:['','○','●','○',''],boss:'哪些商品适合重点销售、是否产生跟进'},
-    {scene:'客户流失预警',dots:['○','','●','','○'],boss:'哪些客户下单变少、是否已回访'},
-    {scene:'经营问数',dots:['●','','','',''],boss:'老板可追问各类经营问题和处理进度'}
+    {scene:'智能采购助手',dots:['','●','○','○',''],boss:'哪些商品可能断货、影响客户、谁在跟进'},
+    {scene:'智能库存管家',dots:['○','●','○','●',''],boss:'哪些商品积压、库存金额多少、处理进度'},
+    {scene:'财务智能参谋',dots:['','○','○','','●'],boss:'哪些商品毛利异常、资金是否健康'},
+    {scene:'经营风险预警',dots:['○','','●','','○'],boss:'哪些客户下单变少、应收是否超期'},
+    {scene:'多模态智能开单',dots:['','○','●','○','○'],boss:'开单效率、开单毛利、客单价变化'}
   ];
   var roles=['老板','采购','销售','仓库','财务'];
-  var h='<div class="page-title"><h1>八大核心场景 × 角色协同关系</h1><p>每个场景都不是孤立功能，背后都有明确的责任人和处理闭环</p></div>';
+  var h='<div class="page-title"><h1>五大核心场景 × 角色协同关系</h1><p>每个场景都不是孤立功能，背后都有明确的责任人和处理闭环</p></div>';
   h+='<div class="matrix-wrap"><table class="matrix-table"><thead><tr><th>核心场景</th>';
   for(var i=0;i<roles.length;i++)h+='<th>'+roles[i]+'</th>';
   h+='<th>老板看到什么</th></tr></thead><tbody>';
@@ -461,67 +439,49 @@ function pageMatrix(){
   h+='</tbody></table></div>';
   h+='<div style="max-width:1000px;margin:10px auto;display:flex;gap:16px;font-size:10px;color:var(--text-muted)"><span>● 主要责任角色</span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--slate-border)"></span> 协同角色</div>';
   return h;
-}
-
-function pageInv(){
-  return '<div class="page-title"><h1>库存类场景闭环</h1><p>智能补货 · 滞销预警 · 存货周转分析</p></div>'+
-  scFlow('⚠️','智能补货闭环','var(--rose)',
-    ['智能补货智能体扫描库存+销量→识别缺货风险','智能补货智能体计算缺口+补货量→生成补货建议','按角色推送企业微信：采购收补货清单、仓库收核实事项、销售收客户影响','采购确认补货数量→联系供应商下单','仓库核实实际库存→反馈差异','智能补货智能体跟踪到货→判断风险是否解除','老板查看处理结果+采纳率→追加备注或调整规则'],
+}function pageInv(){
+  return '<div class="page-title"><h1>库存与采购类场景闭环</h1><p>智能采购助手 · 智能库存管家</p></div>'+
+  scFlow('🤖','智能采购助手闭环','var(--rose)',
+    ['智能采购助手扫描库存+销量→识别缺货风险','智能采购助手计算缺口+补货量→生成补货建议','按角色推送企业微信：采购收补货清单、仓库收核实事项、销售收客户影响','采购确认补货数量→联系供应商下单','仓库核实实际库存→反馈差异','智能采购助手跟踪到货→判断风险是否解除','老板查看处理结果+采纳率→追加备注或调整规则'],
     ['缺货商品+补货建议量+依据','补货建议量/可售天数/影响客户/紧急程度','采购确认补货、仓库核实库存、销售沟通客户','已到货风险解除、部分到货、未处理'],
-    '🚧 智能补货的核心输出是补货建议（含建议补货量+依据+影响客户），不是只预警。智能体不直接决定采购数量，由采购人员确认。')+
-  scFlow('📦','滞销预警闭环','var(--amber)',
-    ['滞销预警智能体发现高库存低动销/长库龄/销量下降','滞销预警智能体判断滞销风险和库存占用金额','推送采购员（建议停采）和销售员（建议促销）','采购确认是否暂停采购→调整采购计划','销售确认促销/组合销售→消化库存','滞销预警智能体跟踪库存是否下降→消化效果','老板查看滞销处理效果→对比智能补货的补货建议避免过度采购'],
-    ['滞销SKU清单+积压金额','库存金额/库龄/近30天销量/临期风险','暂停采购、销售处理、调拨','库存下降、销量恢复、风险关闭'],
-    '🚧 滞销预警与智能补货形成互补：智能补货告诉你要补什么，滞销预警告诉你要停什么。滞销预警智能体只给出处理建议，是否促销、调拨、清仓由业务人员确认。')+
-  scFlow('🔄','存货周转分析闭环','var(--blue)',
-    ['存货周转分析智能体定期分析商品/仓库/采购员维度周转','识别周转慢/库存金额高/库龄长商品','生成采购员SKU健康清单→推送采购','采购查看负责商品健康情况→调整采购策略','仓库核实库存和库龄→反馈异常','存货周转分析智能体跟踪周转率变化→生成改善趋势','老板查看周转排行+改善效果'],
-    ['商品/采购员/仓库周转排行','周转慢SKU清单+库存金额','采购员负责商品健康卡','周转率变化、库存金额变化、改善趋势'],
-    '🚧 周转率公式当前不能直接固化，需客户确认。页面先展示"周转异常趋势"和"健康状态"。周转分析结果可反哺智能补货的补货建议。');
-}
-
-function pageProfit(){
-  return '<div class="page-title"><h1>销售与利润类场景闭环</h1><p>智能开单 · 毛利分析 · 销售建议 · 客户流失预警 · 经营问数</p></div>'+
-  scFlow('🧾','智能开单闭环','var(--emerald)',
-    ['销售选客户选商品,发起开单','智能开单智能体识别客户历史购买习惯','智能开单智能体匹配商品并提示库存可售','智能开单智能体提示历史成交价和毛利情况','智能开单智能体推荐搭配商品/高毛利替代品','销售确认采纳或调整','开单完成,智能开单智能体跟踪开单结果','老板查看开单质量'],
+    '🚧 智能采购助手的核心输出是补货建议（含建议补货量+依据+影响客户），不是只预警。智能体不直接决定采购数量，由采购人员确认。')+
+  scFlow('📦','智能库存管家闭环','var(--amber)',
+    ['智能库存管家发现高库存低动销/长库龄/销量下降','智能库存管家判断滞销风险和库存占用金额，同时分析周转健康度','推送采购员（建议停采）和销售员（建议促销），同步展示库存周转排行','采购确认是否暂停采购→调整采购计划','销售确认促销/组合销售→消化库存','智能库存管家跟踪库存是否下降、周转率变化→消化效果','老板查看库存健康度+周转改善效果'],
+    ['滞销SKU清单+积压金额','库存金额/库龄/近30天销量/周转率','暂停采购、销售处理、调拨','库存下降、销量恢复、周转改善、风险关闭'],
+    '🚧 智能库存管家合并了滞销预警和存货周转分析两个能力：滞销预警告诉你要停什么，周转分析告诉你要优化什么。管家只给出处理建议，是否促销、调拨、清仓由业务人员确认。');
+}function pageProfit(){
+  return '<div class="page-title"><h1>财务与客户类场景闭环</h1><p>财务智能参谋 · 经营风险预警 · 多模态智能开单</p></div>'+
+  scFlow('📊','财务智能参谋闭环','var(--violet)',
+    ['财务智能参谋分析商品/客户/品类毛利变化','识别毛利下降/成本异常/售价异常/资金风险','财务智能参谋提示可能原因：成本上涨/售价下降/出库未审/费用未归集/应收逾期','推送财务复核','财务确认成本/含税/退货/费用口径，同时查看应收和资金状况','同步采购核成本/销售核售价','财务智能参谋跟踪毛利是否恢复、资金是否改善','老板查看毛利异常+资金健康度处理结果'],
+    ['商品/客户/品类毛利排行','财务智能参谋提示可能原因：成本上涨、出库未审等','财务复核成本口径/费用口径','已复核、待销售处理、待采购确认'],
+    '🚧 财务智能参谋合并了毛利分析和经营问数能力。毛利失真与出库未审、结存成本、费用归集缺失有关，必须把财务复核节点画出来。')+
+  scFlow('🔔','经营风险预警闭环','var(--rose)',
+    ['经营风险预警发现最近交易变远/频次下降/金额下降/常购中断/应收超期','识别客户流失风险和资金链风险','推送销售员（客户回访），重要客户和资金异常同步老板','销售跟进客户，财务跟进应收','记录客户反馈和回款状态','经营风险预警跟踪客户是否恢复下单、应收是否回收','老板查看重要客户风险变化和资金健康度'],
+    ['客户风险清单+应收超期清单','最近下单/频次/金额/常购商品/应收账期','销售回访记录/财务催收记录','是否恢复下单、应收是否回收、是否继续预警'],
+    '🚧 经营风险预警不仅覆盖客户流失预警，还扩展了应收超期和资金链风险预判能力。预警只提示变化和回访建议，不直接判断客户一定流失。')+
+  scFlow('🧾','多模态智能开单调环','var(--emerald)',
+    ['销售选客户选商品,发起开单','多模态智能开单识别客户历史购买习惯','多模态智能开单匹配商品并提示库存可售','多模态智能开单提示历史成交价和毛利情况','多模态智能开单推荐搭配商品/高毛利替代品','销售确认采纳或调整','开单完成,多模态智能开单跟踪开单结果','老板查看开单质量'],
     ['开单过程库存/价格/毛利风险','客户历史/库存可售/价格记录','销售确认采纳或调整','开单毛利/客单价变化'],
-    '🚧 智能开单由销售主动触发,智能开单智能体 在开单过程中实时辅助,区别于其他场景的 智能体 主动监测推送。智能开单智能体 不替销售做报价、不替销售决定折扣。涉及 ERP 写入需 ERP 厂商配合。')+
-  scFlow('📊','毛利分析闭环','var(--violet)',
-    ['毛利分析智能体分析商品/客户/品类毛利变化','识别毛利下降/成本异常/售价异常','毛利分析智能体提示可能原因：成本上涨/售价下降/出库未审/费用未归集','推送财务复核','财务确认成本/含税/退货/费用口径','同步采购核成本/销售核售价','毛利分析智能体跟踪毛利是否恢复','老板查看毛利异常处理结果'],
-    ['商品/客户/品类毛利排行','毛利分析智能体提示可能原因：成本上涨、出库未审等','财务复核成本口径/费用口径','已复核、待销售处理、待采购确认'],
-    '🚧 毛利失真与出库未审、结存成本、费用归集缺失有关，必须把财务复核节点画出来。')+
-  scFlow('💡','销售建议闭环','var(--emerald)',
-    ['销售建议智能体识别高毛利/滞销/替代品/复购机会','生成销售建议清单','推送销售员','销售确认跟进客户或推荐商品','记录沟通结果','销售建议智能体跟踪成交/库存消化/毛利改善','老板查看销售建议转化结果'],
-    ['高毛利/滞销/替代品/复购机会','推荐给哪些客户','电话/微信/报价/上门','已成交、有意向、暂无需求'],
-    '🚧 销售建议智能体 不替销售做报价、不替销售决定折扣。')+
-  scFlow('🔔','客户流失预警闭环','var(--rose)',
-    ['客户流失预警智能体发现最近交易变远/频次下降/金额下降/常购中断','识别客户流失风险','推送销售员，重要客户同步老板','销售跟进客户','记录客户反馈','客户流失预警智能体跟踪客户是否恢复下单','老板查看重要客户风险变化'],
-    ['客户风险清单','最近下单/频次/金额/常购商品','销售回访记录','是否恢复下单、是否继续预警'],
-    '🚧 客户流失预警智能体 只提示客户交易变化和回访建议，不直接判断客户一定流失。')+
-  scFlow('💬','经营问数闭环','var(--cyan)',
-    ['老板自然语言提问','经营问数智能体查询并解释','关联到具体风险场景','老板查看详情和处理状态','必要时再次推送企业微信','经营问数智能体继续跟踪结果','老板查看追问事项处理进展'],
-    ['自然语言输入','经营问数智能体返回经营判断而非数字','跳转对应风险详情','查看负责人和处理状态'],
-    '🚧 经营问数不是独立业务动作，而是老板追问和下钻入口。仅做问数意义不大，真正价值在业务闭环。');
-}
-
-function pageRole(role){
+    '🚧 多模态智能开单由销售主动触发，在开单过程中实时辅助。智能体不替销售做报价、不替销售决定折扣。涉及ERP写入需ERP厂商配合。');
+}function pageRole(role){
   var data={
     boss:{
       title:'老板 / 管理层',icon:'👤',color:'var(--amber)',
-      scenes:['智能补货','滞销预警','存货周转分析','毛利分析','销售建议','客户流失预警','智能开单','老板经营问数'],
-      desc:'承接八大场景的总览，不处理单个业务细节',
+      scenes:['智能采购助手','智能库存管家','财务智能参谋','经营风险预警','多模态智能开单'],
+      desc:'承接五大智能体的总览，不处理单个业务细节',
       flow:[
-        {icon:'📊',title:'八大场景风险汇总',desc:'每日智能开单/缺货/滞销/周转/毛利/客户风险总览'},
+        {icon:'📊',title:'五大智能体风险汇总',desc:'每日缺货/库存/毛利/客户/开单风险总览'},
         {icon:'🔍',title:'查看经营驾驶舱',desc:'各场景影响金额、影响客户、责任人状态'},
         {icon:'💬',title:'追问智能体/催办',desc:'自然语言追问具体场景，回看后再次提醒'},
         {icon:'📈',title:'查看改善结果',desc:'处理前后对比，指标是否改善'},
         {icon:'⚙️',title:'规则调整',desc:'沉淀为企业经营规则'}
       ],
-      look:['开单质量 → 智能开单','今日缺货风险 → 智能补货','今日滞销风险 → 滞销预警','周转异常排行 → 存货周转','毛利异常排行 → 毛利分析','销售机会 → 销售建议','客户流失风险 → 客户流失','自然语言追问 → 经营问数']
+      look:['今日缺货风险 → 智能采购助手','库存健康度 → 智能库存管家','毛利异常+资金健康 → 财务智能参谋','客户流失+应收 → 经营风险预警','开单质量 → 多模态智能开单']
     },
     pur:{
       title:'采购',icon:'🛒',color:'var(--blue)',
-      scenes:['智能补货','滞销预警','存货周转分析'],
-      desc:'主要承接 4 个库存类场景',
+      scenes:['智能采购助手','智能库存管家'],
+      desc:'主要承接 2 个库存与采购类场景',
       flow:[
         {icon:'🔔',title:'智能体推送采购场景',desc:'缺货/滞销/周转慢自动推送补货建议'},
         {icon:'📋',title:'查看SKU健康清单',desc:'当前库存、销量、在途、周转、历史进价'},
@@ -532,11 +492,11 @@ function pageRole(role){
     },
     sales:{
       title:'销售',icon:'📞',color:'var(--emerald)',
-      scenes:['智能开单','销售建议','客户流失预警','滞销预警'],
-      desc:'主要承接 4 个销售类场景',
+      scenes:['多模态智能开单','经营风险预警','智能库存管家'],
+      desc:'主要承接 3 个销售类场景',
       flow:[
-        {icon:'🧾',title:'智能开单辅助',desc:'开单时提示客户历史/库存/价格/毛利/搭配'},
-        {icon:'🔔',title:'智能体推送销售机会/风险',desc:'客户流失/销售建议/滞销商品自动推送'},
+        {icon:'🧾',title:'多模态智能开单辅助',desc:'开单时提示客户历史/库存/价格/毛利/搭配'},
+        {icon:'🔔',title:'智能体推送销售机会/风险',desc:'客户流失/滞销商品自动推送'},
         {icon:'👤',title:'查看客户与商品详情',desc:'历史购买、最近下单、采购金额、常购商品'},
         {icon:'💡',title:'确认跟进方式',desc:'电话/微信/上门/报价，销售自主决定'},
         {icon:'📝',title:'记录跟进结果',desc:'已成交、有意向、暂无需求'},
@@ -545,8 +505,8 @@ function pageRole(role){
     },
     wh:{
       title:'仓库',icon:'🏭',color:'var(--slate)',
-      scenes:['智能补货','滞销预警','存货周转分析'],
-      desc:'主要承接 4 个场景的库存核实动作',
+      scenes:['智能采购助手','智能库存管家'],
+      desc:'主要承接 2 个场景的库存核实动作',
       flow:[
         {icon:'🔍',title:'智能体推送库存核实事项',desc:'缺货核实/库龄核实/多仓不均/库存异常'},
         {icon:'📋',title:'查看库存明细',desc:'系统库存、库龄、批次、仓位信息'},
@@ -557,8 +517,8 @@ function pageRole(role){
     },
     fin:{
       title:'财务',icon:'🧮',color:'var(--violet)',
-      scenes:['毛利分析','客户流失预警（延展）','经营问数'],
-      desc:'主要承接 2-3 个场景的复核动作',
+      scenes:['财务智能参谋','经营风险预警'],
+      desc:'主要承接 2 个场景的复核动作',
       flow:[
         {icon:'🔍',title:'智能体推送财务异常',desc:'毛利异常/成本异常/客户账期异常'},
         {icon:'🧠',title:'智能体提示可能原因',desc:'成本上涨/售价下降/出库未审/费用未归集'},
@@ -594,14 +554,12 @@ function pageRole(role){
     h+='</div></div>';
   }
   return h;
-}
-
-function pagePhase(){
-  return '<div class="page-title"><h1>一期实施范围与关键边界</h1><p>分阶段推进，先验证核心能力，再扩展协作与智能</p></div>'+
+}function pagePhase(){
+  return '<div class="page-title"><h1>推进建议与关键边界</h1><p>分阶段推进，先验证核心能力，再扩展协作与智能</p></div>'+
   '<div class="phase-grid">'+
-    '<div class="phase-card"><div class="ph-num">第一阶段</div><div class="ph-title">核心能力先行</div><ul class="ph-items"><li>智能补货</li><li>滞销预警</li><li>存货周转分析</li><li>存货毛利分析</li><li>独立PC端部署，连接生产数据库</li><li>目标：让老板看到清晰价值</li></ul></div>'+
+    '<div class="phase-card"><div class="ph-num">第一阶段</div><div class="ph-title">核心能力先行</div><ul class="ph-items"><li>智能采购助手（补货建议+缺货预警）</li><li>智能库存管家（滞销预警+周转分析）</li><li>财务智能参谋（毛利分析）</li><li>经营风险预警（基础客户流失）</li><li>独立PC端部署，连接生产数据库</li><li>目标：让老板看到清晰价值</li></ul></div>'+
     '<div class="phase-card p2"><div class="ph-num">第二阶段</div><div class="ph-title">业务协作版本</div><ul class="ph-items"><li>缺货→补货跟进事项</li><li>滞销→销售处理事项</li><li>高风险客户→回访事项</li><li>毛利异常→价格核查事项</li><li>超时未处理自动提醒管理层</li><li>目标：让问题能被推动处理</li></ul></div>'+
-    '<div class="phase-card p3"><div class="ph-num">第三阶段</div><div class="ph-title">经营智能版本</div><ul class="ph-items"><li>更精细的补货模型</li><li>客户分层与价值分析</li><li>商品生命周期分析</li><li>供应商交付表现分析</li><li>行业模板沉淀与对外复制</li><li>目标：从项目制升级为产品化</li></ul></div>'+
+    '<div class="phase-card p3"><div class="ph-num">第三阶段</div><div class="ph-title">经营智能版本</div><ul class="ph-items"><li>多模态智能开单（语音/图片/微信）</li><li>1688比价采购</li><li>动态安全库存模型</li><li>资金链风险预判</li><li>行业模板沉淀与对外复制</li><li>目标：从项目制升级为产品化</li></ul></div>'+
   '</div>'+
   '<div class="boundary-box"><h4>关键边界说明</h4><ul>'+
     '<li>智能体 不是聊天机器人，不是单纯问数工具</li><li>智能体 不替代 ERP，不自动替客户做采购、调价、授信等关键决策</li>'+
@@ -610,107 +568,184 @@ function pagePhase(){
     '<li>净利润分析涉及财务费用分摊，建议作为后续阶段</li>'+
     '<li>不编造 ROI 收益，价值从减少人工统计、提高响应速度、提升管理闭环能力来表达</li>'+
   '</ul></div>';
-}
-
-function pageTree(){
-  return '<div class="page-title"><h1>利润树全景：从公司利润到AI进化闭环</h1><p>一条线讲清楚：五大指标 → 八大智能体 → 计算逻辑 → 数据来源 → 人员协作 → AI进化 → 完整闭环</p></div>'+
+}function pageTree(){
+  return '<div class="page-title"><h1>全景总览：从经营指标到AI智能体</h1><p>一条线讲清楚：六大经营指标 → 五大智能体 → 用AI vs 不用AI → AI自我进化 → 智能采购助手举例</p></div>'+
 
   /* ════════════════════════════════════════════════════════════ */
-  /* 第一部分：五大赚钱指标 → 智能体映射 */
+  /* 老板关心的六大经营指标 */
   /* ════════════════════════════════════════════════════════════ */
   '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--amber)">'+
-    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:4px">📊 第一步：老板关心的五大赚钱指标</h3>'+
-    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">公司利润 = 多卖 + 卖贵 + 复购 − 少压 − 少亏 − 少损。每个指标由对应的智能体负责。</p>'+
-    '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">'+
-      /* 缺货损失 */
+    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:4px">📊 老板关心的六大经营指标</h3>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">公司利润 = 多卖 + 卖贵 + 复购 - 少压 - 少亏 - 少损。每个指标背后都有对应的智能体来帮助改善。</p>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">'+
+      // 1. 缺货损失率
       '<div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-sm);border-top:3px solid var(--rose);overflow:hidden">'+
         '<div style="padding:10px 12px;background:var(--rose-light);font-weight:600;font-size:12px;text-align:center">⚠️ 缺货损失率</div>'+
         '<div style="padding:8px 10px;font-size:10px;color:var(--text-secondary);line-height:1.7">'+
-          '· 缺货SKU数<br>· 缺货件数<br>· 影响客户数<br>· 预计损失金额<br>· 重点客户断供风险</div>'+
+          '· 缺货SKU数 · 缺货件数 · 影响客户数<br>· 预计损失金额 · 重点客户断供风险</div>'+
         '<div style="padding:6px 10px;border-top:1px solid var(--rose-soft);text-align:center">'+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#D1FAE5;color:#065F46">智能补货</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#EEF2FF;color:#4338CA">老板问数</span></div>'+
+          '<span style="font-size:9px;padding:2px 8px;border-radius:6px;background:#D1FAE5;color:#065F46">🤖 智能采购助手</span></div>'+
       '</div>'+
-      /* 库存持有成本 */
+      // 2. 库存持有成本
       '<div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-sm);border-top:3px solid var(--amber);overflow:hidden">'+
         '<div style="padding:10px 12px;background:var(--amber-light);font-weight:600;font-size:12px;text-align:center">📦 库存持有成本</div>'+
         '<div style="padding:8px 10px;font-size:10px;color:var(--text-secondary);line-height:1.7">'+
-          '· 库存金额<br>· 滞销SKU数<br>· 积压金额<br>· 库龄分布<br>· 临期风险</div>'+
+          '· 库存金额 · 滞销SKU数 · 积压金额<br>· 库龄分布 · 临期风险</div>'+
         '<div style="padding:6px 10px;border-top:1px solid var(--amber-soft);text-align:center">'+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#D1FAE5;color:#065F46">滞销预警</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#D1FAE5;color:#065F46">存货周转</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#EEF2FF;color:#4338CA">老板问数</span></div>'+
+          '<span style="font-size:9px;padding:2px 8px;border-radius:6px;background:#D1FAE5;color:#065F46">📦 智能库存管家</span></div>'+
       '</div>'+
-      /* 毛利质量 */
+      // 3. 毛利质量
       '<div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-sm);border-top:3px solid var(--violet);overflow:hidden">'+
         '<div style="padding:10px 12px;background:var(--violet-light);font-weight:600;font-size:12px;text-align:center">📊 毛利质量</div>'+
         '<div style="padding:8px 10px;font-size:10px;color:var(--text-secondary);line-height:1.7">'+
-          '· 商品毛利<br>· 客户毛利<br>· 品类毛利<br>· 毛利下降商品<br>· 成本异常商品</div>'+
+          '· 商品毛利 · 客户毛利 · 品类毛利<br>· 毛利下降商品 · 成本异常商品</div>'+
         '<div style="padding:6px 10px;border-top:1px solid var(--violet-soft);text-align:center">'+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#D1FAE5;color:#065F46">毛利分析</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#E0E7FF;color:#4338CA">智能开单</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#E0E7FF;color:#4338CA">销售建议</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#EEF2FF;color:#4338CA">老板问数</span></div>'+
+          '<span style="font-size:9px;padding:2px 8px;border-radius:6px;background:#D1FAE5;color:#065F46">📊 财务智能参谋</span></div>'+
       '</div>'+
-      /* 客户价值 */
+      // 4. 客户价值
       '<div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-sm);border-top:3px solid var(--blue);overflow:hidden">'+
-        '<div style="padding:10px 12px;background:var(--blue-light);font-weight:600;font-size:12px;text-align:center">👥 客户复购率</div>'+
+        '<div style="padding:10px 12px;background:var(--blue-light);font-weight:600;font-size:12px;text-align:center">👥 客户价值</div>'+
         '<div style="padding:8px 10px;font-size:10px;color:var(--text-secondary);line-height:1.7">'+
-          '· 下单频次<br>· 采购金额<br>· 最近交易日期<br>· 常购商品中断<br>· 客户流失风险</div>'+
+          '· 下单频次 · 采购金额 · 最近交易日期<br>· 常购商品中断 · 客户流失风险</div>'+
         '<div style="padding:6px 10px;border-top:1px solid var(--blue-soft);text-align:center">'+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#E0E7FF;color:#4338CA">客户流失</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#E0E7FF;color:#4338CA">销售建议</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#E0E7FF;color:#4338CA">智能开单</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#EEF2FF;color:#4338CA">老板问数</span></div>'+
+          '<span style="font-size:9px;padding:2px 8px;border-radius:6px;background:#E0E7FF;color:#4338CA">🔔 经营风险预警</span></div>'+
       '</div>'+
-      /* 采购效率 */
+      // 5. 采购效率
       '<div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-sm);border-top:3px solid var(--emerald);overflow:hidden">'+
         '<div style="padding:10px 12px;background:var(--emerald-light);font-weight:600;font-size:12px;text-align:center">🛒 采购效率</div>'+
         '<div style="padding:8px 10px;font-size:10px;color:var(--text-secondary);line-height:1.7">'+
-          '· 采购响应时长<br>· 建议采纳率<br>· 到货及时率<br>· 供应商交期稳定性<br>· 紧急采购次数</div>'+
+          '· 采购响应时长 · 建议采纳率 · 到货及时率<br>· 供应商交期稳定性 · 紧急采购次数</div>'+
         '<div style="padding:6px 10px;border-top:1px solid var(--emerald-soft);text-align:center">'+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#D1FAE5;color:#065F46">智能补货</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#D1FAE5;color:#065F46">存货周转</span> '+
-          '<span style="font-size:8px;padding:2px 5px;border-radius:6px;background:#EEF2FF;color:#4338CA">老板问数</span></div>'+
+          '<span style="font-size:9px;padding:2px 8px;border-radius:6px;background:#D1FAE5;color:#065F46">🤖 智能采购助手</span></div>'+
+      '</div>'+
+      // 6. 资金健康度
+      '<div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-sm);border-top:3px solid var(--cyan);overflow:hidden">'+
+        '<div style="padding:10px 12px;background:var(--cyan-light);font-weight:600;font-size:12px;text-align:center">💰 资金健康度</div>'+
+        '<div style="padding:8px 10px;font-size:10px;color:var(--text-secondary);line-height:1.7">'+
+          '· 应收账期 · 逾期金额 · 资金缺口<br>· 现金流趋势 · 费用归集</div>'+
+        '<div style="padding:6px 10px;border-top:1px solid var(--cyan-soft);text-align:center">'+
+          '<span style="font-size:9px;padding:2px 8px;border-radius:6px;background:#D1FAE5;color:#065F46">📊 财务智能参谋</span></div>'+
       '</div>'+
     '</div>'+
-    '<div style="display:flex;justify-content:center;gap:20px;margin-top:10px;font-size:10px;flex-wrap:wrap">'+
-      '<span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#10B981"></span> 一期</span>'+
-      '<span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#6366f1"></span> 二期</span>'+
-      '<span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#d1d5db"></span> 三期</span>'+
+    '<div style="text-align:center;margin-top:10px;font-size:10px;color:var(--text-muted)">❗ 还有 <b>🧾 多模态智能开单</b> 作为独立智能体，覆盖开单效率指标</div>'+
+  '</div>'+
+
+  /* ════════════════════════════════════════════════════════════ */
+  /* 第二步：经营指标 → 智能体映射总览 */
+  /* ════════════════════════════════════════════════════════════ */
+  '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid #10B981">'+
+    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">🧠 六大经营指标 → 五大智能体</h3>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">每个智能体负责一个或多个经营指标，形成从"发现问题"到"推动改善"的完整链路</p>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">'+
+      // 智能采购助手
+      '<div style="padding:14px;background:var(--rose-light);border-radius:var(--radius);text-align:center;border:2px solid var(--rose-soft)">'+
+        '<div style="font-size:24px;margin-bottom:4px">🤖</div>'+
+        '<div style="font-size:13px;font-weight:700;color:var(--rose);margin-bottom:4px">智能采购助手</div>'+
+        '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">⚠️ 缺货损失率<br>🛒 采购效率</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">基于销售趋势+库存水位+在途订单+季节波动，自动生成采购建议清单</div>'+
+      '</div>'+
+      // 智能库存管家
+      '<div style="padding:14px;background:var(--amber-light);border-radius:var(--radius);text-align:center;border:2px solid var(--amber-soft)">'+
+        '<div style="font-size:24px;margin-bottom:4px">📦</div>'+
+        '<div style="font-size:13px;font-weight:700;color:var(--amber);margin-bottom:4px">智能库存管家</div>'+
+        '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">📦 库存持有成本</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">自动识别呆滞商品+分析原因+推荐促销/调拨/清仓方案</div>'+
+      '</div>'+
+      // 财务智能参谋
+      '<div style="padding:14px;background:var(--violet-light);border-radius:var(--radius);text-align:center;border:2px solid var(--violet-soft)">'+
+        '<div style="font-size:24px;margin-bottom:4px">📊</div>'+
+        '<div style="font-size:13px;font-weight:700;color:var(--violet);margin-bottom:4px">财务智能参谋</div>'+
+        '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">📊 毛利质量<br>💰 资金健康度</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">自然语言问数 — "本月哪个商品卖得最好？"实时返回数据+解读</div>'+
+      '</div>'+
+      // 经营风险预警
+      '<div style="padding:14px;background:var(--blue-light);border-radius:var(--radius);text-align:center;border:2px solid var(--blue-soft)">'+
+        '<div style="font-size:24px;margin-bottom:4px">🔔</div>'+
+        '<div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px">经营风险预警</div>'+
+        '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">👥 客户价值</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">基于应收/应付/库存占用预判未来30天资金缺口</div>'+
+      '</div>'+
+      // 多模态智能开单
+      '<div style="padding:14px;background:var(--emerald-light);border-radius:var(--radius);text-align:center;border:2px solid var(--emerald-soft)">'+
+        '<div style="font-size:24px;margin-bottom:4px">🧾</div>'+
+        '<div style="font-size:13px;font-weight:700;color:var(--emerald);margin-bottom:4px">多模态智能开单</div>'+
+        '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">🧾 开单效率</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">语音说出"卖给张三100个A商品"自动识别并创建销售单</div>'+
+      '</div>'+
+      // 说明卡片
+      '<div style="padding:14px;background:var(--slate-light);border-radius:var(--radius);text-align:center;border:2px dashed var(--slate-border)">'+
+        '<div style="font-size:11px;color:var(--text-secondary);line-height:1.6">🔄 所有智能体均具备<br><b>自我进化能力</b><br><span style="font-size:10px;color:var(--text-muted)">越用越懂企业</span></div>'+
+      '</div>'+
     '</div>'+
   '</div>'+
 
-  '<div style="text-align:center;margin:8px 0;font-size:18px;color:var(--text-muted);letter-spacing:8px">↓ ↓ ↓</div>'+
+  /* ════════════════════════════════════════════════════════════ */
+  /* 第三步：对比图 — 用智能体 vs 不用智能体 */
+  /* ════════════════════════════════════════════════════════════ */
+  '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--blue)">'+
+    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:4px">⚖️ 用智能体 vs 不用智能体 — 以智能采购助手为例</h3>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">同样的场景，有AI和没有AI，经营效果完全不同</p>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
+      // 不用智能体
+      '<div style="padding:16px;background:var(--rose-light);border-radius:var(--radius-lg);border:2px solid var(--rose-soft)">'+
+        '<div style="font-size:14px;font-weight:700;color:var(--rose);margin-bottom:10px;text-align:center">❌ 不用智能体</div>'+
+        '<div style="font-size:11px;color:var(--text-secondary);line-height:2">'+
+          '· 采购员每天人工翻库存，凭经验判断哪些商品缺货<br>'+
+          '· 依赖Excel导表汇总，数据滞后1-3天<br>'+
+          '· 缺货了才发现，紧急采购成本高、到货慢<br>'+
+          '· 补货量靠拍脑袋，多了积压少了又缺<br>'+
+          '· 影响客户的商品没有提前通知，客户抱怨<br>'+
+          '· 采购员的效率无法量化，管理靠感觉</div>'+
+      '</div>'+
+      // 用智能体
+      '<div style="padding:16px;background:var(--emerald-light);border-radius:var(--radius-lg);border:2px solid var(--emerald-soft)">'+
+        '<div style="font-size:14px;font-weight:700;color:var(--emerald);margin-bottom:10px;text-align:center">✅ 用智能采购助手</div>'+
+        '<div style="font-size:11px;color:var(--text-secondary);line-height:2">'+
+          '· AI每日自动扫描库存+销量，提前发现缺货风险<br>'+
+          '· 自动计算建议补货量，给出依据和影响客户<br>'+
+          '· 通过企业微信主动推送给对应采购员<br>'+
+          '· 缺货恢复率提升，紧急采购大幅减少<br>'+
+          '· 影响客户的商品提前通知销售，主动管理预期<br>'+
+          '· 采购员效率可量化，AI持续优化补货模型</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="margin-top:10px;padding:10px 14px;background:var(--slate-light);border-radius:8px;font-size:11px;color:var(--text-secondary);text-align:center">💡 <b>核心变化：</b>从"人盯数据、事后补救"到"AI盯数据、事前预警、人做决策"</div>'+
+  '</div>'+
 
   /* ════════════════════════════════════════════════════════════ */
-  /* 第二部分：聚焦一期 — 智能补货智能体 */
+  /* 第四步：AI自我进化（精简概念） */
   /* ════════════════════════════════════════════════════════════ */
-  '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid #10B981">'+
-    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">🤖 第二步：聚焦一期 — 四个智能体</h3>'+
-    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:12px">一期聚焦<b>智能补货、滞销预警、存货周转分析、毛利分析</b>四个智能体。其中<b>智能补货</b>是一期主线，因为它同时影响<b>缺货损失率</b>和<b>采购效率</b>两大指标，是老板最痛的点。</p>'+
+  '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--violet)">'+
+    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">🧬 智能体自我进化 — 越用越准</h3>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">智能体上线后不是一成不变，而是随着使用持续优化。<b style="color:var(--violet)">每个智能体都有专属的进化路径，越用越懂企业。</b></p>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:6px">'+
+      '<span style="padding:5px 12px;background:var(--emerald-light);border-radius:16px;font-size:10px;font-weight:500;color:#065F46">📊 采纳率逐步上升</span>'+
+      '<span style="padding:5px 12px;background:var(--blue-light);border-radius:16px;font-size:10px;font-weight:500;color:#4338CA">⬇️ 误报率逐步下降</span>'+
+      '<span style="padding:5px 12px;background:var(--violet-light);border-radius:16px;font-size:10px;font-weight:500;color:#6D28D9">🔄 规则越沉淀越多</span>'+
+    '</div>'+
+    '<div style="text-align:center;font-size:10px;color:var(--text-muted);padding:6px 12px;background:var(--slate-light);border-radius:8px">每个智能体都在定期回看→反思→优化的循环中不断进化。详细进化机制请查看「<b>AI自我进化</b>」页面。</div>'+
+  '</div>'+
+
+  /* ════════════════════════════════════════════════════════════ */
+  /* 第五步：以「智能采购助手」为例展开 */
+  /* ════════════════════════════════════════════════════════════ */
+  '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--rose)">'+
+    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">🤖 第一步：智能采购助手 — 流程与核心输出</h3>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">以智能采购助手为例，说明一个智能体从发现问题到推动改善的完整流程</p>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
-      /* 左：一期四个智能体 */
-      '<div style="padding:14px;background:var(--emerald-light);border-radius:var(--radius)">'+
-        '<div style="font-size:13px;font-weight:700;color:#065F46;margin-bottom:8px">🧠 一期聚焦四个智能体</div>'+
-        '<div style="font-size:11px;color:var(--text-secondary);line-height:1.8">'+
-          '<b>🤖 智能补货智能体</b><br>'+
-          '· 扫描库存+销量→识别缺货风险<br>'+
-          '· 计算缺口+补货量→生成补货建议<br>'+
-          '· 推送企微→跟踪到货→回看优化<br>'+
-          '<b style="color:#065F46">核心输出：补货建议</b><br><br>'+
-          '<b>📦 滞销预警智能体</b><br>'+
-          '· 识别高库存低动销/长库龄<br>'+
-          '· 推送采购停采+销售促销<br>'+
-          '· 跟踪消化效果→与补货建议互补<br><br>'+
-          '<b>🔄 存货周转分析智能体</b><br>'+
-          '· 按商品/仓库/采购员分析周转<br>'+
-          '· 生成SKU健康清单→反哺补货建议<br><br>'+
-          '<b>📊 毛利分析智能体</b><br>'+
-          '· 识别毛利异常→追溯原因<br>'+
-          '· 推送财务复核→辅助确认口径</div>'+
+      // 左：流程
+      '<div style="padding:14px;background:var(--rose-light);border-radius:var(--radius)">'+
+        '<div style="font-size:13px;font-weight:700;color:var(--rose);margin-bottom:8px">🔄 智能采购助手流程</div>'+
+        '<div style="font-size:11px;color:var(--text-secondary);line-height:2">'+
+          '① 扫描库存+销量 → 识别缺货风险<br>'+
+          '② 计算缺口+补货量 → 生成补货建议<br>'+
+          '③ 按角色推送企业微信<br>'+
+          '④ 采购确认补货数量 → 联系供应商下单<br>'+
+          '⑤ 仓库核实实际库存 → 反馈差异<br>'+
+          '⑥ 智能体跟踪到货 → 判断风险是否解除<br>'+
+          '⑦ 老板查看处理结果+采纳率 → 追加备注或调整规则</div>'+
       '</div>'+
-      /* 右：核心输出 */
+      // 右：核心输出
       '<div style="padding:14px;background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-radius:var(--radius);border:2px solid var(--amber-soft)">'+
         '<div style="font-size:13px;font-weight:700;color:var(--amber);margin-bottom:8px">⭐ 核心输出：补货建议</div>'+
         '<div style="font-size:11px;color:var(--text-secondary);line-height:1.8">'+
@@ -727,15 +762,12 @@ function pageTree(){
     '</div>'+
   '</div>'+
 
-  '<div style="text-align:center;margin:8px 0;font-size:18px;color:var(--text-muted);letter-spacing:8px">↓ ↓ ↓</div>'+
-
   /* ════════════════════════════════════════════════════════════ */
-  /* 第三部分：缺货建议的计算逻辑 */
+  /* 第六步：补货建议的计算逻辑 */
   /* ════════════════════════════════════════════════════════════ */
   '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--blue)">'+
-    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">📐 第三步：补货建议怎么算出来的？</h3>'+
-    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:12px">AI 不是拍脑袋，每条建议背后都有计算逻辑。公式当前为推测，待客户确认后固化。</p>'+
-    /* 影响因子标签 */
+    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">📐 第二步：补货建议怎么算出来的？</h3>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:12px">AI不是拍脑袋，每条建议背后都有计算逻辑。公式当前为推测，待客户确认后固化。</p>'+
     '<div style="margin-bottom:8px"><span style="font-size:10px;font-weight:600;color:var(--text-secondary)">📌 影响因子：</span></div>'+
     '<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:12px">'+
       '<span class="kpi-factor">当前可用量</span><span class="kpi-factor">近2个月总销量</span><span class="kpi-factor">15天标准销量</span>'+
@@ -744,7 +776,7 @@ function pageTree(){
       '<span class="kpi-factor">活动/促销影响</span><span class="kpi-factor">历史同期销量</span><span class="kpi-factor">客户优先级</span>'+
       '<span class="kpi-factor">真实缺口(已接订单)</span><span class="kpi-factor">供应商交付周期</span><span class="kpi-factor">季节系数</span>'+
     '</div>'+
-    /* 计算流程图 */
+    /* 计算流程 */
     '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin-bottom:16px;font-size:10px">'+
       '<div style="padding:8px 12px;background:var(--slate-light);border-radius:8px;text-align:center;min-width:100px"><b>输入数据</b><br><span style="color:var(--text-muted)">库存可用量<br>近15天销量<br>在途库存</span></div>'+
       '<span style="color:var(--text-muted);font-size:16px">→</span>'+
@@ -754,7 +786,7 @@ function pageTree(){
       '<span style="color:var(--text-muted);font-size:16px">→</span>'+
       '<div style="padding:8px 12px;background:var(--emerald-light);border-radius:8px;text-align:center;min-width:110px"><b>生成建议</b><br><span style="color:var(--text-muted)">建议补货量<br>影响客户<br>紧急程度</span></div>'+
     '</div>'+
-    /* 公式卡片 */
+    /* 公式 */
     '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">'+
       '<div style="padding:12px;background:var(--slate-light);border-radius:var(--radius);border-left:3px solid var(--blue)">'+
         '<div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px">📏 核心公式 <span style="font-size:9px;color:var(--emerald);font-weight:400">【客户已确认】</span></div>'+
@@ -788,31 +820,22 @@ function pageTree(){
     '<div class="sc-boundary" style="margin-top:10px">数据口径原则：客户已确认公式作为基础口径 · AI推演公式必须标注待客户确认 · 不能把推演公式当最终公式</div>'+
   '</div>'+
 
-  '<div style="text-align:center;margin:8px 0;font-size:18px;color:var(--text-muted);letter-spacing:8px">↓ ↓ ↓</div>'+
-
   /* ════════════════════════════════════════════════════════════ */
-  /* 第四部分：数据来源 */
+  /* 第七步：数据来源 */
   /* ════════════════════════════════════════════════════════════ */
   '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--slate)">'+
-    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">🗄️ 第四步：计算逻辑的数据从哪来？四层数据全景</h3>'+
-    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">AI 不是只看三张表，而是整合系统数据、外部输入、业务参数、人工反馈四层信息。</p>'+
-
-    /* 第一层：系统数据 */
+    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">🗄️ 第三步：计算逻辑的数据从哪来？四层数据全景</h3>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">AI不是只看三张表，而是整合系统数据、外部输入、业务参数、人工反馈四层信息。</p>'+
     '<div style="margin-bottom:12px">'+
-      '<div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:6px">📊 第一层：ERP 系统基础数据</div>'+
+      '<div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:6px">📊 第一层：ERP系统基础数据</div>'+
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+
-        '<div style="padding:10px 12px;background:var(--blue-light);border-radius:var(--radius);font-size:10px">'+
-          '<b>销货单统计表</b><br><span style="color:var(--text-secondary)">销量 · 销售额 · 客户购买记录 · 销售趋势 · 出库数量</span></div>'+
-        '<div style="padding:10px 12px;background:var(--blue-light);border-radius:var(--radius);font-size:10px">'+
-          '<b>库存状况表</b><br><span style="color:var(--text-secondary)">当前库存 · 可用库存 · 仓库 · 采购员 · 商品维度 · 库龄</span></div>'+
-        '<div style="padding:10px 12px;background:var(--blue-light);border-radius:var(--radius);font-size:10px">'+
-          '<b>进货单明细表</b><br><span style="color:var(--text-secondary)">采购成本 · 平均进价 · 供应商 · 采购历史 · 采购频次</span></div>'+
+        '<div style="padding:10px 12px;background:var(--blue-light);border-radius:var(--radius);font-size:10px"><b>销货单统计表</b><br><span style="color:var(--text-secondary)">销量 · 销售额 · 客户购买记录 · 销售趋势 · 出库数量</span></div>'+
+        '<div style="padding:10px 12px;background:var(--blue-light);border-radius:var(--radius);font-size:10px"><b>库存状况表</b><br><span style="color:var(--text-secondary)">当前库存 · 可用库存 · 仓库 · 采购员 · 商品维度 · 库龄</span></div>'+
+        '<div style="padding:10px 12px;background:var(--blue-light);border-radius:var(--radius);font-size:10px"><b>进货单明细表</b><br><span style="color:var(--text-secondary)">采购成本 · 平均进价 · 供应商 · 采购历史 · 采购频次</span></div>'+
       '</div>'+
     '</div>'+
-
-    /* 第二层：外部输入 */
     '<div style="margin-bottom:12px">'+
-      '<div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:6px">📥 第二层：外部输入数据（不在 ERP 标准表中）</div>'+
+      '<div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:6px">📥 第二层：外部输入数据（不在ERP标准表中）</div>'+
       '<div style="display:flex;flex-wrap:wrap;gap:4px">'+
         '<span class="kpi-factor">在途库存</span><span class="kpi-factor">预计到货日期</span><span class="kpi-factor">供应商交付周期</span><span class="kpi-factor">供应商质量</span>'+
         '<span class="kpi-factor">最低起订量</span><span class="kpi-factor">包装规格</span><span class="kpi-factor">保质期/临期</span><span class="kpi-factor">仓储费率</span>'+
@@ -820,8 +843,6 @@ function pageTree(){
         '<span class="kpi-factor">活动/促销计划</span><span class="kpi-factor">历史同期销量</span><span class="kpi-factor">竞品动态</span>'+
       '</div>'+
     '</div>'+
-
-    /* 第三层：业务参数 */
     '<div style="margin-bottom:12px">'+
       '<div style="font-size:11px;font-weight:700;color:var(--emerald);margin-bottom:6px">⚙️ 第三层：业务规则参数（可配置、可进化）</div>'+
       '<div style="display:flex;flex-wrap:wrap;gap:4px">'+
@@ -829,34 +850,28 @@ function pageTree(){
         '<span class="kpi-factor">安全系数</span><span class="kpi-factor">季节系数</span><span class="kpi-factor">客户优先级权重</span><span class="kpi-factor">滞销天数阈值</span>'+
         '<span class="kpi-factor">毛利异常阈值</span><span class="kpi-factor">客户风险评分权重</span><span class="kpi-factor">品类周转标准</span><span class="kpi-factor">最小补货量</span>'+
       '</div>'+
-      '<div style="font-size:9px;color:var(--text-muted);margin-top:4px">这些参数是 AI 进化的核心对象 — 通过回看效果不断优化，老板确认后固化</div>'+
+      '<div style="font-size:9px;color:var(--text-muted);margin-top:4px">这些参数是AI进化的核心对象 — 通过回看效果不断优化，老板确认后固化</div>'+
     '</div>'+
-
-    /* 第四层：人工输入 */
     '<div style="margin-bottom:4px">'+
-      '<div style="font-size:11px;font-weight:700;color:var(--violet);margin-bottom:6px">✏️ 第四层：人工反馈输入（AI 无法自动获取）</div>'+
+      '<div style="font-size:11px;font-weight:700;color:var(--violet);margin-bottom:6px">✏️ 第四层：人工反馈输入（AI无法自动获取）</div>'+
       '<div style="display:flex;flex-wrap:wrap;gap:4px">'+
         '<span class="kpi-factor">老板备注/指导</span><span class="kpi-factor">采购确认/调整</span><span class="kpi-factor">仓库核实反馈</span><span class="kpi-factor">销售回访记录</span>'+
         '<span class="kpi-factor">客户反馈</span><span class="kpi-factor">财务复核口径</span><span class="kpi-factor">规则调整确认</span><span class="kpi-factor">试运行结果</span>'+
       '</div>'+
     '</div>'+
-
     '<div class="sc-boundary" style="margin-top:10px">数据口径原则：客户已确认公式作为基础口径 · AI推演公式必须标注待客户确认 · 四层数据中，系统数据自动同步，外部输入需对接，业务参数可配置，人工反馈需交互入口</div>'+
   '</div>'+
 
-  '<div style="text-align:center;margin:8px 0;font-size:18px;color:var(--text-muted);letter-spacing:8px">↓ ↓ ↓</div>'+
-
   /* ════════════════════════════════════════════════════════════ */
-  /* 第五部分：人员协作流程 */
+  /* 第八步：人员协作流程 */
   /* ════════════════════════════════════════════════════════════ */
   '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--violet)">'+
-    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">👥 第五步：一条补货建议如何流转？人员协作全景</h3>'+
-    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">AI 不替代人，而是把正确的事推给正确的人，并跟踪到结果。</p>'+
-    /* 角色流程 */
+    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">👥 第四步：一条补货建议如何流转？人员协作全景</h3>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">AI不替代人，而是把正确的事推给正确的人，并跟踪到结果。</p>'+
     '<div class="collab-flow" style="margin-bottom:12px">'+
-      '<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">🤖 AI智能体</div><div class="cn-action">识别缺货风险<br>生成补货建议</div></div>'+
+      '<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">🤖 智能采购助手</div><div class="cn-action">识别缺货风险<br>生成补货建议</div></div>'+
       '<span class="collab-arrow">→</span>'+
-      '<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">🤖 AI智能体</div><div class="cn-action">按角色个性化<br>推送企业微信</div></div>'+
+      '<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">🤖 智能采购助手</div><div class="cn-action">按角色个性化<br>推送企业微信</div></div>'+
       '<span class="collab-arrow">→</span>'+
       '<div class="collab-node" style="background:var(--emerald-light)"><div class="cn-role" style="color:var(--emerald)">🛒 采购</div><div class="cn-action">查看补货建议<br>确认采购数量</div></div>'+
       '<span class="collab-arrow">→</span>'+
@@ -864,44 +879,26 @@ function pageTree(){
       '<span class="collab-arrow">→</span>'+
       '<div class="collab-node" style="background:var(--amber-light)"><div class="cn-role" style="color:var(--amber)">📞 销售</div><div class="cn-action">知会受影响客户<br>管理客户预期</div></div>'+
       '<span class="collab-arrow">→</span>'+
-      '<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">🤖 AI智能体</div><div class="cn-action">跟踪到货情况<br>判断风险是否解除</div></div>'+
+      '<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">🤖 智能采购助手</div><div class="cn-action">跟踪到货情况<br>判断风险是否解除</div></div>'+
       '<span class="collab-arrow">→</span>'+
       '<div class="collab-node" style="background:linear-gradient(135deg,var(--amber-light),#fff)"><div class="cn-role" style="color:var(--amber)">👤 老板</div><div class="cn-action">查看处理结果<br>追加备注/调规则</div></div>'+
     '</div>'+
-    /* 角色责任表 */
     '<div style="overflow-x:auto"><table class="matrix-table"><thead><tr><th>角色</th><th>收到什么</th><th>要做什么</th><th>不做什么</th></tr></thead><tbody>'+
       '<tr><td class="role-col">👤 老板</td><td>缺货总览 · 利润影响 · 采纳率</td><td>看全局 · 追加备注 · 确认规则调整</td><td>不直接处理具体缺货</td></tr>'+
       '<tr><td class="role-col">🛒 采购</td><td>补货建议清单（按责任人）</td><td>确认补货数量 · 联系供应商下单</td><td>不修改库存数据</td></tr>'+
-      '<tr><td class="role-col">🏭 仓库</td><td>库存核实任务</td><td>核实实际库存 · 反馈差异</td><td>不决定采购数量</td></tr>'+
+      '<tr><td class="role-col">🏭 仓库</td><td>库存核实事项</td><td>核实实际库存 · 反馈差异</td><td>不决定采购数量</td></tr>'+
       '<tr><td class="role-col">📞 销售</td><td>受影响客户清单</td><td>提前沟通客户 · 管理预期</td><td>不承诺到货时间</td></tr>'+
-      '<tr><td class="role-col">🤖 AI</td><td>三张基础数据表</td><td>分析 · 建议 · 推送 · 跟踪 · 回看</td><td>不自动采购 · 不改库存</td></tr>'+
+      '<tr><td class="role-col">🤖 智能采购助手</td><td>三张基础数据表</td><td>分析 · 建议 · 推送 · 跟踪 · 回看</td><td>不自动采购 · 不改库存</td></tr>'+
     '</tbody></table></div>'+
     '<div style="margin-top:10px;padding:10px 14px;background:var(--slate-light);border-radius:8px;font-size:11px;color:var(--text-secondary);text-align:center">每个角色只做自己该做的部分，智能体负责串联、跟踪、复盘 — 形成责任闭环，不再依赖人工催办</div>'+
   '</div>'+
 
-  '<div style="text-align:center;margin:8px 0;font-size:18px;color:var(--text-muted);letter-spacing:8px">↓ ↓ ↓</div>'+
-
   /* ════════════════════════════════════════════════════════════ */
-  /* 第六部分：AI 自我进化闭环 */
+  /* 第九步：AI自我进化闭环（以智能采购助手为例） */
   /* ════════════════════════════════════════════════════════════ */
   '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--rose)">'+
-    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">🧬 第六步：AI 自我进化 — 越用越准</h3>'+
-    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">AI 不是一次性上线，而是定期回看、反思、优化的持续循环。<b style="color:var(--rose)">每完成一轮进化，AI就更懂企业一步，永不停歇。</b></p>'+
-
-    /* 进化循环 */
-    '<div class="evo-flow-row" style="margin-bottom:14px">'+
-      '<div class="evo-node auto">🔄 定期回看<br><span style="font-weight:400;font-size:9px">每周/每月</span></div>'+
-      '<span class="evo-arrow">→</span>'+
-      '<div class="evo-node auto">📊 生成回看报告<br><span style="font-weight:400;font-size:9px">缺货恢复率 · 周转率变化</span></div>'+
-      '<span class="evo-arrow">→</span>'+
-      '<div class="evo-node review">📋 采纳 vs 未采纳<br><span style="font-weight:400;font-size:9px">效果对比分析</span></div>'+
-      '<span class="evo-arrow">→</span>'+
-      '<div class="evo-node auto">🧬 AI 反思<br><span style="font-weight:400;font-size:9px">误报/漏报分析</span></div>'+
-      '<span class="evo-arrow">→</span>'+
-      '<div class="evo-node auto">💡 生成优化建议<br><span style="font-weight:400;font-size:9px">调整参数/阈值</span></div>'+
-      '<span class="evo-arrow">→</span>'+
-      '<div class="evo-node human">👤 老板确认<br><span style="font-weight:400;font-size:9px">试运行→固化</span></div>'+
-    '</div>'+
+    '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">🧬 第五步：智能采购助手自我进化 — 越用越准</h3>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">智能采购助手上线后持续回看补货建议的采纳效果，不断优化补货模型。<b style="color:var(--rose)">以下是智能采购助手的实际进化案例。</b></p>'+
 
     /* 采纳效果对比 */
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">'+
@@ -925,13 +922,14 @@ function pageTree(){
 
     /* AI反思示例 */
     '<div style="padding:14px;background:var(--violet-light);border-radius:var(--radius);border:1px solid var(--violet-soft);margin-bottom:14px">'+
-      '<div style="font-size:12px;font-weight:700;color:var(--violet);margin-bottom:6px">🧬 AI 反思示例</div>'+
+      '<div style="font-size:12px;font-weight:700;color:var(--violet);margin-bottom:6px">🧬 AI反思示例</div>'+
       '<div style="font-size:10px;color:var(--text-secondary);line-height:2">'+
         '当前规则：可售天数低于 <b>2天</b> 提醒缺货<br>'+
         '反思发现：<b>牛肉粒</b>连续3次提醒后仍缺货（实际1.8天断货），说明提前量不够<br>'+
         '优化建议：牛肉粒的补货提前量从 <b>2天 → 5天</b>，建议先试运行14天<br>'+
         '未采纳分析：<b>付超英</b>采纳率58%，低于任情情的83%，未采纳的10条中3条已缺货</div>'+
     '</div>'+
+
     /* 下一轮提示 */
     '<div style="font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:14px;padding:6px 12px;background:var(--slate-light);border-radius:8px">'+
       '⏭️ 14天后回看牛肉粒效果 → 达标则固化，不达标继续调整 → <b style="color:var(--violet)">每期都比上期更准</b></div>'+
@@ -943,29 +941,19 @@ function pageTree(){
       '<div style="max-width:600px;margin:0 auto;padding:10px 14px;background:#fff;border:1px solid var(--slate-border);border-radius:8px;font-size:11px;color:var(--text-muted);margin-bottom:8px">'+
         '💬 老板输入示例：<b>"鱿鱼串优先补货，刘记烧烤催了三次。付超英的采纳率太低，下次推送时标注紧急。"</b></div>'+
       '<div style="max-width:600px;margin:0 auto;padding:10px 14px;background:var(--blue-light);border-radius:8px;font-size:10px;color:var(--text-secondary);line-height:1.6">'+
-        '🤖 <b>AI 回应：</b>已记录。① 鱿鱼串补货优先级提升至最高，建议采购量上调20%。② 下次推送付超英的补货建议将标注「紧急」标签。③ 已同步通知付超英和仓库。④ 老板可在「AI跟踪报告」中查看备注历史。</div>'+
+        '🤖 <b>AI回应：</b>已记录。① 鱿鱼串补货优先级提升至最高，建议采购量上调20%。② 下次推送付超英的补货建议将标注「紧急」标签。③ 已同步通知付超英和仓库。④ 老板可在「AI跟踪报告」中查看备注历史。</div>'+
     '</div>'+
   '</div>'+
 
-  /* ════════════════════════════════════════════════════════════ */
-  /* 底部总结：完整闭环 */
-  /* ════════════════════════════════════════════════════════════ */
+  /* 底部总结 */
   '<div style="max-width:1000px;margin:18px auto 0;padding:20px 24px;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:var(--radius-lg);text-align:center;color:#fff">'+
     '<div style="font-size:16px;font-weight:700;margin-bottom:8px">🔄 完整业务闭环</div>'+
     '<div style="font-size:12px;line-height:2.2;opacity:.9">'+
       '<b>四层数据输入</b> → <b>AI分析计算</b> → <b>生成补货建议</b> → <b>企业微信触达角色</b> → <b>人员线下处理</b> → <b>AI跟踪结果</b> → <b>定期回看报告</b> → <b>采纳率分析</b> → <b>AI反思优化</b> → <b>老板确认规则</b> → <b>循环迭代</b></div>'+
-  '</div>'+
-
-  /* 一期重点 */
-  '<div class="boundary-box" style="margin-top:16px"><h4>🚧 一期重点建设范围</h4><ul>'+
-    '<li><b>重点智能体：</b>智能补货 · 滞销预警 · 存货周转分析 · 毛利分析</li>'+
-    '<li><b>重点目标：</b>替代人工导表和人工统计 · 自然语言查看经营问题 · 先做分析/建议/推送/回看 · 不做复杂工作台</li>'+
-    '<li><b>重点能力：</b>自然语言查询 · 分析结果展示 · 企业微信消息推送 · AI回看报告 · 规则优化建议</li>'+
-    '<li><b>一期暂不做：</b>自动采购 · 自动调拨 · 自动改库存 · 复杂审批流 · 直接写回ERP · 替代线下动作</li>'+
-  '</ul></div>';
+  '</div>';
 }
 function pageKpi(){
-  return '<div class="page-title"><h1>老板赚钱的五大指标体系</h1><p>每个指标对应经营场景、影响因子、推演公式和AI进化方向</p></div>'+
+  return '<div class="page-title"><h1>老板关心的六大经营指标体系</h1><p>每个指标对应经营场景、影响因子、推演公式和AI进化方向</p></div>'+
   '<div class="kpi-grid">'+
     // 1. 缺货损失
     '<div class="kpi-card"><div class="kpi-head"><div class="kpi-icon">⚠️</div><div class="kpi-name">缺货损失</div></div>'+
@@ -1118,6 +1106,27 @@ function pageKpi(){
       '<span class="kpi-ev">学习供应商交付规律</span>'+
       '<span class="kpi-ev">优化建议采纳反馈闭环</span>'+
     '</div></div>'+
+    // 6. 资金健康度
+    '<div class="kpi-card k6" style="border-top-color:var(--cyan)"><div class="kpi-head"><div class="kpi-icon">💰</div><div class="kpi-name">资金健康度</div></div>'+
+    '<div class="kpi-question">老板问：资金够不够用？应收能按时回来吗？资金缺口有多大？</div>'+
+    '<div class="kpi-factors">'+
+      '<span class="kpi-factor">应收账款</span><span class="kpi-factor">应付账款</span><span class="kpi-factor">账期</span><span class="kpi-factor">逾期金额</span>'+
+      '<span class="kpi-factor">库存占用资金</span><span class="kpi-factor">资金缺口</span><span class="kpi-factor">现金流趋势</span><span class="kpi-factor">费用归集</span>'+
+    '</div>'+
+    '<div class="kpi-formulas-label">推演公式 <span class="kpi-formulas-note">【当前推测，待客户确认】</span></div>'+
+    '<div class="kpi-formulas">'+
+      '<div>应收周转天数 = 平均应收账款 / 日均销售收入</div>'+
+      '<div>资金缺口 = 应付总额 - 应收总额 - 可用现金</div>'+
+      '<div>逾期率 = 逾期金额 / 应收总额 x 100%</div>'+
+      '<div>资金健康分 = 现金流得分 + 应收得分 + 应付得分 + 库存得分</div>'+
+    '</div>'+
+    '<div class="kpi-evolve-label">AI进化方向</div>'+
+    '<div class="kpi-evolve-items">'+
+      '<span class="kpi-ev">优化应收预警周期(按客户)</span>'+
+      '<span class="kpi-ev">优化资金缺口预判模型</span>'+
+      '<span class="kpi-ev">学习客户回款规律</span>'+
+      '<span class="kpi-ev">优化账期管理策略</span>'+
+    '</div></div>'+
   '</div>';
 }
 function pageEvolve(){
@@ -1211,14 +1220,14 @@ function pageEvolve(){
 }
 function pageScenes(){
   var h='';
-  // === 库存类场景 ===
-  h+='<div class="page-title"><h1>库存类场景闭环</h1><p>智能补货 · 滞销预警 · 存货周转分析</p></div>';
+  // === 库存与采购类场景 ===
+  h+='<div class="page-title"><h1>库存与采购类场景闭环</h1><p>智能采购助手 · 智能库存管家</p></div>';
 
-  // --- 智能补货 ---
-  h+=scFlow('🤖','智能补货闭环','var(--rose)',
-    ['智能补货智能体扫描库存+销量→识别缺货风险','智能补货智能体计算缺口+补货量→生成补货建议','按角色推送企业微信：采购收补货清单、仓库收核实事项、销售收客户影响','采购确认补货数量→联系供应商下单','仓库核实实际库存→反馈差异','智能补货智能体跟踪到货→判断风险是否解除','老板查看处理结果+采纳率→追加备注或调整规则'],
+  // --- 智能采购助手 ---
+  h+=scFlow('🤖','智能采购助手闭环','var(--rose)',
+    ['智能采购助手扫描库存+销量→识别缺货风险','智能采购助手计算缺口+补货量→生成补货建议','按角色推送企业微信：采购收补货清单、仓库收核实事项、销售收客户影响','采购确认补货数量→联系供应商下单','仓库核实实际库存→反馈差异','智能采购助手跟踪到货→判断风险是否解除','老板查看处理结果+采纳率→追加备注或调整规则'],
     ['缺货商品+补货建议量+依据','补货建议量/可售天数/影响客户/紧急程度','采购确认补货、仓库核实库存、销售沟通客户','已到货风险解除、部分到货、未处理'],
-    '🚧 智能补货的核心输出是补货建议（含建议补货量+依据+影响客户），不是只预警。智能体不直接决定采购数量，由采购人员确认。');
+    '🚧 智能采购助手的核心输出是补货建议（含建议补货量+依据+影响客户），不是只预警。智能体不直接决定采购数量，由采购人员确认。');
   h+=factorPanel(
     ['当前可用量','近2个月总销量','15天标准销量','安全库存','在途库存','采购周期','最低起订量','包装规格','季节波动','活动/促销影响','历史同期销量','客户优先级','真实缺口'],
     [
@@ -1248,77 +1257,93 @@ function pageScenes(){
     ]
   );
 
-  // --- 滞销预警 ---
-  h+=scFlow('📦','滞销预警闭环','var(--amber)',
-    ['滞销预警智能体发现高库存低动销/长库龄/销量下降','滞销预警智能体判断滞销风险和库存占用金额','推送采购员（建议停采）和销售员（建议促销）','采购确认是否暂停采购→调整采购计划','销售确认促销/组合销售→消化库存','滞销预警智能体跟踪库存是否下降→消化效果','老板查看滞销处理效果→对比智能补货的补货建议避免过度采购'],
-    ['滞销SKU清单+积压金额','库存金额/库龄/近30天销量/临期风险','暂停采购、销售处理、调拨','库存下降、销量恢复、风险关闭'],
-    '🚧 滞销预警与智能补货形成互补：智能补货告诉你要补什么，滞销预警告诉你要停什么。滞销预警智能体只给出处理建议，是否促销、调拨、清仓由业务人员确认。');
+  // --- 智能库存管家 ---
+  h+=scFlow('📦','智能库存管家闭环','var(--amber)',
+    ['智能库存管家发现高库存低动销/长库龄/销量下降','智能库存管家判断滞销风险和库存占用金额，同时分析周转健康度','推送采购员（建议停采）和销售员（建议促销），同步展示库存周转排行','采购确认是否暂停采购→调整采购计划','销售确认促销/组合销售→消化库存','智能库存管家跟踪库存是否下降、周转率变化→消化效果','老板查看库存健康度+周转改善效果'],
+    ['滞销SKU清单+积压金额','库存金额/库龄/近30天销量/周转率','暂停采购、销售处理、调拨','库存下降、销量恢复、周转改善、风险关闭'],
+    '🚧 智能库存管家合并了滞销预警和存货周转分析两个能力。管家只给出处理建议，是否促销、调拨、清仓由业务人员确认。');
   h+=factorPanel(
-    ['当前可用量','最近一次出库日期','近15天平均销量','平均进价','采购总金额','采购总数量','保质期/临期','仓储费率','资金利率','品类特性','季节库存','历史促销效果'],
+    ['当前可用量','最近一次出库日期','近15天平均销量','平均进价','采购总金额','采购总数量','保质期/临期','仓储费率','资金利率','品类特性','季节库存','历史促销效果','出库数量','仓库分布'],
     [
       {name:'滞销天数',formula:'当前日期 − 该SKU最近一次出库日期'},
       {name:'滞销判定',formula:'当前库存 ≥ 近15天平均销量 → 进入滞销池'},
       {name:'平均进价',formula:'采购总金额 ÷ 采购总数量（同一商品多次进货按数量加权）'},
-      {name:'采购总金额',formula:'Σ（单品单价 × 数量）'},
       {name:'积压金额合计',formula:'Σ（当前可用量 × 平均进价）'},
-      {name:'滞销SKU数量',formula:'满足滞销判定条件的SKU去重计数'}
+      {name:'滞销SKU数量',formula:'满足滞销判定条件的SKU去重计数'},
+      {name:'近15天日均销量',formula:'近2个月总销量 ÷ 52天（销货单统计表，取今年出库数量）'},
+      {name:'整体周转率',formula:'15天标准销量 ÷ 当前可用量'},
+      {name:'周转天数',formula:'当前可用量 ÷ 日均销量'},
+      {name:'同比变化率',formula:'(今年日均销量 − 去年日均销量) ÷ 去年日均销量 × 100%'}
     ],
-    ['优化滞销天数阈值(按品类)','优化品类滞销判断规则','优化临期风险等级','学习促销对滞销消化效果','优化库存金额健康线'],
+    ['优化滞销天数阈值(按品类)','优化品类滞销判断规则','优化临期风险等级','学习促销对滞销消化效果','优化SKU健康评分权重','优化品类周转标准'],
     '<span class="fp-note" style="color:var(--emerald)">【客户已确认计算口径】</span>',
     [
       {name:'库存持有成本',formula:'积压金额 × 资金利率 × 持有天数 / 365 + 仓储费率 × 库存数量'},
       {name:'临期风险等级',formula:'保质期剩余天数 < 阈值 → 临期（阈值按品类：生鲜/冻品/常温）'},
-      {name:'临期损失预估',formula:'积压金额 × 临期折扣率'},
       {name:'滞销严重度',formula:'滞销天数 × 积压金额 × 库龄权重'},
       {name:'品类滞销阈值',formula:'按品类设置不同滞销天数标准（生鲜3天/冻品15天/常温30天）'},
-      {name:'季节性滞销识别',formula:'季节末库存数量 / 季节销量'},
-      {name:'促销消化效果',formula:'(促销后销量 − 促销前销量) / 促销前销量 × 100%'},
-      {name:'滞销处理优先级',formula:'积压金额 × 临期紧迫度 × 处理难度'},
       {name:'动销率',formula:'近30天有销售SKU数 / 总SKU数 × 100%'},
-      {name:'资金占用率',formula:'积压金额 / 总库存金额 × 100%'}
-    ]
-  );
-
-  // --- 存货周转分析 ---
-  h+=scFlow('🔄','存货周转分析闭环','var(--blue)',
-    ['存货周转分析智能体定期分析商品/仓库/采购员维度周转','识别周转慢/库存金额高/库龄长商品','生成采购员SKU健康清单→推送采购','采购查看负责商品健康情况→调整采购策略','仓库核实库存和库龄→反馈异常','存货周转分析智能体跟踪周转率变化→生成改善趋势','老板查看周转排行+改善效果'],
-    ['商品/采购员/仓库周转排行','周转慢SKU清单+库存金额','采购员负责商品健康卡','周转率变化、库存金额变化、改善趋势'],
-    '🚧 周转率公式当前不能直接固化，需客户确认。页面先展示"周转异常趋势"和"健康状态"。周转分析结果可反哺智能补货的补货建议。');
-  h+=factorPanel(
-    ['当前可用量','近2个月总销量(今年)','近2个月总销量(去年同期)','15天标准销量','出库数量','季节因素','品类特性','仓库分布'],
-    [
-      {name:'近15天日均销量',formula:'近2个月总销量 ÷ 52天（销货单统计表，取今年出库数量）'},
-      {name:'15天标准销量',formula:'日均销量 × 15天'},
-      {name:'整体周转率',formula:'15天标准销量 ÷ 当前可用量'},
-      {name:'周转天数',formula:'当前可用量 ÷ 日均销量'},
-      {name:'同比变化率',formula:'(今年日均销量 − 去年日均销量) ÷ 去年日均销量 × 100%'},
-      {name:'去年日均销量',formula:'同期当天往后推17天总销量 ÷ 15天（按客户口径标准化）'}
-    ],
-    ['优化SKU健康评分权重','优化品类周转标准','优化库存金额健康线','学习季节性周转规律','优化采购频率建议'],
-    '<span class="fp-note" style="color:var(--emerald)">【客户已确认计算口径】</span>',
-    [
+      {name:'资金占用率',formula:'积压金额 / 总库存金额 × 100%'},
       {name:'SKU健康度',formula:'周转得分 + 库龄得分 + 库存金额得分 + 销量趋势得分'},
-      {name:'周转异常等级',formula:'周转偏离度 × 金额影响 × 持续周期'},
       {name:'品类周转标准',formula:'按品类设置不同周转天数基准（生鲜7天/调味料30天）'},
-      {name:'多仓周转差异',formula:'各仓库周转率标准差 / 均值'},
-      {name:'周转趋势',formula:'近4周周转率变化斜率'},
-      {name:'库存金额占比',formula:'单SKU库存金额 / 总库存金额 × 100%'},
-      {name:'采购员维度周转',formula:'按采购员负责SKU汇总周转率'},
-      {name:'周转改善率',formula:'(本期周转率 − 上期周转率) / 上期周转率 × 100%'},
-      {name:'环比变化率',formula:'(本期周转天数 − 上期周转天数) / 上期周转天数 × 100%'},
-      {name:'库龄分布',formula:'各库龄段(0-30/30-60/60-90/90+天)库存金额占比'}
+      {name:'周转改善率',formula:'(本期周转率 − 上期周转率) / 上期周转率 × 100%'}
     ]
   );
 
+  // === 财务与客户类场景 ===
+  h+='<div class="page-title" style="margin-top:28px"><h1>财务与客户类场景闭环</h1><p>财务智能参谋 · 经营风险预警 · 多模态智能开单</p></div>';
 
-  // === 销售与利润类场景 ===
-  h+='<div class="page-title" style="margin-top:28px"><h1>销售与利润类场景闭环</h1><p>智能开单 · 毛利分析 · 销售建议 · 客户流失预警 · 经营问数</p></div>';
+  // --- 财务智能参谋 ---
+  h+=scFlow('📊','财务智能参谋闭环','var(--violet)',
+    ['财务智能参谋分析商品/客户/品类毛利变化','识别毛利下降/成本异常/售价异常/资金风险','财务智能参谋提示可能原因：成本上涨/售价下降/出库未审/费用未归集/应收逾期','推送财务复核','财务确认成本/含税/退货/费用口径，同时查看应收和资金状况','同步采购核成本/销售核售价','财务智能参谋跟踪毛利是否恢复、资金是否改善','老板查看毛利异常+资金健康度处理结果'],
+    ['商品/客户/品类毛利排行','财务智能参谋提示可能原因：成本上涨、出库未审等','财务复核成本口径/费用口径','已复核、待销售处理、待采购确认'],
+    '🚧 财务智能参谋合并了毛利分析和经营问数能力。毛利失真与出库未审、结存成本、费用归集缺失有关，必须把财务复核节点画出来。');
+  h+=factorPanel(
+    ['售价','进货成本','成本口径(含税/不含税)','促销折扣','退货率','退货冲减','出库审核状态','费用归集','客户折扣','渠道差异','应收账款','逾期金额','资金缺口'],
+    [
+      {name:'毛利额',formula:'销售收入 - 销售成本'},
+      {name:'毛利率',formula:'毛利额 / 销售收入 × 100%'},
+      {name:'毛利异常等级',formula:'下降幅度 × 金额影响 × 销量权重'},
+      {name:'成本异常检测',formula:'|实际成本 - 标准成本| / 标准成本 > 阈值 ? 标记异常 : 正常'},
+      {name:'费用归集完整度',formula:'已归集费用 / 应归集费用 × 100%'},
+      {name:'净毛利率',formula:'(毛利额 − 促销折扣 − 退货冲减) / 销售收入 × 100%'},
+      {name:'品类毛利贡献',formula:'品类毛利额 / 总毛利额 × 100%'},
+      {name:'毛利趋势变化率',formula:'(本期毛利率 − 上期毛利率) / 上期毛利率 × 100%'},
+      {name:'应收周转天数',formula:'平均应收账款 / 日均销售收入'},
+      {name:'资金缺口',formula:'应付总额 - 应收总额 - 可用现金'},
+      {name:'资金健康分',formula:'现金流得分 + 应收得分 + 应付得分 + 库存得分'}
+    ],
+    ['优化毛利异常阈值(按品类/客户)','沉淀品类毛利标准区间','优化成本口径自动识别','优化应收预警周期(按客户)','优化资金缺口预判模型'],
+    '<span class="fp-note" style="color:var(--emerald)">【客户已确认计算口径】</span>'
+  );
 
-  // --- 智能开单 ---
-  h+=scFlow('🧾','智能开单闭环','var(--emerald)',
-    ['销售选客户选商品,发起开单','智能开单智能体识别客户历史购买习惯','智能开单智能体匹配商品并提示库存可售','智能开单智能体提示历史成交价和毛利情况','智能开单智能体推荐搭配商品/高毛利替代品','销售确认采纳或调整','开单完成,智能开单智能体跟踪开单结果','老板查看开单质量'],
+  // --- 经营风险预警 ---
+  h+=scFlow('🔔','经营风险预警闭环','var(--rose)',
+    ['经营风险预警发现最近交易变远/频次下降/金额下降/常购中断/应收超期','识别客户流失风险和资金链风险','推送销售员（客户回访），重要客户和资金异常同步老板','销售跟进客户，财务跟进应收','记录客户反馈和回款状态','经营风险预警跟踪客户是否恢复下单、应收是否回收','老板查看重要客户风险变化和资金健康度'],
+    ['客户风险清单+应收超期清单','最近下单/频次/金额/常购商品/应收账期','销售回访记录/财务催收记录','是否恢复下单、应收是否回收、是否继续预警'],
+    '🚧 经营风险预警不仅覆盖客户流失预警，还扩展了应收超期和资金链风险预判能力。');
+  h+=factorPanel(
+    ['最近交易日期','下单频次','采购金额','常购商品变化','毛利率贡献','应收账期','逾期情况','销售跟进记录','客户行业','合作年限','客户反馈'],
+    [
+      {name:'未下单天数',formula:'当前日期 - 最近下单日期'},
+      {name:'频次变化率',formula:'(本期次数 - 历史均值) / 历史均值 × 100%'},
+      {name:'金额变化率',formula:'(本期金额 - 历史均值) / 历史均值 × 100%'},
+      {name:'客户风险分',formula:'未下单权重 + 频次下降权重 + 金额下降权重 + 常购变化权重'},
+      {name:'客户价值分',formula:'金额贡献 + 毛利贡献 + 合作稳定性 + 增长潜力'},
+      {name:'常购商品变化率',formula:'(历史常购SKU数 − 本期常购SKU数) / 历史常购SKU数 × 100%'},
+      {name:'应收逾期金额',formula:'Σ(逾期账单金额)'},
+      {name:'流失风险等级',formula:'客户风险分 × 客户价值分（高价值高风险需立即处理）'},
+      {name:'回访效果跟踪',formula:'回访后30天下单金额 / 回访前30天下单金额'},
+      {name:'资金链风险',formula:'Σ(近30天应付) − Σ(近30天应收) − 可用现金'}
+    ],
+    ['优化客户风险评分权重','优化流失预警周期(按客户层级)','沉淀客户分层规则','优化应收预警周期','优化资金链预判模型']
+  );
+
+  // --- 多模态智能开单 ---
+  h+=scFlow('🧾','多模态智能开单调环','var(--emerald)',
+    ['销售选客户选商品,发起开单','多模态智能开单识别客户历史购买习惯','多模态智能开单匹配商品并提示库存可售','多模态智能开单提示历史成交价和毛利情况','多模态智能开单推荐搭配商品/高毛利替代品','销售确认采纳或调整','开单完成,多模态智能开单跟踪开单结果','老板查看开单质量'],
     ['开单过程库存/价格/毛利风险','客户历史/库存可售/价格记录','销售确认采纳或调整','开单毛利/客单价变化'],
-    '🚧 智能开单由销售主动触发,智能开单智能体在开单过程中实时辅助。智能开单智能体不替销售做报价、不替销售决定折扣。涉及 ERP 写入需 ERP 厂商配合。');
+    '🚧 多模态智能开单由销售主动触发，在开单过程中实时辅助。智能体不替销售做报价、不替销售决定折扣。涉及ERP写入需ERP厂商配合。');
   h+=factorPanel(
     ['客户历史购买','客户常购商品','客户复购周期','商品库存/可售','成交价记录','历史成交价','毛利水平','关联商品','替代商品','高毛利替代品','客户折扣习惯','客户信用/应收'],
     [
@@ -1335,95 +1360,8 @@ function pageScenes(){
     ['优化推荐权重(按客户类型)','优化替代品匹配规则','优化搭配推荐规则','学习客户购买偏好','优化毛利预估模型']
   );
 
-  // --- 毛利分析 ---
-  h+=scFlow('📊','毛利分析闭环','var(--violet)',
-    ['毛利分析智能体分析商品/客户/品类毛利变化','识别毛利下降/成本异常/售价异常','毛利分析智能体提示可能原因：成本上涨/售价下降/出库未审/费用未归集','推送财务复核','财务确认成本/含税/退货/费用口径','同步采购核成本/销售核售价','毛利分析智能体跟踪毛利是否恢复','老板查看毛利异常处理结果'],
-    ['商品/客户/品类毛利排行','毛利分析智能体提示可能原因：成本上涨、出库未审等','财务复核成本口径/费用口径','已复核、待销售处理、待采购确认'],
-    '🚧 毛利失真与出库未审、结存成本、费用归集缺失有关，必须把财务复核节点画出来。');
-  h+=factorPanel(
-    ['售价','进货成本','成本口径(含税/不含税)','促销折扣','退货率','退货冲减','出库审核状态','费用归集','客户折扣','渠道差异','批量折扣','历史毛利水平'],
-    [
-      {name:'毛利额',formula:'销售收入 - 销售成本'},
-      {name:'毛利率',formula:'毛利额 / 销售收入 × 100%'},
-      {name:'毛利异常等级',formula:'下降幅度 × 金额影响 × 销量权重'},
-      {name:'成本异常检测',formula:'|实际成本 - 标准成本| / 标准成本 > 阈值 ? 标记异常 : 正常'},
-      {name:'费用归集完整度',formula:'已归集费用 / 应归集费用 × 100%'},
-      {name:'净毛利率',formula:'(毛利额 − 促销折扣 − 退货冲减) / 销售收入 × 100%'},
-      {name:'促销折扣影响',formula:'原售价 × 折扣率 × 销量'},
-      {name:'退货冲减金额',formula:'退货数量 × 售价'},
-      {name:'品类毛利贡献',formula:'品类毛利额 / 总毛利额 × 100%'},
-      {name:'毛利趋势变化率',formula:'(本期毛利率 − 上期毛利率) / 上期毛利率 × 100%'}
-    ],
-    ['优化毛利异常阈值(按品类/客户)','沉淀品类毛利标准区间','优化成本口径自动识别','学习促销/折扣对毛利影响','优化费用归集检测规则']
-  );
-
-  // --- 销售建议 ---
-  h+=scFlow('💡','销售建议闭环','var(--emerald)',
-    ['销售建议智能体识别高毛利/滞销/替代品/复购机会','生成销售建议清单','推送销售员','销售确认跟进客户或推荐商品','记录沟通结果','销售建议智能体跟踪成交/库存消化/毛利改善','老板查看销售建议转化结果'],
-    ['高毛利/滞销/替代品/复购机会','推荐给哪些客户','电话/微信/报价/上门','已成交、有意向、暂无需求'],
-    '🚧 销售建议智能体不替销售做报价、不替销售决定折扣。');
-  h+=factorPanel(
-    ['商品毛利','当前库存','滞销状态','客户历史购买','客户常购商品','客户复购周期','替代商品','关联商品','客户购买力','客户行业','季节因素','历史推荐转化率'],
-    [
-      {name:'销售机会分值',formula:'毛利权重 + 库存压力权重 + 客户匹配度权重 + 复购可能性权重'},
-      {name:'替代匹配度',formula:'品类相似度 + 客户历史购买匹配度 + 库存可用性'},
-      {name:'复购概率',formula:'距上次购买天数 / 平均复购周期，越接近1越可能复购'},
-      {name:'推荐转化率',formula:'推荐成交数 / 推荐总数 × 100%'},
-      {name:'库存压力权重',formula:'当前可用量 / 15天标准销量（值越大压力越大）'},
-      {name:'滞销消化优先级',formula:'滞销天数 × 积压金额 × 临期紧迫度'},
-      {name:'推荐时机评分',formula:'距上次购买天数 / 复购周期 × 100%（接近100%时机最佳）'},
-      {name:'建议跟进方式',formula:'按客户偏好(电话/微信/上门) × 机会分值排序'}
-    ],
-    ['优化商品推荐权重(按客户类型)','优化客户匹配逻辑','优化销售机会评分','学习不同客户成交偏好','优化推荐时机']
-  );
-
-  // --- 客户流失预警 ---
-  h+=scFlow('🔔','客户流失预警闭环','var(--rose)',
-    ['客户流失预警智能体发现最近交易变远/频次下降/金额下降/常购中断','识别客户流失风险','推送销售员，重要客户同步老板','销售跟进客户','记录客户反馈','客户流失预警智能体跟踪客户是否恢复下单','老板查看重要客户风险变化'],
-    ['客户风险清单','最近下单/频次/金额/常购商品','销售回访记录','是否恢复下单、是否继续预警'],
-    '🚧 客户流失预警智能体只提示客户交易变化和回访建议，不直接判断客户一定流失。');
-  h+=factorPanel(
-    ['最近交易日期','下单频次','采购金额','常购商品变化','毛利率贡献','应收账期','逾期情况','销售跟进记录','客户行业','合作年限','客户反馈','竞品动态'],
-    [
-      {name:'未下单天数',formula:'当前日期 - 最近下单日期'},
-      {name:'频次变化率',formula:'(本期次数 - 历史均值) / 历史均值 × 100%'},
-      {name:'金额变化率',formula:'(本期金额 - 历史均值) / 历史均值 × 100%'},
-      {name:'客户风险分',formula:'未下单权重 + 频次下降权重 + 金额下降权重 + 常购变化权重'},
-      {name:'客户价值分',formula:'金额贡献 + 毛利贡献 + 合作稳定性 + 增长潜力'},
-      {name:'常购商品变化率',formula:'(历史常购SKU数 − 本期常购SKU数) / 历史常购SKU数 × 100%'},
-      {name:'应收逾期金额',formula:'Σ(逾期账单金额)'},
-      {name:'客户分层等级',formula:'按金额贡献 + 毛利贡献 + 合作年限分层(A/B/C)'},
-      {name:'流失风险等级',formula:'客户风险分 × 客户价值分（高价值高风险需立即处理）'},
-      {name:'回访效果跟踪',formula:'回访后30天下单金额 / 回访前30天下单金额'}
-    ],
-    ['优化客户风险评分权重','优化流失预警周期(按客户层级)','沉淀客户分层规则','学习不同行业客户行为模式','优化预警触发条件']
-  );
-
-  // --- 经营问数 ---
-  h+=scFlow('💬','经营问数闭环','var(--cyan)',
-    ['老板自然语言提问','经营问数智能体查询并解释','关联到具体风险场景','老板查看详情和处理状态','必要时再次推送企业微信','经营问数智能体继续跟踪结果','老板查看追问事项处理进展'],
-    ['自然语言输入','经营问数智能体返回经营判断而非数字','跳转对应风险详情','查看负责人和处理状态'],
-    '🚧 经营问数不是独立业务动作，而是老板追问和下钻入口。仅做问数意义不大，真正价值在业务闭环。');
-  h+=factorPanel(
-    ['八大场景数据','责任人','处理状态','异常原因','历史趋势','改善结果','规则调整记录','超时未处理','高频追问','老板关注偏好'],
-    [
-      {name:'处理关闭率',formula:'已关闭问题数 / 总问题数 × 100%'},
-      {name:'超时率',formula:'超时问题数 / 总问题数 × 100%'},
-      {name:'建议采纳率',formula:'被采纳建议数 / 建议总数 × 100%'},
-      {name:'追问命中率',formula:'追问命中已有场景数 / 总追问数 × 100%'},
-      {name:'追问响应时长',formula:'责任人响应时间 − 老板追问时间'},
-      {name:'问题解决时长',formula:'问题关闭时间 − 问题创建时间'},
-      {name:'规则调整次数',formula:'统计期内规则参数被调整的次数'},
-      {name:'追问路由准确率',formula:'追问正确路由到场景数 / 总追问数 × 100%'}
-    ],
-    ['优化高频追问自动识别','优化规则建议生成','沉淀经营经验库','学习老板关注偏好','优化追问→场景路由准确率']
-  );
-
   return h;
-}
-
-
-function pageRoles(){
+}function pageRoles(){
   var h='';
   h+='<div class="page-title"><h1>角色协同与价值分配</h1><p>智能体不替代人，而是让每个角色工作更高效 — 看清问题、推对人、跟到结果</p></div>';
 
@@ -1431,24 +1369,24 @@ function pageRoles(){
   var roles=[
     {icon:'👤',name:'老板 / 管理层',cls:'',color:'var(--blue)',
      question:'全局经营状况如何？关键风险在哪？改善结果怎样？',
-     system:['八大场景风险汇总','经营驾驶舱','自然语言追问','规则调整与确认'],
+     system:['五大智能体风险汇总','经营驾驶舱','自然语言追问','规则调整与确认'],
      value:'从"听汇报"到"看实时"，从"被动救火"到"主动预防"'},
     {icon:'🛒',name:'采购',cls:'r2',color:'var(--emerald)',
      question:'买什么？买多少？什么时候买？供应商靠不靠谱？',
-     system:['智能补货/滞销/周转慢推送','SKU健康清单','智能体建议补货区间','供应商交付跟踪'],
+     system:['智能采购助手/智能库存管家推送','SKU健康清单','智能体建议补货区间','供应商交付跟踪'],
      value:'从"凭经验采购"到"数据辅助决策"，减少缺货和积压'},
     {icon:'📞',name:'销售',cls:'r3',color:'var(--amber)',
      question:'卖什么？卖给谁？怎么跟进？客户会不会流失？',
-     system:['智能开单辅助(库存/价格/毛利/搭配)','销售机会推送','客户流失预警','跟进记录与跟踪'],
+     system:['多模态智能开单辅助(库存/价格/毛利/搭配)','销售机会与风险推送','客户流失预警','客户回访与跟踪'],
      value:'从"被动等单"到"主动跟进"，提高成交率和客户留存'},
     {icon:'🏭',name:'仓库',cls:'r4',color:'var(--slate)',
      question:'库存准不准？库龄长不长？仓位够不够？',
      system:['库存核实事项推送','库龄/临期预警','多仓库存不均提示','盘点差异反馈'],
      value:'从"被动盘点"到"主动核实"，提高库存准确性'},
     {icon:'🧮',name:'财务',cls:'r5',color:'var(--violet)',
-     question:'毛利对不对？成本准不准？费用漏没漏？',
-     system:['毛利异常推送','成本口径提示','费用归集检测','出库未审提醒'],
-     value:'从"事后核算"到"事中复核"，提高毛利数据质量'},
+     question:'毛利对不对？成本准不准？资金健不健康？',
+     system:['财务智能参谋异常推送','成本口径提示','费用归集检测','应收/资金预警'],
+     value:'从"事后核算"到"事中复核"，提高数据质量'},
     {icon:'🚀',name:'运营方 (味冠/海牛)',cls:'r6',color:'var(--cyan)',
      question:'产品好不好用？客户愿不愿意续费？能不能复制？',
      system:['客户接入与培训','行业模板沉淀','使用数据监测','持续迭代升级'],
@@ -1469,11 +1407,11 @@ function pageRoles(){
   }
   h+='</div>';
 
-  // 协作示例：缺货场景如何流转
+  // 协作示例
   h+='<div class="collab-example">';
   h+='<h4>🔄 协作示例：一个缺货风险如何在角色间流转</h4>';
   h+='<div class="collab-flow">';
-  h+='<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">智能体</div><div class="cn-action">发现缺货风险<br>推送采购</div></div>';
+  h+='<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">智能采购助手</div><div class="cn-action">发现缺货风险<br>推送采购</div></div>';
   h+='<span class="collab-arrow">→</span>';
   h+='<div class="collab-node" style="background:var(--emerald-light)"><div class="cn-role" style="color:var(--emerald)">采购</div><div class="cn-action">查看建议<br>确认补货</div></div>';
   h+='<span class="collab-arrow">→</span>';
@@ -1481,7 +1419,7 @@ function pageRoles(){
   h+='<span class="collab-arrow">→</span>';
   h+='<div class="collab-node" style="background:var(--amber-light)"><div class="cn-role" style="color:var(--amber)">销售</div><div class="cn-action">知会客户<br>调整预期</div></div>';
   h+='<span class="collab-arrow">→</span>';
-  h+='<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">智能体</div><div class="cn-action">跟踪到货<br>风险解除</div></div>';
+  h+='<div class="collab-node" style="background:var(--blue-light)"><div class="cn-role" style="color:var(--blue)">智能采购助手</div><div class="cn-action">跟踪到货<br>风险解除</div></div>';
   h+='<span class="collab-arrow">→</span>';
   h+='<div class="collab-node" style="background:linear-gradient(135deg,var(--amber-light),#fff)"><div class="cn-role" style="color:var(--amber)">老板</div><div class="cn-action">查看处理结果<br>沉淀规则</div></div>';
   h+='</div>';
@@ -1489,9 +1427,7 @@ function pageRoles(){
   h+='</div>';
 
   return h;
-}
-
-// Render
+}// Render
 var wrap=document.getElementById('pageWrap'),tabs=document.getElementById('topnavTabs'),dots=document.getElementById('pgDots');
 var allHtml='',tabsHtml='',dotsHtml='';
 for(var i=0;i<pages.length;i++){
