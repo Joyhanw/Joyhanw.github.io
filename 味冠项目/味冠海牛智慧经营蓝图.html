@@ -886,7 +886,7 @@ function pageTree(){
   /* ════════════════════════════════════════════════════════════ */
   '<div style="max-width:1000px;margin:0 auto 18px;padding:18px 20px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--rose)">'+
     '<h3 style="text-align:center;font-size:15px;font-weight:700;margin-bottom:2px">🧬 第六步：AI 自我进化 — 越用越准</h3>'+
-    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">AI 不是一次性上线，而是定期回看、反思、优化。采纳率越高，AI 越准。</p>'+
+    '<p style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:14px">AI 不是一次性上线，而是定期回看、反思、优化的持续循环。<b style="color:var(--rose)">每完成一轮进化，AI就更懂企业一步，永不停歇。</b></p>'+
 
     /* 进化循环 */
     '<div class="evo-flow-row" style="margin-bottom:14px">'+
@@ -932,6 +932,9 @@ function pageTree(){
         '优化建议：牛肉粒的补货提前量从 <b>2天 → 5天</b>，建议先试运行14天<br>'+
         '未采纳分析：<b>付超英</b>采纳率58%，低于任情情的83%，未采纳的10条中3条已缺货</div>'+
     '</div>'+
+    /* 下一轮提示 */
+    '<div style="font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:14px;padding:6px 12px;background:var(--slate-light);border-radius:8px">'+
+      '⏭️ 14天后回看牛肉粒效果 → 达标则固化，不达标继续调整 → <b style="color:var(--violet)">每期都比上期更准</b></div>'+
 
     /* 老板指导对话框 */
     '<div style="padding:16px;background:linear-gradient(135deg,#FFFBEB,#FFEDD5);border-radius:var(--radius-lg);border:2px dashed var(--amber-soft)">'+
@@ -1118,38 +1121,92 @@ function pageKpi(){
   '</div>';
 }
 function pageEvolve(){
-  return '<div class="page-title"><h1>AI自我进化机制</h1><p>智能体不是一次性上线，而是持续学习、越用越准</p></div>'+
-  '<div class="flow-row" style="margin-bottom:16px">'+
-    node('💡','智能体给出建议','基于当前规则和参数计算','var(--blue)')+
-    node('✅','业务人员确认','采纳/调整/驳回','var(--amber)')+
-    node('🔄','实际业务执行','采购/销售/仓库执行','var(--emerald)')+
-    node('🔍','智能体回看结果','对比建议与实际效果','var(--violet)')+
-    node('🧬','生成优化建议','调整参数/算法/阈值','var(--rose)')+
-    node('📝','老板确认生效','确认后规则入库','var(--emerald)')+
+  return '<div class="page-title"><h1>AI自我进化机制</h1><p>智能体不是一次性上线，而是持续学习、越用越准。每一次回看都是一次进化，每个周期都比上一周期更懂企业。</p></div>'+
+  /* █████████████████████████████████████████████████████████████ */
+  /* 进化螺旋 — 直观展示AI在持续进化 */
+  /* █████████████████████████████████████████████████████████████ */
+  '<div style="max-width:860px;margin:0 auto 18px;padding:20px 18px;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:var(--radius-lg);text-align:center;color:#fff">'+
+    '<div style="font-size:18px;font-weight:700;letter-spacing:1px">🔄 AI 在持续进化</div>'+
+    '<div style="font-size:12px;opacity:.8;margin-top:6px;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.6">从第一天的通用规则开始，通过每次回看、反思、优化的循环螺旋上升，<br>让AI越来越懂你的商品、你的供应商、你的客户、你的经营习惯</div>'+
+    /* 螺旋回合展示 */
+    '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap">'+
+      '<div style="padding:6px 14px;border-radius:16px;background:rgba(255,255,255,.12);font-size:11px">第1轮<br><span style="font-size:9px;opacity:.6">通用规则</span></div>'+
+      '<span style="color:rgba(255,255,255,.3);font-size:16px">→</span>'+
+      '<div style="padding:6px 14px;border-radius:16px;background:rgba(255,255,255,.15);font-size:11px">第2轮<br><span style="font-size:9px;opacity:.6">采纳率↑5%</span></div>'+
+      '<span style="color:rgba(255,255,255,.3);font-size:16px">→</span>'+
+      '<div style="padding:6px 14px;border-radius:16px;background:rgba(255,255,255,.2);font-size:11px">第3轮<br><span style="font-size:9px;opacity:.6">缺货↓30%</span></div>'+
+      '<span style="color:rgba(255,255,255,.3);font-size:16px">→</span>'+
+      '<div style="padding:6px 14px;border-radius:16px;background:linear-gradient(135deg,#10B981,#059669);font-size:11px;font-weight:600">第N轮<br><span style="font-size:9px;opacity:.8">越用越准</span></div>'+
+    '</div>'+
   '</div>'+
+
+  /* █████████████████████████████████████████████████████████████ */
+  /* 进化流程 — 从回看开始，不是从给建议开始 */
+  /* █████████████████████████████████████████████████████████████ */
+  '<div style="max-width:860px;margin:16px auto;padding:14px 18px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border-top:3px solid var(--violet)">'+
+    '<h4 style="font-size:13px;font-weight:600;margin-bottom:10px">🔄 进化流程：每次循环都让AI更准</h4>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;font-size:10px;margin-bottom:12px">'+
+      '<div style="padding:8px 12px;background:var(--violet-light);border-radius:8px;text-align:center;min-width:72px"><b>📊 定期回看</b><br><span style="color:var(--text-muted)">按周/月生成报告</span></div>'+
+      '<span style="color:var(--text-muted);font-size:14px">→</span>'+
+      '<div style="padding:8px 12px;background:var(--blue-light);border-radius:8px;text-align:center;min-width:72px"><b>📋 采纳对比</b><br><span style="color:var(--text-muted)">采纳vs未采纳效果</span></div>'+
+      '<span style="color:var(--text-muted);font-size:14px">→</span>'+
+      '<div style="padding:8px 12px;background:var(--rose-light);border-radius:8px;text-align:center;min-width:72px"><b>🧬 AI反思</b><br><span style="color:var(--text-muted)">误报/漏报分析</span></div>'+
+      '<span style="color:var(--text-muted);font-size:14px">→</span>'+
+      '<div style="padding:8px 12px;background:var(--amber-light);border-radius:8px;text-align:center;min-width:72px"><b>💡 优化建议</b><br><span style="color:var(--text-muted)">调参数/阈值</span></div>'+
+      '<span style="color:var(--text-muted);font-size:14px">→</span>'+
+      '<div style="padding:8px 12px;background:var(--emerald-light);border-radius:8px;text-align:center;min-width:72px"><b>✅ 老板确认</b><br><span style="color:var(--text-muted)">试运行→固化</span></div>'+
+      '<span style="color:var(--text-muted);font-size:14px">→</span>'+
+      '<div style="padding:8px 12px;background:var(--slate-light);border-radius:8px;text-align:center;min-width:72px;border:2px dashed var(--slate-border)"><b>🔄 规则入库</b><br><span style="color:var(--text-muted)">下周期使用</span></div>'+
+    '</div>'+
+    /* 循环强调 */
+    '<div style="text-align:center;font-size:11px;color:var(--text-muted);padding:8px 12px;background:var(--slate-light);border-radius:8px">'+
+      '每一轮进化都以上一轮的结果为基础，规则不断迭代沉淀，<b style="color:var(--violet)">AI永不停止学习</b></div>'+
+  '</div>'+
+
+  /* █████████████████████████████████████████████████████████████ */
+  /* 进化评估指标 */
+  /* █████████████████████████████████████████████████████████████ */
   '<div style="max-width:860px;margin:16px auto;padding:14px 18px;background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow)">'+
     '<h4 style="font-size:13px;font-weight:600;margin-bottom:8px">📊 进化评估指标</h4>'+
     '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:10px">'+
       '<div style="padding:6px 8px;background:var(--slate-light);border-radius:6px"><strong>建议采纳率</strong><br><span style="color:var(--text-muted)">建议被业务接受的比例</span></div>'+
       '<div style="padding:6px 8px;background:var(--slate-light);border-radius:6px"><strong>建议有效率</strong><br><span style="color:var(--text-muted)">采纳后达成预期的比例</span></div>'+
-      '<div style="padding:6px 8px;background:var(--slate-light);border-radius:6px"><strong>缺货误报/漏报率</strong><br><span style="color:var(--text-muted)">提醒了但没缺 / 没提醒但缺了</span></div>'+
-      '<div style="padding:6px 8px;background:var(--slate-light);border-radius:6px"><strong>规则调整/回退次数</strong><br><span style="color:var(--text-muted)">规则优化生效 vs 被回退</span></div>'+
+      '<div style="padding:6px 8px;background:var(--slate-light);border-radius:6px"><strong>预测准确率</strong><br><span style="color:var(--text-muted)">预测值与实际值的偏差程度</span></div>'+
+      '<div style="padding:6px 8px;background:var(--slate-light);border-radius:6px"><strong>规则优化次数</strong><br><span style="color:var(--text-muted)">规则被优化的频率和幅度</span></div>'+
+    '</div>'+
+    /* 进化趋势说明 */
+    '<div style="margin-top:10px;display:flex;gap:8px;font-size:10px;color:var(--text-muted);justify-content:center;flex-wrap:wrap">'+
+      '<span>⬆️ 采纳率逐步上升 → AI建议越来越可信</span>'+
+      '<span>⬇️ 误报率逐步下降 → AI判断越来越准</span>'+
+      '<span>🔄 规则越沉淀越多 → 越用越懂企业</span>'+
     '</div>'+
   '</div>'+
+
+  /* █████████████████████████████████████████████████████████████ */
+  /* 示例：缺货规则优化 */
+  /* █████████████████████████████████████████████████████████████ */
   '<div style="max-width:860px;margin:14px auto;padding:14px 18px;background:linear-gradient(135deg,var(--blue-light),#f0f9ff);border-radius:var(--radius-lg);border:1px solid var(--blue-soft)">'+
-    '<h4 style="font-size:13px;font-weight:600;color:var(--blue-dark);margin-bottom:6px">📌 示例：缺货规则优化</h4>'+
+    '<h4 style="font-size:13px;font-weight:600;color:var(--blue-dark);margin-bottom:6px">📌 示例：一次完整的进化过程</h4>'+
     '<div style="font-size:11px;color:var(--text-secondary);line-height:1.8">'+
-      '<div>当前规则：可售天数低于 <strong>2天</strong> 提醒缺货</div>'+
-      '<div>执行结果：连续3次提醒后仍发生缺货（实际1.8天断货）</div>'+
-      '<div style="color:var(--emerald);font-weight:500">AI优化建议：该商品建议将缺货提醒提前量从 <strong>2天</strong> 调整为 <strong>5天</strong></div>'+
-      '<div>老板确认：同意先对<strong>牛肉粒</strong>试运行14天</div>'+
-      '<div style="color:var(--blue)">规则生效：牛肉粒可售天数低于5天时进入缺货预警</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="background:var(--violet-light);color:var(--violet);padding:2px 10px;border-radius:10px;font-size:10px;font-weight:600">回看发现</span>牛肉粒连续3次提醒后仍缺货，说明提前量不够</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="background:var(--rose-light);color:var(--rose);padding:2px 10px;border-radius:10px;font-size:10px;font-weight:600">AI反思</span>当前规则"可售天数&lt;2天"，实际1.8天就断了，阈值过紧</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="background:var(--amber-light);color:var(--amber);padding:2px 10px;border-radius:10px;font-size:10px;font-weight:600">优化建议</span>牛肉粒补货提前量从 <b>2天 → 5天</b>，先试运行14天</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="background:var(--emerald-light);color:var(--emerald);padding:2px 10px;border-radius:10px;font-size:10px;font-weight:600">老板确认</span>同意试运行，14天后复查效果</div>'+
+      '<div style="display:flex;align-items:center;gap:8px"><span style="background:var(--slate-light);color:var(--slate);padding:2px 10px;border-radius:10px;font-size:10px;font-weight:600">规则固化</span>牛肉粒可售天数低于5天时预警，下一周期按新规则执行</div>'+
     '</div>'+
+    /* 下一轮进化提示 */
+    '<div style="margin-top:10px;padding:6px 12px;background:#fff;border-radius:8px;border:1px dashed var(--blue-soft);font-size:10px;color:var(--text-muted);text-align:center">'+
+      '⏭️ <b>下一轮回看</b>：14天后复查牛肉粒采纳率和缺货恢复率，如果效果达标则固化规则，不达标则继续调整</div>'+
   '</div>'+
+
+  /* █████████████████████████████████████████████████████████████ */
+  /* 边界说明 */
+  /* █████████████████████████████████████████████████████████████ */
   '<div class="boundary-box"><h4>🚧 一期边界</h4><ul>'+
     '<li>智能体可以自动发现优化机会，但不自动修改生效</li>'+
     '<li>规则优化建议由智能体生成，老板或业务负责人确认后生效</li>'+
     '<li>进化范围限定在参数调整（系数/阈值/算法），不涉及流程变更</li>'+
+    '<li>进化不是一次性工程，而是持续循环 — 每期回看都比上期更准</li>'+
   '</ul></div>';
 }
 function pageScenes(){
