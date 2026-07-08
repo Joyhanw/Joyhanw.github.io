@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>味冠 · 智能补货智能体</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#F6F8FB;--bg-soft:#FBFCFE;--card:#FFFFFF;
+  --border:#E6EAF0;--border-soft:#EFF2F6;
+  --text:#1A2233;--text-2:#4C5670;--text-3:#8B95AB;--text-4:#B4BCC9;
+  --primary:#2E6BFF;--primary-soft:#EAF1FF;--primary-grad:linear-gradient(135deg,#2E6BFF 0%,#7B5BFF 100%);
+  --success:#10B981;--success-soft:#D1FAE5;
+  --warning:#F59E0B;--warning-soft:#FEF3C7;
+  --danger:#E5484D;--danger-soft:#FEE2E2;
+  --rose:#E5484D;--amber:#F59E0B;--violet:#7B5BFF;--emerald:#10B981;
+  --shadow-sm:0 1px 2px rgba(16,24,40,0.04),0 1px 3px rgba(16,24,40,0.04);
+  --shadow-md:0 4px 12px rgba(16,24,40,0.05),0 2px 6px rgba(16,24,40,0.04);
+  --r-sm:6px;--r-md:10px;--r-lg:14px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;background:var(--bg-soft);color:var(--text);font-size:14px;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+button{border:none;background:none;cursor:pointer;font:inherit;color:inherit}
+input,textarea{font:inherit;color:inherit;outline:none}
+.hidden{display:none!important}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#D7DCE6;border-radius:4px}
+::-webkit-scrollbar-track{background:transparent}
+
+.topbar{height:56px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.topbar-left{display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-name{font-size:16px;font-weight:700;color:var(--text)}
+.logo-name span{background:var(--primary-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.role-switcher{display:flex;align-items:center;gap:2px;background:var(--bg);border-radius:8px;padding:2px}
+.role-tab{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;color:var(--text-3);transition:all .15s;white-space:nowrap}
+.role-tab:hover{color:var(--text)}
+.role-tab.active{background:var(--card);color:var(--primary);box-shadow:var(--shadow-sm)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.user-avatar{width:28px;height:28px;border-radius:50%;background:var(--primary-grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+
+.view-chat{display:flex;height:calc(100vh - 56px);background:var(--bg-soft)}
+.chat-sidebar{flex:0 0 240px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column}
+.new-chat-btn{margin:14px 12px;padding:9px 12px;background:var(--text);color:#fff;border-radius:8px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;transition:all .15s;justify-content:center}
+.new-chat-btn:hover{background:#000}
+.history-section{flex:1;overflow-y:auto;padding:6px 12px 14px}
+.history-section-title{font-size:11px;color:var(--text-3);margin:10px 4px 8px;display:flex;align-items:center;justify-content:space-between}
+.hs-count{font-size:10px;background:var(--bg);padding:1px 8px;border-radius:999px}
+.history-list{display:flex;flex-direction:column;gap:2px}
+.h-item{padding:7px 10px;border-radius:6px;font-size:12.5px;color:var(--text-2);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h-item:hover{background:var(--border-soft)}
+.h-item.active{background:var(--primary-soft);color:var(--primary)}
+
+.chat-main{flex:1;display:flex;flex-direction:column;min-width:0}
+.chat-header{padding:10px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#fff}
+.chat-header-left{display:flex;align-items:center;gap:10px}
+.agent-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.chat-title{font-size:15px;font-weight:600}
+.chat-stream{flex:1;overflow-y:auto;padding:20px 24px}
+
+.welcome{max-width:880px;margin:20px auto;text-align:center;padding:20px 16px}
+.welcome-avatar{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,#FFE8E8,#FFF0E8);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:var(--shadow-md)}
+.welcome h2{font-size:26px;font-weight:700;margin-bottom:8px}
+.welcome>p{font-size:13.5px;color:var(--text-2);line-height:1.8;margin-bottom:24px}
+.suggest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:900px){.suggest-grid{grid-template-columns:1fr 1fr}}
+.suggest-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:left;transition:all .15s;cursor:pointer}
+.suggest-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#FECACA}
+.sc-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10.5px;font-weight:500;margin-bottom:6px}
+.sc-title{font-size:13px;font-weight:500;line-height:1.4;color:var(--text);margin-bottom:3px}
+.sc-sub{font-size:11px;color:var(--text-3);line-height:1.4}
+.welcome-foot{font-size:12px;color:var(--text-3);padding-top:14px;border-top:1px solid var(--border-soft)}
+
+.msg{display:flex;gap:14px;margin-bottom:20px;max-width:960px;margin-left:auto;margin-right:auto}
+.msg.user{flex-direction:row-reverse}
+.msg-avatar{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+.msg.user .msg-avatar{background:var(--primary-grad);color:#fff}
+.msg.ai .msg-avatar{background:linear-gradient(135deg,#FFE8E8,#FFF0E8);border:1px solid #F5DCDC}
+.msg-body{flex:1;min-width:0}
+.msg.user .msg-body{text-align:right}
+.msg-meta{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-3);margin-bottom:4px}
+.msg.user .msg-meta{justify-content:flex-end}
+.msg-meta b{color:var(--text-2);font-weight:500}
+.tag-ai{background:var(--primary-soft);color:var(--primary);padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.bubble.user-bubble{background:var(--primary);color:#fff;padding:10px 14px;border-radius:14px 14px 4px 14px;display:inline-block;max-width:80%;line-height:1.6;text-align:left}
+.bubble.ai-bubble{background:#fff;border:1px solid var(--border);border-radius:4px 14px 14px 14px;padding:14px 16px;line-height:1.7;color:var(--text)}
+.bubble.ai-bubble>*+*{margin-top:12px}
+.bubble.ai-bubble p{line-height:1.75}
+.bubble.ai-bubble strong{color:var(--text);font-weight:600}
+
+.ai-thinking{display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,#FFF0E8,#FFE8E8);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--text-2);margin-bottom:10px;border:1px solid #F5DCDC}
+.thinking-dot{width:6px;height:6px;border-radius:50%;background:var(--danger);animation:blink 1.4s infinite both}
+.thinking-dot:nth-child(2){animation-delay:.2s}.thinking-dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+
+.route-info{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);background:var(--bg);padding:7px 12px;border-radius:6px;border-left:3px solid var(--danger)}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:768px){.kpi-row{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px}
+.kpi.danger{border-color:#FECACA;background:linear-gradient(180deg,#FFF5F5 0%,#fff 100%)}
+.kpi.warning{border-color:#FDE68A;background:linear-gradient(180deg,#FFFBEB 0%,#fff 100%)}
+.kpi.success{border-color:#BBF7D0;background:linear-gradient(180deg,#F0FDF4 0%,#fff 100%)}
+.kpi-label{font-size:11.5px;color:var(--text-3);margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.kpi-value{font-size:22px;font-weight:700;color:var(--text);line-height:1.2}
+.kpi-value .unit{font-size:12px;font-weight:500;color:var(--text-3)}
+
+/* 表格 */
+.tbl-wrap{border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;background:#fff}
+.tbl-head-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--bg-soft);border-bottom:1px solid var(--border-soft)}
+.tbl-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th{background:var(--bg-soft);text-align:left;padding:7px 10px;font-weight:600;font-size:11.5px;color:var(--text-3);border-bottom:1px solid var(--border-soft);white-space:nowrap}
+.tbl td{padding:7px 10px;border-bottom:1px solid var(--border-soft);vertical-align:middle;white-space:nowrap;color:var(--text-2)}
+.tbl td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:"SF Mono","JetBrains Mono",monospace}
+.tbl tr:hover td{background:#FAFBFD}
+.tbl tbody tr:last-child td{border-bottom:none}
+.tbl th.num{text-align:right}
+.danger-cell{color:var(--danger)!important;font-weight:600}
+.warn-cell{color:var(--warning)!important;font-weight:500}
+.success-cell{color:var(--success)!important;font-weight:500}
+.badge{display:inline-block;padding:1px 8px;border-radius:4px;font-size:10.5px;font-weight:500}
+.badge.danger{background:var(--danger-soft);color:var(--danger)}
+.badge.warning{background:var(--warning-soft);color:#92400E}
+.badge.success{background:var(--success-soft);color:#065F46}
+.badge.info{background:#E0E7FF;color:#4338CA}
+.sku-name{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sku-name-inner{font-weight:500;color:var(--text)}
+.sku-code{font-size:10px;color:var(--text-3)}
+.tbl-foot{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--bg-soft);border-top:1px solid var(--border-soft);font-size:11.5px;color:var(--text-3)}
+
+/* 可折叠模块 */
+.details-module{border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;background:var(--card)}
+.details-module>summary{padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;user-select:none;background:var(--bg-soft);border-bottom:1px solid var(--border-soft)}
+.details-module>summary::-webkit-details-marker{display:none}
+.details-module>summary::after{content:'▼';margin-left:auto;font-size:9px;transition:transform .2s;color:var(--text-3)}
+.details-module[open]>summary::after{transform:rotate(180deg)}
+.details-module[open]>summary{border-bottom:1px solid var(--border)}
+.dm-body{padding:10px 14px;font-size:12px;line-height:1.8;color:var(--text-2)}
+.dm-body .formula-item{margin-bottom:6px}
+.dm-body .formula-item:last-child{margin-bottom:0}
+.dm-body .formula-name{font-weight:600;color:var(--text)}
+.dm-body .formula-expr{font-family:"SF Mono","JetBrains Mono",monospace;font-size:11px;color:var(--text-2);margin-left:4px}
+.dm-body .formula-desc{font-size:11px;color:var(--text-3)}
+.dm-body code{background:var(--bg);border:1px solid var(--border-soft);padding:1px 5px;border-radius:3px;font-size:10.5px;color:var(--primary)}
+.dm-body .evolve-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10.5px;margin:2px 4px 2px 0}
+.dm-body .evolve-tag.metric{background:#E0E7FF;color:#4338CA}
+.dm-body .evolve-tag.factor{background:#FEF3C7;color:#92400E}
+.dm-body .evolve-tag.direction{background:#D1FAE5;color:#065F46}
+
+/* 推送选择器 */
+.send-picker-btn{font-size:12px;padding:6px 14px;border-radius:6px;font-weight:500;background:var(--primary);color:#fff;border:1px solid var(--primary);transition:all .15s}
+.send-picker-btn:hover{background:#1E5BD6}
+.picker-panel{display:none;margin-top:8px;border:1px solid #C7D5FF;border-radius:var(--r-md);background:linear-gradient(135deg,#F4F8FF,#F0F5FF);padding:10px 14px}
+.picker-panel.open{display:block}
+.picker-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.picker-chip{padding:6px 12px;border-radius:8px;font-size:11.5px;border:1px solid var(--border);background:var(--card);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
+.picker-chip:hover{border-color:var(--primary)}
+.picker-chip.selected{background:var(--primary-soft);border-color:var(--primary);color:var(--primary)}
+.picker-chip .pc-avatar{width:20px;height:20px;border-radius:50%;background:var(--primary-grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+.picker-chip .pc-count{font-size:10px;color:var(--text-3)}
+.picker-actions{display:flex;gap:6px}
+.picker-actions .act-btn{font-size:11.5px}
+
+/* 企业微信卡片 */
+.wx-card{border:1px solid #C7D5FF;border-radius:var(--r-md);background:linear-gradient(135deg,#F4F8FF,#F0F5FF);overflow:hidden}
+.wx-card-head{padding:9px 14px;background:#EAF1FF;border-bottom:1px solid #C7D5FF;display:flex;align-items:center;justify-content:space-between}
+.wx-card-body{padding:10px 14px;font-size:12px;color:var(--text-2);line-height:1.8}
+.wx-msg-bubble{background:#fff;border-radius:8px;padding:10px 14px;border:1px solid var(--border-soft);margin:6px 0}
+.wx-card-foot{padding:7px 14px;background:#fff;border-top:1px solid #C7D5FF;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text-3)}
+.wx-status{display:flex;align-items:center;gap:4px}
+.wx-status.sent{color:var(--success)}.wx-status.read{color:var(--primary)}
+
+/* 回看报告 */
+.recheck-card{border:1px solid #BBF7D0;border-radius:var(--r-md);background:linear-gradient(135deg,#F0FDF4,#F5FFF8);overflow:hidden}
+.recheck-head{padding:9px 14px;background:#D1FAE5;border-bottom:1px solid #BBF7D0;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.recheck-body{padding:12px 14px;font-size:12px;color:var(--text-2);line-height:1.8}
+.recheck-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.recheck-stat{text-align:center;padding:8px;border-radius:8px}
+.recheck-stat.good{background:#D1FAE5;color:#065F46}
+.recheck-stat.warn{background:#FEF3C7;color:#92400E}
+.recheck-stat.bad{background:#FEE2E2;color:#991B1B}
+.recheck-stat .rs-num{font-size:22px;font-weight:700}
+.recheck-stat .rs-label{font-size:10.5px;margin-top:1px}
+
+/* AI跟踪报告 */
+.track-card{border:1px solid #D8B4FE;border-radius:var(--r-md);background:linear-gradient(135deg,#FAF5FF,#FDFAFF);overflow:hidden}
+.track-head{padding:9px 14px;background:#F3E8FF;border-bottom:1px solid #D8B4FE;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+.track-body{padding:12px 14px;font-size:12px;color:var(--text-2);line-height:1.8}
+.track-section{margin-top:10px;border-top:1px solid #E9D5FF;padding-top:8px}
+.track-section:first-child{margin-top:0;border-top:none;padding-top:0}
+.track-section h4{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:4px}
+.evolve-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:500;background:#E0E7FF;color:#4338CA;margin:1px 3px 1px 0}
+
+/* 规则卡片 */
+.rule-card{border:1px solid #D8B4FE;border-radius:var(--r-md);background:linear-gradient(135deg,#FAF5FF,#F5F0FF);overflow:hidden}
+.rule-card-head{padding:9px 14px;background:#F3E8FF;border-bottom:1px solid #D8B4FE;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--text)}
+.rule-card-body{padding:10px 14px;font-size:12px;color:var(--text-2);line-height:1.8}
+.rule-diff{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:6px 0}
+.rule-old,.rule-new{padding:8px 12px;border-radius:6px;text-align:center;font-size:13px;font-weight:600}
+.rule-old{background:#FEE2E2;color:#991B1B;text-decoration:line-through}
+.rule-new{background:#D1FAE5;color:#065F46}
+.rule-arrow{font-size:20px;color:var(--text-3)}
+
+/* 操作按钮 */
+.action-row{display:flex;gap:8px;flex-wrap:wrap}
+.act-btn{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--border);background:#fff;transition:all .15s}
+.act-btn:hover{border-color:var(--primary);color:var(--primary)}
+.act-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.act-btn.primary:hover{background:#1E5BD6}
+.act-btn.warn{border-color:var(--warning);color:var(--warning)}
+.act-btn.warn:hover{background:var(--warning-soft)}
+.act-btn.confirm{background:var(--violet);color:#fff;border-color:var(--violet)}
+.act-btn.confirm:hover{background:#6D3FD6}
+.act-btn.cancel{border:1px solid var(--border);background:#fff;color:var(--text-2)}
+
+/* 告警 */
+.alert{display:flex;gap:10px;padding:12px 14px;border-radius:var(--r-md);font-size:12.5px;line-height:1.7}
+.alert.danger{background:var(--danger-soft);color:#991B1B;border:1px solid #FECACA}
+.alert.warning{background:var(--warning-soft);color:#92400E;border:1px solid #FDE68A}
+.alert.info{background:#E0E7FF;color:#3730A3;border:1px solid #C7D2FE}
+.alert-ico{font-size:18px;flex-shrink:0}
+
+/* 输入区 */
+.chat-input-bar{padding:12px 24px;border-top:1px solid var(--border);background:#fff}
+.chat-input-inner{max-width:960px;margin:0 auto}
+.quick-cmds{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.qc{padding:4px 10px;border-radius:6px;font-size:11.5px;color:var(--text-2);border:1px solid var(--border-soft);background:var(--bg-soft);display:flex;align-items:center;gap:4px;transition:all .15s}
+.qc:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-soft)}
+.input-row{display:flex;align-items:flex-end;gap:8px}
+.input-row textarea{flex:1;border:1px solid var(--border);border-radius:10px;padding:9px 14px;resize:none;font-size:13.5px;line-height:1.5;max-height:120px}
+.input-row textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.send-btn{width:34px;height:34px;border-radius:8px;background:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.send-btn:hover{background:var(--primary)}
+.send-btn svg{stroke:#fff;width:18px;height:18px}
+</style>
+</head>
+<body>
+
+<svg style="display:none"><defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E5484D"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient></defs></svg>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="logo">
+      <svg viewBox="0 0 32 32" width="28" height="28"><path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/><path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/><circle cx="13.5" cy="15" r="1.2" fill="#E5484D"/><circle cx="18.5" cy="15" r="1.2" fill="#E5484D"/></svg>
+      <div class="logo-name">味冠 <span>· 智能补货</span></div>
+    </div>
+    <div class="role-switcher" id="roleSwitcher"></div>
+  </div>
+  <div class="topbar-right">
+    <div class="user-avatar" id="userAvatar">唯</div>
+    <span style="font-size:13px;font-weight:500;color:var(--text)" id="userName">唯安</span>
+  </div>
+</header>
+
+<main class="view-chat">
+  <aside class="chat-sidebar">
+    <button class="new-chat-btn" id="newChatBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>新对话
+    </button>
+    <div class="history-section">
+      <div class="history-section-title"><span>对话历史</span><span class="hs-count" id="hsCount">0</span></div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </aside>
+
+  <section class="chat-main">
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <div class="agent-icon" style="background:linear-gradient(135deg,#FFE8E8,#FFF0E8)">⚠️</div>
+        <div class="chat-title" id="chatTitle">智能补货智能体</div>
+      </div>
+      <div style="font-size:11px;color:var(--text-3)">数据截止 2026.07.07 09:30</div>
+    </div>
+
+    <div class="chat-stream" id="chatStream"><div class="welcome" id="welcome"></div></div>
+
+    <div class="chat-input-bar">
+      <div class="chat-input-inner">
+        <div class="quick-cmds" id="quickCmds"></div>
+        <div class="input-row">
+          <textarea id="chatInput" rows="1" placeholder="输入查询或指令…"></textarea>
+          <button class="send-btn" id="sendBtn" title="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ============== 角色配置 ============== */
+const ROLE_CFG={
+  boss:{
+    name:'唯安',avatar:'唯',title:'智能补货智能体',
+    desc:'智能补货智能体主动发现缺货风险 → 推送企业微信通知对应的人 → 定期回看 → 自我优化<br>老板可<strong>手动调整规则参数</strong>，让AI越用越准',
+    cards:[
+      {q:'缺货总览',tag:'缺货总览',title:'缺货风险总览',sub:'3仓汇总 · 24个缺货SKU · 影响37家客户 · 预计损失12.8万',color:'#FEE2E2,#991B1B'},
+      {q:'回看7月4日推送',tag:'回看对比',title:'回看上周推送效果',sub:'AI定期回看 · 对比建议vs实际 · 生成优化建议',color:'#D1FAE5,#065F46'},
+      {q:'AI建议采纳分析',tag:'采纳分析',title:'AI建议采纳率分析',sub:'谁采纳了 · 谁没采纳 · 采纳后效果对比',color:'#E0E7FF,#4338CA'},
+      {q:'把所有商品的补货提前量从2天调为3天',tag:'规则调整',title:'调整补货规则',sub:'全局/品类/单品三级调整 · 试运行+回看',color:'#F3E8FF,#6D28D9'},
+      {q:'利润影响',tag:'利润分析',title:'利润影响分析',sub:'毛利 · 缺货损失 · 滞销库存 · 费用影响',color:'#D1FAE5,#065F46'}
+    ],
+    cmds:[['📊','缺货总览'],['🔄','回看推送'],['📋','采纳率分析'],['⚙','调整规则']]
+  },
+  buyer:{
+    name:'付超英',avatar:'付',title:'采购 · 缺货协同',
+    desc:'当前角色：<strong>采购员 付超英</strong><br>查看你负责的缺货SKU · 接收企业微信补货提醒',
+    cards:[
+      {q:'付超英负责的缺货',tag:'我的缺货',title:'我负责的缺货商品',sub:'12个缺货SKU · 缺口合计598件 · 涉及2个仓库',color:'#FEE2E2,#991B1B'},
+      {q:'鱿鱼串缺货分析',tag:'单品详情',title:'鱿鱼串缺货详情',sub:'三仓可用量+影响客户+补货建议',color:'#FEF3C7,#92400E'},
+      {q:'发货区缺货分析',tag:'单仓分析',title:'发货区缺货分析',sub:'14个缺货SKU · 缺口612件 · 预计损失7.6万',color:'#D1FAE5,#065F46'},
+      {q:'安大食品的缺货商品',tag:'按供应商',title:'安大食品缺货商品',sub:'按供应商维度查看 · 沟通供应商时用',color:'#E0E7FF,#4338CA'}
+    ],
+    cmds:[['📋','我负责的缺货'],['🔍','鱿鱼串缺货'],['🏪','发货区缺货']]
+  },
+  warehouse:{
+    name:'李四',avatar:'李',title:'仓库 · 缺货协同',
+    desc:'当前角色：<strong>仓管员 李四</strong><br>查看发货区库存状态 · 接收企业微信核实提醒',
+    cards:[
+      {q:'发货区缺货分析',tag:'发货区',title:'发货区缺货分析',sub:'14个缺货SKU · 需核实系统库存 vs 实物库存',color:'#FEE2E2,#991B1B'},
+      {q:'鱿鱼串缺货分析',tag:'单品详情',title:'鱿鱼串库存详情',sub:'三仓可用量对比 · 系统库存准确性',color:'#FEF3C7,#92400E'},
+      {q:'可售不足1天的缺货',tag:'紧急程度',title:'紧急缺货（可售<1天）',sub:'优先关注最紧急的库存缺口',color:'#D1FAE5,#065F46'}
+    ],
+    cmds:[['🏪','发货区缺货'],['⚠️','可售不足1天']]
+  },
+  sales:{
+    name:'张伟',avatar:'张',title:'销售 · 缺货协同',
+    desc:'当前角色：<strong>销售 张伟</strong><br>查看缺货影响的客户 · 接收企业微信客户断货预警',
+    cards:[
+      {q:'缺货总览',tag:'全仓总览',title:'缺货影响客户总览',sub:'37家客户受影响 · 其中8家重点客户',color:'#FEE2E2,#991B1B'},
+      {q:'客户断货预警',tag:'客户预警',title:'客户断货预警',sub:'哪些客户即将断货 · 需主动联系',color:'#FEF3C7,#92400E'},
+      {q:'鱿鱼串缺货分析',tag:'单品详情',title:'鱿鱼串缺货 · 影响客户',sub:'12家客户受影响 · 3家重点 · 最近购买6月中旬',color:'#E0E7FF,#4338CA'},
+      {q:'发货区缺货分析',tag:'单仓分析',title:'发货区缺货分析',sub:'14个缺货SKU · 26家客户受影响',color:'#D1FAE5,#065F46'}
+    ],
+    cmds:[['📊','缺货总览'],['👥','客户断货预警'],['🔍','鱿鱼串缺货']]
+  },
+  finance:{
+    name:'王芳',avatar:'王',title:'财务 · 缺货协同',
+    desc:'当前角色：<strong>财务 王芳</strong><br>查看缺货损失金额 · 损失趋势分析 · 紧急采购成本检测',
+    cards:[
+      {q:'利润影响',tag:'利润分析',title:'利润影响分析',sub:'毛利 · 缺货损失 · 滞销库存 · 费用影响',color:'#D1FAE5,#065F46'},
+      {q:'AI建议采纳分析',tag:'采纳分析',title:'AI建议采纳率分析',sub:'谁采纳了 · 谁没采纳 · 采纳后效果对比',color:'#E0E7FF,#4338CA'},
+      {q:'缺货损失趋势',tag:'损失趋势',title:'缺货损失趋势（近3月）',sub:'各月损失对比 · 环比变化 · 采购员排行',color:'#FEE2E2,#991B1B'},
+      {q:'成本异常检测',tag:'成本异常',title:'成本异常检测',sub:'紧急采购导致成本波动 · 供应商成本变化',color:'#FEF3C7,#92400E'}
+    ],
+    cmds:[['💰','利润影响'],['📈','缺货损失趋势'],['🔍','成本异常检测']]
+  }
+};
+
+/* ============== 场景数据 ============== */
+const SCENARIOS=[
+
+/* ── 异常 ── */
+{
+  match:['__fallback__'],
+  route:{agent:'缺货闭环',icon:'⚠',color:'#8B95AB'},
+  thinking:['解析查询','模糊匹配','未命中具体场景'],
+  blocks:[{type:'p',text:'我理解你想查询缺货相关信息。以下是支持的查询方式：'},{type:'fallback-grid'}]
+},
+
+/* ── 1. 缺货总览（全仓全品）── */
+{
+  match:['缺货总览','缺货风险总览','全仓缺货','缺货预警','缺货汇总','全仓缺货分析','缺货风险'],
+  route:{agent:'智能补货',icon:'🤖',color:'#E5484D'},
+  thinking:['扫描3仓库存可用量 vs 近15天标准销量','识别缺货风险池 · 去重计数','计算补货需求 · 预计损失','匹配责任人'],
+  blocks:[
+    {type:'route',text:'已识别为<b>缺货风险总览</b>，全仓全品扫描完成。',icon:'⚠'},
+    {type:'kpis',items:[
+      {label:'缺货SKU数',value:'24',unit:'个',kind:'danger'},
+      {label:'缺货合计件数',value:'1,082',unit:'件',kind:'danger'},
+      {label:'影响客户数',value:'37',unit:'家',kind:'warning'},
+      {label:'预计缺货损失',value:'12.8',unit:'万元',kind:'danger'}
+    ]},
+    {type:'table',title:'⚠️ 全仓缺货商品清单',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:200},{k:'wh',label:'仓库',w:70},{k:'buyer',label:'采购员',w:70},{k:'available',label:'当前可用量(件)',cls:'num'},{k:'gap',label:'缺口(件)',cls:'num'},{k:'days',label:'可售天数',cls:'num'},{k:'intransit',label:'在途(件)',cls:'num'},{k:'procCycle',label:'采购周期',w:70},{k:'loss',label:'预计损失(元)',cls:'num'}
+    ],rows:[
+      {rk:1,name:{n:'安大100克整条鱿鱼串（黄色十字胶带）88',c:'AD100KZTYYC'},wh:'发货区',buyer:'付超英',available:'14',gap:{v:'-8.5',cls:'danger-cell'},days:{v:'1.5',cls:'danger-cell'},intransit:'0',procCycle:'3天',loss:{v:'36,125',cls:'danger-cell'}},
+      {rk:2,name:{n:'安大35克鱿鱼须串（红色胶带）',c:'AD35KYYXC'},wh:'发货区',buyer:'付超英',available:'13',gap:{v:'-95',cls:'danger-cell'},days:{v:'2.1',cls:'danger-cell'},intransit:'0',procCycle:'3天',loss:{v:'28,500',cls:'danger-cell'}},
+      {rk:3,name:{n:'川荣香辣鸭胗',c:'CRXLYZ'},wh:'发货区',buyer:'付超英',available:'5',gap:{v:'-69',cls:'danger-cell'},days:{v:'0.8',cls:'danger-cell'},intransit:'0',procCycle:'5天',loss:{v:'15,870',cls:'danger-cell'}},
+      {rk:4,name:{n:'无双剑翅',c:'WSJC'},wh:'天环101库',buyer:'任情情',available:'8',gap:{v:'-45',cls:'danger-cell'},days:{v:'0.6',cls:'danger-cell'},intransit:'20',procCycle:'4天',loss:{v:'22,050',cls:'danger-cell'}},
+      {rk:5,name:{n:'鸡心串（冷冻）',c:'JXC-LD'},wh:'西库一楼',buyer:'任情情',available:'15',gap:{v:'-28',cls:'danger-cell'},days:{v:'2.5',cls:'danger-cell'},intransit:'0',procCycle:'4天',loss:{v:'8,400',cls:'danger-cell'}},
+      {rk:6,name:{n:'小酥肉',c:'XSR-002'},wh:'西库一楼',buyer:'付超英',available:'22',gap:{v:'-18',cls:'danger-cell'},days:{v:'3.0',cls:'danger-cell'},intransit:'0',procCycle:'5天',loss:{v:'5,400',cls:'danger-cell'}},
+      {rk:7,name:{n:'安大170个香辣翅根（黄胶带）',c:'AD170GXLCGHJD'},wh:'发货区',buyer:'付超英',available:'28',gap:{v:'-12',cls:'warn-cell'},days:{v:'3.5',cls:'warn-cell'},intransit:'40',procCycle:'3天',loss:{v:'4,200',cls:'warn-cell'}},
+      {rk:8,name:{n:'安大100克优选翅中串（粉色）',c:'AD100KYXCZC'},wh:'发货区',buyer:'任情情',available:'19',gap:{v:'-11',cls:'warn-cell'},days:{v:'3.8',cls:'warn-cell'},intransit:'30',procCycle:'3天',loss:{v:'3,850',cls:'warn-cell'}}
+    ],foot:{left:'共 24 个缺货 SKU · 缺口合计 1,082 件 · 在途部分已标注 · 预计损失 ¥ 128,395',right:''}},
+    {type:'details',title:'📐 计算公式（开发参考）',collapsed:true,sections:[
+      {name:'① 近15天日均销量',expr:'近2个月总销量 ÷ 52天',desc:'数据来源：<code>销货单统计表</code>（取26年出库数量）。示例：查询 2026.07.07 → 总销量范围 =（2026.05.07 - 07.07），共 62 天，取近2个月即 52 天'},
+      {name:'② 15天标准销量',expr:'日均销量 × 15天',desc:'基于日均销量推算未来15天的预计需求量'},
+      {name:'③ 缺货判定条件',expr:'当前可用量 < 近15天标准销量 → 进入缺货预警池',desc:'数据来源：<code>库存状况表</code>（取当前可用量）。扫描3仓全部1,578个SKU，逐一比对。注意：可用量含未发出库销货单已占用数'},
+      {name:'④ 缺货缺口',expr:'当前可用量 − 近15天标准销量（负数为缺口，取绝对值）',desc:'对每个缺货SKU计算缺口，负值取绝对值后求和得缺货合计件数'},
+      {name:'⑤ 可售天数',expr:'当前可用量 ÷ 日均销量',desc:'反映当前库存还能支撑多少天销售，阈值默认2天（可调整）'},
+      {name:'⑥ 缺货SKU数量',expr:'满足判定条件的SKU去重计数',desc:'多仓分别计算后汇总，同一SKU在多仓出现缺货分别计数'},
+      {name:'⑦ 影响客户数',expr:'缺货SKU近90天有购买记录的客户ID去重',desc:'数据来源：<code>销货单统计表</code>。重点客户定义：近90天采购总额 > 5万元，单独标注'},
+      {name:'⑧ 预计缺货损失',expr:'Σ(缺口件数 × 单品近3月平均毛利 × 补货周期天数 ÷ 15)',desc:'假设缺货持续一个补货周期，估算毛利损失。单品毛利 = 近3月该SKU总销售收入 − 总销售成本。补货周期默认取3天（客户平均采购周期），可调整'}
+    ]},
+    {type:'alert',kind:'warning',icon:'💡',title:'AI优化建议',desc:'<b>发货区</b>缺货最严重（14个SKU·缺口612件·损失7.6万），<b>付超英</b>负责12个缺货SKU需优先关注。<b>鱿鱼串+鱿鱼须</b>合计损失6.5万，占总损失51%，建议优先补货。缺货提前量当前为<b>2天</b>，可考虑放宽至3天减少误报。<br><br>📌 <b>缺货判定说明：</b>当前采用两套标准——<b>标准A</b>(可用量<15天标准销量→识别潜在风险)和<b>标准B</b>(可售天数<2天→紧急缺货)。<br>可售天数>2天但触发标准A的SKU属于<b>潜在风险</b>，建议关注但不需立即处理。'},
+    {type:'action-row',actions:[
+      {text:'查看发货区缺货详情',cls:'',handler:'gotoWarehouse'},
+      {text:'推送企业微信',cls:'confirm',handler:'gotoPush'},
+      {text:'调整缺货规则',cls:'',handler:'gotoRule'},
+      {text:'追加备注',cls:'confirm',handler:'addNote'}
+    ]}
+  ],
+  roleBlocks:{
+    sales:{
+      kpis:[{label:'影响客户总数',value:'37',unit:'家',kind:'warning'},{label:'重点客户数',value:'8',unit:'家',kind:'danger'},{label:'涉及缺货商品',value:'24',unit:'个',kind:'danger'},{label:'最近购买距今',value:'6.15',unit:'天前',kind:'warning'}],
+      table:{title:'👥 受影响客户清单',pageSize:10,columns:[
+        {k:'rk',label:'#',w:38},{k:'customer',label:'客户',w:140},{k:'level',label:'客户等级',w:70},{k:'shortSku',label:'缺货商品',w:160},{k:'lastBuy',label:'最近购买',w:100},{k:'avgQty',label:'均次购买(件)',cls:'num'},{k:'sales',label:'销售员',w:70}
+      ],rows:[
+        {rk:1,customer:'刘记烧烤(旗舰店)',level:{text:'重点',cls:'danger'},shortSku:'鱿鱼串/鸭胗/翅根',lastBuy:'2026-06-28',avgQty:'18',sales:'张伟'},
+        {rk:2,customer:'蜀味香串串(总店)',level:{text:'重点',cls:'danger'},shortSku:'鱿鱼串/鱿鱼须',lastBuy:'2026-06-25',avgQty:'12',sales:'张伟'},
+        {rk:3,customer:'渝味火锅食材',level:{text:'重点',cls:'danger'},shortSku:'鱿鱼串/牛肉粒',lastBuy:'2026-06-20',avgQty:'8',sales:'李明'},
+        {rk:4,customer:'鑫旺食品批发',level:{text:'一般',cls:'warning'},shortSku:'鸭胗/鸡心串',lastBuy:'2026-06-15',avgQty:'6',sales:'李明'},
+        {rk:5,customer:'味多多串串',level:{text:'一般',cls:'warning'},shortSku:'鱿鱼串/小酥肉',lastBuy:'2026-06-10',avgQty:'5',sales:'张伟'},
+        {rk:6,customer:'老成都火锅',level:{text:'一般',cls:'warning'},shortSku:'翅根/翅中',lastBuy:'2026-06-08',avgQty:'4',sales:'张伟'},
+        {rk:7,customer:'川味居食品',level:{text:'一般',cls:'warning'},shortSku:'蛋饺/虾滑',lastBuy:'2026-06-05',avgQty:'3',sales:'李明'},
+        {rk:8,customer:'好味来烧烤',level:{text:'一般',cls:'warning'},shortSku:'鱿鱼须/牛肉粒',lastBuy:'2026-06-18',avgQty:'7',sales:'张伟'}
+      ],foot:{left:'共 37 家客户受影响 · 其中 8 家重点客户',right:''}},
+      details:{title:'📐 计算公式（销售视角）',collapsed:true,sections:[
+        {name:'① 影响客户',expr:'缺货SKU近90天有购买记录的客户ID去重',desc:'数据来源：<code>销货单统计表</code>。扫描所有缺货SKU的购买记录，按客户ID去重'},
+        {name:'② 重点客户',expr:'近90天采购总额 > 5万元',desc:'重点客户单独标注，建议优先沟通。阈值可调整'},
+        {name:'③ 最近购买',expr:'当前日期 − 最近一次购买日期',desc:'反映客户最近活跃度，天数越大说明客户越久未下单'},
+        {name:'④ 均次购买',expr:'近90天总购买件数 ÷ 购买次数',desc:'反映客户单次采购量，用于判断缺货对客户的影响程度'}
+      ]}
+    },
+    finance:{
+      kpis:[{label:'缺货SKU数',value:'24',unit:'个',kind:'danger'},{label:'预计损失总额',value:'12.8',unit:'万元',kind:'danger'},{label:'影响毛利率',value:'-2.3',unit:'%',kind:'danger'},{label:'上月同期损失',value:'8.5',unit:'万元',kind:'warning'}],
+      table:{title:'💰 缺货损失明细',pageSize:10,columns:[
+        {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:200},{k:'wh',label:'仓库',w:70},{k:'gap',label:'缺口(件)',cls:'num'},{k:'unitProfit',label:'单品毛利(元)',cls:'num'},{k:'loss',label:'预计损失(元)',cls:'num'},{k:'costChange',label:'成本变化',w:80}
+      ],rows:[
+        {rk:1,name:{n:'安大100克整条鱿鱼串（黄色十字胶带）88',c:'AD100KZTYYC'},wh:'发货区',gap:{v:'-8.5',cls:'danger-cell'},unitProfit:'4,250',loss:{v:'36,125',cls:'danger-cell'},costChange:'↑3%'},
+        {rk:2,name:{n:'安大35克鱿鱼须串（红色胶带）',c:'AD35KYYXC'},wh:'发货区',gap:{v:'-95',cls:'danger-cell'},unitProfit:'300',loss:{v:'28,500',cls:'danger-cell'},costChange:'持平'},
+        {rk:3,name:{n:'川荣香辣鸭胗',c:'CRXLYZ'},wh:'发货区',gap:{v:'-69',cls:'danger-cell'},unitProfit:'230',loss:{v:'15,870',cls:'danger-cell'},costChange:'↑5%'},
+        {rk:4,name:{n:'无双剑翅',c:'WSJC'},wh:'天环101库',gap:{v:'-45',cls:'danger-cell'},unitProfit:'490',loss:{v:'22,050',cls:'danger-cell'},costChange:'↓2%'},
+        {rk:5,name:{n:'鸡心串（冷冻）',c:'JXC-LD'},wh:'西库一楼',gap:{v:'-28',cls:'danger-cell'},unitProfit:'300',loss:{v:'8,400',cls:'danger-cell'},costChange:'持平'},
+        {rk:6,name:{n:'小酥肉',c:'XSR-002'},wh:'西库一楼',gap:{v:'-18',cls:'danger-cell'},unitProfit:'300',loss:{v:'5,400',cls:'danger-cell'},costChange:'↑2%'},
+        {rk:7,name:{n:'安大170个香辣翅根（黄胶带）',c:'AD170GXLCGHJD'},wh:'发货区',gap:{v:'-12',cls:'warn-cell'},unitProfit:'350',loss:{v:'4,200',cls:'warn-cell'},costChange:'持平'},
+        {rk:8,name:{n:'安大100克优选翅中串（粉色）',c:'AD100KYXCZC'},wh:'发货区',gap:{v:'-11',cls:'warn-cell'},unitProfit:'350',loss:{v:'3,850',cls:'warn-cell'},costChange:'持平'}
+      ],foot:{left:'共 24 个缺货 SKU · 预计损失 ¥ 128,395 · 影响毛利率 -2.3%',right:''}},
+      details:{title:'📐 计算公式（财务视角）',collapsed:true,sections:[
+        {name:'① 预计损失',expr:'Σ(缺口件数 × 单品毛利 × 补货周期 ÷ 15)',desc:'假设缺货持续一个补货周期，客户转向竞品。补货周期默认取3天'},
+        {name:'② 单品毛利',expr:'近3月该SKU总销售收入 − 总销售成本',desc:'数据来源：<code>销货单统计表</code>。按SKU汇总近3月销售收入和成本'},
+        {name:'③ 影响毛利率',expr:'缺货损失 ÷ 预计毛利 × 100%',desc:'反映缺货对整体毛利率的侵蚀程度。上月同期毛利率 24.4%'},
+        {name:'④ 成本变化',expr:'本期单品成本 ÷ 上期单品成本 − 1',desc:'监控供应商成本波动。↑表示成本上涨，需关注采购价格'}
+      ]}
+    }
+  }
+},
+
+/* ── 2. 单仓全品 ── */
+{
+  match:['发货区缺货分析','发货区 缺货分析','缺货分析 发货区','发货区缺货','发货区 缺货'],
+  route:{agent:'智能补货',icon:'🤖',color:'#E5484D'},
+  thinking:['锁定仓库=发货区','扫描该仓库存可用量 vs 近15天标准销量','匹配采购员/仓管员'],
+  blocks:[
+    {type:'route',text:'已识别为<b>缺货分析 · 单仓查询</b>，仓库=<b>发货区</b>。',icon:'⚠'},
+    {type:'kpis',items:[
+      {label:'缺货SKU数',value:'14',unit:'个',kind:'danger'},
+      {label:'缺货合计件数',value:'612',unit:'件',kind:'danger'},
+      {label:'影响客户数',value:'26',unit:'家',kind:'warning'},
+      {label:'预计缺货损失',value:'7.6',unit:'万元',kind:'danger'}
+    ]},
+    {type:'table',title:'⚠️ 发货区 · 缺货清单',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:200},{k:'buyer',label:'采购员',w:70},{k:'available',label:'当前可用量(件)',cls:'num'},{k:'gap',label:'缺口(件)',cls:'num'},{k:'days',label:'可售天数',cls:'num'},{k:'intransit',label:'在途(件)',cls:'num'},{k:'procCycle',label:'采购周期',w:70},{k:'loss',label:'预计损失(元)',cls:'num'}
+    ],rows:[
+      {rk:1,name:{n:'安大100克整条鱿鱼串（黄色十字胶带）88',c:'AD100KZTYYC'},buyer:'付超英',available:'14',gap:{v:'-8.5',cls:'danger-cell'},days:{v:'1.5',cls:'danger-cell'},intransit:'0',procCycle:'3天',loss:{v:'36,125',cls:'danger-cell'}},
+      {rk:2,name:{n:'安大35克鱿鱼须串（红色胶带）',c:'AD35KYYXC'},buyer:'付超英',available:'13',gap:{v:'-95',cls:'danger-cell'},days:{v:'2.1',cls:'danger-cell'},intransit:'0',procCycle:'3天',loss:{v:'28,500',cls:'danger-cell'}},
+      {rk:3,name:{n:'川荣香辣鸭胗',c:'CRXLYZ'},buyer:'付超英',available:'5',gap:{v:'-69',cls:'danger-cell'},days:{v:'0.8',cls:'danger-cell'},intransit:'0',procCycle:'5天',loss:{v:'15,870',cls:'danger-cell'}},
+      {rk:4,name:{n:'安大170个香辣翅根（黄胶带）',c:'AD170GXLCGHJD'},buyer:'付超英',available:'28',gap:{v:'-12',cls:'warn-cell'},days:{v:'3.5',cls:'warn-cell'},intransit:'40',procCycle:'3天',loss:{v:'4,200',cls:'warn-cell'}},
+      {rk:5,name:{n:'安大100克优选翅中串（粉色）',c:'AD100KYXCZC'},buyer:'任情情',available:'19',gap:{v:'-11',cls:'warn-cell'},days:{v:'3.8',cls:'warn-cell'},intransit:'30',procCycle:'3天',loss:{v:'3,850',cls:'warn-cell'}},
+      {rk:6,name:{n:'蛋饺',c:'DJ-001'},buyer:'付超英',available:'34',gap:{v:'-6',cls:'warn-cell'},days:{v:'4.2',cls:'warn-cell'},intransit:'0',procCycle:'5天',loss:{v:'1,800',cls:'warn-cell'}},
+      {rk:7,name:{n:'牛肉粒',c:'NRL-003'},buyer:'付超英',available:'36',gap:{v:'-4',cls:'warn-cell'},days:{v:'5.0',cls:'warn-cell'},intransit:'0',procCycle:'7天',loss:{v:'1,200',cls:'warn-cell'}},
+      {rk:8,name:{n:'虾滑',c:'XH-005'},buyer:'任情情',available:'12',gap:{v:'-3',cls:'warn-cell'},days:{v:'5.5',cls:'warn-cell'},intransit:'0',procCycle:'4天',loss:{v:'900',cls:'warn-cell'}}
+    ],foot:{left:'发货区 14 个缺货 SKU · 缺口合计 612 件 · 在途部分已标注 · 预计损失 ¥ 76,445',right:''}},
+    {type:'details',title:'📐 计算公式（发货区）',collapsed:true,sections:[
+      {name:'① 近15天日均销量',expr:'发货区该SKU近2个月总销量 ÷ 52天',desc:'数据来源：<code>销货单统计表</code>，仅统计发货区出库记录'},
+      {name:'② 15天标准销量',expr:'日均销量 × 15天',desc:'基于日均销量推算未来15天预计需求'},
+      {name:'③ 缺货判定',expr:'当前可用量 < 近15天标准销量 → 进入缺货预警池',desc:'数据来源：<code>库存状况表</code>（发货区可用量）。扫描发货区全部SKU'},
+      {name:'④ 缺货缺口',expr:'当前可用量 − 近15天标准销量（负数为缺口）',desc:'对每个SKU计算缺口，负值取绝对值后求和'},
+      {name:'⑤ 可售天数',expr:'当前可用量 ÷ 日均销量',desc:'反映发货区当前库存还能支撑多少天销售'},
+      {name:'⑥ 预计损失',expr:'Σ(缺口件数 × 单品近3月平均毛利 × 补货周期 ÷ 15)',desc:'假设缺货持续一个补货周期，估算毛利损失'}
+    ]},
+    {type:'send-picker',receivers:[
+      {name:'付超英',role:'采购员',skus:10,avatar:'付'},
+      {name:'任情情',role:'采购员',skus:4,avatar:'任'},
+      {name:'李四',role:'仓管员（发货区）',skus:14,avatar:'李'}
+    ]}
+  ],
+  roleBlocks:{
+    warehouse:{
+      kpis:[{label:'缺货SKU数',value:'14',unit:'个',kind:'danger'},{label:'需核实SKU数',value:'14',unit:'个',kind:'warning'},{label:'系统库存总量',value:'1,250',unit:'件',kind:'success'},{label:'最近盘点',value:'7天前',unit:'',kind:'warning'}],
+      table:{title:'🏭 发货区 · 库存核实清单',pageSize:10,columns:[
+        {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:200},{k:'location',label:'库位',w:80},{k:'available',label:'系统可用量(件)',cls:'num'},{k:'lastCheck',label:'最近盘点',w:90},{k:'status',label:'库存状态',w:80}
+      ],rows:[
+        {rk:1,name:{n:'安大100克整条鱿鱼串（黄色十字胶带）88',c:'AD100KZTYYC'},location:'A-03-12',available:'14',lastCheck:'2026-06-30',status:{text:'待核实',cls:'danger'}},
+        {rk:2,name:{n:'安大35克鱿鱼须串（红色胶带）',c:'AD35KYYXC'},location:'A-03-15',available:'13',lastCheck:'2026-06-30',status:{text:'待核实',cls:'danger'}},
+        {rk:3,name:{n:'川荣香辣鸭胗',c:'CRXLYZ'},location:'B-01-08',available:'5',lastCheck:'2026-07-01',status:{text:'待核实',cls:'danger'}},
+        {rk:4,name:{n:'安大170个香辣翅根（黄胶带）',c:'AD170GXLCGHJD'},location:'A-03-20',available:'28',lastCheck:'2026-06-28',status:{text:'待核实',cls:'warning'}},
+        {rk:5,name:{n:'安大100克优选翅中串（粉色）',c:'AD100KYXCZC'},location:'A-03-22',available:'19',lastCheck:'2026-06-28',status:{text:'待核实',cls:'warning'}},
+        {rk:6,name:{n:'蛋饺',c:'DJ-001'},location:'C-02-05',available:'34',lastCheck:'2026-07-02',status:{text:'已核实',cls:'success'}},
+        {rk:7,name:{n:'牛肉粒',c:'NRL-003'},location:'B-02-10',available:'36',lastCheck:'2026-07-02',status:{text:'已核实',cls:'success'}},
+        {rk:8,name:{n:'虾滑',c:'XH-005'},location:'C-02-12',available:'12',lastCheck:'2026-06-25',status:{text:'待核实',cls:'warning'}}
+      ],foot:{left:'发货区 14 个缺货 SKU · 需核实库存准确性',right:''}},
+      details:{title:'📐 计算公式（仓库视角）',collapsed:true,sections:[
+        {name:'① 系统可用量',expr:'库存状况表当前可用量',desc:'数据来源：<code>库存状况表</code>。包含已出库未审数量，需与实物库存比对'},
+        {name:'② 库存状态',expr:'最近盘点日期距今 ≤ 7天 → 已核实 | > 7天 → 待核实',desc:'盘点周期超过7天视为库存状态不确定，需重新盘点'},
+        {name:'③ 盘点周期',expr:'当前日期 − 最近盘点日期',desc:'反映库存数据的新鲜度。建议7天内至少盘点一次'},
+        {name:'④ 需核实SKU',expr:'库存状态=待核实的SKU去重计数',desc:'盘点周期 > 7天或系统库存与实际库存有差异的SKU'}
+      ]}
+    },
+    extraBlocks:[
+      {type:'alert',kind:'warning',icon:'📌',title:'AI核实建议',desc:'发货区14个缺货SKU中，<b>11个SKU待核实</b>库存准确性。<br>建议优先核实：<b>川荣香辣鸭胗</b>（系统5件·最近盘点7天前）和<b>鱿鱼串</b>（系统14件·最近盘点6月30日）。<br><br>核实后如有差异请在系统中更新，智能体会根据准确数据重新判断缺货状态。'}
+    ]
+  }
+},
+ 
+/* ── 3. 全仓单品 ── *//* ── 3. 全仓单品 ── */
+{
+  match:['鱿鱼串缺货分析','鱿鱼串 缺货分析','安大100克整条鱿鱼串 缺货分析','鱿鱼串缺货','鱿鱼串 缺货','安大鱿鱼串 缺货'],
+  route:{agent:'智能补货',icon:'🤖',color:'#E5484D'},
+  thinking:['识别商品=安大100克整条鱿鱼串','汇总3仓可用量+销量+缺口','匹配影响客户列表'],
+  blocks:[
+    {type:'route',text:'已识别为<b>缺货分析 · 单品查询</b>，商品=<b>安大100克整条鱿鱼串（黄色十字胶带）88</b>。',icon:'⚠'},
+    {type:'kpis',items:[
+      {label:'全仓可用量',value:'100',unit:'件',kind:'success'},
+      {label:'发货区缺货缺口',value:'-8.5',unit:'件',kind:'danger'},
+      {label:'近15天日均销量',value:'1.5',unit:'件/天',kind:'warning'},
+      {label:'影响客户数',value:'12',unit:'家',kind:'danger'}
+    ]},
+    {type:'table',title:'🔍 安大100克整条鱿鱼串 · 各仓库缺货分析',pageSize:10,columns:[
+      {k:'wh',label:'仓库',w:90},{k:'available',label:'当前可用量(件)',cls:'num'},{k:'gap',label:'缺货缺口',cls:'num'},{k:'sellableDays',label:'可售天数',cls:'num'}
+    ],rows:[
+      {wh:'发货区',available:'14',gap:{v:'-8.5',cls:'danger-cell'},sellableDays:{v:'9.3',cls:'danger-cell'}},
+      {wh:'西库一楼',available:'76',gap:{v:'+71.5',cls:'success-cell'},sellableDays:{v:'253',cls:'warn-cell'}},
+      {wh:'天环101库',available:'10',gap:{v:'+2.5',cls:'success-cell'},sellableDays:{v:'20',cls:'success-cell'}}
+    ],foot:{left:'供应商：安大食品 | 采购员：付超英 | 规格：20串×5包',right:''}},
+    {type:'table',title:'👥 受影响客户（该SKU近90天购买记录）',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'customer',label:'客户',w:120},{k:'level',label:'客户等级',w:70},{k:'lastBuy',label:'最近购买',w:100},{k:'avgQty',label:'均次购买(件)',cls:'num'},{k:'sales',label:'销售',w:70}
+    ],rows:[
+      {rk:1,customer:'刘记烧烤(旗舰店)',level:{text:'重点',cls:'danger'},lastBuy:'2026-06-28',avgQty:'8',sales:'张伟'},
+      {rk:2,customer:'蜀味香串串(总店)',level:{text:'重点',cls:'danger'},lastBuy:'2026-06-25',avgQty:'5',sales:'张伟'},
+      {rk:3,customer:'渝味火锅食材',level:{text:'重点',cls:'danger'},lastBuy:'2026-06-20',avgQty:'4',sales:'李明'},
+      {rk:4,customer:'鑫旺食品批发',level:{text:'一般',cls:'warning'},lastBuy:'2026-06-15',avgQty:'3',sales:'李明'},
+      {rk:5,customer:'味多多串串',level:{text:'一般',cls:'warning'},lastBuy:'2026-06-10',avgQty:'2',sales:'张伟'}
+    ],foot:{left:'共 12 家客户受影响 · 其中 3 家重点客户',right:''}},
+    {type:'details',title:'📐 计算公式（单品分析）',collapsed:true,sections:[
+      {name:'① 近15天日均销量',expr:'该SKU各仓近2个月总销量 ÷ 52天',desc:'数据来源：<code>销货单统计表</code>，按仓库分别统计'},
+      {name:'② 15天标准销量',expr:'日均销量 × 15天',desc:'分仓计算各仓的预计需求'},
+      {name:'③ 缺货缺口',expr:'当前可用量 − 近15天标准销量',desc:'分仓计算，负值表示缺货'},
+      {name:'④ 可售天数',expr:'当前可用量 ÷ 日均销量',desc:'分仓展示，发货区可售天数低于阈值时触发预警'},
+      {name:'⑤ 调拨建议',expr:'调出仓可用量 > 本仓标准销量 × 2 → 可调拨',desc:'西库一楼可用76件，日均仅0.3件，远超本仓需求，可调拨至发货区'},
+      {name:'⑥ 影响客户',expr:'该SKU近90天有购买记录的客户ID去重',desc:'数据来源：<code>销货单统计表</code>，重点客户：近90天采购总额 > 5万元'}
+    ]},
+    {type:'alert',kind:'danger',icon:'🚨',title:'发货区严重缺货 · 建议从西库一楼调拨',desc:'发货区可用量仅 <b>14 件</b>，缺口 <b>8.5 件</b>。西库一楼该SKU有 <b>76 件</b>（日均仅 0.3 件），建议调拨 30 件到发货区。'},
+    {type:'send-picker',receivers:[
+      {name:'付超英',role:'采购员',skus:1,avatar:'付'},
+      {name:'张伟',role:'销售',skus:1,avatar:'张'}
+    ]}
+  ]
+},
+
+/* ── 4. 单仓单品 ── */
+{
+  match:['鱿鱼串 发货区缺货','鱿鱼串 发货区 缺货分析','鱿鱼串 发货区 缺货','安大鱿鱼串 发货区 缺货'],
+  route:{agent:'智能补货',icon:'🤖',color:'#E5484D'},
+  thinking:['识别商品=安大100克整条鱿鱼串 · 仓库=发货区','精准查询单品单仓缺货数据'],
+  blocks:[
+    {type:'route',text:'已识别为<b>缺货分析 · 单品单仓</b>，商品=<b>安大100克整条鱿鱼串</b>，仓库=<b>发货区</b>。',icon:'⚠'},
+    {type:'kpis',items:[
+      {label:'当前可用量',value:'14',unit:'件',kind:'danger'},
+      {label:'缺货缺口',value:'-8.5',unit:'件',kind:'danger'},
+      {label:'可售天数',value:'9.3',unit:'天',kind:'warning'},
+      {label:'影响客户',value:'12',unit:'家',kind:'warning'}
+    ]},
+    {type:'alert',kind:'danger',icon:'🚨',title:'发货区该SKU缺货 · 西库一楼库存充足可调拨',desc:'西库一楼可用 <b>76 件</b>（日均仅 0.3 件），建议调拨 30 件到发货区。'},
+    {type:'send-picker',receivers:[{name:'付超英',role:'采购员',skus:1,avatar:'付'},{name:'李四',role:'仓管员（发货区）',skus:1,avatar:'李'}]}
+  ]
+},
+
+/* ── 5. 按采购员 ── */
+{
+  match:['付超英负责的缺货','付超英 缺货','付超英负责的缺货商品','采购付超英 缺货','我负责的缺货','任情情负责的缺货','任情情 缺货'],
+  route:{agent:'智能补货',icon:'🤖',color:'#E5484D'},
+  thinking:['按采购员=付超英过滤缺货风险池','汇总该采购员负责的缺货SKU'],
+  blocks:[
+    {type:'route',text:'已识别为<b>缺货分析 · 按采购员</b>，采购员=<b>付超英</b>。',icon:'⚠'},
+    {type:'kpis',items:[
+      {label:'负责缺货SKU',value:'12',unit:'个',kind:'danger'},
+      {label:'缺口合计',value:'598',unit:'件',kind:'danger'},
+      {label:'涉及供应商',value:'4',unit:'家',kind:'warning'},
+      {label:'涉及仓库',value:'3',unit:'个',kind:'warning'}
+    ]},
+    {type:'table',title:'🛒 付超英负责的缺货SKU',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:200},{k:'wh',label:'仓库',w:70},{k:'available',label:'当前可用量(件)',cls:'num'},{k:'gap',label:'缺口(件)',cls:'num'},{k:'suggestBuy',label:'建议补货量(件)',cls:'num'},{k:'supplier',label:'供应商',w:80}
+    ],rows:[
+      {rk:1,name:{n:'安大100克整条鱿鱼串（黄色十字胶带）88',c:'AD100KZTYYC'},wh:'发货区',available:'14',gap:{v:'-8.5',cls:'danger-cell'},suggestBuy:'30-50',supplier:'安大食品'},
+      {rk:2,name:{n:'安大35克鱿鱼须串（红色胶带）',c:'AD35KYYXC'},wh:'发货区',available:'13',gap:{v:'-95',cls:'danger-cell'},suggestBuy:'150-200',supplier:'安大食品'},
+      {rk:3,name:{n:'川荣香辣鸭胗',c:'CRXLYZ'},wh:'发货区',available:'5',gap:{v:'-69',cls:'danger-cell'},suggestBuy:'100-150',supplier:'川荣食品'},
+      {rk:4,name:{n:'安大170个香辣翅根（黄胶带）',c:'AD170GXLCGHJD'},wh:'发货区',available:'28',gap:{v:'-12',cls:'warn-cell'},suggestBuy:'50-80',supplier:'安大食品'},
+      {rk:5,name:{n:'蛋饺',c:'DJ-001'},wh:'发货区',available:'34',gap:{v:'-6',cls:'warn-cell'},suggestBuy:'30-50',supplier:'金锣食品'},
+      {rk:6,name:{n:'牛肉粒',c:'NRL-003'},wh:'发货区',available:'36',gap:{v:'-4',cls:'warn-cell'},suggestBuy:'20-30',supplier:'恒都食品'},
+      {rk:7,name:{n:'小酥肉',c:'XSR-002'},wh:'西库一楼',available:'22',gap:{v:'-18',cls:'danger-cell'},suggestBuy:'40-60',supplier:'金锣食品'}
+    ],foot:{left:'共 12 个缺货 SKU · 缺口合计 598 件 · 建议补货量合计 350-580 件',right:''}},
+    {type:'details',title:'📐 计算公式（按采购员）',collapsed:true,sections:[
+      {name:'① 缺货SKU过滤',expr:'按采购员=付超英过滤缺货风险池',desc:'从全仓缺货池中筛选该采购员负责的SKU'},
+      {name:'② 缺口合计',expr:'Σ(各SKU缺货缺口绝对值)',desc:'汇总该采购员负责的所有缺货SKU的缺口件数'},
+      {name:'③ 建议补货量',expr:'净需求(结合最低起订量修正)',desc:'每个SKU单独计算：预测需求 + 安全库存 − 可用库存 − 在途 + 真实缺口，再按最低起订量取整。仅作参考，不直接决定采购数量'},
+      {name:'④ 涉及供应商',expr:'缺货SKU的供应商去重计数',desc:'方便采购员按供应商集中沟通补货'}
+    ]},
+    {type:'send-picker',receivers:[{name:'付超英',role:'采购员',skus:12,avatar:'付'}]},
+    {type:'alert',kind:'info',icon:'💡',title:'AI补货建议',desc:'共12个缺货SKU，建议补货量合计 350-580 件。<br>• <b>鱿鱼须串</b>缺口95件 → 建议补货150-200件（安大食品·采购周期3天）<br>• <b>香辣鸭胗</b>缺口69件 → 建议补货100-150件（川荣食品·采购周期5天）<br>• <b>鱿鱼串</b>缺口8.5件 → 建议补货30-50件（西库一楼可调拨）<br>• 其余9个SKU建议按建议补货量区间确认<br><br>📌 建议补货量仅供参考，请根据实际情况确认后安排采购。'}
+  ]
+},
+
+/* ── 6. 按品类 ── */
+{
+  match:['串类缺货','串类商品缺货','串类缺货分析','串类 缺货','按品类 串类','串类商品缺货情况'],
+  route:{agent:'智能补货',icon:'🤖',color:'#E5484D'},
+  thinking:['按品类=串类过滤缺货风险池','汇总串类缺货SKU'],
+  blocks:[
+    {type:'route',text:'已识别为<b>缺货分析 · 按品类</b>，品类=<b>串类</b>。',icon:'⚠'},
+    {type:'kpis',items:[
+      {label:'串类缺货SKU',value:'8',unit:'个',kind:'danger'},
+      {label:'缺货合计件数',value:'268',unit:'件',kind:'danger'},
+      {label:'影响客户',value:'18',unit:'家',kind:'warning'},
+      {label:'预计损失',value:'5.4',unit:'万元',kind:'danger'}
+    ]},
+    {type:'table',title:'🏷️ 串类商品缺货清单',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:200},{k:'wh',label:'仓库',w:70},{k:'buyer',label:'采购员',w:70},{k:'available',label:'当前可用量(件)',cls:'num'},{k:'gap',label:'缺口(件)',cls:'num'},{k:'days',label:'可售天数',cls:'num'}
+    ],rows:[
+      {rk:1,name:{n:'安大100克整条鱿鱼串（黄色十字胶带）88',c:'AD100KZTYYC'},wh:'发货区',buyer:'付超英',available:'14',gap:{v:'-8.5',cls:'danger-cell'},days:{v:'1.5',cls:'danger-cell'}},
+      {rk:2,name:{n:'安大35克鱿鱼须串（红色胶带）',c:'AD35KYYXC'},wh:'发货区',buyer:'付超英',available:'13',gap:{v:'-95',cls:'danger-cell'},days:{v:'2.1',cls:'danger-cell'}},
+      {rk:3,name:{n:'安大170个香辣翅根（黄胶带）',c:'AD170GXLCGHJD'},wh:'发货区',buyer:'付超英',available:'28',gap:{v:'-12',cls:'warn-cell'},days:{v:'3.5',cls:'warn-cell'}},
+      {rk:4,name:{n:'安大100克优选翅中串（粉色）',c:'AD100KYXCZC'},wh:'发货区',buyer:'任情情',available:'19',gap:{v:'-11',cls:'warn-cell'},days:{v:'3.8',cls:'warn-cell'}},
+      {rk:5,name:{n:'鸡心串（冷冻）',c:'JXC-LD'},wh:'西库一楼',buyer:'任情情',available:'15',gap:{v:'-28',cls:'danger-cell'},days:{v:'2.5',cls:'danger-cell'}}
+    ],foot:{left:'串类共 8 个缺货 SKU · 缺口合计 268 件 · 预计损失 ¥ 54,025',right:''}},
+    {type:'details',title:'📐 计算公式（按品类）',collapsed:true,sections:[
+      {name:'① 品类过滤',expr:'按品类=串类过滤缺货风险池',desc:'从全仓缺货池中筛选品类为串类的SKU'},
+      {name:'② 缺货SKU计数',expr:'满足判定条件的串类SKU去重计数',desc:'多仓分别计算后汇总'},
+      {name:'③ 缺口合计',expr:'Σ(各SKU缺货缺口绝对值)',desc:'串类所有缺货SKU的缺口汇总'},
+      {name:'④ 预计损失',expr:'Σ(缺口件数 × 单品毛利 × 补货周期 ÷ 15)',desc:'串类商品保质期短，缺货损失权重更高'}
+    ]},
+    {type:'p',text:'💡 串类商品销量波动大、保质期短，是缺货高发品类。老板可考虑对串类单独调整缺货提前量阈值。'},
+    {type:'action-row',actions:[{text:'调整串类缺货规则',cls:'primary',handler:'ruleCategory'}]}
+  ]
+},
+
+/* ── 7. 按紧急程度 ── */
+{
+  match:['可售不足1天的缺货','可售不足1天','紧急缺货','可售不足1天的缺货商品','最紧急的缺货','紧急 缺货'],
+  route:{agent:'智能补货',icon:'🤖',color:'#E5484D'},
+  thinking:['按可售天数<1天过滤缺货风险池','按紧急程度排序'],
+  blocks:[
+    {type:'route',text:'已识别为<b>缺货分析 · 按紧急程度</b>，筛选条件=<b>可售天数 < 1天</b>。',icon:'⚠'},
+    {type:'kpis',items:[
+      {label:'紧急缺货SKU',value:'5',unit:'个',kind:'danger'},
+      {label:'缺货合计件数',value:'286',unit:'件',kind:'danger'},
+      {label:'影响重点客户',value:'8',unit:'家',kind:'danger'},
+      {label:'预计损失',value:'4.8',unit:'万元',kind:'danger'}
+    ]},
+    {type:'table',title:'🚨 紧急缺货（可售天数 < 1天）',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:200},{k:'wh',label:'仓库',w:70},{k:'buyer',label:'采购员',w:70},{k:'available',label:'当前可用量(件)',cls:'num'},{k:'gap',label:'缺口(件)',cls:'num'},{k:'days',label:'可售天数',cls:'num'}
+    ],rows:[
+      {rk:1,name:{n:'川荣香辣鸭胗',c:'CRXLYZ'},wh:'发货区',buyer:'付超英',available:'5',gap:{v:'-69',cls:'danger-cell'},days:{v:'0.8',cls:'danger-cell'}},
+      {rk:2,name:{n:'无双剑翅',c:'WSJC'},wh:'天环101库',buyer:'任情情',available:'8',gap:{v:'-45',cls:'danger-cell'},days:{v:'0.6',cls:'danger-cell'}},
+      {rk:3,name:{n:'红糖发糕',c:'HTFG'},wh:'西库一楼',buyer:'任情情',available:'3',gap:{v:'-32',cls:'danger-cell'},days:{v:'0.3',cls:'danger-cell'}},
+      {rk:4,name:{n:'麻辣牛肉',c:'MLNR'},wh:'发货区',buyer:'付超英',available:'6',gap:{v:'-25',cls:'danger-cell'},days:{v:'0.5',cls:'danger-cell'}},
+      {rk:5,name:{n:'掌中宝',c:'ZZB'},wh:'天环101库',buyer:'任情情',available:'10',gap:{v:'-18',cls:'danger-cell'},days:{v:'0.9',cls:'danger-cell'}}
+    ],foot:{left:'5 个紧急缺货 SKU · 缺口合计 286 件 · 预计损失 ¥ 48,250',right:''}},
+    {type:'details',title:'📐 计算公式（紧急程度）',collapsed:true,sections:[
+      {name:'① 紧急过滤',expr:'可售天数 < 1天',desc:'从全仓缺货池中筛选可售天数不足1天的SKU，按紧急程度排序'},
+      {name:'② 可售天数',expr:'当前可用量 ÷ 日均销量',desc:'值越小越紧急，<1天表示随时可能断货'},
+      {name:'③ 预计损失',expr:'Σ(缺口件数 × 单品毛利 × 紧急系数)',desc:'紧急缺货的损失估算权重更高，因为客户可能立即转向竞品'}
+    ]},
+    {type:'send-picker',receivers:[{name:'付超英',role:'采购员',skus:3,avatar:'付'},{name:'任情情',role:'采购员',skus:2,avatar:'任'}]}
+  ]
+},
+
+/* ── 8. 按供应商 ── */
+{
+  match:['安大食品的缺货商品','安大食品 缺货','安大食品缺货','按供应商 安大','安大食品 缺货分析'],
+  route:{agent:'智能补货',icon:'🤖',color:'#E5484D'},
+  thinking:['按供应商=安大食品过滤缺货风险池'],
+  blocks:[
+    {type:'route',text:'已识别为<b>缺货分析 · 按供应商</b>，供应商=<b>安大食品</b>。',icon:'⚠'},
+    {type:'kpis',items:[
+      {label:'安大缺货SKU',value:'6',unit:'个',kind:'danger'},
+      {label:'缺货合计件数',value:'240',unit:'件',kind:'danger'},
+      {label:'影响客户',value:'15',unit:'家',kind:'warning'},
+      {label:'预计损失',value:'4.2',unit:'万元',kind:'danger'}
+    ]},
+    {type:'table',title:'🏭 安大食品缺货SKU',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:200},{k:'wh',label:'仓库',w:70},{k:'buyer',label:'采购员',w:70},{k:'available',label:'当前可用量(件)',cls:'num'},{k:'gap',label:'缺口(件)',cls:'num'},{k:'days',label:'可售天数',cls:'num'}
+    ],rows:[
+      {rk:1,name:{n:'安大100克整条鱿鱼串（黄色十字胶带）88',c:'AD100KZTYYC'},wh:'发货区',buyer:'付超英',available:'14',gap:{v:'-8.5',cls:'danger-cell'},days:{v:'1.5',cls:'danger-cell'}},
+      {rk:2,name:{n:'安大35克鱿鱼须串（红色胶带）',c:'AD35KYYXC'},wh:'发货区',buyer:'付超英',available:'13',gap:{v:'-95',cls:'danger-cell'},days:{v:'2.1',cls:'danger-cell'}},
+      {rk:3,name:{n:'安大170个香辣翅根（黄胶带）',c:'AD170GXLCGHJD'},wh:'发货区',buyer:'付超英',available:'28',gap:{v:'-12',cls:'warn-cell'},days:{v:'3.5',cls:'warn-cell'}},
+      {rk:4,name:{n:'安大100克优选翅中串（粉色）',c:'AD100KYXCZC'},wh:'发货区',buyer:'任情情',available:'19',gap:{v:'-11',cls:'warn-cell'},days:{v:'3.8',cls:'warn-cell'}}
+    ],foot:{left:'安大食品共 6 个缺货 SKU · 缺口合计 240 件 · 预计损失 ¥ 42,025',right:''}},
+    {type:'details',title:'📐 计算公式（按供应商）',collapsed:true,sections:[
+      {name:'① 供应商过滤',expr:'按供应商=安大食品过滤缺货风险池',desc:'从全仓缺货池中筛选供应商为安大食品的SKU'},
+      {name:'② 缺货SKU计数',expr:'满足判定条件的安大食品SKU去重计数',desc:'多仓分别计算后汇总'},
+      {name:'③ 缺口合计',expr:'Σ(各SKU缺货缺口绝对值)',desc:'安大食品所有缺货SKU的缺口汇总'},
+      {name:'④ 预计损失',expr:'Σ(缺口件数 × 单品毛利 × 补货周期 ÷ 15)',desc:'按供应商维度汇总，方便与供应商沟通催货'}
+    ]}
+  ]
+},
+
+/* ── 8b. 客户断货预警 ── */
+{
+  match:['客户断货预警','客户断货','断货预警','客户缺货预警','客户断货风险'],
+  route:{agent:'智能补货',icon:'👥',color:'#E5484D'},
+  thinking:['筛选缺货SKU关联客户','按客户等级排序','计算客户断货影响'],
+  blocks:[
+    {type:'route',text:'已识别为<b>客户断货预警</b>，当前角色=<b>销售</b>。',icon:'👥'},
+    {type:'kpis',items:[
+      {label:'受影响客户总数',value:'37',unit:'家',kind:'warning'},
+      {label:'重点客户数',value:'8',unit:'家',kind:'danger'},
+      {label:'涉及缺货商品',value:'24',unit:'个',kind:'danger'},
+      {label:'最近购买距今',value:'6.15',unit:'天前',kind:'warning'}
+    ]},
+    {type:'table',title:'👥 客户断货影响清单',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'customer',label:'客户',w:140},{k:'level',label:'客户等级',w:70},{k:'shortSku',label:'缺货商品',w:160},{k:'lastBuy',label:'最近购买',w:100},{k:'avgQty',label:'均次购买(件)',cls:'num'},{k:'sales',label:'销售员',w:70},{k:'action',label:'建议动作',w:90}
+    ],rows:[
+      {rk:1,customer:'刘记烧烤(旗舰店)',level:{text:'重点',cls:'danger'},shortSku:'鱿鱼串/鸭胗/翅根',lastBuy:'2026-06-28',avgQty:'18',sales:'张伟',action:{text:'优先回访',cls:'danger'}},
+      {rk:2,customer:'蜀味香串串(总店)',level:{text:'重点',cls:'danger'},shortSku:'鱿鱼串/鱿鱼须',lastBuy:'2026-06-25',avgQty:'12',sales:'张伟',action:{text:'优先回访',cls:'danger'}},
+      {rk:3,customer:'渝味火锅食材',level:{text:'重点',cls:'danger'},shortSku:'鱿鱼串/牛肉粒',lastBuy:'2026-06-20',avgQty:'8',sales:'李明',action:{text:'告知到货时间',cls:'warning'}},
+      {rk:4,customer:'鑫旺食品批发',level:{text:'一般',cls:'warning'},shortSku:'鸭胗/鸡心串',lastBuy:'2026-06-15',avgQty:'6',sales:'李明',action:{text:'告知到货时间',cls:'warning'}},
+      {rk:5,customer:'味多多串串',level:{text:'一般',cls:'warning'},shortSku:'鱿鱼串/小酥肉',lastBuy:'2026-06-10',avgQty:'5',sales:'张伟',action:{text:'推荐替代品',cls:'warning'}},
+      {rk:6,customer:'老成都火锅',level:{text:'一般',cls:'warning'},shortSku:'翅根/翅中',lastBuy:'2026-06-08',avgQty:'4',sales:'张伟',action:{text:'推荐替代品',cls:'warning'}},
+      {rk:7,customer:'川味居食品',level:{text:'一般',cls:'warning'},shortSku:'蛋饺/虾滑',lastBuy:'2026-06-05',avgQty:'3',sales:'李明',action:{text:'关注复购',cls:'warning'}},
+      {rk:8,customer:'好味来烧烤',level:{text:'一般',cls:'warning'},shortSku:'鱿鱼须/牛肉粒',lastBuy:'2026-06-18',avgQty:'7',sales:'张伟',action:{text:'告知到货时间',cls:'warning'}}
+    ],foot:{left:'共 37 家客户受影响 · 其中 8 家重点客户 · 建议优先回访重点客户',right:''}},
+    {type:'details',title:'📐 计算公式（客户断货）',collapsed:true,sections:[
+      {name:'① 影响客户识别',expr:'缺货SKU × 近90天有购买记录的客户ID',desc:'数据来源：<code>销货单统计表</code>，取缺货SKU近90天的购买客户去重'},
+      {name:'② 客户等级',expr:'近90天采购总额 > 5万元 → 重点客户',desc:'重点客户缺货影响更大，需要优先回访'},
+      {name:'③ 最近购买距今天数',expr:'当前日期 − 最近购买日期',desc:'天数越近说明客户越活跃，缺货影响越直接'},
+      {name:'④ 建议动作',expr:'重点+最近购买<15天 → 优先回访；一般客户 → 告知到货时间或推荐替代品',desc:'AI根据客户等级和最近购买时间自动生成建议动作'}
+    ]},
+    {type:'send-picker',receivers:[
+      {name:'张伟',role:'销售',skus:24,avatar:'张'},
+      {name:'李明',role:'销售',skus:24,avatar:'李'}
+    ]}
+  ]
+},
+
+/* ── 8c. 预计损失 ── */
+{
+  match:['预计损失','缺货损失','损失预估','缺货损失汇总','预计缺货损失','损失金额'],
+  route:{agent:'智能补货',icon:'💰',color:'#E5484D'},
+  thinking:['汇总全仓缺货损失','计算毛利影响','对比历史同期'],
+  blocks:[
+    {type:'route',text:'已识别为<b>预计损失分析</b>，当前角色=<b>财务</b>。',icon:'💰'},
+    {type:'kpis',items:[
+      {label:'缺货SKU数',value:'24',unit:'个',kind:'danger'},
+      {label:'预计损失总额',value:'12.8',unit:'万元',kind:'danger'},
+      {label:'影响毛利率',value:'-2.3',unit:'%',kind:'danger'},
+      {label:'上月同期损失',value:'8.5',unit:'万元',kind:'warning'}
+    ]},
+    {type:'table',title:'💰 缺货损失明细',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:200},{k:'wh',label:'仓库',w:70},{k:'gap',label:'缺口(件)',cls:'num'},{k:'unitProfit',label:'单品毛利(元)',cls:'num'},{k:'loss',label:'预计损失(元)',cls:'num'},{k:'costChange',label:'成本变化',w:80},{k:'marginImpact',label:'毛利率影响',w:80}
+    ],rows:[
+      {rk:1,name:{n:'安大100克整条鱿鱼串（黄色十字胶带）88',c:'AD100KZTYYC'},wh:'发货区',gap:{v:'-8.5',cls:'danger-cell'},unitProfit:'4,250',loss:{v:'36,125',cls:'danger-cell'},costChange:'↑3%',marginImpact:'-0.8%'},
+      {rk:2,name:{n:'安大35克鱿鱼须串（红色胶带）',c:'AD35KYYXC'},wh:'发货区',gap:{v:'-95',cls:'danger-cell'},unitProfit:'300',loss:{v:'28,500',cls:'danger-cell'},costChange:'持平',marginImpact:'-0.6%'},
+      {rk:3,name:{n:'无双剑翅',c:'WSJC'},wh:'天环101库',gap:{v:'-45',cls:'danger-cell'},unitProfit:'490',loss:{v:'22,050',cls:'danger-cell'},costChange:'↓2%',marginImpact:'-0.5%'},
+      {rk:4,name:{n:'川荣香辣鸭胗',c:'CRXLYZ'},wh:'发货区',gap:{v:'-69',cls:'danger-cell'},unitProfit:'230',loss:{v:'15,870',cls:'danger-cell'},costChange:'↑5%',marginImpact:'-0.3%'},
+      {rk:5,name:{n:'鸡心串（冷冻）',c:'JXC-LD'},wh:'西库一楼',gap:{v:'-28',cls:'danger-cell'},unitProfit:'300',loss:{v:'8,400',cls:'danger-cell'},costChange:'持平',marginImpact:'-0.2%'},
+      {rk:6,name:{n:'小酥肉',c:'XSR-002'},wh:'西库一楼',gap:{v:'-18',cls:'danger-cell'},unitProfit:'300',loss:{v:'5,400',cls:'danger-cell'},costChange:'↑2%',marginImpact:'-0.1%'},
+      {rk:7,name:{n:'安大170个香辣翅根（黄胶带）',c:'AD170GXLCGHJD'},wh:'发货区',gap:{v:'-12',cls:'warn-cell'},unitProfit:'350',loss:{v:'4,200',cls:'warn-cell'},costChange:'持平',marginImpact:'-0.1%'},
+      {rk:8,name:{n:'安大100克优选翅中串（粉色）',c:'AD100KYXCZC'},wh:'发货区',gap:{v:'-11',cls:'warn-cell'},unitProfit:'350',loss:{v:'3,850',cls:'warn-cell'},costChange:'持平',marginImpact:'-0.1%'}
+    ],foot:{left:'共 24 个缺货 SKU · 预计损失 ¥ 128,395 · 影响毛利率 -2.3%',right:''}},
+    {type:'details',title:'📐 计算公式（损失预估）',collapsed:true,sections:[
+      {name:'① 预计损失',expr:'Σ(缺口件数 × 单品近3月平均毛利 × 补货周期 ÷ 15)',desc:'单品毛利 = 近3月该SKU总销售收入 − 总销售成本。补货周期默认取3天'},
+      {name:'② 毛利率影响',expr:'预计损失总额 ÷ 同期预计总收入 × 100%',desc:'反映缺货对整体毛利率的拖累程度'},
+      {name:'③ 成本变化',expr:'本期单品成本 vs 上期单品成本',desc:'成本上涨会放大缺货损失，需关注成本异常波动'},
+      {name:'④ 上月同期对比',expr:'本月预计损失 vs 上月同期损失',desc:'环比变化反映缺货趋势是改善还是恶化'}
+    ]},
+    {type:'send-picker',receivers:[
+      {name:'王芳',role:'财务',skus:24,avatar:'王'}
+    ]}
+  ]
+},
+
+/* ── 9. 推送企业微信 ── */
+{
+  match:['推送智能补货建议给采购付超英','把补货清单发给采购付超英','推送给采购付超英','发给采购付超英','推送补货建议给采购','发送补货建议','推送给采购','发送给付超英','推送补货建议','推送企业微信'],
+  route:{agent:'智能补货',icon:'📤',color:'#2E6BFF'},
+  thinking:['解析指令 → 企业微信推送','生成补货建议消息','选择接收人并推送'],
+  blocks:[
+    {type:'route',text:'已识别为企业微信推送。请选择接收人，消息内容将按角色个性化。',icon:'📤'},
+    {type:'send-picker',receivers:[
+      {name:'付超英',role:'采购员',skus:12,avatar:'付'},
+      {name:'任情情',role:'采购员',skus:4,avatar:'任'},
+      {name:'李四',role:'仓管员（发货区）',skus:14,avatar:'李'},
+      {name:'张伟',role:'销售',skus:24,avatar:'张'},
+      {name:'王芳',role:'财务',skus:24,avatar:'王'}
+    ]}
+  ]
+},
+
+/* ── 9b. 推送企业微信（已废弃，保留兼容） ── */
+{
+  match:['__push_legacy__'],
+  route:{agent:'智能补货',icon:'📤',color:'#2E6BFF'},
+  thinking:['解析指令 → 企业微信推送','识别接收人=付超英（采购员）','生成个性化补货建议消息','发送企业微信'],
+  blocks:[
+    {type:'route',text:'已识别为企业微信推送，接收人=<b>付超英（采购员）</b>。',icon:'📤'},
+    {type:'wxcard',receiver:{name:'付超英',role:'采购员',avatar:'付'},roleType:'buyer',content:{
+      title:'🤖 智能补货建议（2026.07.07）',
+      body:'<b>付超英，你好！</b><br><br>以下是你负责的出现缺货风险的商品：<br><br>📋 <b>缺货清单（12个SKU）：</b><br>1. 安大100克整条鱿鱼串（黄胶带）— 缺口 8.5 件，可售 1.5 天<br>2. 安大35克鱿鱼须串（红胶带）— 缺口 95 件，可售 2.1 天<br>3. 川荣香辣鸭胗 — 缺口 69 件，可售 0.8 天<br>4. 安大170个香辣翅根（黄胶带）— 缺口 12 件，可售 3.5 天<br>5. 牛肉粒 — 缺口 4 件，可售 5.0 天<br><br>📊 <b>汇总：</b>缺口合计 188.5 件 · 预计损失 ¥ 85,895<br>💡 <b>建议关注补货区间：</b>鱿鱼须串建议补货150-200件（供应商安大食品，采购周期约3天）<br><br>请根据实际情况确认补货计划。AI提示补货区间仅供参考，不直接决定采购数量。<br>—— 智能补货智能体',
+      link:'查看详情 →'
+    },status:'sent',time:'2026-07-07 09:32'},
+    {type:'p',text:'✅ 已成功推送到付超英的企业微信。采购员线下确认补货后，AI会定期回看数据。如果7天后仍未恢复，可选择"再次提醒"。'},
+    {type:'action-row',actions:[
+      {text:'也发给仓库李四（核实库存）',cls:'',handler:'pushWarehouse'},
+      {text:'也发给销售张伟（客户预警）',cls:'',handler:'pushSales'}
+    ]}
+  ]
+},
+
+/* ── 10. 回看对比 ── */
+{
+  match:['回看7月4日推送','回看上周推送','回看推送','回看7月4日','回看 7月4日','上周推送效果','回看推送效果','回看对比'],
+  route:{agent:'智能补货 · 定期回看',icon:'🔄',color:'#10B981'},
+  thinking:['调度定期回看任务','拉取7月4日推送记录','逐一比对当前库存状态','计算建议vs实际偏差','生成优化建议'],
+  blocks:[
+    {type:'route',text:'已识别为<b>定期回看</b>，回看日期=<b>2026.07.07</b>，对比基准=<b>2026.07.04推送</b>。',icon:'🔄'},
+    {type:'recheck',pushDate:'2026-07-04',checkDate:'2026-07-07',stats:{recovered:9,partial:2,unresolved:1,total:12},items:[
+      {sku:'安大100克整条鱿鱼串（黄胶带）',gap:8.5,advised:150,actual:120,deviation:'-20%',status:'recovered'},
+      {sku:'安大35克鱿鱼须串（红胶带）',gap:95,advised:200,actual:0,deviation:'未补货',status:'unresolved'},
+      {sku:'川荣香辣鸭胗',gap:69,advised:180,actual:150,deviation:'-17%',status:'partial'},
+      {sku:'安大170个香辣翅根（黄胶带）',gap:12,advised:80,actual:80,deviation:'0%',status:'recovered'},
+      {sku:'牛肉粒',gap:4,advised:50,actual:0,deviation:'未补货（可能误报）',status:'unresolved',flag:'false_positive'}
+    ]},
+    {type:'alert',kind:'danger',icon:'⏰',title:'1个SKU仍未补货 · 已超时3天 · 自动升级老板',desc:'<b>安大35克鱿鱼须串</b>（缺口95件）自7月4日推送后 <b>已超过3天</b>仍未处理。<br>⏰ <b>超时自动升级：</b>老板已收到通知，超时事项将纳入老板经营驾驶舱跟踪。<br>建议<b>再次提醒付超英</b>确认该SKU的补货状态。'},
+    {type:'alert',kind:'info',icon:'🧬',title:'AI发现优化机会',desc:'<b>牛肉粒</b>连续3次预警但实际均未缺货（误报率100%）。AI建议：将牛肉粒的缺货提前量从 <b>2天</b> 上调为 <b>5天</b>。'},
+    {type:'action-row',actions:[
+      {text:'再次提醒付超英（鱿鱼须串）',cls:'warn',handler:'remindBuyer'},
+      {text:'采纳AI优化建议（牛肉粒提前量→5天）',cls:'confirm',handler:'acceptOptimize'},
+      {text:'查看AI跟踪报告',cls:'',handler:'showTrack'}
+    ]}
+  ]
+},
+
+/* ── 11. AI跟踪报告 ── */
+{
+  match:['AI跟踪报告','ai跟踪报告','智能体跟踪报告','跟踪报告','AI跟踪','ai跟踪','智能体自我学习','AI自我进化'],
+  route:{agent:'智能补货 · AI跟踪',icon:'🧬',color:'#7B5BFF'},
+  thinking:['调度AI跟踪报告模块','汇总近期推送记录','分析采纳率与偏差','展示优化建议生成过程'],
+  blocks:[
+    {type:'route',text:'已识别为<b>AI跟踪报告</b>（开发参考页面）。',icon:'🧬'},
+    {type:'track',sections:[
+      {title:'📤 近期推送记录',content:'<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="color:var(--text-3)"><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #E9D5FF">日期</th><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #E9D5FF">场景</th><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #E9D5FF">接收人</th><th style="text-align:right;padding:3px 8px;border-bottom:1px solid #E9D5FF">SKU数</th><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #E9D5FF">状态</th></tr><tr><td style="padding:3px 8px">07-07</td><td style="padding:3px 8px">智能补货</td><td style="padding:3px 8px">付超英</td><td style="text-align:right;padding:3px 8px">12</td><td style="padding:3px 8px"><span style="color:var(--success)">✅ 已送达</span></td></tr><tr><td style="padding:3px 8px">07-04</td><td style="padding:3px 8px">智能补货</td><td style="padding:3px 8px">付超英、李四</td><td style="text-align:right;padding:3px 8px">12</td><td style="padding:3px 8px"><span style="color:var(--primary)">👁 已读</span></td></tr><tr><td style="padding:3px 8px">06-28</td><td style="padding:3px 8px">智能补货</td><td style="padding:3px 8px">付超英</td><td style="text-align:right;padding:3px 8px">8</td><td style="padding:3px 8px"><span style="color:var(--primary)">👁 已读</span></td></tr></table>'},
+      {title:'🔄 回看结果（7月7日回看7月4日推送）',content:'12个推送SKU中：<b style="color:var(--success)">9个已恢复</b> · <b style="color:var(--warning)">2个部分恢复</b> · <b style="color:var(--danger)">1个未恢复</b><br>采纳率：<b>75%</b>（9/12完全按建议补货）<br>建议偏差均值：<b>-12%</b>（AI建议量略高于实际补货量）'},
+      {title:'🧬 优化建议生成',content:'<span class="evolve-badge">牛肉粒 · 上调提前量 2→5天</span><span class="evolve-badge">鱿鱼串 · 下调日均销量权重</span><span class="evolve-badge">鸭胗 · 缩短采购周期参数</span><br><br><b>触发条件：</b>连续3次预警实际未缺货 → 自动生成误报优化建议<br><b>状态：</b>待老板确认'},
+      {title:'📝 参数调整历史',content:'<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="color:var(--text-3)"><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #E9D5FF">日期</th><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #E9D5FF">参数</th><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #E9D5FF">范围</th><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #E9D5FF">旧值→新值</th><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #E9D5FF">状态</th></tr><tr><td style="padding:3px 8px">06-20</td><td style="padding:3px 8px">日均销量算法</td><td style="padding:3px 8px">全品类</td><td style="padding:3px 8px">30天均值 → 52天（近2月）</td><td style="padding:3px 8px"><span style="color:var(--success)">✅ 已固化</span></td></tr><tr><td style="padding:3px 8px">06-15</td><td style="padding:3px 8px">安全库存系数</td><td style="padding:3px 8px">串类</td><td style="padding:3px 8px">1.2 → 1.5</td><td style="padding:3px 8px"><span style="color:var(--success)">✅ 已固化</span></td></tr><tr><td style="padding:3px 8px">07-07</td><td style="padding:3px 8px">缺货提前量</td><td style="padding:3px 8px">牛肉粒</td><td style="padding:3px 8px">2天 → 5天</td><td style="padding:3px 8px"><span style="color:var(--warning)">🕐 待确认</span></td></tr></table>'}
+    ]},
+    {type:'p',text:'📌 <b>说明：</b>此页面为开发参考，展示AI智能体内部运作逻辑。实际产品中AI优化建议会推送给老板确认。'}
+  ]
+},
+
+/* ── 12. AI进化方向 ── */
+{
+  match:['AI进化方向','ai进化方向','进化方向','进化分析','AI进化','智能体进化'],
+  route:{agent:'智能补货 · 进化分析',icon:'🧬',color:'#7B5BFF'},
+  thinking:['加载AI进化分析','梳理已生效和待确认的优化项','展示进化路径'],
+  blocks:[
+    {type:'route',text:'已识别为<b>AI进化方向分析</b>（开发参考）。',icon:'🧬'},
+    {type:'p',text:'<b>核心机制：</b>智能体定期回看"建议 vs 实际"→ 自动发现偏差 → 生成优化建议 → 老板确认 → 试运行 → 固化或回退。以下为具体进化案例。'},
+    {type:'details',title:'🧬 进化案例 ①：牛肉粒误报优化（待确认）',collapsed:false,sections:[
+      {name:'原来',expr:'可售天数 < 2天 → 触发补货预警',desc:'所有商品统一使用2天作为缺货提前量阈值'},
+      {name:'问题',expr:'连续3次预警（7/4、6/28、6/20）实际均未缺货',desc:'牛肉粒属于稳定消耗品，销量波动小，2天阈值过于敏感，产生误报'},
+      {name:'AI建议',expr:'牛肉粒缺货提前量：2天 → 5天',desc:'AI分析该SKU近3个月销量波动<5%，建议上调提前量至5天，仅对牛肉粒生效'},
+      {name:'状态',expr:'待老板确认 · 建议试运行14天',desc:'试运行后AI自动回看：误报率是否下降？是否产生漏报？'}
+    ]},
+    {type:'details',title:'🧬 进化案例 ②：日均销量算法升级（已固化）',collapsed:true,sections:[
+      {name:'原来',expr:'近30天简单算术平均',desc:'取最近30天总销量 ÷ 30，所有天数等权重'},
+      {name:'问题',expr:'6月烧烤旺季销量飙升，日均销量被拉高，导致大量误报',desc:'旺季过后销量回落，但30天均值仍包含旺季数据，计算出的"标准销量"偏高'},
+      {name:'AI建议',expr:'改为近2个月（52天）加权平均，近期权重更高',desc:'取销货单统计表近52天数据，按时间衰减权重（最近7天权重×2），减少季节波动影响'},
+      {name:'效果',expr:'已固化 · 误报率从 35% 降至 12%',desc:'6月20日老板确认，全品类生效。14天试运行后误报率显著下降，已固化为默认算法'}
+    ]},
+    {type:'details',title:'🧬 进化案例 ③：串类安全库存差异化（已固化）',collapsed:true,sections:[
+      {name:'原来',expr:'安全库存系数统一为 1.2',desc:'所有品类使用相同安全库存系数'},
+      {name:'问题',expr:'串类商品保质期短、销量波动大，统一系数导致漏报',desc:'串类商品缺货后客户转向竞品，恢复供应后客户也不一定回来'},
+      {name:'AI建议',expr:'串类安全库存系数：1.2 → 1.5',desc:'AI分析串类近半年缺货数据，发现漏报率显著高于其他品类，建议上调安全库存'},
+      {name:'效果',expr:'已固化 · 串类漏报率从 22% 降至 8%',desc:'6月15日老板确认，仅串类生效。覆盖全局默认值'}
+    ]},
+    {type:'details',title:'🧬 进化全景：涉及指标 × 影响因素 × 进化方向',collapsed:true,sections:[
+      {tags:[
+        {t:'日均销量算法',c:'metric'},{t:'缺货提前量阈值',c:'metric'},{t:'安全库存系数',c:'metric'},{t:'采购周期参数',c:'metric'},{t:'单品毛利计算',c:'metric'},{t:'客户优先级权重',c:'metric'},{t:'建议补货量算法',c:'metric'},{t:'最低起订量修正',c:'metric'}
+      ],label:'涉及指标'},
+      {tags:[
+        {t:'季节/活动波动',c:'factor'},{t:'促销折扣影响',c:'factor'},{t:'供应商交付周期',c:'factor'},{t:'最低起订量约束',c:'factor'},{t:'在途库存',c:'factor'},{t:'保质期/临期风险',c:'factor'},{t:'品类销售特征',c:'factor'},{t:'客户采购习惯',c:'factor'}
+      ],label:'影响因素'},
+      {tags:[
+        {t:'优化补货预警阈值（按品类/单品）',c:'direction'},{t:'优化日均销量算法（加权/季节修正）',c:'direction'},{t:'沉淀品类缺货特征（串类/冻品/干货）',c:'direction'},{t:'引入供应商交付周期参数',c:'direction'},{t:'优化安全库存系数（按品类差异化）',c:'direction'},{t:'引入在途库存实时计算',c:'direction'},{t:'优化建议补货量（结合起订量）',c:'direction'},{t:'引入促销/活动影响因子',c:'direction'}
+      ],label:'进化方向'}
+    ]},
+    {type:'p',text:'📌 <b>核心原则：</b>智能体发现优化机会 → 生成建议 → 老板确认 → 试运行 → 回看效果 → 固化或回退。<b>智能体不自动修改规则。</b>'}
+  ]
+},
+
+/* ── 12b. 利润影响 ── */
+{
+  match:['利润影响','利润分析','利润统计','利润','毛利影响','赚钱','盈利'],
+  route:{agent:'老板智能体 · 利润分析',icon:'💰',color:'#10B981'},
+  thinking:['汇总本月利润指标','分析缺货对利润的影响','计算滞销库存资金占用','评估费用异常'],
+  blocks:[
+    {type:'route',text:'已识别为<b>利润影响分析</b>，老板视角。',icon:'💰'},
+    {type:'kpis',items:[
+      {label:'本月预计毛利',value:'186.5',unit:'万元',kind:'success'},
+      {label:'缺货损失',value:'-12.8',unit:'万元',kind:'danger'},
+      {label:'滞销库存金额',value:'47.3',unit:'万元',kind:'warning'},
+      {label:'毛利率',value:'22.1',unit:'%',kind:'success'}
+    ]},
+    {type:'table',title:'📊 利润影响因素明细',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'factor',label:'影响因素',w:140},{k:'amount',label:'金额(万元)',cls:'num'},{k:'impact',label:'对利润影响',cls:'num'},{k:'trend',label:'环比变化',w:80},{k:'owner',label:'责任人',w:70}
+    ],rows:[
+      {rk:1,factor:'缺货损失（24个SKU）',amount:{v:'-12.8',cls:'danger-cell'},impact:{v:'-6.9%',cls:'danger-cell'},trend:'↑ 扩大',owner:'付超英'},
+      {rk:2,factor:'滞销库存资金占用',amount:{v:'-47.3',cls:'danger-cell'},impact:{v:'-2.1%',cls:'danger-cell'},trend:'→ 持平',owner:'付超英'},
+      {rk:3,factor:'成本上涨（3个SKU）',amount:{v:'-3.2',cls:'danger-cell'},impact:{v:'-1.7%',cls:'danger-cell'},trend:'↑ 扩大',owner:'付超英'},
+      {rk:4,factor:'促销折扣让利',amount:{v:'-5.6',cls:'warning'},impact:{v:'-3.0%',cls:'warning'},trend:'↓ 收窄',owner:'张伟'},
+      {rk:5,factor:'退货损失',amount:{v:'-2.1',cls:'warning'},impact:{v:'-1.1%',cls:'warning'},trend:'→ 持平',owner:'张伟'},
+      {rk:6,factor:'客户流失影响',amount:{v:'-8.4',cls:'danger-cell'},impact:{v:'-4.5%',cls:'danger-cell'},trend:'↑ 扩大',owner:'张伟'}
+    ],foot:{left:'本月预计毛利 186.5 万 · 各项负面影响合计 -79.4 万 · 净利约 107.1 万',right:''}},
+    {type:'details',title:'📐 计算公式（利润分析）',collapsed:true,sections:[
+      {name:'① 本月预计毛利',expr:'本月预计销售收入 − 本月预计销售成本',desc:'数据来源：<code>销货单统计表</code> + 销售预测。含已出库和预计出库'},
+      {name:'② 缺货损失',expr:'Σ(缺口件数 × 单品毛利 × 补货周期 ÷ 15)',desc:'假设缺货持续一个补货周期，客户转向竞品'},
+      {name:'③ 滞销库存金额',expr:'Σ(库存数量 × 库存成本) where 库龄 > 90天',desc:'数据来源：<code>库存状况表</code>。库龄超过90天视为滞销'},
+      {name:'④ 毛利率',expr:'(销售收入 − 销售成本) ÷ 销售收入 × 100%',desc:'扣除缺货损失后的实际毛利率。上月同期毛利率 24.4%'},
+      {name:'⑤ 利润影响',expr:'各项负面影响 ÷ 本月预计毛利 × 100%',desc:'反映各因素对利润的侵蚀程度'}
+    ]},
+    {type:'p',text:'🔍 <b>根因下钻：</b>点击下方按钮逐层下钻分析利润影响根因。从利润→损失类型→具体SKU→责任人，一层层下钻。'},
+    {type:'action-row',actions:[
+      {text:'🔍 缺货损失→SKU明细',cls:'primary',handler:'gotoStockout'},
+      {text:'🔍 滞销库存→商品明细',cls:'',handler:'gotoSlowMoving'},
+      {text:'🔍 成本上涨→供应商明细',cls:'',handler:'gotoSupplier'},
+      {text:'🔍 客户流失→客户明细',cls:'',handler:'gotoCustomerLoss'}
+    ]},
+    {type:'alert',kind:'warning',icon:'💡',title:'AI优化建议',desc:'<b>缺货损失12.8万</b>是利润最大侵蚀因素（占6.9%），建议优先处理24个缺货SKU。<b>滞销库存47.3万</b>资金占用严重，建议促销清仓或组合销售。<b>客户流失影响8.4万</b>环比扩大，建议回访重点流失客户。毛利率22.1%较上月同期24.4%<b>下降2.3个百分点</b>，需持续跟踪。'},
+    {type:'action-row',actions:[
+      {text:'查看滞销库存',cls:'',handler:'gotoSlowMoving'},
+      {text:'查看毛利分析',cls:'',handler:'gotoMargin'}
+    ]}
+  ]
+},
+
+/* ── 12c. AI建议采纳率分析 ── */
+{
+  match:['AI建议采纳分析','采纳率分析','采纳分析','AI建议采纳','谁采纳了','采纳率'],
+  route:{agent:'智能补货 · 采纳分析',icon:'📋',color:'#4338CA'},
+  thinking:['汇总近30天AI建议','统计采纳/未采纳/调整','分析采纳效果对比'],
+  blocks:[
+    {type:'route',text:'已识别为<b>AI建议采纳率分析</b>，老板视角。',icon:'📋'},
+    {type:'kpis',items:[
+      {label:'建议总数',value:'48',unit:'条',kind:'success'},
+      {label:'采纳率',value:'68.8',unit:'%',kind:'warning'},
+      {label:'采纳后有效',value:'87.9',unit:'%',kind:'success'},
+      {label:'未采纳导致缺货',value:'4',unit:'次',kind:'danger'}
+    ]},
+    {type:'table',title:'📋 近30天AI建议采纳明细',pageSize:10,columns:[
+      {k:'rk',label:'#',w:38},{k:'date',label:'日期',w:80},{k:'sku',label:'商品',w:180},{k:'suggestion',label:'AI建议',w:160},{k:'owner',label:'责任人',w:70},{k:'status',label:'采纳状态',w:80},{k:'effect',label:'效果',w:100}
+    ],rows:[
+      {rk:1,date:'07-07',sku:'安大35克鱿鱼须串',suggestion:'建议补货150-200件',owner:'付超英',status:{text:'未采纳',cls:'danger'},effect:'已缺货，损失2.85万'},
+      {rk:2,date:'07-07',sku:'川荣香辣鸭胗',suggestion:'建议补货100-150件',owner:'付超英',status:{text:'已采纳',cls:'success'},effect:'已到货120件，缺货解除'},
+      {rk:3,date:'07-04',sku:'安大100克鱿鱼串',suggestion:'建议补货30-50件',owner:'付超英',status:{text:'已采纳(调整)',cls:'warning'},effect:'补货80件，库存恢复'},
+      {rk:4,date:'07-04',sku:'无双剑翅',suggestion:'建议补货50-80件',owner:'任情情',status:{text:'已采纳',cls:'success'},effect:'已到货60件，风险解除'},
+      {rk:5,date:'07-04',sku:'牛肉粒',suggestion:'提前量2→5天(误报优化)',owner:'付超英',status:{text:'待确认',cls:'warning'},effect:'待试运行验证'},
+      {rk:6,date:'06-28',sku:'鸡心串',suggestion:'建议补货40-60件',owner:'任情情',status:{text:'已采纳',cls:'success'},effect:'补货后周转率提升12%'},
+      {rk:7,date:'06-28',sku:'小酥肉',suggestion:'建议补货30-50件',owner:'付超英',status:{text:'未采纳',cls:'danger'},effect:'7天后缺货，损失0.54万'},
+      {rk:8,date:'06-28',sku:'蛋饺',suggestion:'建议补货30-50件',owner:'付超英',status:{text:'已采纳',cls:'success'},effect:'已到货，库存稳定'}
+    ],foot:{left:'近30天共48条建议 · 采纳33条 · 未采纳11条 · 待确认4条',right:''}},
+    {type:'recheck',pushDate:'2026-06-07',checkDate:'2026-07-07',stats:{recovered:33,partial:7,unresolved:8,total:48},items:[
+      {sku:'采纳建议的SKU（33条）',gap:0,advised:'-',actual:'-',deviation:'周转率↑15%',status:'recovered'},
+      {sku:'未采纳建议的SKU（11条）',gap:0,advised:'-',actual:'-',deviation:'4次实际缺货',status:'unresolved'},
+      {sku:'调整后采纳（7条）',gap:0,advised:'-',actual:'-',deviation:'周转率↑8%',status:'partial'}
+    ]},
+    {type:'alert',kind:'warning',icon:'⚠',title:'付超英采纳率偏低（58%）',desc:'付超英近30天24条建议中仅采纳14条（58%），<b>低于任情情的83%</b>。未采纳的10条建议中，<b>3条已实际发生缺货</b>，累计损失4.7万。建议与付超英沟通采纳障碍。'},
+    {type:'alert',kind:'info',icon:'💡',title:'AI优化建议',desc:'<b>采纳后有效的29条</b>（87.9%）说明AI建议整体靠谱。<b>未采纳的11条中4条已缺货</b>，如果全部采纳，预计可避免缺货损失约<b>8.2万</b>。建议老板推动采购员提高采纳率。'},
+    {type:'action-row',actions:[
+      {text:'推送采纳分析给付超英',cls:'confirm',handler:'gotoPush'},
+      {text:'追加备注',cls:'',handler:'addNote'}
+    ]}
+  ]
+},
+
+/* ── 13. 规则调整·全局 ── */
+{
+  match:['把所有商品的缺货提前量从2天调为3天','所有商品 缺货提前量 调整为3天','全局缺货提前量 调为3天','调整全局缺货规则','缺货提前量 全局 调整','所有商品缺货提前量调整为3天','把缺货提前量从2天调为3天','调整规则·全局'],
+  route:{agent:'老板智能体 · 规则调整',icon:'⚙',color:'#7B5BFF'},
+  thinking:['识别规则调整意图 · 粒度=全局','参数=缺货提前量（可售天数阈值）','旧值=2天 · 新值=3天'],
+  blocks:[
+    {type:'route',text:'已识别为<b>规则调整 · 全局</b>，参数=<b>缺货提前量</b>，范围=<b>所有商品</b>。',icon:'⚙'},
+    {type:'rulecard',param:{
+      name:'缺货提前量（可售天数阈值）',desc:'当前可用量 ÷ 日均销量 < 该阈值 → 触发补货预警。上调阈值意味着更早预警（减少漏报但可能增加误报）。',
+      oldVal:'2 天',newVal:'3 天',scope:'所有商品（全品类 · 3仓 · 1,578 SKU）',
+      impact:'预计影响：补货预警SKU从24个增加到约35-40个（+50%~+67%），预警更敏感，漏报风险降低但误报可能增加。',
+      suggest:'建议试运行 14 天，到期后自动生成回看报告，对比误报率/漏报率变化。'
+    }},
+    {type:'action-row',actions:[
+      {text:'确认生效（试运行14天）',cls:'confirm',handler:'confirmGlobalRule'},
+      {text:'仅对串类生效',cls:'',handler:'narrowToCategory'},{text:'取消',cls:'cancel',handler:'cancelRule'}
+    ]}
+  ]
+},
+
+/* ── 14. 规则调整·品类 ── */
+{
+  match:['把串类的缺货提前量调为5天','串类 缺货提前量 5天','串类商品提前量 调整','调整串类缺货规则','串类缺货提前量 调为5天','把串类缺货提前量调整为5天','调整规则·品类'],
+  route:{agent:'老板智能体 · 规则调整',icon:'⚙',color:'#7B5BFF'},
+  thinking:['识别规则调整意图 · 粒度=品类','参数=缺货提前量 · 品类=串类','旧值=2天（继承全局）· 新值=5天'],
+  blocks:[
+    {type:'route',text:'已识别为<b>规则调整 · 品类</b>，品类=<b>串类</b>，参数=<b>缺货提前量</b>。',icon:'⚙'},
+    {type:'rulecard',param:{
+      name:'缺货提前量（可售天数阈值）',desc:'串类商品销量波动大、保质期短，上调提前量可更早预警。',
+      oldVal:'2 天（继承全局默认值）',newVal:'5 天',scope:'串类商品（约 320 SKU · 3仓）',
+      impact:'预计影响：串类补货预警SKU从8个增加到约12-15个。此规则覆盖全局默认值，仅对串类生效。',
+      suggest:'建议试运行 14 天，到期后对比串类缺货实际发生率，评估提前量是否合适。'
+    }},
+    {type:'action-row',actions:[
+      {text:'确认生效（试运行14天）',cls:'confirm',handler:'confirmCategoryRule'},
+      {text:'扩大到所有品类',cls:'',handler:'expandToGlobal'},{text:'取消',cls:'cancel',handler:'cancelRule'}
+    ]}
+  ]
+},
+
+/* ── 15. 规则调整·单品 ── */
+{
+  match:['牛肉粒误报太多 把提前量从2天调整为5天','牛肉粒误报太多 把提前量从2天调为5天','牛肉粒误报太多','把牛肉粒提前量调整为5天','牛肉粒 提前量 5天','牛肉粒 缺货提前量 5天','牛肉粒误报','牛肉粒单独调整','调整规则·单品'],
+  route:{agent:'老板智能体 · 规则调整',icon:'⚙',color:'#7B5BFF'},
+  thinking:['识别规则调整意图 · 粒度=单品','参数=缺货提前量 · 商品=牛肉粒','AI辅助分析：该SKU连续3次预警实际未缺货'],
+  blocks:[
+    {type:'route',text:'已识别为<b>规则调整 · 单品</b>，商品=<b>牛肉粒</b>。',icon:'⚙'},
+    {type:'p',text:'📊 <b>AI辅助分析：</b>牛肉粒近3次缺货预警（7月4日、6月28日、6月20日），<b>三次实际均未发生缺货</b>，误报率 100%。AI已在本次回看中自动标记此异常。'},
+    {type:'rulecard',param:{
+      name:'缺货提前量（可售天数阈值）',desc:'牛肉粒属于稳定消耗品，销量波动小，当前2天提前量过于敏感。',
+      oldVal:'2 天',newVal:'5 天',scope:'牛肉粒（SKU: NRL-003）· 仅此SKU · 覆盖品类和全局默认值',
+      impact:'单品规则优先级最高，仅对牛肉粒生效，不影响其他商品。上调后预计误报率将大幅下降。',
+      suggest:'建议试运行 14 天。注意：单品规则是特例，如果后续发现串类或全局也需要调整，建议优先调整品类/全局规则。'
+    }},
+    {type:'action-row',actions:[
+      {text:'确认生效（试运行14天）',cls:'confirm',handler:'confirmSkuRule'},
+      {text:'扩大到串类',cls:'',handler:'expandToCategory'},{text:'取消',cls:'cancel',handler:'cancelRule'}
+    ]}
+  ]
+  },
+
+  /* ── 16. 缺货损失趋势（财务） ── */
+  {
+    match:['缺货损失趋势','损失趋势','近3月缺货损失','缺货损失对比','财务缺货损失','缺货损失分析','财务损失趋势'],
+    route:{agent:'智能补货 · 财务分析',icon:'📈',color:'#10B981'},
+    thinking:['汇总近3月缺货损失数据','按月对比分析','按采购员排行损失贡献'],
+    blocks:[
+      {type:'route',text:'已识别为<b>缺货损失趋势分析</b>，财务视角。',icon:'📈'},
+      {type:'kpis',items:[
+        {label:'本月缺货损失',value:'12.8',unit:'万元',kind:'danger'},
+        {label:'上月损失',value:'8.5',unit:'万元',kind:'warning'},
+        {label:'上上月损失',value:'5.2',unit:'万元',kind:'success'},
+        {label:'环比变化',value:'+50.6',unit:'%',kind:'danger'}
+      ]},
+      {type:'table',title:'📈 近3月缺货损失对比',pageSize:10,columns:[
+        {k:'month',label:'月份',w:90},{k:'loss',label:'缺货损失(万元)',cls:'num'},{k:'skus',label:'缺货SKU数',cls:'num'},{k:'affectedCust',label:'影响客户数',cls:'num'},{k:'change',label:'环比变化',w:90}
+      ],rows:[
+        {month:'2026.07 (本月)',loss:{v:'12.8',cls:'danger-cell'},skus:{v:'24',cls:'danger-cell'},affectedCust:'37',change:{v:'+50.6%',cls:'danger-cell'}},
+        {month:'2026.06 (上月)',loss:{v:'8.5',cls:'warning'},skus:{v:'18',cls:'warning'},affectedCust:'28',change:{v:'+63.5%',cls:'danger-cell'}},
+        {month:'2026.05 (上上月)',loss:{v:'5.2',cls:'success'},skus:'12',affectedCust:'20',change:'- '}
+      ],foot:{left:'缺货损失逐月扩大，建议重点关注采购效率和补货提前量',right:''}},
+      {type:'table',title:'👤 采购员缺货损失排行',pageSize:10,columns:[
+        {k:'rk',label:'#',w:38},{k:'buyer',label:'采购员',w:90},{k:'skus',label:'负责缺货SKU',cls:'num'},{k:'loss',label:'造成损失(万元)',cls:'num'},{k:'lossShare',label:'损失占比',w:80},{k:'adoption',label:'AI建议采纳率',w:90}
+      ],rows:[
+        {rk:1,buyer:'付超英',skus:{v:'12',cls:'danger-cell'},loss:{v:'8.6',cls:'danger-cell'},lossShare:'67%',adoption:{v:'58%',cls:'danger-cell'}},
+        {rk:2,buyer:'任情情',skus:{v:'8',cls:'warning'},loss:{v:'3.2',cls:'warning'},lossShare:'25%',adoption:{v:'83%',cls:'success-cell'}},
+        {rk:3,buyer:'其它',skus:'4',loss:{v:'1.0',cls:'warning'},lossShare:'8%',adoption:'- '}
+      ],foot:{left:'付超英缺货损失占67%，采纳率仅58%，建议重点沟通',right:''}},
+      {type:'details',title:'📐 计算公式（损失趋势）',collapsed:true,sections:[
+        {name:'① 本月缺货损失',expr:'Σ(缺口件数 × 单品毛利 × 补货周期 ÷ 15)',desc:'数据来源：<code>销货单统计表</code>+<code>库存状况表</code>'},
+        {name:'② 环比变化',expr:'(本月损失 − 上月损失) ÷ 上月损失 × 100%',desc:'正值表示损失扩大，负值表示改善'},
+        {name:'③ 采购员损失占比',expr:'该采购员负责SKU的缺货损失 ÷ 总缺货损失 × 100%',desc:'反映各采购员对缺货损失的贡献程度'},
+        {name:'④ 采纳率',expr:'该采购员采纳的AI建议数 ÷ AI建议总数 × 100%',desc:'数据来源：AI建议采纳记录。采纳率偏低往往与缺货损失正相关'}
+      ]}
+    ]
+  },
+
+  /* ── 17. 成本异常检测（财务） ── */
+  {
+    match:['成本异常检测','成本异常','成本波动','紧急采购成本','供应商成本变化','采购成本分析'],
+    route:{agent:'智能补货 · 成本分析',icon:'🔍',color:'#F59E0B'},
+    thinking:['检测缺货导致的紧急采购成本','分析供应商成本波动','计算成本变化对毛利的影响'],
+    blocks:[
+      {type:'route',text:'已识别为<b>成本异常检测</b>，财务视角。',icon:'🔍'},
+      {type:'kpis',items:[
+        {label:'紧急采购次数(本月)',value:'6',unit:'次',kind:'danger'},
+        {label:'紧急采购溢价',value:'+8.3',unit:'%',kind:'danger'},
+        {label:'涉及SKU数',value:'9',unit:'个',kind:'warning'},
+        {label:'额外成本支出',value:'2.1',unit:'万元',kind:'danger'}
+      ]},
+      {type:'table',title:'🔍 紧急采购成本异常明细',pageSize:10,columns:[
+        {k:'rk',label:'#',w:38},{k:'name',label:'商品',w:180},{k:'supplier',label:'供应商',w:90},{k:'normalCost',label:'正常采购价(元)',cls:'num'},{k:'emergencyCost',label:'紧急采购价(元)',cls:'num'},{k:'premium',label:'溢价',w:70},{k:'qty',label:'数量(件)',cls:'num'}
+      ],rows:[
+        {rk:1,name:{n:'安大100克整条鱿鱼串',c:'AD100KZTYYC'},supplier:'安大食品',normalCost:'4,250',emergencyCost:{v:'4,590',cls:'danger-cell'},premium:'+8%',qty:'30'},
+        {rk:2,name:{n:'安大35克鱿鱼须串',c:'AD35KYYXC'},supplier:'安大食品',normalCost:'300',emergencyCost:{v:'330',cls:'danger-cell'},premium:'+10%',qty:'95'},
+        {rk:3,name:{n:'川荣香辣鸭胗',c:'CRXLYZ'},supplier:'川荣食品',normalCost:'230',emergencyCost:{v:'253',cls:'danger-cell'},premium:'+10%',qty:'69'},
+        {rk:4,name:{n:'无双剑翅',c:'WSJC'},supplier:'双汇',normalCost:'490',emergencyCost:{v:'519',cls:'warning'},premium:'+6%',qty:'45'},
+        {rk:5,name:{n:'鸡心串',c:'JXC-LD'},supplier:'六和',normalCost:'300',emergencyCost:{v:'318',cls:'warning'},premium:'+6%',qty:'28'}
+      ],foot:{left:'本月紧急采购6次 · 额外成本2.1万元 · 缺货越严重紧急采购成本越高',right:''}},
+      {type:'p',text:'💡 <b>AI建议：</b>紧急采购溢价平均<b>8.3%</b>，如果缺货提前量从2天放宽到3天，预计可减少50%的紧急采购。提前补货按正常价采购，每月可节省约<b>1万元</b>采购成本。'},
+      {type:'details',title:'📐 计算公式（成本异常）',collapsed:true,sections:[
+        {name:'① 紧急采购溢价',expr:'(紧急采购价 − 正常采购价) ÷ 正常采购价 × 100%',desc:'因缺货紧急采购导致的采购成本上涨比例'},
+        {name:'② 额外成本支出',expr:'Σ(紧急采购价 − 正常采购价) × 采购数量',desc:'因紧急采购导致的总成本增加'},
+        {name:'③ 紧急采购次数',expr:'当月标记为紧急采购的进货单数量',desc:'数据来源：<code>进货单明细表</code>，标记紧急采购'}
+      ]}
+    ]
+  }
+
+];
+
+/* ============== DOM ============== */
+let dom={};
+['chatStream','welcome','chatInput','sendBtn','historyList','hsCount','newChatBtn','quickCmds','roleSwitcher','chatTitle','userAvatar','userName'].forEach(function(id){dom[id]=document.getElementById(id)});
+
+/* ============== 状态 ============== */
+let currentRole='boss',historyCount=0;
+
+/* ============== 初始化角色 ============== */
+function initRoles(){
+  var roles=['boss','buyer','warehouse','sales','finance'];
+  var labels={boss:'👤 老板',buyer:'🛒 采购',warehouse:'🏭 仓库',sales:'📞 销售',finance:'🧮 财务'};
+  var h='';
+  for(var i=0;i<roles.length;i++)h+='<button class="role-tab'+(roles[i]==='boss'?' active':'')+'" data-role="'+roles[i]+'">'+labels[roles[i]]+'</button>';
+  dom.roleSwitcher.innerHTML=h;
+  dom.roleSwitcher.querySelectorAll('.role-tab').forEach(function(tab){
+    tab.addEventListener('click',function(){
+      dom.roleSwitcher.querySelectorAll('.role-tab').forEach(function(t){t.classList.remove('active')});
+      tab.classList.add('active');currentRole=tab.dataset.role;updateRoleUI();
+    });
+  });
+}
+
+function updateRoleUI(){
+  var cfg=ROLE_CFG[currentRole];
+  dom.userAvatar.textContent=cfg.avatar;dom.userName.textContent=cfg.name;dom.chatTitle.textContent=cfg.title;
+  renderWelcome();renderQuickCmds();
+}
+
+function renderWelcome(){
+  var cfg=ROLE_CFG[currentRole];
+  var h='<div class="welcome-avatar"><svg viewBox="0 0 32 32" width="36" height="36"><path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/><path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/><circle cx="13.5" cy="15" r="1.2" fill="#E5484D"/><circle cx="18.5" cy="15" r="1.2" fill="#E5484D"/></svg></div>';
+  h+='<h2>'+cfg.title+'</h2><p>'+cfg.desc+'</p><div class="suggest-grid">';
+  for(var i=0;i<cfg.cards.length;i++){
+    var c=cfg.cards[i];
+    h+='<button class="suggest-card" data-q="'+c.q+'"><div class="sc-tag" style="background:'+(c.color||'#FEE2E2').split(',')[0]+';color:'+(c.color||'#991B1B').split(',')[1]+'">'+c.tag+'</div><div class="sc-title">'+c.title+'</div><div class="sc-sub">'+c.sub+'</div></button>';
+  }
+  h+='</div><div class="welcome-foot">💡 也可以输入自然语言指令，如「<strong>推送智能补货建议给采购付超英</strong>」「<strong>回看7月4日推送</strong>」「<strong>把所有商品的补货提前量从2天调为3天</strong>」</div>';
+  dom.welcome.innerHTML=h;bindWelcomeCards();
+}
+
+function renderQuickCmds(){
+  var cfg=ROLE_CFG[currentRole],h='';
+  for(var i=0;i<cfg.cmds.length;i++)h+='<button class="qc" data-q="'+cfg.cmds[i][1]+'"><span>'+cfg.cmds[i][0]+'</span>'+cfg.cmds[i][1]+'</button>';
+  dom.quickCmds.innerHTML=h;
+  dom.quickCmds.querySelectorAll('.qc').forEach(function(btn){btn.addEventListener('click',function(){submitQuery(btn.dataset.q)})});
+}
+
+/* ============== 场景匹配 ============== */
+function matchScenario(query){
+  var q=query.trim().toLowerCase();
+  for(var i=0;i<SCENARIOS.length;i++){
+    var s=SCENARIOS[i];
+    if(s.match.indexOf('__fallback__')>=0)continue;
+    for(var j=0;j<s.match.length;j++){var m=s.match[j].toLowerCase();if(q===m||q.indexOf(m)>=0||m.indexOf(q)>=0)return s}
+  }
+  return SCENARIOS.find(function(s){return s.match.indexOf('__fallback__')>=0});
+}
+
+/* ============== 渲染 ============== */
+function renderMsg(role,content,meta){
+  var div=document.createElement('div');div.className='msg '+role;
+  var av='<div class="msg-avatar">'+(role==='user'?ROLE_CFG[currentRole].avatar:'<span style="font-size:18px">⚠️</span>')+'</div>';
+  var mh='<div class="msg-meta"><b>'+(role==='user'?ROLE_CFG[currentRole].name:'智能补货智能体')+'</b>'+(role==='ai'?'<span class="tag-ai">AI</span>':'')+'<span>'+meta.time+'</span></div>';
+  var bh='';
+  if(role==='user'){bh='<div class="bubble user-bubble">'+escHtml(content)+'</div>'}
+  else{
+    bh='<div class="bubble ai-bubble">';
+    if(meta.thinking&&meta.thinking.length){bh+='<div class="ai-thinking">';for(var i=0;i<3;i++)bh+='<div class="thinking-dot"></div>';bh+='<span>'+meta.thinking.join(' → ')+'</span></div>'}
+    if(meta.blocks)for(var j=0;j<meta.blocks.length;j++)bh+=renderBlock(meta.blocks[j]);
+    bh+='</div>';
+  }
+  div.innerHTML=av+'<div class="msg-body">'+mh+bh+'</div>';return div;
+}
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function renderBlock(block){
+  var h='';
+  switch(block.type){
+    case 'route':h='<div class="route-info"><span>'+block.icon+'</span><span>'+block.text+'</span></div>';break;
+    case 'p':h='<p>'+block.text+'</p>';break;
+    case 'alert':h='<div class="alert '+block.kind+'"><div class="alert-ico">'+block.icon+'</div><div><div style="font-weight:600;margin-bottom:4px">'+block.title+'</div><div style="font-size:12.5px">'+block.desc+'</div></div></div>';break;
+    case 'kpis':
+      h='<div class="kpi-row">';
+      for(var i=0;i<block.items.length;i++){var it=block.items[i];h+='<div class="kpi '+it.kind+'"><div class="kpi-label">'+it.label+'</div><div class="kpi-value">'+it.value+'<span class="unit">'+it.unit+'</span></div></div>'}
+      h+='</div>';break;
+    case 'details':
+      h+='<details class="details-module"'+(block.collapsed?'':' open')+'><summary>'+block.title+'</summary><div class="dm-body">';
+      for(var d=0;d<block.sections.length;d++){
+        var sec=block.sections[d];
+        if(sec.tags){h+='<div class="formula-item"><span style="font-weight:600;color:var(--text);margin-right:6px">'+sec.label+'：</span>';for(var t=0;t<sec.tags.length;t++)h+='<span class="evolve-tag '+sec.tags[t].c+'">'+sec.tags[t].t+'</span>';h+='</div>'}
+        else{h+='<div class="formula-item"><span class="formula-name">'+sec.name+'</span><span class="formula-expr">= '+sec.expr+'</span>';if(sec.desc)h+='<div class="formula-desc">'+sec.desc+'</div>';h+='</div>'}
+      }
+      h+='</div></details>';break;
+    case 'table':h+=renderTable(block);break;
+    case 'wxcard':h+=renderWxCard(block);break;
+    case 'send-picker':
+      h+='<div class="send-picker-wrap"><button class="send-picker-btn" data-action="toggle-picker">📤 推送企业微信（选择接收人）</button>';
+      h+='<div class="picker-panel"><div class="picker-chips">';
+      for(var p=0;p<block.receivers.length;p++){
+        var r=block.receivers[p];
+        h+='<button class="picker-chip" data-name="'+r.name+'" data-role="'+r.role+'" data-skus="'+r.skus+'"><span class="pc-avatar">'+r.avatar+'</span>'+r.name+'<span class="pc-count">'+r.role+' · '+r.skus+'个SKU</span></button>';
+      }
+      h+='</div><div class="picker-actions"><button class="act-btn" data-action="select-all">全选</button><button class="act-btn confirm" data-action="confirm-send">确认发送</button><button class="act-btn cancel" data-action="close-picker">取消</button></div></div></div>';
+      break;
+    case 'recheck':
+      h='<div class="recheck-card"><div class="recheck-head">🔄 定期回看报告</div><div class="recheck-body">';
+      h+='<div>推送日期：<b>'+block.pushDate+'</b> → 回看日期：<b>'+block.checkDate+'</b>（间隔3天）</div>';
+      h+='<div class="recheck-summary"><div class="recheck-stat good"><div class="rs-num">'+block.stats.recovered+'</div><div class="rs-label">✅ 已恢复</div></div><div class="recheck-stat warn"><div class="rs-num">'+block.stats.partial+'</div><div class="rs-label">⚠️ 部分恢复</div></div><div class="recheck-stat bad"><div class="rs-num">'+block.stats.unresolved+'</div><div class="rs-label">❌ 未恢复 ⏰</div></div></div>'+
+      '<div style="font-size:10px;color:var(--danger);margin-top:4px;padding:4px 8px;background:var(--danger-soft);border-radius:6px">⏰ 超时自动升级规则：推送后超过3天未恢复 → 自动通知老板</div>';
+      h+='<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:8px"><tr style="color:var(--text-3)"><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #BBF7D0">SKU</th><th style="text-align:right;padding:3px 8px;border-bottom:1px solid #BBF7D0">缺口(件)</th><th style="text-align:right;padding:3px 8px;border-bottom:1px solid #BBF7D0">建议补货</th><th style="text-align:right;padding:3px 8px;border-bottom:1px solid #BBF7D0">实际到货</th><th style="text-align:right;padding:3px 8px;border-bottom:1px solid #BBF7D0">偏差</th><th style="text-align:left;padding:3px 8px;border-bottom:1px solid #BBF7D0">状态</th></tr>';
+      for(var r=0;r<block.items.length;r++){
+        var it=block.items[r],sc=it.status==='recovered'?'✅ 已恢复':it.status==='partial'?'⚠️ 部分恢复':'❌ 未恢复';
+        var flag=it.flag==='false_positive'?' <span style="font-size:10px;color:var(--danger)">⚠误报</span>':'';
+        h+='<tr><td style="padding:3px 8px">'+it.sku+flag+'</td><td style="text-align:right;padding:3px 8px">'+it.gap+'</td><td style="text-align:right;padding:3px 8px">'+it.advised+'</td><td style="text-align:right;padding:3px 8px">'+it.actual+'</td><td style="text-align:right;padding:3px 8px;color:'+(it.deviation.indexOf('-')>=0?'var(--warning)':'var(--text-2))')+'">'+it.deviation+'</td><td style="padding:3px 8px">'+sc+'</td></tr>';
+      }
+      h+='</table></div></div>';break;
+    case 'track':
+      h='<div class="track-card"><div class="track-head">🧬 AI 跟踪报告（开发参考）</div><div class="track-body">';
+      for(var s=0;s<block.sections.length;s++){var sec=block.sections[s];h+='<div class="track-section"><h4>'+sec.title+'</h4><div>'+sec.content+'</div></div>'}
+      h+='</div></div>';break;
+    case 'rulecard':
+      var p=block.param;
+      h='<div class="rule-card"><div class="rule-card-head">⚙ 规则参数调整确认</div><div class="rule-card-body">';
+      h+='<div><strong>参数：</strong>'+p.name+'</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">'+p.desc+'</div>';
+      h+='<div class="rule-diff"><div class="rule-old">当前值<br>'+p.oldVal+'</div><div class="rule-arrow">→</div><div class="rule-new">调整为<br>'+p.newVal+'</div></div>';
+      h+='<div><strong>适用范围：</strong>'+p.scope+'</div>';
+      h+='<div style="margin-top:6px;font-size:12px;color:var(--text-2)">📌 '+p.impact+'</div>';
+      h+='<div style="margin-top:4px;font-size:12px;color:var(--violet)">💡 '+p.suggest+'</div></div></div>';break;
+    case 'action-row':
+      h='<div class="action-row">';
+      for(var a=0;a<block.actions.length;a++){var ac=block.actions[a];h+='<button class="act-btn '+ac.cls+'" data-handler="'+ac.handler+'">'+ac.text+'</button>'}
+      h+='</div>';break;
+    case 'fallback-grid':
+      h='<div class="suggest-grid" style="max-width:100%">';
+      var fbs=[{q:'缺货总览',tag:'全仓总览',title:'缺货风险总览',sub:'3仓汇总 · 24个缺货SKU',color:'#FEE2E2,#991B1B'},{q:'发货区缺货分析',tag:'单仓分析',title:'发货区缺货分析',sub:'14个缺货SKU',color:'#FEF3C7,#92400E'},{q:'鱿鱼串缺货分析',tag:'单品详情',title:'鱿鱼串缺货分析',sub:'三仓可用量+影响客户',color:'#E0E7FF,#4338CA'},{q:'付超英负责的缺货',tag:'按采购员',title:'付超英负责的缺货',sub:'12个缺货SKU',color:'#D1FAE5,#065F46'},{q:'串类缺货',tag:'按品类',title:'串类商品缺货',sub:'8个缺货SKU',color:'#F3E8FF,#6D28D9'},{q:'回看7月4日推送',tag:'回看对比',title:'回看上周推送',sub:'AI定期回看+优化建议',color:'#E0E7FF,#4338CA'},{q:'AI建议采纳分析',tag:'采纳分析',title:'AI建议采纳率',sub:'谁采纳了·效果对比',color:'#E0E7FF,#4338CA'}];
+      for(var fb=0;fb<fbs.length;fb++){var f=fbs[fb];h+='<button class="suggest-card" data-q="'+f.q+'"><div class="sc-tag" style="background:'+f.color.split(',')[0]+';color:'+f.color.split(',')[1]+'">'+f.tag+'</div><div class="sc-title">'+f.title+'</div><div class="sc-sub">'+f.sub+'</div></button>'}
+      h+='</div>';break;
+  }
+  return h;
+}
+
+function renderTable(block){
+  var h='<div class="tbl-wrap"><div class="tbl-head-bar"><div class="tbl-title">'+block.title+'</div></div><div class="tbl-scroll"><table class="tbl"><thead><tr>';
+  for(var i=0;i<block.columns.length;i++)h+='<th class="'+(block.columns[i].cls||'')+'" style="width:'+(block.columns[i].w||'auto')+'px">'+block.columns[i].label+'</th>';
+  h+='</tr></thead><tbody>';
+  var rows=block.rows.slice(0,block.pageSize||10);
+  for(var j=0;j<rows.length;j++){
+    var r=rows[j];h+='<tr>';
+    for(var k=0;k<block.columns.length;k++){
+      var col=block.columns[k],val=r[col.k];
+      if(val===undefined||val===null){h+='<td></td>';continue}
+      if(col.k==='name'&&typeof val==='object')h+='<td><div class="sku-name"><span class="sku-name-inner" title="'+escHtml(val.c||'')+'">'+val.n+'</span><br><span class="sku-code">'+escHtml(val.c||'')+'</span></div></td>';
+      else if(typeof val==='object'&&val.v!==undefined)h+='<td class="'+(col.cls||'')+' '+(val.cls||'')+'">'+val.v+'</td>';
+      else if(typeof val==='object'&&val.text!==undefined){var cls=val.cls||'';if(val.kind)cls+=' badge '+val.kind;h+='<td><span class="'+cls+'">'+val.text+'</span></td>'}
+      else h+='<td class="'+(col.cls||'')+'">'+val+'</td>';
+    }
+    h+='</tr>';
+  }
+  h+='</tbody></table></div>';
+  if(block.foot)h+='<div class="tbl-foot"><span>'+block.foot.left+'</span><span>'+block.foot.right+'</span></div>';
+  h+='</div>';return h;
+}
+
+function renderWxCard(block){
+  var r=block.receiver,c=block.content;
+  var roleMsgs={buyer:'<b>'+r.name+'，你好！</b><br><br>以下是你负责的出现缺货风险的商品，请根据实际情况确认补货计划。<br>AI提示补货区间仅供参考，不直接决定采购数量。',warehouse:'<b>'+r.name+'，你好！</b><br><br>以下商品系统库存显示偏低，请核实实物库存是否与系统一致。如有差异请反馈。',sales:'<b>'+r.name+'，你好！</b><br><br>以下商品出现缺货风险，可能影响你负责的客户。请视情况告知相关客户预计到货时间。',finance:'<b>'+r.name+'，你好！</b><br><br>以下缺货商品涉及金额较大，请关注缺货损失对本月财务指标的影响。'};
+  var msgBody=roleMsgs[block.roleType]||c.body;
+  var h='<div class="wx-card"><div class="wx-card-head"><div style="display:flex;align-items:center;gap:8px"><div style="width:24px;height:24px;border-radius:50%;background:var(--primary-grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">'+r.avatar+'</div><span style="font-weight:600">'+r.name+'</span><span style="font-size:11px;color:var(--text-3)">· '+r.role+'</span></div><span style="font-size:11px;color:var(--text-3)">'+block.time+'</span></div>';
+  h+='<div class="wx-card-body"><div style="font-size:11px;color:var(--text-3);margin-bottom:4px">📋 消息预览：</div><div class="wx-msg-bubble"><div style="font-weight:600;margin-bottom:6px">'+c.title+'</div><div>'+msgBody+'</div><div style="margin-top:8px;color:var(--primary);font-size:12px">'+c.link+'</div></div></div>';
+  h+='<div class="wx-card-foot"><span class="wx-status sent">✅ 已送达</span><span class="wx-status read" style="margin-left:8px">👁 已读</span><span style="margin-left:auto;font-size:11px;color:var(--text-3)">'+block.time+'</span></div></div>';
+  return h;
+}
+
+/* ============== 提交 ============== */
+function submitQuery(query){
+  if(!query.trim())return;
+  dom.welcome.classList.add('hidden');
+  var now=new Date(),ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  dom.chatStream.appendChild(renderMsg('user',query,{time:ts}));
+  dom.chatInput.value='';dom.chatInput.style.height='auto';
+  setTimeout(function(){
+    var scenario=matchScenario(query);
+    var blocks=scenario.blocks;
+    if(scenario.roleBlocks&&scenario.roleBlocks[currentRole]){
+      var rb=scenario.roleBlocks[currentRole];
+      var newBlocks=[];
+      for(var bi=0;bi<blocks.length;bi++){
+        var b=blocks[bi];
+        if(b.type==='kpis'&&rb.kpis){newBlocks.push({type:'kpis',items:rb.kpis});continue}
+        if(b.type==='table'&&rb.table){newBlocks.push(b);newBlocks.push(rb.table);continue}
+        if(b.type==='details'&&rb.details){newBlocks.push(rb.details);continue}
+        newBlocks.push(b);
+      }
+      blocks=newBlocks;
+      if(rb.extraBlocks)blocks=blocks.concat(rb.extraBlocks);
+    }
+    var aiMeta={time:new Date().getHours().toString().padStart(2,'0')+':'+new Date().getMinutes().toString().padStart(2,'0'),thinking:scenario.thinking,blocks:blocks};
+    dom.chatStream.appendChild(renderMsg('ai','',aiMeta));
+    setTimeout(function(){dom.chatStream.scrollTop=dom.chatStream.scrollHeight;bindButtons()},100);
+  },600);
+  addHistory(query);
+}
+
+function addHistory(query){
+  historyCount++;dom.hsCount.textContent=historyCount;
+  var item=document.createElement('div');item.className='h-item';item.textContent=query.length>20?query.slice(0,20)+'…':query;
+  item.addEventListener('click',function(){submitQuery(query)});dom.historyList.prepend(item);
+}
+
+/* ============== 按钮绑定 ============== */
+function bindButtons(){
+  // 推送选择器
+  document.querySelectorAll('.send-picker-btn').forEach(function(btn){
+    btn.onclick=function(e){e.stopPropagation();var panel=this.nextElementSibling;panel.classList.toggle('open')};
+  });
+  document.querySelectorAll('.picker-chip').forEach(function(chip){
+    chip.onclick=function(e){e.stopPropagation();this.classList.toggle('selected')};
+  });
+  document.querySelectorAll('[data-action="confirm-send"]').forEach(function(btn){
+    btn.onclick=function(e){
+      e.stopPropagation();
+      var wrap=this.closest('.send-picker-wrap');
+      var selected=wrap.querySelectorAll('.picker-chip.selected');
+      if(selected.length===0){alert('请至少选择一位接收人');return}
+      var cards='',names=[];
+      selected.forEach(function(chip){
+        var name=chip.dataset.name,role=chip.dataset.role,skus=chip.dataset.skus;
+        names.push(name);
+        var roleType='buyer';if(role.indexOf('仓管')>=0)roleType='warehouse';else if(role.indexOf('销售')>=0)roleType='sales';else if(role.indexOf('财务')>=0)roleType='finance';
+        var now=new Date(),ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+        var roleMsgs={buyer:'<b>'+name+'，你好！</b><br><br>以下是你负责的出现缺货风险的商品，请根据实际情况确认补货计划。<br>AI提示补货区间仅供参考，不直接决定采购数量。',warehouse:'<b>'+name+'，你好！</b><br><br>以下商品系统库存显示偏低，请核实实物库存是否与系统一致。如有差异请反馈。',sales:'<b>'+name+'，你好！</b><br><br>以下商品出现缺货风险，可能影响你负责的客户。请视情况告知相关客户预计到货时间。',finance:'<b>'+name+'，你好！</b><br><br>以下缺货商品涉及金额较大，请关注缺货损失对本月财务指标的影响。'};
+        var msgBody=roleMsgs[roleType]||'';
+        var itemList='';
+        if(roleType==='buyer')itemList='<br><br>📋 <b>缺货清单（'+skus+'个SKU）：</b><br>• 安大100克整条鱿鱼串（黄胶带）— 缺口 8.5 件，可售 1.5 天<br>• 安大35克鱿鱼须串（红胶带）— 缺口 95 件，可售 2.1 天<br>• 川荣香辣鸭胗 — 缺口 69 件，可售 0.8 天<br>• ... 等共'+skus+'个SKU<br><br>📊 <b>汇总：</b>缺口合计 '+skus+' 个SKU<br>💡 <b>建议：</b>请关注补货区间，确认后安排采购<br>—— 智能补货智能体';
+        else if(roleType==='warehouse')itemList='<br><br>📋 <b>需核实库存的SKU（'+skus+'个）：</b><br>请核实系统库存与实物是否一致，如有差异请反馈。<br>—— 智能补货智能体';
+        else if(roleType==='sales')itemList='<br><br>📋 <b>影响客户预警：</b><br>以上商品缺货可能影响你负责的客户，请视情况告知预计到货时间。<br>—— 智能补货智能体';
+        else if(roleType==='finance')itemList='<br><br>📋 <b>缺货损失预警：</b><br>以上缺货涉及金额较大，请关注对本月财务指标的影响。<br>—— 智能补货智能体';
+        var wxBlock={type:'wxcard',receiver:{name:name,role:role,avatar:name.charAt(0)},roleType:roleType,content:{title:'🤖 智能补货建议（2026.07.07）',body:msgBody+itemList,link:'查看详情 →'},status:'sent',time:ts};
+        cards+=renderBlock(wxBlock);
+      });
+      var meta={time:new Date().getHours().toString().padStart(2,'0')+':'+new Date().getMinutes().toString().padStart(2,'0'),blocks:[{type:'p',text:'✅ 已推送到 <b>'+names.join('、')+'</b> 的企业微信，消息内容如下：'}]};
+      var div=document.createElement('div');div.className='msg ai';
+      var av='<div class="msg-avatar"><span style="font-size:18px">⚠️</span></div>';
+      var mh='<div class="msg-meta"><b>智能补货智能体</b><span class="tag-ai">AI</span><span>'+meta.time+'</span></div>';
+      var bh='<div class="bubble ai-bubble">';
+      for(var b=0;b<meta.blocks.length;b++)bh+=renderBlock(meta.blocks[b]);
+      bh+=cards+'</div>';
+      div.innerHTML=av+'<div class="msg-body">'+mh+bh+'</div>';
+      dom.chatStream.appendChild(div);
+      wrap.querySelector('.picker-panel').classList.remove('open');
+      wrap.querySelectorAll('.picker-chip').forEach(function(c){c.classList.remove('selected')});
+      setTimeout(function(){dom.chatStream.scrollTop=dom.chatStream.scrollHeight},100);
+    };
+  });
+  document.querySelectorAll('[data-action="close-picker"]').forEach(function(btn){
+    btn.onclick=function(e){e.stopPropagation();var panel=this.closest('.picker-panel');panel.classList.remove('open');panel.querySelectorAll('.picker-chip').forEach(function(c){c.classList.remove('selected')})};
+  });
+  document.querySelectorAll('[data-action="select-all"]').forEach(function(btn){
+    btn.onclick=function(e){
+      e.stopPropagation();
+      var wrap=this.closest('.send-picker-wrap');
+      var chips=wrap.querySelectorAll('.picker-chip');
+      var allSelected=true;
+      chips.forEach(function(c){if(!c.classList.contains('selected'))allSelected=false});
+      chips.forEach(function(c){if(allSelected)c.classList.remove('selected');else c.classList.add('selected')});
+      this.textContent=allSelected?'全选':'取消全选';
+    };
+  });
+  // 其他按钮
+  document.querySelectorAll('.act-btn[data-handler]').forEach(function(btn){
+    btn.onclick=function(){
+      var handler=btn.dataset.handler;
+      if(handler==='pushWarehouse')submitQuery('推送补货建议给仓库李四');
+      else if(handler==='pushSales')submitQuery('推送补货建议给销售张伟');
+      else if(handler==='ruleCategory')submitQuery('把串类的缺货提前量调为5天');
+      else if(handler==='remindBuyer')showRemindCard();
+      else if(handler==='acceptOptimize')submitQuery('牛肉粒误报太多 把提前量从2天调整为5天');
+      else if(handler==='showTrack')submitQuery('AI跟踪报告');
+      else if(handler==='confirmGlobalRule'||handler==='confirmCategoryRule'||handler==='confirmSkuRule')showRuleConfirm();
+      else if(handler==='cancelRule')showCancel();
+      else if(handler==='narrowToCategory')submitQuery('把串类的缺货提前量调为5天');
+      else if(handler==='expandToGlobal')submitQuery('把所有商品的缺货提前量从2天调为3天');
+      else if(handler==='gotoStockout')submitQuery('缺货总览');
+      else if(handler==='gotoSlowMoving')submitQuery('滞销预警');
+      else if(handler==='gotoMargin')submitQuery('毛利分析');
+	      else if(handler==='gotoWarehouse')submitQuery('发货区缺货分析');
+	      else if(handler==='gotoPush')submitQuery('推送智能补货建议给采购付超英');
+	      else if(handler==='gotoRule')submitQuery('把所有商品的缺货提前量从2天调为3天');
+      else if(handler==='expandToCategory')submitQuery('把串类的缺货提前量调为5天');
+      else if(handler==='gotoSupplier')submitQuery('安大食品的缺货商品');
+      else if(handler==='gotoCustomerLoss')submitQuery('客户断货预警');
+      else if(handler==='addNote')showAddNote();
+    };
+  });
+}
+
+function showRemindCard(){
+  var now=new Date(),ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  var meta={time:ts,thinking:['再次提醒指令','生成个性化提醒消息','发送企业微信'],blocks:[
+    {type:'p',text:'✅ 已<b>再次提醒付超英</b>确认安大35克鱿鱼须串（缺口95件）的补货状态。'},
+    {type:'wxcard',receiver:{name:'付超英',role:'采购员',avatar:'付'},roleType:'buyer',content:{title:'🔔 再次提醒：智能补货建议（2026.07.07）',body:'<b>付超英，你好！</b><br><br>7月4日推送的缺货清单中，<b>安大35克鱿鱼须串（红胶带）</b>仍未恢复库存（缺口 95 件，可售 2.1 天）。<br><br>请确认是否已安排补货。如有疑问可回复此消息。<br>—— 智能补货智能体',link:'查看详情 →'},status:'sent',time:ts},
+    {type:'p',text:'📌 当前为手动再次提醒。当AI误报率降低到可接受水平后，可开放"自动再次提醒"功能。'}
+  ]};
+  dom.chatStream.appendChild(renderMsg('ai','',meta));setTimeout(function(){dom.chatStream.scrollTop=dom.chatStream.scrollHeight;bindButtons()},100);
+}
+
+function showRuleConfirm(){
+  var now=new Date(),ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  var meta={time:ts,thinking:['规则已确认','记录规则变更日志','启动14天试运行监控'],blocks:[
+    {type:'p',text:'✅ <b>规则已生效！</b>试运行 <b>14天</b>（至 2026.07.21），到期AI会自动生成回看报告。'},
+    {type:'alert',kind:'info',icon:'📋',title:'试运行监控计划',desc:'• 期间按新规则触发补货预警<br>• 14天后自动对比：误报率/漏报率/缺货实际发生次数<br>• 若效果改善 → 建议固化<br>• 若效果不理想 → 建议回退或调整<br><br>📌 规则调整历史已记录在AI跟踪报告中。'},
+    {type:'action-row',actions:[{text:'查看AI跟踪报告',cls:'',handler:'showTrack'},{text:'追加备注',cls:'',handler:'addNote'}]}
+  ]};
+  dom.chatStream.appendChild(renderMsg('ai','',meta));setTimeout(function(){dom.chatStream.scrollTop=dom.chatStream.scrollHeight;bindButtons()},100);
+}
+
+function showCancel(){
+  var meta={time:new Date().getHours().toString().padStart(2,'0')+':'+new Date().getMinutes().toString().padStart(2,'0'),blocks:[{type:'p',text:'已取消本次规则调整，当前规则不变。'}]};
+  dom.chatStream.appendChild(renderMsg('ai','',meta));setTimeout(function(){dom.chatStream.scrollTop=dom.chatStream.scrollHeight},100);}
+
+function showAddNote(){
+  var now=new Date(),ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  var noteInput='<div class="wx-msg-bubble" style="margin:6px 0"><div style="font-weight:600;margin-bottom:4px">✏️ 追加备注</div><textarea id="noteTextarea" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:8px 12px;resize:none;font-size:13px;line-height:1.5;min-height:60px" placeholder="输入你的备注，如：鱿鱼串优先补货，刘记烧烤催了三次..."></textarea><div style="margin-top:8px;display:flex;gap:6px"><button class="act-btn confirm" onclick="submitNote()">提交备注</button><button class="act-btn cancel" onclick="cancelNote()">取消</button></div></div>';
+  var meta={time:ts,blocks:[{type:'p',text:noteInput}]};
+  dom.chatStream.appendChild(renderMsg('ai','',meta));setTimeout(function(){dom.chatStream.scrollTop=dom.chatStream.scrollHeight;bindButtons()},100);
+}
+
+function submitNote(){
+  var textarea=document.getElementById('noteTextarea');
+  var note=textarea?textarea.value.trim():'';
+  if(!note){alert('请输入备注内容');return}
+  var now=new Date(),ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  var meta={time:ts,thinking:['接收老板备注','分析备注关键词','更新建议优先级','通知对应责任人'],blocks:[
+    {type:'route',text:'已收到老板备注，智能补货智能体已更新建议。',icon:'📝'},
+    {type:'p',text:'<b>📝 老板备注：</b>"'+escHtml(note)+'"'},
+    {type:'alert',kind:'info',icon:'🤖',title:'AI已更新建议',desc:'已记录备注内容。根据备注中的优先级指示，AI已自动调整相关建议的优先级权重。'},
+    {type:'p',text:'<b>✅ 已执行：</b><br>• 备注已记录到AI知识库<br>• 相关建议优先级已更新<br>• 如涉及具体责任人，已标记为下次推送时通知<br>• 老板可在「AI跟踪报告」中查看备注历史'},
+    {type:'action-row',actions:[{text:'查看AI跟踪报告',cls:'',handler:'showTrack'},{text:'继续追加备注',cls:'',handler:'addNote'}]}
+  ]};
+  dom.chatStream.appendChild(renderMsg('ai','',meta));setTimeout(function(){dom.chatStream.scrollTop=dom.chatStream.scrollHeight;bindButtons()},100);
+}
+
+function cancelNote(){
+  var meta={time:new Date().getHours().toString().padStart(2,'0')+':'+new Date().getMinutes().toString().padStart(2,'0'),blocks:[{type:'p',text:'已取消备注。'}]};
+  dom.chatStream.appendChild(renderMsg('ai','',meta));setTimeout(function(){dom.chatStream.scrollTop=dom.chatStream.scrollHeight;bindButtons()},100);
+}
+
+function bindWelcomeCards(){
+  document.querySelectorAll('.suggest-card[data-q]').forEach(function(card){card.addEventListener('click',function(){submitQuery(card.dataset.q)})});
+}
+
+/* ============== 事件监听 ============== */
+dom.sendBtn.addEventListener('click',function(){submitQuery(dom.chatInput.value)});
+dom.chatInput.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitQuery(dom.chatInput.value)}});
+dom.chatInput.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'});
+dom.newChatBtn.addEventListener('click',function(){dom.welcome.classList.remove('hidden');while(dom.chatStream.children.length>1)dom.chatStream.lastChild.remove();historyCount=0;dom.hsCount.textContent='0';dom.historyList.innerHTML='';renderWelcome()});
+document.addEventListener('click',function(e){if(!e.target.closest('.picker-panel')&&!e.target.closest('.send-picker-btn')){document.querySelectorAll('.picker-panel.open').forEach(function(p){p.classList.remove('open')})}});
+
+/* ============== 启动 ============== */
+initRoles();renderWelcome();renderQuickCmds();
+</script>
+</body>
+</html>
