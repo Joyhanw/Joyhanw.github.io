@@ -642,36 +642,56 @@ function pageLoop(){
       '<div style="padding:14px;background:var(--rose-light);border-radius:var(--radius);text-align:center;border:2px solid var(--rose-soft)">'+
         '<div style="font-size:24px;margin-bottom:4px">🤖</div>'+
         '<div style="font-size:13px;font-weight:700;color:var(--rose);margin-bottom:4px">智能采购助手</div>'+
-        '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">⚠️ 缺货损失率<br>🛒 采购效率</div>'+
-        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">基于销售趋势+库存水位+在途订单+季节波动，自动生成采购建议清单</div>'+
+        '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">⚠️ 缺货损失率 · 🛒 采购效率</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5;text-align:left">'+
+          '<b>🔹 智能补货建议</b><br><span style="color:var(--text-3);font-size:8.5px">基于销售趋势+库存水位+在途订单+季节波动，自动生成采购建议清单</span><br>'+
+          '<b>🔹 1688比价采购</b><br><span style="color:var(--text-3);font-size:8.5px">读取请购单→1688搜索多供应商→综合评估价格/资质/交货期→标注最优选项→导出Excel</span><br>'+
+          '<b>🔹 采购风险识别</b><br><span style="color:var(--text-3);font-size:8.5px">自动检查供应商资质到期、价格异常波动、超预算采购等风险</span>'+
+        '</div>'+
       '</div>'+
       // 智能库存管家
       '<div style="padding:14px;background:var(--amber-light);border-radius:var(--radius);text-align:center;border:2px solid var(--amber-soft)">'+
         '<div style="font-size:24px;margin-bottom:4px">📦</div>'+
         '<div style="font-size:13px;font-weight:700;color:var(--amber);margin-bottom:4px">智能库存管家</div>'+
         '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">📦 库存持有成本</div>'+
-        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">自动识别呆滞商品+分析原因+推荐促销/调拨/清仓方案</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5;text-align:left">'+
+          '<b>🔹 动态安全库存</b><br><span style="color:var(--text-3);font-size:8.5px">基于时序预测+多目标优化，动态计算每款商品的安全库存水位</span><br>'+
+          '<b>🔹 呆滞库存识别与处置</b><br><span style="color:var(--text-3);font-size:8.5px">自动识别呆滞商品，分析呆滞原因，推荐促销/调拨/清仓方案</span><br>'+
+          '<b>🔹 库存周转分析</b><br><span style="color:var(--text-3);font-size:8.5px">自动计算周转率、库龄，与行业基准对比，给出优化建议</span>'+
+        '</div>'+
       '</div>'+
       // 财务智能参谋
       '<div style="padding:14px;background:var(--violet-light);border-radius:var(--radius);text-align:center;border:2px solid var(--violet-soft)">'+
         '<div style="font-size:24px;margin-bottom:4px">📊</div>'+
         '<div style="font-size:13px;font-weight:700;color:var(--violet);margin-bottom:4px">财务智能参谋</div>'+
-        '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">📊 毛利质量<br>💰 资金健康度</div>'+
-        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">自然语言问数 — "本月哪个商品卖得最好？"实时返回数据+解读</div>'+
+        '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">📊 毛利质量 · 💰 资金健康度</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5;text-align:left">'+
+          '<b>🔹 票据智能识别与记账</b><br><span style="color:var(--text-3);font-size:8.5px">发票/银行流水OCR识别→自动价税分离→生成记账凭证</span><br>'+
+          '<b>🔹 经营日报自动生成</b><br><span style="color:var(--text-3);font-size:8.5px">每日自动汇总销售/采购/库存/资金关键指标，推送到老板微信</span><br>'+
+          '<b>🔹 自然语言问数</b><br><span style="color:var(--text-3);font-size:8.5px">"本月哪个商品卖得最好？"自然语言提问，实时返回数据</span>'+
+        '</div>'+
       '</div>'+
       // 经营风险预警
       '<div style="padding:14px;background:var(--blue-light);border-radius:var(--radius);text-align:center;border:2px solid var(--blue-soft)">'+
         '<div style="font-size:24px;margin-bottom:4px">🔔</div>'+
         '<div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px">经营风险预警</div>'+
         '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">👥 客户价值</div>'+
-        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">基于应收/应付/库存占用预判未来30天资金缺口</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5;text-align:left">'+
+          '<b>🔹 应收超期预警</b><br><span style="color:var(--text-3);font-size:8.5px">自动监控客户应收账款账龄，超期主动推送预警并分析原因</span><br>'+
+          '<b>🔹 资金链风险预判</b><br><span style="color:var(--text-3);font-size:8.5px">基于应收/应付/库存占用/费用趋势，预判未来30天资金缺口</span><br>'+
+          '<b>🔹 客户流失预警</b><br><span style="color:var(--text-3);font-size:8.5px">识别下单变远/频次下降/金额下降/常购中断，主动推送跟进</span>'+
+        '</div>'+
       '</div>'+
       // 多模态智能开单
       '<div style="padding:14px;background:var(--emerald-light);border-radius:var(--radius);text-align:center;border:2px solid var(--emerald-soft)">'+
         '<div style="font-size:24px;margin-bottom:4px">🧾</div>'+
         '<div style="font-size:13px;font-weight:700;color:var(--emerald);margin-bottom:4px">多模态智能开单</div>'+
         '<div style="font-size:10px;color:var(--text-secondary);line-height:1.5">🧾 开单效率</div>'+
-        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5">语音说出"卖给张三100个A商品"自动识别并创建销售单</div>'+
+        '<div style="font-size:9px;color:var(--text-muted);margin-top:3px;padding:4px 6px;background:rgba(255,255,255,0.6);border-radius:6px;line-height:1.5;text-align:left">'+
+          '<b>🔹 语音开单</b><br><span style="color:var(--text-3);font-size:8.5px">语音说出"卖给张三100个A商品"，自动识别并创建销售单</span><br>'+
+          '<b>🔹 图片/PDF开单</b><br><span style="color:var(--text-3);font-size:8.5px">拍照或上传采购单/报价单，OCR识别后自动生成对应单据</span><br>'+
+          '<b>🔹 微信聊天记录开单</b><br><span style="color:var(--text-3);font-size:8.5px">导出微信订单对话，AI提取商品/数量/价格，一键生成销售单</span>'+
+        '</div>'+
       '</div>'+
       // 说明卡片
       '<div style="padding:14px;background:var(--slate-light);border-radius:var(--radius);text-align:center;border:2px dashed var(--slate-border)">'+
