@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>味冠 · 毛利分析智能体</title>
+<title>味冠 · 周转分析智能体</title>
 <style>
 /* ============== 基础 ============== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -124,13 +124,13 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 
 /* 欢迎屏 */
 .welcome { max-width: 880px; margin: 24px auto; text-align: center; padding: 24px 16px; }
-.welcome-avatar { width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, #F0FDF4, #D1FAE5); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: var(--shadow-md); }
+.welcome-avatar { width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, #EAF1FF, #F4F0FF); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: var(--shadow-md); }
 .welcome h2 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
 .welcome > p { font-size: 14px; color: var(--text-2); line-height: 1.8; margin-bottom: 28px; }
 
 .suggest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
 .suggest-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r-md); padding: 14px; text-align: left; transition: all .15s; cursor: pointer; }
-.suggest-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: #A7F3D0; }
+.suggest-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: #C7D5FF; }
 .sc-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; margin-bottom: 8px; }
 .sc-title { font-size: 13.5px; font-weight: 500; line-height: 1.5; color: var(--text); margin-bottom: 4px; }
 .sc-sub { font-size: 11.5px; color: var(--text-3); line-height: 1.5; }
@@ -142,7 +142,7 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .msg.user { flex-direction: row-reverse; }
 .msg-avatar { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
 .msg.user .msg-avatar { background: var(--primary-grad); color: #fff; }
-.msg.ai .msg-avatar { background: linear-gradient(135deg,#F0FDF4,#D1FAE5); border: 1px solid #A7F3D0; }
+.msg.ai .msg-avatar { background: linear-gradient(135deg,#EAF1FF,#F4F0FF); border: 1px solid #DCE5F5; }
 
 .msg-body { flex: 1; min-width: 0; }
 .msg.user .msg-body { text-align: right; }
@@ -166,14 +166,14 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .bubble.ai-bubble strong { color: var(--text); font-weight: 600; }
 .bubble.ai-bubble em { font-style: normal; color: var(--primary); }
 
-/* AI 思考 */
+/* AI 结构化输出元素 */
 .ai-thinking {
     display: flex; align-items: center; gap: 8px;
-    background: linear-gradient(90deg, #F0FDF4, #D1FAE5);
+    background: linear-gradient(90deg, #F4F0FF, #EAF1FF);
     border-radius: 8px; padding: 8px 12px; font-size: 12.5px; color: var(--text-2);
-    margin-bottom: 12px; border: 1px solid #A7F3D0;
+    margin-bottom: 12px; border: 1px solid #E1E7F5;
 }
-.thinking-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: blink 1.4s infinite both; }
+.thinking-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); animation: blink 1.4s infinite both; }
 .thinking-dot:nth-child(2) { animation-delay: .2s; }
 .thinking-dot:nth-child(3) { animation-delay: .4s; }
 @keyframes blink { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
@@ -187,7 +187,6 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .route-info .route-ico { font-size: 14px; }
 .route-info code { background: #fff; border: 1px solid var(--border); padding: 1px 6px; border-radius: 3px; font-size: 11.5px; color: var(--primary); }
 
-/* KPI */
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
 .kpi {
     background: linear-gradient(180deg, #FAFBFF 0%, #fff 100%);
@@ -198,6 +197,10 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .kpi-value { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.2; display: flex; align-items: baseline; gap: 4px; }
 .kpi-value .unit { font-size: 12px; font-weight: 500; color: var(--text-3); }
 .kpi-delta { font-size: 11.5px; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+.kpi-delta.up { color: var(--success); }
+.kpi-delta.dn { color: var(--danger); }
+.kpi-delta.warn { color: var(--warning); }
+
 .kpi.danger { background: linear-gradient(180deg,#FFF5F5 0%, #fff 100%); border-color: #FECACA; }
 .kpi.success { background: linear-gradient(180deg,#F0FDF4 0%, #fff 100%); border-color: #BBF7D0; }
 .kpi.warning { background: linear-gradient(180deg,#FFFBEB 0%, #fff 100%); border-color: #FDE68A; }
@@ -213,6 +216,8 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .tbl-act { display: flex; align-items: center; gap: 6px; }
 .tbl-act button { font-size: 11.5px; color: var(--text-2); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); background: #fff; }
 .tbl-act button:hover { color: var(--primary); border-color: var(--primary); }
+.tbl-expand-btn { font-size: 11.5px; color: var(--primary); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--primary); background: #fff; cursor: pointer; }
+.tbl-expand-btn:hover { background: var(--primary-soft); }
 .tbl-dl-btn { font-size: 11.5px; color: var(--success); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--success); background: #fff; cursor: pointer; }
 .tbl-dl-btn:hover { background: var(--success-soft); }
 
@@ -246,8 +251,53 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .warn-cell { color: var(--warning) !important; font-weight: 500; }
 .success-cell { color: var(--success) !important; font-weight: 500; }
 .muted-cell { color: var(--text-3) !important; }
+.badge {
+    display: inline-block; padding: 1px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 500;
+}
+.badge.danger { background: var(--danger-soft); color: var(--danger); }
+.badge.warning { background: var(--warning-soft); color: #92400E; }
+.badge.success { background: var(--success-soft); color: #065F46; }
+.badge.info { background: var(--info-soft); color: #4338CA; }
+.badge.gray { background: #F3F4F6; color: #6B7280; }
 
-/* 公式卡 */
+/* 场景标签 */
+.scene-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 12px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; margin-bottom: 10px;
+}
+.scene-badge.s1 { background: var(--danger-soft); color: #991B1B; }
+.scene-badge.s2 { background: var(--warning-soft); color: #92400E; }
+.scene-badge.s3 { background: var(--success-soft); color: #065F46; }
+
+/* 采购员信息条 */
+.buyer-banner {
+    display: flex; align-items: center; gap: 14px;
+    background: #FAFBFD; border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px; font-size: 13px;
+}
+.buyer-avatar {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; color: #fff;
+}
+.buyer-info { flex: 1; }
+.buyer-name { font-weight: 600; font-size: 15px; }
+.buyer-detail { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+
+/* 仓库列表 */
+.wh-list {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;
+}
+.wh-tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 2px 8px; border-radius: 4px;
+    background: var(--bg); border: 1px solid var(--border-soft);
+    font-size: 11px; color: var(--text-3);
+}
+
+/* formula card */
 .formula-card {
     border: 1px solid var(--border); border-radius: var(--r-md); background: #fff; overflow: hidden;
 }
@@ -273,7 +323,7 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .fs-body .ans { color: var(--primary); font-weight: 600; background: var(--primary-soft); padding: 1px 6px; border-radius: 3px; }
 .formula-foot { padding: 8px 14px; background: var(--bg-soft); border-top: 1px solid var(--border-soft); font-size: 11.5px; color: var(--text-3); }
 
-/* 建议卡 */
+/* advise card */
 .advise-card { border: 1px solid var(--border); border-radius: var(--r-md); background: #fff; overflow: hidden; }
 .advise-head { padding: 10px 14px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--border-soft); }
 .advise-body { padding: 8px 14px 14px; }
@@ -302,9 +352,14 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .alert-title { font-weight: 600; margin-bottom: 4px; }
 .alert-desc { font-size: 12.5px; }
 
-/* fade */
+/* fade animation */
 .fade-in { animation: fadeIn .35s ease both; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in-stagger > *:nth-child(1) { animation-delay: 0s; }
+.fade-in-stagger > *:nth-child(2) { animation-delay: .08s; }
+.fade-in-stagger > *:nth-child(3) { animation-delay: .16s; }
+.fade-in-stagger > *:nth-child(4) { animation-delay: .24s; }
+.fade-in-stagger > * { animation: fadeIn .35s ease both; }
 
 /* 输入区 */
 .chat-input-bar {
@@ -343,6 +398,7 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .send-btn:hover { background: #1E5BD6; }
 .send-btn svg { width: 16px; height: 16px; }
 
+/* Responsive */
 @media (max-width: 768px) {
     .chat-sidebar { display: none; }
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
@@ -355,8 +411,8 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 <svg style="display:none" aria-hidden="true">
     <defs>
         <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#10B981"/>
-            <stop offset="100%" stop-color="#34D399"/>
+            <stop offset="0%" stop-color="#2E6BFF"/>
+            <stop offset="100%" stop-color="#7B5BFF"/>
         </linearGradient>
     </defs>
 </svg>
@@ -369,21 +425,23 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
                 <svg viewBox="0 0 32 32" width="28" height="28">
                     <path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/>
                     <path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/>
-                    <circle cx="13.5" cy="15" r="1.2" fill="#10B981"/>
-                    <circle cx="18.5" cy="15" r="1.2" fill="#10B981"/>
+                    <circle cx="13.5" cy="15" r="1.2" fill="#2E6BFF"/>
+                    <circle cx="18.5" cy="15" r="1.2" fill="#2E6BFF"/>
                 </svg>
             </div>
-            <div class="logo-name">味冠 <span>· 毛利分析智能体</span></div>
+            <div class="logo-name">味冠 <span>· 周转分析智能体</span></div>
         </div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
-        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#10B981,#34D399);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">味</div>
+        <button id="prdToggle" style="display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:600;background:var(--primary-soft);color:var(--primary);border:1px solid transparent;transition:all .15s;cursor:pointer;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='transparent'">📄 PRD</button>
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary-grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">味</div>
         <span style="font-size:13px;font-weight:500;color:var(--text);">唯安</span>
     </div>
 </header>
 
 <!-- ============== 对话页 ============== -->
 <main class="view-chat" data-view="chat">
+    <!-- 左侧 -->
     <aside class="chat-sidebar">
         <button class="new-chat-btn" id="newChatBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -395,45 +453,48 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
         </div>
     </aside>
 
+    <!-- 主区 -->
     <section class="chat-main">
         <div class="chat-header">
             <div class="chat-header-left">
-                <div class="agent-icon-sm" style="background:linear-gradient(135deg,#F0FDF4,#D1FAE5);font-size:18px;">💰</div>
-                <div class="chat-title" id="chatTitle">毛利分析智能体</div>
+                <div class="agent-icon-sm" style="background:linear-gradient(135deg,#EAF1FF,#F4F0FF);font-size:18px;">🛒</div>
+                <div class="chat-title" id="chatTitle">周转分析智能体</div>
             </div>
         </div>
 
+        <!-- 对话流 -->
         <div class="chat-stream" id="chatStream">
+            <!-- 欢迎屏 -->
             <div class="welcome" id="welcome">
                 <div class="welcome-avatar">
                     <svg viewBox="0 0 32 32" width="36" height="36">
                         <path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/>
                         <path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/>
-                        <circle cx="13.5" cy="15" r="1.2" fill="#10B981"/>
-                        <circle cx="18.5" cy="15" r="1.2" fill="#10B981"/>
+                        <circle cx="13.5" cy="15" r="1.2" fill="#2E6BFF"/>
+                        <circle cx="18.5" cy="15" r="1.2" fill="#2E6BFF"/>
                     </svg>
                 </div>
-                <h2>你好，我是毛利分析智能体</h2>
-                <p>查询采购员/供应商的毛利情况、毛利率分析<br>数据来源：4个固定仓库（发货区 · 奥州外仓 · 三农外仓 · 西库一楼）</p>
+                <h2>你好，我是周转分析智能体</h2>
+                <p>按采购员查询库存周转率、缺货预警、进货建议<br>固定仓库：发货区 · 奥州外仓 · 三农外仓 · 西库一楼</p>
 
                 <div class="suggest-grid">
-                    <button class="suggest-card" data-q="查询张杰采购毛利">
-                        <div class="sc-tag" style="background:#D1FAE5;color:#065F46">采购毛利</div>
-                        <div class="sc-title">张杰 · 采购毛利</div>
-                        <div class="sc-sub">查询张杰所有品的毛利情况</div>
+                    <button class="suggest-card" data-q="查看张杰滞销产品">
+                        <div class="sc-tag" style="background:#FEE2E2;color:#991B1B">滞销场景</div>
+                        <div class="sc-title">张杰 · 滞销分析</div>
+                        <div class="sc-sub">查看张杰负责商品中周转率 > 1 的滞销商品</div>
                     </button>
-                    <button class="suggest-card" data-q="查询安大食品供应商毛利">
-                        <div class="sc-tag" style="background:#DBEAFE;color:#1E5BD6">供应商毛利</div>
-                        <div class="sc-title">安大食品 · 供应商毛利</div>
-                        <div class="sc-sub">查询安大食品所有品的毛利情况</div>
+                    <button class="suggest-card" data-q="查看张杰缺货产品">
+                        <div class="sc-tag" style="background:#FEF3C7;color:#92400E">缺货场景</div>
+                        <div class="sc-title">张杰 · 缺货分析</div>
+                        <div class="sc-sub">查看张杰负责商品中缺货（库存=0 且月销量>50）的商品</div>
                     </button>
-                    <button class="suggest-card" data-q="查询张杰供应商毛利汇总">
-                        <div class="sc-tag" style="background:#E0E7FF;color:#4338CA">供应商汇总</div>
-                        <div class="sc-title">张杰 · 供应商毛利汇总</div>
-                        <div class="sc-sub">查询张杰所有供应商毛利情况</div>
+                    <button class="suggest-card" data-q="查看张杰需要进货产品">
+                        <div class="sc-tag" style="background:#D1FAE5;color:#065F46">进货建议场景</div>
+                        <div class="sc-title">张杰 · 进货建议</div>
+                        <div class="sc-sub">查看张杰负责商品中周转率 < 1 的进货关注商品</div>
                     </button>
                 </div>
-                <div class="welcome-foot">💡 推荐问法：<b>「查询[采购员]采购毛利」</b> · <b>「查询[供应商]供应商毛利」</b> · <b>「查询[采购员]供应商毛利汇总」</b><br>采购员：张杰 · 付超英 · 刘洋 · 任情情 &nbsp;|&nbsp; 时间：天/月/年 &nbsp;|&nbsp; 供应商：单个/全部</div>
+                <div class="welcome-foot">💡 输入格式：<b>「查看[采购员][场景]」</b>，例如「查看张杰滞销产品」<br>采购员：张杰 · 付超英 · 刘洋 · 任情情 &nbsp;|&nbsp; 场景：滞销 / 缺货 / 进货建议 &nbsp;|&nbsp; 单品：查看[产品名]进货情况</div>
             </div>
         </div>
 
@@ -441,12 +502,13 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
         <div class="chat-input-bar">
             <div class="chat-input-inner">
                 <div class="quick-cmds" id="quickCmds">
-                    <button class="qc" data-q="查询张杰采购毛利"><span class="qc-ico">💰</span>张杰·采购毛利</button>
-                    <button class="qc" data-q="查询安大食品供应商毛利"><span class="qc-ico">🏭</span>安大食品·供应商毛利</button>
-                    <button class="qc" data-q="查询张杰供应商毛利汇总"><span class="qc-ico">📊</span>张杰·供应商汇总</button>
+                    <button class="qc" data-q="查看张杰滞销产品"><span class="qc-ico">📊</span>张杰·滞销</button>
+                    <button class="qc" data-q="查看张杰缺货产品"><span class="qc-ico">🚨</span>张杰·缺货</button>
+                    <button class="qc" data-q="查看张杰需要进货产品"><span class="qc-ico">📦</span>张杰·进货</button>
+                    <button class="qc" data-q="单品进货查询，例如：安大鸡排" style="border-color:var(--primary)"><span class="qc-ico">🔍</span>单品进货</button>
                 </div>
                 <div class="input-row">
-                    <textarea id="chatInput" rows="1" placeholder="输入查询，例如：查询张杰本月采购毛利"></textarea>
+                    <textarea id="chatInput" rows="1" placeholder="输入查询，例如：查看张杰的周转率情况"></textarea>
                     <button class="send-btn" id="sendBtn" title="发送">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                     </button>
@@ -457,20 +519,68 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 </main>
 
 <script>
-/* ============== 毛利分析 · 核心数据 ============== */
+/* ============== 采购员周转分析 · 核心数据 ============== */
 
+// 固定仓库定义
 const FIXED_WAREHOUSES = {
     '01': '发货区',
     '03': '奥州外仓',
     '04': '三农外仓',
     '05': '西库一楼'
 };
+const WH_COLORS = {
+    '01': { bg: '#DBEAFE', color: '#1E5BD6' },
+    '03': { bg: '#D1FAE5', color: '#065F46' },
+    '04': { bg: '#FEF3C7', color: '#92400E' },
+    '05': { bg: '#E0E7FF', color: '#4338CA' }
+};
 
 // 场景定义
 const SCENE_INFO = {
-    S01: { key: 'S01', label: '采购毛利查询', emoji: '💰', badgeCls: 's1', sortKey: 'grossProfit', sortDir: 'desc' },
-    S02: { key: 'S02', label: '供应商毛利查询', emoji: '🏭', badgeCls: 's2', sortKey: 'grossProfit', sortDir: 'desc' },
-    S03: { key: 'S03', label: '采购供应商毛利汇总', emoji: '📊', badgeCls: 's3', sortKey: 'grossProfit', sortDir: 'desc' }
+    S01: { key: 'S01', label: '滞销场景', emoji: '📊', badgeCls: 's1', desc: '周转率 > 1 · 当前库存大于15天平均销量，存在滞销/积压风险', sortKey: 'turnoverRate', sortDir: 'desc', filter: function(p) { return p.turnoverRate > 1; }, subFilters: [ { label: '15天到30天内滞销', filter: function(p) { return p.turnoverRate > 1 && p.turnoverRate <= 2; } }, { label: '30天到60天内滞销', filter: function(p) { return p.turnoverRate > 2 && p.turnoverRate <= 4; } }, { label: '60天内滞销', filter: function(p) { return p.turnoverRate > 4; } } ] },
+    S02: { key: 'S02', label: '缺货场景', emoji: '🚨', badgeCls: 's2', desc: '近1个月销量 > 50 且 当前可用量 = 0 · 需优先关注', sortKey: 'recent1MonthSales', sortDir: 'desc', filter: function(p) { return p.recent1MonthSales > 50 && p.currentStock === 0; } },
+    S03: { key: 'S03', label: '进货建议场景', emoji: '📦', badgeCls: 's3', desc: '周转率 < 1 · 当前库存小于15天平均销量，建议关注进货', sortKey: 'turnoverRate', sortDir: 'asc', filter: function(p) { return p.turnoverRate < 1; } }
+};
+
+// 查询日期
+const QUERY_DATE = new Date('2026-07-10');
+
+// 采购员商品原始数据
+const BUYER_PRODUCTS = {
+    '张杰': [
+        { name: '安井400克红糖发糕（总库）', code: 'AJ400KHTFG（ZK）', spec: '400g×20包', supplier: '安井食品', stocks: { '01': 25, '03': 15, '04': 8, '05': 12 }, recent2MonthsSales: 85, recent1MonthSales: 38, lastYear17DaysSales: 110 },
+        { name: '安井老面鲜肉小笼包', code: 'AJLMXRXLB', spec: '360g×30包', supplier: '安井食品', stocks: { '01': 40, '03': 30, '04': 0, '05': 20 }, recent2MonthsSales: 180, recent1MonthSales: 72, lastYear17DaysSales: 150 },
+        { name: '安井袋装潮汕风味卷章', code: 'AJDZCSFWJZ', spec: '500g×20包', supplier: '安井食品', stocks: { '01': 15, '03': 10, '04': 5, '05': 8 }, recent2MonthsSales: 320, recent1MonthSales: 145, lastYear17DaysSales: 200 },
+        { name: '安大70克台式烤香肠', code: 'AD70KTSKXC', spec: '70g×100支', supplier: '安大食品', stocks: { '01': 30, '03': 20, '04': 12, '05': 18 }, recent2MonthsSales: 260, recent1MonthSales: 118, lastYear17DaysSales: 240 },
+        { name: '安大10包小酥肉', code: 'AD10BXSR', spec: '1kg×10包', supplier: '安大食品', stocks: { '01': 0, '03': 0, '04': 0, '05': 0 }, recent2MonthsSales: 200, recent1MonthSales: 95, lastYear17DaysSales: 180 },
+        { name: '白象招牌咖喱牛肉拌饭 350g', code: 'BXZPGLNRBF', spec: '350g×12盒', supplier: '白象食品', stocks: { '01': 0, '03': 0, '04': 0, '05': 0 }, recent2MonthsSales: 350, recent1MonthSales: 168, lastYear17DaysSales: 280 },
+        { name: '安大鸡排（蓝胶带）', code: 'ADJP（LJD）', spec: '100g×50片', supplier: '安大食品', stocks: { '01': 20, '03': 15, '04': 10, '05': 5 }, recent2MonthsSales: 400, recent1MonthSales: 175, lastYear17DaysSales: 350 },
+    ],
+    '付超英': [
+        { name: '安大100克整条鱿鱼串（黄色十字胶带）88', code: 'AD100KZTYYC（HSJD）8', spec: '20串×5包', supplier: '安大食品', stocks: { '01': 14, '03': 0, '04': 0, '05': 76 }, recent2MonthsSales: 52, recent1MonthSales: 22, lastYear17DaysSales: 78 },
+        { name: '安大35克鱿鱼须串（红色胶带）', code: 'AD35KYYXC（HSJD）0', spec: '35g×200串', supplier: '安大食品', stocks: { '01': 45, '03': 30, '04': 0, '05': 60 }, recent2MonthsSales: 180, recent1MonthSales: 85, lastYear17DaysSales: 175 },
+        { name: '川荣香辣鸭胗', code: 'CRXLYZ', spec: '500g×20袋', supplier: '川荣食品', stocks: { '01': 120, '03': 80, '04': 40, '05': 200 }, recent2MonthsSales: 60, recent1MonthSales: 25, lastYear17DaysSales: 72 },
+        { name: '安大60克翅中串（红胶带）', code: 'AD60KCZC（HJD）', spec: '60g×200串', supplier: '安大食品', stocks: { '01': 90, '03': 60, '04': 30, '05': 120 }, recent2MonthsSales: 110, recent1MonthSales: 48, lastYear17DaysSales: 130 },
+        { name: '安大牛排肉串（黑椒味）', code: 'ADNPRC（HJW）', spec: '80g×100串', supplier: '安大食品', stocks: { '01': 10, '03': 5, '04': 0, '05': 8 }, recent2MonthsSales: 350, recent1MonthSales: 160, lastYear17DaysSales: 300 },
+        { name: '安大100克整条鱿鱼串（粉色胶带）0', code: 'AD100KZTYYC（FSJD）0', spec: '20串×5包', supplier: '安大食品', stocks: { '01': 0, '03': 0, '04': 0, '05': 0 }, recent2MonthsSales: 85, recent1MonthSales: 62, lastYear17DaysSales: 155 },
+        { name: '安大100克整条鱿鱼串（蓝色胶带）5', code: 'AD100KZTYYC（LSJD）5', spec: '20串×5包', supplier: '安大食品', stocks: { '01': 0, '03': 0, '04': 0, '05': 0 }, recent2MonthsSales: 72, recent1MonthSales: 55, lastYear17DaysSales: 165 },
+    ],
+    '刘洋': [
+        { name: '蹦蹦鱼金汤酸菜鱼 450g', code: 'BBYJTSCY', spec: '450g×20盒', supplier: '蹦蹦鱼食品', stocks: { '01': 5, '03': 0, '04': 0, '05': 10 }, recent2MonthsSales: 42, recent1MonthSales: 18, lastYear17DaysSales: 50 },
+        { name: '安大鸡翅根（绿胶带）', code: 'ADJCG（LJD）', spec: '1kg×10袋', supplier: '安大食品', stocks: { '01': 25, '03': 10, '04': 8, '05': 15 }, recent2MonthsSales: 280, recent1MonthSales: 125, lastYear17DaysSales: 260 },
+        { name: '安大鸡排（蓝胶带）', code: 'ADJP（LJD）', spec: '100g×50片', supplier: '安大食品', stocks: { '01': 12, '03': 8, '04': 0, '05': 20 }, recent2MonthsSales: 380, recent1MonthSales: 170, lastYear17DaysSales: 340 },
+        { name: '安大牛肉大串（黑椒）', code: 'ADNRDC（HJ）', spec: '80g×80串', supplier: '安大食品', stocks: { '01': 0, '03': 0, '04': 0, '05': 0 }, recent2MonthsSales: 160, recent1MonthSales: 82, lastYear17DaysSales: 145 },
+        { name: '精品三全韭菜鸡蛋素水饺 1.2千克', code: '2QJPSQJCJDSSJ1.K', spec: '1.2kg×12袋', supplier: '三全食品', stocks: { '01': 30, '03': 20, '04': 15, '05': 25 }, recent2MonthsSales: 450, recent1MonthSales: 195, lastYear17DaysSales: 380 },
+    ],
+    '任情情': [
+        { name: '安大100克优选翅中串（粉色）', code: 'AD100KYXCZC（FS）', spec: '100g×100串', supplier: '安大食品', stocks: { '01': 18, '03': 12, '04': 0, '05': 8 }, recent2MonthsSales: 95, recent1MonthSales: 42, lastYear17DaysSales: 85 },
+        { name: '安大120克无双剑翅（粉色）', code: 'AD120KWSJC', spec: '120g×60串', supplier: '安大食品', stocks: { '01': 0, '03': 0, '04': 0, '05': 0 }, recent2MonthsSales: 280, recent1MonthSales: 158, lastYear17DaysSales: 220 },
+        { name: '安大鸡心串（绿胶带）', code: 'ADJXC（LJD）', spec: '25g×300串', supplier: '安大食品', stocks: { '01': 80, '03': 50, '04': 20, '05': 100 }, recent2MonthsSales: 105, recent1MonthSales: 45, lastYear17DaysSales: 120 },
+        { name: '安大掌中宝（黄胶带）', code: 'ADZZB（HJD）', spec: '500g×30袋', supplier: '安大食品', stocks: { '01': 65, '03': 40, '04': 10, '05': 55 }, recent2MonthsSales: 90, recent1MonthSales: 38, lastYear17DaysSales: 100 },
+        { name: '安大骨肉相连（粉胶带）', code: 'ADGRXL（FSJD）', spec: '500g×30袋', supplier: '安大食品', stocks: { '01': 8, '03': 5, '04': 0, '05': 12 }, recent2MonthsSales: 310, recent1MonthSales: 140, lastYear17DaysSales: 280 },
+        { name: '安大鱿鱼板小号（绿胶带）', code: 'ADYYBXH（LJD）', spec: '500g×20袋', supplier: '安大食品', stocks: { '01': 55, '03': 35, '04': 15, '05': 60 }, recent2MonthsSales: 75, recent1MonthSales: 32, lastYear17DaysSales: 95 },
+        { name: '安大鲜切松板肉串（小）蓝胶带', code: 'ADXQSBRC（X）LJD', spec: '30g×200串', supplier: '安大食品', stocks: { '01': 15, '03': 8, '04': 0, '05': 5 }, recent2MonthsSales: 280, recent1MonthSales: 130, lastYear17DaysSales: 260 },
+    ]
 };
 
 const BUYER_AVATAR_COLORS = {
@@ -480,168 +590,95 @@ const BUYER_AVATAR_COLORS = {
     '任情情': 'linear-gradient(135deg,#F59E0B,#FBBF24)'
 };
 
-// 采购员商品毛利原始数据
-const BUYER_MARGIN_PRODUCTS = {
-    '张杰': [
-        { name: '安井400克红糖发糕（总库）', code: 'AJ400KHTFG', spec: '400g×20包', supplier: '安井食品', qty: 5730, salesAmount: 424213.9, avgPurchasePrice: 51 },
-        { name: '安井老面鲜肉小笼包', code: 'AJLMXRXLB', spec: '360g×30包', supplier: '安井食品', qty: 5216, salesAmount: 772613.82, avgPurchasePrice: 143 },
-        { name: '安井袋装潮汕风味卷章', code: 'AJDZCSFWJZ', spec: '500g×20包', supplier: '安井食品', qty: 3854.9, salesAmount: 1313857.85, avgPurchasePrice: 322 },
-        { name: '安大70克台式烤香肠', code: 'AD70KTSKXC', spec: '70g×100支', supplier: '安大食品', qty: 3626, salesAmount: 232599.64, avgPurchasePrice: 46 },
-        { name: '安大10包小酥肉', code: 'AD10BXSR', spec: '1kg×10包', supplier: '安大食品', qty: 3566, salesAmount: 474621.74, avgPurchasePrice: 115 },
-        { name: '白象招牌咖喱牛肉拌饭', code: 'BXZPGLNRBF', spec: '350g×12盒', supplier: '白象食品', qty: 2813, salesAmount: 382664.3, avgPurchasePrice: 122 },
-        { name: '安大鸡排（蓝胶带）', code: 'ADJPLJD', spec: '100g×50片', supplier: '安大食品', qty: 2260, salesAmount: 240391.86, avgPurchasePrice: 87 },
-        { name: '美好农家小酥肉', code: 'MHNJXSR', spec: '1kg×10包', supplier: '美好食品', qty: 3854.9, salesAmount: 1313857.85, avgPurchasePrice: 322 },
-        { name: '幸福南路火山石烤肠', code: 'XFNLHSKSC', spec: '50g×200支', supplier: '幸福南路', qty: 1582, salesAmount: 380817.5, avgPurchasePrice: 200 },
-        { name: '三全油条', code: 'SQYT', spec: '450g×20袋', supplier: '三全食品', qty: 2036, salesAmount: 121509, avgPurchasePrice: 61 }
-    ],
-    '付超英': [
-        { name: '安大100克整条鱿鱼串（黄色十字胶带）', code: 'AD100KZTYYCHSJD', spec: '20串×5包', supplier: '安大食品', qty: 1032, salesAmount: 89650, avgPurchasePrice: 68 },
-        { name: '安大35克鱿鱼须串（红色胶带）', code: 'AD35KYYXCHSJD', spec: '35g×200串', supplier: '安大食品', qty: 2840, salesAmount: 185300, avgPurchasePrice: 52 },
-        { name: '川荣香辣鸭胗', code: 'CRXLYZ', spec: '500g×20袋', supplier: '川荣食品', qty: 960, salesAmount: 115200, avgPurchasePrice: 98 },
-        { name: '安大60克翅中串（红胶带）', code: 'AD60KCZCHJD', spec: '60g×200串', supplier: '安大食品', qty: 1760, salesAmount: 246400, avgPurchasePrice: 118 },
-        { name: '安大牛排肉串（黑椒味）', code: 'ADNPRCHJW', spec: '80g×100串', supplier: '安大食品', qty: 5600, salesAmount: 616000, avgPurchasePrice: 88 },
-        { name: '安大100克整条鱿鱼串（粉色胶带）', code: 'AD100KZTYYCFSJD', spec: '20串×5包', supplier: '安大食品', qty: 1360, salesAmount: 108800, avgPurchasePrice: 62 },
-        { name: '安大100克整条鱿鱼串（蓝色胶带）', code: 'AD100KZTYYCLSJD', spec: '20串×5包', supplier: '安大食品', qty: 1152, salesAmount: 92160, avgPurchasePrice: 60 }
-    ],
-    '刘洋': [
-        { name: '蹦蹦鱼金汤酸菜鱼', code: 'BBYJTSCY', spec: '450g×20盒', supplier: '蹦蹦鱼食品', qty: 672, salesAmount: 87360, avgPurchasePrice: 105 },
-        { name: '安大鸡翅根（绿胶带）', code: 'ADJCGLJD', spec: '1kg×10袋', supplier: '安大食品', qty: 4480, salesAmount: 448000, avgPurchasePrice: 78 },
-        { name: '安大鸡排（蓝胶带）', code: 'ADJPLJD', spec: '100g×50片', supplier: '安大食品', qty: 6080, salesAmount: 547200, avgPurchasePrice: 72 },
-        { name: '安大牛肉大串（黑椒）', code: 'ADNRDCHJ', spec: '80g×80串', supplier: '安大食品', qty: 2560, salesAmount: 358400, avgPurchasePrice: 120 },
-        { name: '精品三全韭菜鸡蛋素水饺', code: 'JPSQJCJDSSJ', spec: '1.2kg×12袋', supplier: '三全食品', qty: 7200, salesAmount: 432000, avgPurchasePrice: 48 }
-    ],
-    '任情情': [
-        { name: '安大100克优选翅中串（粉色）', code: 'AD100KYXCZCFS', spec: '100g×100串', supplier: '安大食品', qty: 1520, salesAmount: 273600, avgPurchasePrice: 156 },
-        { name: '安大120克无双剑翅（粉色）', code: 'AD120KWSJC', spec: '120g×60串', supplier: '安大食品', qty: 4480, salesAmount: 851200, avgPurchasePrice: 162 },
-        { name: '安大鸡心串（绿胶带）', code: 'ADJXCLJD', spec: '25g×300串', supplier: '安大食品', qty: 1680, salesAmount: 151200, avgPurchasePrice: 72 },
-        { name: '安大掌中宝（黄胶带）', code: 'ADZZBHJD', spec: '500g×30袋', supplier: '安大食品', qty: 1440, salesAmount: 216000, avgPurchasePrice: 128 },
-        { name: '安大骨肉相连（粉胶带）', code: 'ADGRXLFSJD', spec: '500g×30袋', supplier: '安大食品', qty: 4960, salesAmount: 396800, avgPurchasePrice: 64 },
-        { name: '安大鱿鱼板小号（绿胶带）', code: 'ADYYBXHLJD', spec: '500g×20袋', supplier: '安大食品', qty: 1200, salesAmount: 168000, avgPurchasePrice: 118 },
-        { name: '安大鲜切松板肉串（小）', code: 'ADXQSBRCX', spec: '30g×200串', supplier: '安大食品', qty: 4480, salesAmount: 582400, avgPurchasePrice: 105 }
-    ]
-};
+/* ============== 计算函数 ============== */
 
-// 供应商列表（按采购员分组）
-function getAllSuppliers() {
-    var suppliers = {};
-    var buyerKeys = Object.keys(BUYER_MARGIN_PRODUCTS);
-    for (var bi = 0; bi < buyerKeys.length; bi++) {
-        var bName = buyerKeys[bi];
-        var products = BUYER_MARGIN_PRODUCTS[bName];
-        for (var pi = 0; pi < products.length; pi++) {
-            var sup = products[pi].supplier;
-            if (!suppliers[sup]) suppliers[sup] = [];
-            if (suppliers[sup].indexOf(bName) === -1) {
-                suppliers[sup].push(bName);
-            }
+// 计算商品的完整指标（口径对齐智能体表格.xls）
+function computeProductMetrics(raw, queryDate) {
+    // 汇总4个固定仓库的库存
+    var currentStock = 0;
+    var whDetail = [];
+    var whKeys = Object.keys(FIXED_WAREHOUSES);
+    for (var i = 0; i < whKeys.length; i++) {
+        var wh = whKeys[i];
+        var qty = raw.stocks[wh] || 0;
+        currentStock += qty;
+        if (qty > 0) {
+            whDetail.push({ code: wh, name: FIXED_WAREHOUSES[wh], qty: qty });
         }
     }
-    return Object.keys(suppliers).sort();
-}
 
-const ALL_SUPPLIERS = getAllSuppliers();
+    // 一月销量（原始数据，取整数）
+    var recent1MonthSales = raw.recent1MonthSales;
 
-// 计算商品的毛利指标
-function computeMarginMetrics(raw) {
-    var qty = raw.qty;
-    var salesAmount = raw.salesAmount;
-    var avgPrice = raw.avgPurchasePrice;
-    var cost = Math.round(qty * avgPrice);
-    var grossProfit = Math.round(salesAmount - cost);
-    var grossMarginRate = salesAmount > 0 ? grossProfit / salesAmount : 0;
+    // 15天平均销量 = 一月销量 ÷ 26 × 15，取整数
+    var recent15DayAvgSales = Math.round(recent1MonthSales / 26 * 15);
+
+    // 周转率 = 当前可用量 ÷ 15天平均销量，保留小数点1位
+    var turnoverRate = recent15DayAvgSales > 0 ? currentStock / recent15DayAvgSales : 0;
+
+    // 上年后15天销量（原始数据）
+    var lastYear17DaysSales = raw.lastYear17DaysSales;
 
     return {
         name: raw.name,
         code: raw.code,
         spec: raw.spec,
         supplier: raw.supplier,
-        qty: qty,
-        salesAmount: salesAmount,
-        avgPurchasePrice: avgPrice,
-        grossProfit: grossProfit,
-        grossMarginRate: grossMarginRate,
-        buyerName: raw.buyerName || ''
+        currentStock: currentStock,
+        whDetail: whDetail,
+        recent1MonthSales: recent1MonthSales,
+        recent15DayAvgSales: recent15DayAvgSales,
+        turnoverRate: turnoverRate,
+        lastYear17DaysSales: lastYear17DaysSales
     };
 }
 
-function getBuyerMarginProducts(buyerName) {
-    var rawList = BUYER_MARGIN_PRODUCTS[buyerName];
+// 获取采购员的完整商品列表（含计算指标）
+function getBuyerProducts(buyerName) {
+    var rawList = BUYER_PRODUCTS[buyerName];
     if (!rawList) return null;
     return rawList.map(function(raw) {
-        return computeMarginMetrics(raw);
+        return computeProductMetrics(raw, QUERY_DATE);
     });
 }
 
-function getSupplierProducts(supplierName) {
-    var results = [];
-    var buyerKeys = Object.keys(BUYER_MARGIN_PRODUCTS);
-    for (var bi = 0; bi < buyerKeys.length; bi++) {
-        var bName = buyerKeys[bi];
-        var products = BUYER_MARGIN_PRODUCTS[bName];
-        for (var pi = 0; pi < products.length; pi++) {
-            if (products[pi].supplier === supplierName) {
-                var p = computeMarginMetrics(products[pi]);
-                p.buyerName = bName;
-                results.push(p);
-            }
-        }
-    }
-    return results;
-}
-
-// 按供应商汇总
-function getSupplierSummary(buyerName) {
-    var products = getBuyerMarginProducts(buyerName);
-    if (!products) return null;
-    var summary = {};
-    for (var i = 0; i < products.length; i++) {
-        var p = products[i];
-        if (!summary[p.supplier]) {
-            summary[p.supplier] = { supplier: p.supplier, totalQty: 0, totalSales: 0, totalCost: 0, totalProfit: 0, items: [] };
-        }
-        var s = summary[p.supplier];
-        s.totalQty += p.qty;
-        s.totalSales += p.salesAmount;
-        s.totalCost += p.qty * p.avgPurchasePrice;
-        s.totalProfit += p.grossProfit;
-        s.items.push(p);
-    }
-    var result = [];
-    var allSales = 0;
-    var allProfit = 0;
-    var keys = Object.keys(summary);
-    for (var si = 0; si < keys.length; si++) {
-        allSales += summary[keys[si]].totalSales;
-        allProfit += summary[keys[si]].totalProfit;
-    }
-    for (var si = 0; si < keys.length; si++) {
-        var s = summary[keys[si]];
-        var avgPrice = s.totalQty > 0 ? s.totalCost / s.totalQty : 0;
-        var marginRate = s.totalSales > 0 ? s.totalProfit / s.totalSales : 0;
-        var salesShare = allSales > 0 ? s.totalSales / allSales : 0;
-        var profitShare = allProfit > 0 ? s.totalProfit / allProfit : 0;
-        result.push({
-            supplier: s.supplier,
-            totalQty: s.totalQty,
-            totalSales: s.totalSales,
-            avgPurchasePrice: Math.round(avgPrice),
-            totalProfit: s.totalProfit,
-            grossMarginRate: marginRate,
-            salesShare: salesShare,
-            profitShare: profitShare
-        });
-    }
-    // 按毛利从高到低排序
-    result.sort(function(a, b) { return b.totalProfit - a.totalProfit; });
-    return result;
-}
-
-/* ──── 查询解析（支持时间维度：天/月/年，支持全部供应商） ──── */
+// 解析查询
 function parseQuery(query) {
     var q = query.trim();
 
+    // 检测单品进货查询：关键词"产品进货"或"单品进货"且不含采购员名
+    var buyers = Object.keys(BUYER_PRODUCTS);
+    var isSingleProduct = false;
+    var hasBuyerName = false;
+    for (var bi = 0; bi < buyers.length; bi++) {
+        if (q.indexOf(buyers[bi]) !== -1) {
+            hasBuyerName = true;
+            break;
+        }
+    }
+    // 单品查询：包含"产品进货"、"进货情况"、"单品进货"关键词，且不含采购员名
+    if (!hasBuyerName && (q.indexOf('产品进货') !== -1 || q.indexOf('进货情况') !== -1 || q.indexOf('单品进货') !== -1)) {
+        isSingleProduct = true;
+    }
+
+    if (isSingleProduct) {
+        // 提取商品名 — 去掉查询前缀
+        var productName = q
+            .replace(/帮我查询/, '')
+            .replace(/查看/, '')
+            .replace(/查询/, '')
+            .replace(/的进货情况/, '')
+            .replace(/产品进货情况/, '')
+            .replace(/单品进货/, '')
+            .replace(/需要进货产品/, '')
+            .replace(/进货建议/, '')
+            .replace(/进货情况/, '')
+            .replace(/产品进货/, '')
+            .trim();
+        return { buyer: '张杰', scene: 'S03', singleProduct: productName || q };
+    }
+
     // 提取采购员
-    var buyers = Object.keys(BUYER_MARGIN_PRODUCTS);
     var matchedBuyer = null;
     for (var i = 0; i < buyers.length; i++) {
         if (q.indexOf(buyers[i]) !== -1) {
@@ -649,65 +686,46 @@ function parseQuery(query) {
             break;
         }
     }
+    if (!matchedBuyer) return null;
 
-    // 提取供应商（支持"全部"）
-    var matchedSupplier = null;
-    var allSupplier = false;
-    if (q.indexOf('全部供应商') !== -1 || q.indexOf('所有供应商') !== -1) {
-        allSupplier = true;
-    } else {
-        for (var i = 0; i < ALL_SUPPLIERS.length; i++) {
-            if (q.indexOf(ALL_SUPPLIERS[i]) !== -1) {
-                matchedSupplier = ALL_SUPPLIERS[i];
-                break;
-            }
-        }
-    }
-
-    // 提取时间维度
-    var timeDim = '';
-    if (q.indexOf('昨天') !== -1 || q.indexOf('今日') !== -1 || q.indexOf('今天') !== -1 || q.indexOf('日') !== -1) timeDim = '天';
-    else if (q.indexOf('月') !== -1) timeDim = '月';
-    else if (q.indexOf('年') !== -1 || q.indexOf('今年') !== -1) timeDim = '年';
-
-    // 场景判断
-    var sceneKey = 'S01';
-    if (matchedBuyer && (q.indexOf('供应商') !== -1 && q.indexOf('汇总') !== -1) || (matchedBuyer && allSupplier)) {
-        sceneKey = 'S03';
-    } else if ((matchedSupplier || allSupplier) && !matchedBuyer) {
+    // 提取场景
+    var sceneKey = null;
+    // 缺货场景关键词
+    if (q.indexOf('缺货') !== -1 || q.indexOf('断货') !== -1) {
         sceneKey = 'S02';
-    } else if (matchedBuyer) {
+    }
+    // 进货建议场景关键词
+    else if (q.indexOf('进货') !== -1 || q.indexOf('补货') !== -1 || q.indexOf('采购建议') !== -1 || q.indexOf('进货建议') !== -1) {
+        sceneKey = 'S03';
+    }
+    // 滞销场景关键词
+    else if (q.indexOf('周转率') !== -1 || q.indexOf('滞销') !== -1 || q.indexOf('积压') !== -1 || q.indexOf('周转') !== -1) {
         sceneKey = 'S01';
-    } else {
-        return null;
+    }
+    // 兜底：默认滞销场景
+    else {
+        sceneKey = 'S01';
     }
 
-    return { buyer: matchedBuyer, supplier: matchedSupplier, scene: sceneKey, timeDim: timeDim, allSupplier: allSupplier };
+    return { buyer: matchedBuyer, scene: sceneKey, subFilterIndex: 0 };
 }
 
-/* ──── 格式化 ──── */
+// 格式化数字
 function fmtNum(v, decimals) {
     if (v === null || v === undefined || v === Infinity) return '-';
-    decimals = decimals !== undefined ? decimals : 0;
+    decimals = decimals !== undefined ? decimals : 1;
     return Number(v.toFixed(decimals)).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 }
+
+
 
 function fmtInt(v) {
     if (v === null || v === undefined) return '-';
     return Math.round(v).toLocaleString();
 }
 
-function fmtPct(v) {
-    if (v === null || v === undefined) return '-';
-    return (v * 100).toFixed(2) + '%';
-}
+/* ============== 渲染引擎 ============== */
 
-function fmtMoney(v) {
-    if (v === null || v === undefined) return '-';
-    return '¥' + Math.round(v).toLocaleString();
-}
-
-/* ──── 渲染引擎 ──── */
 (function () {
     'use strict';
 
@@ -725,164 +743,6 @@ function fmtMoney(v) {
         quickCmds: $('#quickCmds')
     };
 
-    function renderBlock(block) {
-        var div = document.createElement('div');
-        div.className = 'fade-in';
-
-        switch (block.type) {
-        case 'route': {
-            div.className += ' route-info';
-            div.innerHTML = '<span class="route-ico">' + (block.icon || '→') + '</span> ' + block.text;
-            return div;
-        }
-        case 'p': {
-            div.innerHTML = '<p>' + block.text + '</p>';
-            return div;
-        }
-        case 'scene-badge': {
-            div.innerHTML = '<div class="scene-badge ' + block.cls + '">' + block.icon + ' ' + block.label + '</div>';
-            return div;
-        }
-        case 'kpis': {
-            var grid = document.createElement('div');
-            grid.className = 'kpi-grid';
-            for (var i = 0; i < block.items.length; i++) {
-                var it = block.items[i];
-                var k = document.createElement('div');
-                k.className = 'kpi ' + (it.kind || '');
-                k.innerHTML = '<div class="kpi-label">' + it.label + '</div><div class="kpi-value">' + it.value + '<span class="unit">' + it.unit + '</span></div>';
-                grid.appendChild(k);
-            }
-            div.appendChild(grid);
-            return div;
-        }
-        case 'table': {
-            var wrap = document.createElement('div');
-            wrap.className = 'tbl-wrap';
-            var pageSize = block.pageSize || block.rows.length;
-            var totalRows = block.rows.length;
-            var totalPages = Math.ceil(totalRows / pageSize);
-            var currentPage = 1;
-            var allRows = block.rows;
-            var expandedAll = false;
-
-            function renderTable(page, expanded) {
-                var rowsToShow;
-                if (expanded) { rowsToShow = allRows; }
-                else { var start = (page - 1) * pageSize; rowsToShow = allRows.slice(start, start + pageSize); }
-
-                var headHtml = '';
-                if (block.title) {
-                    headHtml = '<div class="tbl-head-bar"><div class="tbl-title">' + block.title + '</div><div class="tbl-act"><button class="tbl-dl-btn" title="下载 Excel">📥 下载</button><button class="tbl-expand-btn">' + (expanded ? '收起' : '查看全部') + '</button></div></div>';
-                }
-                var colHtml = '<tr>';
-                for (var i = 0; i < block.columns.length; i++) {
-                    var c = block.columns[i];
-                    colHtml += '<th' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + c.label + '</th>';
-                }
-                colHtml += '</tr>';
-
-                var rowHtml = '';
-                for (var i = 0; i < rowsToShow.length; i++) {
-                    var r = rowsToShow[i];
-                    rowHtml += '<tr>';
-                    for (var j = 0; j < block.columns.length; j++) {
-                        var c = block.columns[j];
-                        var val = r[c.k];
-                        if (val === undefined || val === null) { rowHtml += '<td></td>'; }
-                        else if (typeof val === 'object' && val !== null) {
-                            if (val.name) { rowHtml += '<td><div class="sku-name">' + val.name + '</div></td>'; }
-                            else { rowHtml += '<td class="num ' + (val.cls || '') + '">' + (val.v !== undefined ? val.v : '') + '</td>'; }
-                        } else {
-                            rowHtml += '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + String(val) + '</td>';
-                        }
-                    }
-                    rowHtml += '</tr>';
-                }
-
-                var footHtml = '';
-                if (totalPages > 1) {
-                    var pageBtns = '';
-                    for (var p = 1; p <= totalPages; p++) {
-                        pageBtns += '<button class="tbl-page-btn' + (p === page && !expanded ? ' active' : '') + '" data-page="' + p + '">' + p + '</button>';
-                    }
-                    footHtml = '<div class="tbl-foot"><span>共 ' + totalRows + ' 条结果' + (!expanded ? ' · 第 ' + page + '/' + totalPages + ' 页' : ' · 全部展开') + '</span><span>' + pageBtns + '</span></div>';
-                }
-
-                wrap.innerHTML = headHtml + '<div class="tbl-scroll"><table class="tbl"><thead>' + colHtml + '</thead><tbody>' + rowHtml + '</tbody></table></div>' + footHtml;
-
-                var expandBtn = wrap.querySelector('.tbl-expand-btn');
-                if (expandBtn) {
-                    expandBtn.addEventListener('click', function() { expandedAll = !expandedAll; renderTable(currentPage, expandedAll); });
-                }
-                var dlBtn = wrap.querySelector('.tbl-dl-btn');
-                if (dlBtn) {
-                    dlBtn.addEventListener('click', function() { downloadExcel(block, allRows); });
-                }
-                var pageBtns = wrap.querySelectorAll('.tbl-page-btn');
-                for (var i = 0; i < pageBtns.length; i++) {
-                    (function(btn) {
-                        btn.addEventListener('click', function() { currentPage = parseInt(btn.dataset.page); expandedAll = false; renderTable(currentPage, false); });
-                    })(pageBtns[i]);
-                }
-            }
-
-            renderTable(currentPage, false);
-            return wrap;
-        }
-        case 'formula': {
-            var card = document.createElement('div');
-            card.className = 'formula-card';
-            if (block.collapsed) card.classList.add('collapsed');
-            var stepsHtml = '';
-            for (var i = 0; i < block.steps.length; i++) {
-                var s = block.steps[i];
-                stepsHtml += '<div class="formula-step"><div class="fs-num">' + (i + 1) + '</div><div class="fs-body">' + s.body + '</div></div>';
-            }
-            card.innerHTML = '<div class="formula-head">🧮 ' + (block.title || '计算逻辑') + '<span class="fh-toggle">▼</span></div><div class="formula-body">' + stepsHtml + '</div>';
-            card.querySelector('.formula-head').addEventListener('click', function() { card.classList.toggle('collapsed'); });
-            return card;
-        }
-        case 'advise': {
-            var card = document.createElement('div');
-            card.className = 'advise-card';
-            var itemsHtml = '';
-            for (var i = 0; i < block.items.length; i++) {
-                var it = block.items[i];
-                itemsHtml += '<div class="advise-item"><div class="ai-prio ' + it.prio.toLowerCase() + '">' + it.prio + '</div><div class="ai-body"><div class="ai-title">' + it.title + '</div><div class="ai-desc">' + it.desc + '</div></div></div>';
-            }
-            card.innerHTML = '<div class="advise-head">' + (block.title || '💡 经营建议') + '</div><div class="advise-body">' + itemsHtml + '</div>';
-            return card;
-        }
-        case 'alert': {
-            var alertEl = document.createElement('div');
-            alertEl.className = 'alert ' + block.kind;
-            alertEl.innerHTML = '<div class="alert-ico">' + (block.icon || '!') + '</div><div><div class="alert-title">' + block.title + '</div><div class="alert-desc">' + block.desc + '</div></div>';
-            return alertEl;
-        }
-        case 'fallback-grid': {
-            var grid = document.createElement('div');
-            grid.className = 'suggest-grid';
-            grid.style.marginTop = '8px';
-            var suggestions = [
-                { tag:'采购毛利', tagCls:'background:#D1FAE5;color:#065F46', title:'查询张杰本月采购毛利', sub:'张杰所有品的毛利情况（按天/月/年）' },
-                { tag:'供应商毛利', tagCls:'background:#DBEAFE;color:#1E5BD6', title:'查询安大食品本月供应商毛利', sub:'供应商所有品的毛利情况' },
-                { tag:'供应商汇总', tagCls:'background:#E0E7FF;color:#4338CA', title:'查询张杰本月供应商毛利汇总', sub:'按供应商汇总张杰的毛利情况' }
-            ];
-            for (var i = 0; i < suggestions.length; i++) {
-                var s = suggestions[i];
-                var btn = document.createElement('button');
-                btn.className = 'suggest-card';
-                btn.dataset.q = s.title;
-                btn.innerHTML = '<div class="sc-tag" style="' + s.tagCls + '">' + s.tag + '</div><div class="sc-title">' + s.title + '</div><div class="sc-sub">' + s.sub + '</div>';
-                grid.appendChild(btn);
-            }
-            return grid;
-        }
-        default: return null;
-        }
-    }
-
     /* ──── 消息渲染 ──── */
     function renderMsg(role, content, meta) {
         var div = document.createElement('div');
@@ -890,8 +750,11 @@ function fmtMoney(v) {
 
         var avatar = document.createElement('div');
         avatar.className = 'msg-avatar';
-        if (role === 'user') { avatar.textContent = '味'; }
-        else { avatar.innerHTML = '<svg viewBox="0 0 32 32" width="16" height="16"><path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/><path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/><circle cx="13.5" cy="15" r="1.2" fill="#10B981"/><circle cx="18.5" cy="15" r="1.2" fill="#10B981"/></svg>'; }
+        if (role === 'user') {
+            avatar.textContent = '味';
+        } else {
+            avatar.innerHTML = '<svg viewBox="0 0 32 32" width="16" height="16"><path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/><path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/><circle cx="13.5" cy="15" r="1.2" fill="#2E6BFF"/><circle cx="18.5" cy="15" r="1.2" fill="#2E6BFF"/></svg>';
+        }
 
         var body = document.createElement('div');
         body.className = 'msg-body';
@@ -909,22 +772,29 @@ function fmtMoney(v) {
         } else {
             var bubble = document.createElement('div');
             bubble.className = 'bubble ai-bubble';
+
             if (meta && meta.thinking && meta.thinking.length) {
                 var tDiv = document.createElement('div');
                 tDiv.className = 'ai-thinking';
-                for (var i = 0; i < 3; i++) { var dot = document.createElement('span'); dot.className = 'thinking-dot'; tDiv.appendChild(dot); }
+                for (var i = 0; i < 3; i++) {
+                    var dot = document.createElement('span');
+                    dot.className = 'thinking-dot';
+                    tDiv.appendChild(dot);
+                }
                 var tSpan = document.createElement('span');
                 tSpan.style.marginLeft = '4px';
                 tSpan.textContent = meta.thinking[meta.thinking.length - 1];
                 tDiv.appendChild(tSpan);
                 bubble.appendChild(tDiv);
             }
+
             if (meta && meta.blocks) {
                 for (var i = 0; i < meta.blocks.length; i++) {
-                    var el = renderBlock(meta.blocks[i]);
+                    var el = renderBlock(meta.blocks[i], meta);
                     if (el) bubble.appendChild(el);
                 }
             }
+
             body.appendChild(bubble);
         }
 
@@ -933,177 +803,429 @@ function fmtMoney(v) {
         return div;
     }
 
-    /* ──── 生成场景响应 ──── */
-    function buildSceneResponse(sceneKey, params) {
-        var blocks = [];
+    function renderBlock(block, meta) {
+        var div = document.createElement('div');
+        div.className = 'fade-in';
+
+        switch (block.type) {
+        case 'route': {
+            div.className += ' route-info';
+            div.innerHTML = '<span class="route-ico">' + (block.icon || '→') + '</span> ' + block.text;
+            return div;
+        }
+        case 'p': {
+            div.innerHTML = '<p>' + block.text + '</p>';
+            return div;
+        }
+        case 'scene-badge': {
+            div.innerHTML = '<div class="scene-badge ' + block.cls + '">' + block.icon + ' ' + block.label + '</div>';
+            return div;
+        }
+        case 'buyer-banner': {
+            var b = block.buyer;
+            div.innerHTML = '<div class="buyer-banner">' +
+                '<div class="buyer-avatar" style="background:' + block.avatarColor + '">' + b.name[0] + '</div>' +
+                '<div class="buyer-info">' +
+                    '<div class="buyer-name">' + b.name + ' · 负责商品</div>' +
+                    '<div class="buyer-detail">' + b.productCount + ' 个商品 · ' + b.warehouseDesc + '</div>' +
+                '</div>' +
+            '</div>';
+            return div;
+        }
+        case 'wh-tags': {
+            var whHtml = '';
+            for (var i = 0; i < block.whList.length; i++) {
+                var wh = block.whList[i];
+                var c = WH_COLORS[wh.code] || { bg: '#F3F4F6', color: '#6B7280' };
+                whHtml += '<span class="wh-tag" style="background:' + c.bg + ';color:' + c.color + '">' + wh.name + '</span>';
+            }
+            div.innerHTML = '<div class="wh-list">' + whHtml + '</div>';
+            return div;
+        }
+        case 'kpis': {
+            div.className += ' fade-in-stagger';
+            var grid = document.createElement('div');
+            grid.className = 'kpi-grid';
+            for (var i = 0; i < block.items.length; i++) {
+                var it = block.items[i];
+                var k = document.createElement('div');
+                k.className = 'kpi ' + (it.kind || '');
+                var deltaHtml = '';
+                if (it.delta) {
+                    var dirCls = it.delta.dir === 'up' ? 'up' : (it.delta.dir === 'dn' ? 'dn' : 'warn');
+                    var arrow = it.delta.dir === 'up' ? '▲' : (it.delta.dir === 'dn' ? '▼' : '●');
+                    deltaHtml = '<div class="kpi-delta ' + dirCls + '">' + arrow + ' ' + it.delta.text + '</div>';
+                }
+                k.innerHTML = '<div class="kpi-label">' + it.label + '</div><div class="kpi-value">' + it.value + '<span class="unit">' + it.unit + '</span></div>' + deltaHtml;
+                grid.appendChild(k);
+            }
+            div.appendChild(grid);
+            return div;
+        }
+        case 'table': {
+            var wrap = document.createElement('div');
+            wrap.className = 'tbl-wrap';
+            var pageSize = block.pageSize || block.rows.length;
+            var totalRows = block.rows.length;
+            var totalPages = Math.ceil(totalRows / pageSize);
+            var currentPage = 1;
+            var allRows = block.rows;
+            var expandedAll = false;
+
+            function renderTable(page, expanded) {
+                var rowsToShow;
+                if (expanded) {
+                    rowsToShow = allRows;
+                } else {
+                    var start = (page - 1) * pageSize;
+                    rowsToShow = allRows.slice(start, start + pageSize);
+                }
+
+                var headHtml = '';
+                if (block.title) {
+                    var extraHtml = block.headBarExtra || '';
+                    headHtml = '<div class="tbl-head-bar"><div class="tbl-title">' + block.title + '</div><div class="tbl-act" style="gap:8px">' + extraHtml + '<button class="tbl-dl-btn" title="下载 Excel">📥 下载</button><button class="tbl-expand-btn">' + (expanded ? '收起' : '查看全部') + '</button></div></div>';
+                }
+                var colHtml = '<tr>';
+                for (var i = 0; i < block.columns.length; i++) {
+                    var c = block.columns[i];
+                    colHtml += '<th' + (c.cls ? ' class="' + c.cls + '"' : '') + (c.w ? ' style="width:' + c.w + 'px"' : '') + '>' + c.label + '</th>';
+                }
+                colHtml += '</tr>';
+
+                var rowHtml = '';
+                for (var i = 0; i < rowsToShow.length; i++) {
+                    var r = rowsToShow[i];
+                    rowHtml += '<tr>';
+                    for (var j = 0; j < block.columns.length; j++) {
+                        var c = block.columns[j];
+                        var val = r[c.k];
+                        if (val === undefined || val === null) {
+                            rowHtml += '<td></td>';
+                        } else if (typeof val === 'object' && val !== null && ('v' in val || 'cls' in val || 'name' in val)) {
+                            if (val.name) {
+                                rowHtml += '<td><div class="sku-name">' + val.name + '</div></td>';
+                            } else {
+                                rowHtml += '<td class="num ' + (val.cls || '') + '">' + (val.v !== undefined ? val.v : '') + '</td>';
+                            }
+                        } else {
+                            rowHtml += '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + String(val) + '</td>';
+                        }
+                    }
+                    rowHtml += '</tr>';
+                }
+
+                var footHtml = '';
+                if (totalPages > 1) {
+                    var pageBtns = '';
+                    for (var p = 1; p <= totalPages; p++) {
+                        pageBtns += '<button class="tbl-page-btn' + (p === page && !expanded ? ' active' : '') + '" data-page="' + p + '">' + p + '</button>';
+                    }
+                    footHtml = '<div class="tbl-foot"><span>共 ' + totalRows + ' 条结果' + (!expanded ? ' · 第 ' + page + '/' + totalPages + ' 页' : ' · 全部展开') + '</span><span>' + pageBtns + '</span></div>';
+                } else if (block.foot) {
+                    footHtml = '<div class="tbl-foot"><span>' + (block.foot.left || '') + '</span><span>' + (block.foot.right || '') + '</span></div>';
+                }
+
+                wrap.innerHTML = headHtml + '<div class="tbl-scroll"><table class="tbl"><thead>' + colHtml + '</thead><tbody>' + rowHtml + '</tbody></table></div>' + footHtml;
+
+                var expandBtn = wrap.querySelector('.tbl-expand-btn');
+                if (expandBtn) {
+                    expandBtn.addEventListener('click', function() {
+                        expandedAll = !expandedAll;
+                        renderTable(currentPage, expandedAll);
+                    });
+                }
+
+                var dlBtn = wrap.querySelector('.tbl-dl-btn');
+                if (dlBtn) {
+                    dlBtn.addEventListener('click', function() {
+                        downloadExcel(block, allRows);
+                    });
+                }
+
+                var pageBtns = wrap.querySelectorAll('.tbl-page-btn');
+                for (var i = 0; i < pageBtns.length; i++) {
+                    (function(btn) {
+                        btn.addEventListener('click', function() {
+                            currentPage = parseInt(btn.dataset.page);
+                            expandedAll = false;
+                            renderTable(currentPage, false);
+                        });
+                    })(pageBtns[i]);
+                }
+
+                // 滞销场景下拉筛选
+                var filterSelect = wrap.querySelector('.tbl-filter-select');
+                if (filterSelect) {
+                    (function(sel, blk) {
+                        sel.addEventListener('change', function() {
+                            var idx = parseInt(this.value);
+                            var buyerName = this.dataset.buyer;
+                            var sceneKey = this.dataset.scene;
+                            // Re-run query with new subFilterIndex
+                            var parsed = { buyer: buyerName, scene: sceneKey, subFilterIndex: idx };
+                            reRunSceneQuery(parsed);
+                        });
+                    })(filterSelect, block);
+                }
+            }
+
+            renderTable(currentPage, false);
+            return wrap;
+        }
+        case 'formula': {
+            var card = document.createElement('div');
+            card.className = 'formula-card';
+            if (block.collapsed) card.classList.add('collapsed');
+            var stepsHtml = '';
+            for (var i = 0; i < block.steps.length; i++) {
+                var s = block.steps[i];
+                stepsHtml += '<div class="formula-step"><div class="fs-num">' + (i + 1) + '</div><div class="fs-body">' + s.body + '</div></div>';
+            }
+            card.innerHTML = '<div class="formula-head">🧮 ' + (block.title || '计算逻辑') + '<span class="fh-toggle">▼</span></div><div class="formula-body">' + stepsHtml + '</div>' + (block.foot ? '<div class="formula-foot">' + block.foot + '</div>' : '');
+            card.querySelector('.formula-head').addEventListener('click', function() {
+                card.classList.toggle('collapsed');
+            });
+            return card;
+        }
+        case 'advise': {
+            var card = document.createElement('div');
+            card.className = 'advise-card';
+            var itemsHtml = '';
+            for (var i = 0; i < block.items.length; i++) {
+                var it = block.items[i];
+                itemsHtml += '<div class="advise-item"><div class="ai-prio ' + it.prio.toLowerCase() + '">' + it.prio + '</div><div class="ai-body"><div class="ai-title">' + it.title + '</div><div class="ai-desc">' + it.desc + '</div></div></div>';
+            }
+            card.innerHTML = '<div class="advise-head">' + (block.title || '💡 经营建议') + '</div><div class="advise-body">' + itemsHtml + '</div>';
+            return card;
+        }
+        case 'alert': {
+            div.className += ' fade-in';
+            var alertEl = document.createElement('div');
+            alertEl.className = 'alert ' + block.kind;
+            alertEl.innerHTML = '<div class="alert-ico">' + (block.icon || '!') + '</div><div><div class="alert-title">' + block.title + '</div><div class="alert-desc">' + block.desc + '</div></div>';
+            return alertEl;
+        }
+        case 'fallback-grid': {
+            var grid = document.createElement('div');
+            grid.className = 'suggest-grid';
+            grid.style.marginTop = '8px';
+            var suggestions = [
+                { tag:'滞销场景', tagCls:'background:#FEE2E2;color:#991B1B', title:'查看张杰滞销产品', sub:'张杰负责商品中周转率 > 1 的滞销分析' },
+                { tag:'缺货场景', tagCls:'background:#FEF3C7;color:#92400E', title:'查看张杰缺货产品', sub:'张杰负责商品中库存=0且月销量>50的缺货预警' },
+                { tag:'进货建议场景', tagCls:'background:#D1FAE5;color:#065F46', title:'查看张杰需要进货产品', sub:'张杰负责商品中周转率 < 1 的进货关注' }
+            ];
+            for (var i = 0; i < suggestions.length; i++) {
+                var s = suggestions[i];
+                var btn = document.createElement('button');
+                btn.className = 'suggest-card';
+                btn.dataset.q = s.title;
+                btn.innerHTML = '<div class="sc-tag" style="' + s.tagCls + '">' + s.tag + '</div><div class="sc-title">' + s.title + '</div><div class="sc-sub">' + s.sub + '</div>';
+                // 由 document 委托事件处理（见下文），此处不再绑定避免重复
+                grid.appendChild(btn);
+            }
+            return grid;
+        }
+        default: return null;
+        }
+    }
+
+    /* ──── 生成场景响应数据 ──── */
+    function buildSceneResponse(buyerName, sceneKey, products, subFilterIndex) {
         var scene = SCENE_INFO[sceneKey];
-        var titleLabel = '';
-        var tableColumns, tableRows;
+        var filtered = [];
+        subFilterIndex = subFilterIndex !== undefined ? subFilterIndex : 0;
 
-        if (sceneKey === 'S01') {
-            // 采购毛利查询
-            var buyerName = params.buyer;
-            var products = getBuyerMarginProducts(buyerName);
-            if (!products || products.length === 0) return [];
-            titleLabel = buyerName + ' · 毛利分析';
-
-            products.sort(function(a, b) { return b.grossProfit - a.grossProfit; });
-            tableColumns = [
-                { k:'name', label:'存货名称', w:200 },
-                { k:'salesAmount', label:'销售额(¥)', cls:'num' },
-                { k:'qty', label:'销售数量', cls:'num' },
-                { k:'avgPurchasePrice', label:'平均进价(¥)', cls:'num' },
-                { k:'grossProfit', label:'毛利(¥)', cls:'num' },
-                { k:'grossMarginRate', label:'毛利率', cls:'num' }
-            ];
-            tableRows = [];
+        // 单品模式：已预筛选，直接使用全部结果
+        if (sceneKey === 'S03_SINGLE') {
+            filtered = products.slice();
+            // 按周转率从低到高排序（对应进货建议场景）
+            filtered.sort(function(a, b) {
+                return (a.turnoverRate || 0) - (b.turnoverRate || 0);
+            });
+        } else {
+            // 滞销场景使用子筛选
+            var activeFilter;
+            if (sceneKey === 'S01' && scene.subFilters && scene.subFilters[subFilterIndex]) {
+                activeFilter = scene.subFilters[subFilterIndex].filter;
+            } else {
+                activeFilter = scene.filter;
+            }
             for (var i = 0; i < products.length; i++) {
-                var p = products[i];
-                tableRows.push({
-                    name: { name: p.name },
-                    salesAmount: { v: fmtNum(p.salesAmount, 0) },
-                    qty: { v: fmtNum(p.qty, 1) },
-                    avgPurchasePrice: { v: fmtInt(p.avgPurchasePrice) },
-                    grossProfit: { v: fmtNum(p.grossProfit, 0) },
-                    grossMarginRate: { v: fmtPct(p.grossMarginRate) }
-                });
+                if (activeFilter(products[i])) {
+                    filtered.push(products[i]);
+                }
             }
 
-            // 汇总信息只需展示在表格中，无需 KPI 卡片
-        } else if (sceneKey === 'S02') {
-            // 供应商毛利查询
-            var supplierName = params.supplier;
-            var products = getSupplierProducts(supplierName);
-            if (products.length === 0) return [];
-            titleLabel = supplierName + ' · 毛利分析';
-
-            products.sort(function(a, b) { return b.grossProfit - a.grossProfit; });
-            tableColumns = [
-                { k:'name', label:'存货名称', w:200 },
-                { k:'salesAmount', label:'销售额(¥)', cls:'num' },
-                { k:'qty', label:'销售数量', cls:'num' },
-                { k:'avgPurchasePrice', label:'平均进价(¥)', cls:'num' },
-                { k:'grossProfit', label:'毛利(¥)', cls:'num' },
-                { k:'grossMarginRate', label:'毛利率', cls:'num' }
-            ];
-            tableRows = [];
-            for (var i = 0; i < products.length; i++) {
-                var p = products[i];
-                tableRows.push({
-                    name: { name: p.name },
-                    salesAmount: { v: fmtNum(p.salesAmount, 0) },
-                    qty: { v: fmtNum(p.qty, 1) },
-                    avgPurchasePrice: { v: fmtInt(p.avgPurchasePrice) },
-                    grossProfit: { v: fmtNum(p.grossProfit, 0) },
-                    grossMarginRate: { v: fmtPct(p.grossMarginRate) }
-                });
-            }
-
-        } else if (sceneKey === 'S03') {
-            // 采购供应商毛利汇总
-            var buyerName = params.buyer;
-            var summary = getSupplierSummary(buyerName);
-            if (!summary || summary.length === 0) return [];
-            titleLabel = buyerName + ' · 供应商毛利汇总';
-
-            tableColumns = [
-                { k:'supplier', label:'供应商', w:120 },
-                { k:'totalSales', label:'销售额(¥)', cls:'num' },
-                { k:'totalQty', label:'销售数量', cls:'num' },
-                { k:'avgPurchasePrice', label:'平均进价(¥)', cls:'num' },
-                { k:'totalProfit', label:'毛利(¥)', cls:'num' },
-                { k:'grossMarginRate', label:'毛利率', cls:'num' },
-                { k:'salesShare', label:'销售额占比', cls:'num' },
-                { k:'profitShare', label:'毛利占比', cls:'num' }
-            ];
-            tableRows = [];
-            for (var i = 0; i < summary.length; i++) {
-                var s = summary[i];
-                tableRows.push({
-                    supplier: s.supplier,
-                    totalSales: { v: fmtNum(s.totalSales, 0) },
-                    totalQty: { v: fmtNum(s.totalQty, 1) },
-                    avgPurchasePrice: { v: fmtInt(s.avgPurchasePrice) },
-                    totalProfit: { v: fmtNum(s.totalProfit, 0) },
-                    grossMarginRate: { v: fmtPct(s.grossMarginRate) },
-                    salesShare: { v: fmtPct(s.salesShare) },
-                    profitShare: { v: fmtPct(s.profitShare) }
-                });
-            }
+            // 排序
+            filtered.sort(function(a, b) {
+                var va = a[scene.sortKey] || 0;
+                var vb = b[scene.sortKey] || 0;
+                return scene.sortDir === 'desc' ? vb - va : va - vb;
+            });
         }
 
-        blocks.push({
+        var blocks = [];
+
+        // 统一表头
+        var tableColumns;
+        if (sceneKey === 'S02') {
+            // 缺货场景：仅展示4列
+            tableColumns = [
+                { k:'name', label:'存货名称', w:200 },
+                { k:'recent1MonthSales', label:'一月销量', cls:'num' },
+                { k:'currentStock', label:'库存', cls:'num' },
+                { k:'lastYear17DaysSales', label:'上年后15天销量', cls:'num' }
+            ];
+        } else {
+            tableColumns = [
+                { k:'name', label:'存货名称', w:200 },
+                { k:'recent1MonthSales', label:'一月销量', cls:'num' },
+                { k:'recent15DayAvgSales', label:'15天平均销量', cls:'num' },
+                { k:'currentStock', label:'库存', cls:'num' },
+                { k:'turnoverRate', label:'周转率', cls:'num' },
+                { k:'lastYear17DaysSales', label:'上年后15天销量', cls:'num' }
+            ];
+        }
+
+        // 单品模式：首列加采购员
+        if (sceneKey === 'S03_SINGLE') {
+            tableColumns = [
+                { k:'buyerName', label:'采购员', w:70 },
+                { k:'name', label:'存货名称', w:200 },
+                { k:'recent1MonthSales', label:'一月销量', cls:'num' },
+                { k:'recent15DayAvgSales', label:'15天平均销量', cls:'num' },
+                { k:'currentStock', label:'库存', cls:'num' },
+                { k:'turnoverRate', label:'周转率', cls:'num' },
+                { k:'lastYear17DaysSales', label:'上年后15天销量', cls:'num' }
+            ];
+        }
+
+        var tableTitleMap = { S01: '滞销分析表', S02: '缺货分析表', S03: '进货建议表', S03_SINGLE: '单品进货建议' };
+                var tableRows = [];
+        for (var i = 0; i < filtered.length; i++) {
+            var p = filtered[i];
+            var row = {
+                name: { name: p.name },
+                recent1MonthSales: { v: fmtInt(p.recent1MonthSales) },
+                recent15DayAvgSales: { v: fmtInt(p.recent15DayAvgSales) },
+                currentStock: { v: fmtInt(p.currentStock), cls: p.currentStock === 0 ? 'danger-cell' : '' },
+                turnoverRate: { v: fmtNum(p.turnoverRate, 1), cls: p.turnoverRate > 1 ? 'danger-cell' : 'success-cell' },
+                lastYear17DaysSales: { v: fmtInt(p.lastYear17DaysSales) }
+            };
+            if (sceneKey === 'S03_SINGLE') {
+                row.buyerName = p.buyerName || '';
+            }
+            tableRows.push(row);
+        }
+
+        // 表头栏：含下载按钮 + 滞销下拉
+        var headBarExtra = '';
+        if (sceneKey === 'S01' && scene.subFilters) {
+            var sfOpts = '';
+            for (var si = 0; si < scene.subFilters.length; si++) {
+                var sel = si === subFilterIndex ? ' selected' : '';
+                sfOpts += '<option value="' + si + '"' + sel + '>' + scene.subFilters[si].label + '</option>';
+            }
+            headBarExtra = '<select class="tbl-filter-select" data-scene="' + sceneKey + '" data-buyer="' + buyerName + '">' + sfOpts + '</select>';
+        }
+
+        var tableBlock = {
             type: 'table',
-            title: titleLabel,
+            title: tableTitleMap[sceneKey],
             pageSize: 10,
             columns: tableColumns,
             rows: tableRows,
-            foot: null
-        });
+            foot: null,
+            headBarExtra: headBarExtra,
+            sceneKey: sceneKey,
+            buyerName: buyerName
+        };
+        // 滞销场景：预计算3个子筛选的数据用于下载
+        if (sceneKey === 'S01' && scene.subFilters) {
+            var allFilteredData = [];
+            for (var sfi = 0; sfi < scene.subFilters.length; sfi++) {
+                var sfRows = [];
+                for (var ri = 0; ri < products.length; ri++) {
+                    if (scene.subFilters[sfi].filter(products[ri])) {
+                        sfRows.push({
+                            name: { name: products[ri].name },
+                            recent1MonthSales: { v: fmtInt(products[ri].recent1MonthSales) },
+                            recent15DayAvgSales: { v: fmtInt(products[ri].recent15DayAvgSales) },
+                            currentStock: { v: fmtInt(products[ri].currentStock), cls: products[ri].currentStock === 0 ? 'danger-cell' : '' },
+                            turnoverRate: { v: fmtNum(products[ri].turnoverRate, 1), cls: products[ri].turnoverRate > 1 ? 'danger-cell' : 'success-cell' },
+                            lastYear17DaysSales: { v: fmtInt(products[ri].lastYear17DaysSales) }
+                        });
+                    }
+                }
+                allFilteredData.push(sfRows);
+            }
+            tableBlock.allFilteredData = allFilteredData;
+        }
+
+        blocks.push(tableBlock);
 
         // 经营建议
-        var adviseItems = [];
-        var profitProducts = [];
-        var lossProducts = [];
-
-        if (sceneKey === 'S01') {
-            var products = getBuyerMarginProducts(params.buyer);
-            if (products) {
-                for (var i = 0; i < products.length; i++) {
-                    if (products[i].grossProfit > 0) profitProducts.push(products[i]);
-                    else if (products[i].grossProfit < 0) lossProducts.push(products[i]);
+        if (filtered.length > 0) {
+            var adviseItems = [];
+            if (sceneKey === 'S01') {
+                adviseItems.push({
+                    prio: 'P0',
+                    title: buyerName + ' · 滞销商品共 ' + filtered.length + ' 个',
+                    desc: '建议按周转率从高到低逐一评估，对排名靠前的商品启动促销或调拨计划，减少积压库存。'
+                });
+            } else if (sceneKey === 'S02') {
+                adviseItems.push({
+                    prio: 'P0',
+                    title: buyerName + ' · 缺货商品共 ' + filtered.length + ' 个，优先补货',
+                    desc: '近1个月销量较高的缺货商品影响最大，建议立即向供应商下单或从其他仓库调拨补货。'
+                });
+            } else if (sceneKey === 'S03' || sceneKey === 'S03_SINGLE') {
+                var top3 = filtered.slice(0, Math.min(3, filtered.length));
+                for (var t = 0; t < top3.length; t++) {
+                    var tp = top3[t];
+                    var prioLabel = t === 0 ? 'P0' : (t === 1 ? 'P1' : 'P2');
+                    var titleText = tp.name + ' · 建议关注进货';
+                    var descText = '当前库存 <b>' + fmtInt(tp.currentStock) + '</b> 件，一月销量 <b>' + fmtInt(tp.recent1MonthSales) + '</b> 件，15天平均销量 <b>' + fmtInt(tp.recent15DayAvgSales) + '</b> 件。';
+                    if (tp.currentStock === 0) {
+                        descText += '当前库存为 <b>0</b>，需紧急补货。';
+                    } else {
+                        descText += '建议关注库存消耗节奏，提前安排进货。';
+                    }
+                    adviseItems.push({
+                        prio: prioLabel,
+                        title: titleText,
+                        desc: descText
+                    });
                 }
             }
-        } else if (sceneKey === 'S02') {
-            var products = getSupplierProducts(params.supplier);
-            for (var i = 0; i < products.length; i++) {
-                if (products[i].grossProfit > 0) profitProducts.push(products[i]);
-                else if (products[i].grossProfit < 0) lossProducts.push(products[i]);
-            }
-        } else if (sceneKey === 'S03') {
-            var summary = getSupplierSummary(params.buyer);
-            if (summary) {
-                for (var i = 0; i < summary.length; i++) {
-                    if (summary[i].totalProfit > 0) profitProducts.push(summary[i]);
-                    else if (summary[i].totalProfit < 0) lossProducts.push(summary[i]);
-                }
-            }
-        }
-
-        if (lossProducts.length > 0) {
-            adviseItems.push({
-                prio: 'P0', title: '负毛利商品共 ' + lossProducts.length + ' 个',
-                desc: '存在负毛利商品，建议排查进价异常或售价过低问题，及时调整定价策略。'
-            });
-        }
-        if (profitProducts.length > 0) {
-            adviseItems.push({
-                prio: 'P2', title: '盈利商品共 ' + profitProducts.length + ' 个',
-                desc: '整体毛利健康，建议对高毛利商品加大推广力度，提升整体盈利能力。'
-            });
-        }
-        if (adviseItems.length > 0) {
             blocks.push({
-                type: 'advise', title: '💡 经营建议', items: adviseItems
+                type: 'advise',
+                title: '💡 ' + (sceneKey === 'S03_SINGLE' ? '' : buyerName + ' · ') + '经营建议',
+                items: adviseItems
             });
         }
 
         // 计算逻辑面板
-        var formulaSteps = buildFormulaSteps(sceneKey, params);
+        var formulaSteps = buildFormulaSteps(buyerName, sceneKey, filtered, products, subFilterIndex);
         blocks.push({
-            type: 'formula', title: '🧮 完整计算逻辑（字段口径说明）',
-            collapsed: true, steps: formulaSteps
+            type: 'formula',
+            title: '🧮 完整计算逻辑(开发参考)',
+            collapsed: true,
+            steps: formulaSteps,
+            foot: null
         });
 
         return blocks;
     }
 
-    /* ──── 构建计算逻辑步骤 ──── */
-    function buildFormulaSteps(sceneKey, params) {
+    /* ──── 构建计算逻辑步骤（开发/测试参考） ──── */
+    function buildFormulaSteps(buyerName, sceneKey, filtered, allProducts, subFilterIndex) {
         var steps = [];
-        var scene = SCENE_INFO[sceneKey] || SCENE_INFO['S01'];
+        var scene = SCENE_INFO[sceneKey] || SCENE_INFO['S03'];
+        var example1 = filtered.length > 0 ? filtered[0] : (allProducts.length > 0 ? allProducts[0] : null);
 
-        // 一、数据来源
+        // -------------------- 一、数据来源 --------------------
         steps.push({
             body: '<b>📌 一、数据来源</b><br/>' +
                   '仅查询以下4个固定仓库的库存数据：<br/>' +
@@ -1113,59 +1235,100 @@ function fmtMoney(v) {
                   '<tr><td style="padding:3px 6px;border:1px solid #E5E7EB">03</td><td style="padding:3px 6px;border:1px solid #E5E7EB">奥州外仓</td></tr>' +
                   '<tr><td style="padding:3px 6px;border:1px solid #E5E7EB">04</td><td style="padding:3px 6px;border:1px solid #E5E7EB">三农外仓</td></tr>' +
                   '<tr><td style="padding:3px 6px;border:1px solid #E5E7EB">05</td><td style="padding:3px 6px;border:1px solid #E5E7EB">西库一楼</td></tr>' +
-                  '</table>'
+                  '</table>' +
+                  '· 非固定仓库库存不参与计算、不展示<br/>' +
+                  '· 同一商品在多个固定仓库有库存时，按商品编号汇总库存<br/>' +
+                  '· 列表展示：同一商品编号只展示一条，不按仓库拆分多条<br/>' +
+                  '· 商品只在非固定仓库有库存 → 不参与计算'
         });
 
-        // 二、场景与排序
-        var sceneLabels = { S01: '采购毛利查询', S02: '供应商毛利查询', S03: '采购供应商毛利汇总' };
-        var sortDesc = '';
-        if (sceneKey === 'S01') sortDesc = '按<B>毛利从高到低</B>排序';
-        else if (sceneKey === 'S02') sortDesc = '按<B>毛利从高到低</B>排序';
-        else if (sceneKey === 'S03') sortDesc = '按<B>毛利从高到低</B>排序';
-
+        // -------------------- 二、场景筛选与排序 --------------------
+        var sortRules = {
+            S01: '按<B>周转率从高到低</B>排序',
+            S02: '按<B>一月销量从高到低</B>排序',
+            S03: '按<B>周转率从低到高</B>排序'
+        };
+        
+        var sceneLabels = {
+            S01: '滞销场景',
+            S02: '缺货场景',
+            S03: '进货建议场景'
+        };
+        
+        var filterDesc = '';
+        var actualSceneKey = sceneKey === 'S03_SINGLE' ? 'S03' : sceneKey;
+        if (actualSceneKey === 'S01') {
+            var sfLabel = (scene.subFilters && scene.subFilters[subFilterIndex]) ? scene.subFilters[subFilterIndex].label : '15天到30天内滞销';
+            filterDesc = '默认展示<B>' + sfLabel + '</B>的商品，支持切换查询';
+        } else if (actualSceneKey === 'S02') {
+            filterDesc = '筛选<B>一月销量 > 50</B> 且 <B>库存 = 0</B> 的商品';
+        } else if (actualSceneKey === 'S03') {
+            filterDesc = '筛选<B>周转率 ≤1</B>的商品';
+        }
+        
         steps.push({
             body: '<b>📌 二、场景筛选与排序规则</b><br/>' +
-                  '当前场景：<b>' + (sceneLabels[sceneKey] || '采购毛利查询') + '</b><br/>' +
-                  '排序规则：' + sortDesc
+                  '当前场景：<b>' + (sceneLabels[actualSceneKey] || '进货建议场景') + '</b><br/>' +
+                  '筛选条件：' + filterDesc + '<br/>' +
+                  '排序规则：' + (sortRules[actualSceneKey] || sortRules['S03'])
         });
 
-        // 三、各字段取值规则
-        steps.push({
-            body: '<b>📌 三、各字段取值规则（按列顺序）</b><br/>' +
-                  '<table style="width:100%;border-collapse:collapse;margin-top:4px;font-size:12px">' +
-                  '<tr style="background:#F3F4F6"><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>#</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>字段</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>数据来源</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>取值规则</b></td></tr>' +
-                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">①</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>存货名称</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">存货表-存货名称</td><td style="padding:4px 8px;border:1px solid #E5E7EB">取存货名称</td></tr>' +
-                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">②</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>销售额</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">销货单统计表-含税金额</td><td style="padding:4px 8px;border:1px solid #E5E7EB">查询时间范围内含税金额合计</td></tr>' +
-                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">③</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>销售数量</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">销货单统计表-数量(主单位)</td><td style="padding:4px 8px;border:1px solid #E5E7EB">查询时间范围内数量合计</td></tr>' +
-                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">④</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>平均进价</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">进货单明细表</td><td style="padding:4px 8px;border:1px solid #E5E7EB">查询时间往前倒推180天，4个仓库；公式=进货总金额÷进货总数量，取整数</td></tr>' +
-                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑤</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>毛利</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>= 销售额 −（销售数量 × 平均进价）</b>，取整数</td></tr>' +
-                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑥</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>毛利率</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>= 毛利 ÷ 销售额</b>，保留小数点2位，显示百分比</td></tr>' +
-                  (sceneKey === 'S03' ? '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑦</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>销售额占比</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB">= 该供应商销售额 ÷ 总销售额</td></tr>' +
-                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑧</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>毛利占比</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB">= 该供应商毛利 ÷ 总毛利</td></tr>' : '') +
-                  '</table>'
-        });
+        // -------------------- 三、各字段取值规则 --------------------
+        if (example1) {
+            var ex1Month = example1.recent1MonthSales;
+            var ex15Avg = example1.recent15DayAvgSales;
+            var exTurn = example1.turnoverRate;
+            var exStock = example1.currentStock;
+            var exLastYear = example1.lastYear17DaysSales;
+            
+            steps.push({
+                body: '<b>📌 三、各字段取值规则（按列顺序）</b><br/>' +
+                      '<table style="width:100%;border-collapse:collapse;margin-top:4px;font-size:12px">' +
+                      '<tr style="background:#F3F4F6"><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>#</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>字段</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>数据来源</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>取值规则</b></td></tr>' +
+                      '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">①</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>存货名称</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">存货表格-存货名称</td><td style="padding:4px 8px;border:1px solid #E5E7EB">取存货表格的存货名称</td></tr>' +
+                      '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">②</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>一月销量</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">销货单统计表（数量(主单位)）</td><td style="padding:4px 8px;border:1px solid #E5E7EB">查询日期往前推<B>30天</B>的数量合计<br/>示例：「' + example1.name + '」一月销量 = <b class="ans">' + fmtInt(ex1Month) + '</b></td></tr>' +
+                      '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">③</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>15天平均销量</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>= 一月销量 ÷ 26 × 15</b>，取整数<br/>示例：' + fmtInt(ex1Month) + ' ÷ 26 × 15 = <b class="ans">' + fmtInt(ex15Avg) + '</b></td></tr>' +
+                      '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">④</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>库存</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">库存状况表-可用量(主)之和</td><td style="padding:4px 8px;border:1px solid #E5E7EB">4个固定仓库（01/03/04/05）可用量之和<br/>示例：「' + example1.name + '」= <b class="ans">' + fmtInt(exStock) + '</b></td></tr>' +
+                      '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑤</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>周转率</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>= 库存 ÷ 15天平均销量</b>，保留小数点1位<br/>示例：' + fmtInt(exStock) + ' ÷ ' + fmtInt(ex15Avg) + ' = <b class="ans">' + fmtNum(exTurn, 1) + '</b></td></tr>' +
+                      '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑥</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>上年后15天销量</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">销货单统计表（数量(主单位)）</td><td style="padding:4px 8px;border:1px solid #E5E7EB">去年今天往后推<B>17天</B>的数量合计<br/>示例：「' + example1.name + '」上年后15天销量 = <b class="ans">' + fmtInt(exLastYear) + '</b></td></tr>' +
+                      '</table>'
+            });
+        }
 
-        // 四、下载说明
+        // -------------------- 四、下载说明 --------------------
         steps.push({
             body: '<b>📌 四、下载导出说明</b><br/>' +
                   '· 表格右上角 <b>📥 下载</b> 按钮可导出当前列表为 Excel 文件<br/>' +
-                  '· 下载内容默认包含表中所有可见字段'
+                  '· 下载内容默认包含表中所有可见字段<br/>' +
+                  '· 单品查询模式下额外包含<B>采购员</B>列<br/>' +
+                  '· 滞销场景下载分三个sheet展示，分别对应15天到30天内滞销，30天到60天内滞销、60天内滞销'
         });
 
-        // 五、场景问话
-        var queryExamples = '推荐问法（支持按天/月/年查询）：<br/>' +
-            '· <b>查询[采购员]昨天/本月/今年所有品的毛利情况</b><br/>' +
-            '· <b>查询[供应商]本月所有品的毛利情况</b><br/>' +
-            '· <b>查询[采购员]本月所有供应商毛利情况</b>';
+        // -------------------- 五、场景问话说明 --------------------
+        var queryExamples = '推荐问法：<br/>' +
+            '· <b>帮我查询张杰缺货产品</b><br/>' +
+            '· <b>帮我查询张杰滞销产品</b><br/>' +
+            '· <b>帮我查询张杰需要进货产品</b><br/>' +
+            '· <b>帮我查询xx产品进货情况</b>';
+
         steps.push({
-            body: '<b>📌 五、场景问话说明</b><br/>' + queryExamples
+            body: '<b>📌 五、场景问话说明</b><br/>' +
+                  queryExamples
+        });
+
+        // -------------------- 六、本期说明 --------------------
+        steps.push({
+            body: '<b>📌 六、本期说明</b><br/>' +
+                  '· 本期不涉及组合查询和日期查询，滞销和缺货场景默认展示对应仓库的全品，进货建议支持单品查询<br/>' +
+                  '· 本期不涉及推送企业微信的功能<br/>' +
+                  '· 本期暂不考虑权限问题，采购场景默认全部人可查看；后续扩展场景可能会涉及权限'
         });
 
         return steps;
     }
 
     /* ──── 提交查询 ──── */
-    function submitQuery(query) {
+    function submitQuery(query, skipHistory) {
         if (!query || !query.trim()) return;
         if (dom.welcome && !dom.welcome.classList.contains('hidden')) {
             dom.welcome.classList.add('hidden');
@@ -1184,80 +1347,181 @@ function fmtMoney(v) {
 
         setTimeout(function() {
             var parsed = parseQuery(query);
+
             if (parsed) {
-                var blocks = [];
-                var scene = SCENE_INFO[parsed.scene];
-
-                if (parsed.scene === 'S01' && parsed.buyer) {
-                    blocks = buildSceneResponse('S01', { buyer: parsed.buyer });
-                } else if (parsed.scene === 'S02' && parsed.supplier) {
-                    blocks = buildSceneResponse('S02', { supplier: parsed.supplier });
-                } else if (parsed.scene === 'S03' && parsed.buyer) {
-                    blocks = buildSceneResponse('S03', { buyer: parsed.buyer });
-                }
-
-                if (blocks.length > 0) {
-                    var aiMeta = {
-                        route: scene.label,
-                        thinking: ['解析查询参数', '匹配场景：' + scene.label, '计算各项指标', '生成综合视图'],
-                        blocks: blocks,
-                        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
-                    };
-                    target.appendChild(renderMsg('ai', '', aiMeta));
-                    if (dom.chatTitle) dom.chatTitle.textContent = '毛利分析智能体 · ' + scene.label;
+                if (parsed.singleProduct) {
+                    // 单品进货建议查询
+                    var allResults = [];
+                    var allBuyers = Object.keys(BUYER_PRODUCTS);
+                    for (var bi = 0; bi < allBuyers.length; bi++) {
+                        var bName = allBuyers[bi];
+                        var bProducts = getBuyerProducts(bName);
+                        if (bProducts) {
+                            for (var pi = 0; pi < bProducts.length; pi++) {
+                                if (bProducts[pi].name.indexOf(parsed.singleProduct) !== -1) {
+                                    bProducts[pi].buyerName = bName;
+                                    allResults.push(bProducts[pi]);
+                                }
+                            }
+                        }
+                    }
+                    // 按周转率从低到高排序
+                    allResults.sort(function(a, b) {
+                        return (a.turnoverRate || 0) - (b.turnoverRate || 0);
+                    });
+                    
+                    if (allResults.length > 0) {
+                        var blocks = buildSceneResponse(parsed.buyer, 'S03_SINGLE', allResults);
+                        var aiMeta = {
+                            route: '单品进货建议',
+                            thinking: ['识别单品查询：' + parsed.singleProduct, '在所有采购员中搜索匹配商品', '找到 ' + allResults.length + ' 个匹配商品', '生成进货建议'],
+                            blocks: blocks,
+                            time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                        };
+                        target.appendChild(renderMsg('ai', '', aiMeta));
+                        if (dom.chatTitle) dom.chatTitle.textContent = '周转分析智能体 · 单品进货建议';
+                    } else {
+                        var fbBlocks = [
+                            { type: 'route', text: '未找到商品 <b>' + parsed.singleProduct + '</b> 的相关数据', icon: '⚠' },
+                            { type: 'alert', kind: 'warning', icon: '⚠', title: '暂无数据', desc: '当前系统中未找到与「' + parsed.singleProduct + '」匹配的商品数据。' }
+                        ];
+                        var aiMeta = {
+                            route: '单品进货建议',
+                            thinking: ['未找到匹配商品'],
+                            blocks: fbBlocks,
+                            time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                        };
+                        target.appendChild(renderMsg('ai', '', aiMeta));
+                    }
                 } else {
+                    var products = getBuyerProducts(parsed.buyer);
+                    if (products) {
+                        var subIdx = parsed.subFilterIndex || 0;
+                        var blocks = buildSceneResponse(parsed.buyer, parsed.scene, products, subIdx);
+                        var scene = SCENE_INFO[parsed.scene];
+                        var aiMeta = {
+                            route: '采购员分析 · ' + scene.label,
+                            thinking: ['识别采购员：' + parsed.buyer, '匹配场景：' + scene.label, '计算 ' + parsed.buyer + ' 负责商品各项指标', '按 ' + scene.sortKey + ' ' + (scene.sortDir === 'desc' ? '降序' : '升序') + ' 排序', '生成综合视图'],
+                            blocks: blocks,
+                            time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                        };
+                        target.appendChild(renderMsg('ai', '', aiMeta));
+                        if (dom.chatTitle) dom.chatTitle.textContent = '周转分析智能体 · ' + parsed.buyer;
+                    } else {
+                    // 采购员数据不存在（不应发生，但兜底）
                     var fbBlocks = [
-                        { type: 'route', text: '暂无数据', icon: '⚠' },
-                        { type: 'alert', kind: 'warning', icon: '⚠', title: '暂无数据', desc: '当前查询条件下未找到相关数据。' }
+                        { type: 'route', text: '未找到采购员 <b>' + parsed.buyer + '</b> 的商品数据', icon: '⚠' },
+                        { type: 'alert', kind: 'warning', icon: '⚠', title: '暂无数据', desc: '当前系统中未找到采购员「' + parsed.buyer + '」负责的商品数据。' },
+                        { type: 'fallback-grid' }
                     ];
                     var aiMeta = {
-                        route: scene.label,
-                        thinking: ['未找到相关数据'],
+                        route: '采购员分析',
+                        thinking: ['未找到采购员数据'],
                         blocks: fbBlocks,
                         time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
                     };
                     target.appendChild(renderMsg('ai', '', aiMeta));
+                    }
                 }
             } else {
+                // 未识别采购员
                 var fbBlocks = [
-                    { type: 'route', text: '未识别到采购员或供应商，请补充查询对象', icon: '⚠' },
-                    { type: 'alert', kind: 'warning', icon: '⚠', title: '未识别查询对象', desc: '请在查询中包含采购员名称，例如：<b>张杰</b>、<b>付超英</b>、<b>刘洋</b>、<b>任情情</b>。或者供应商名称，例如：<b>安大食品</b>、<b>三全食品</b>。' },
+                    { type: 'route', text: '未识别到采购员，请补充采购员名称', icon: '⚠' },
+                    { type: 'alert', kind: 'warning', icon: '⚠', title: '未识别采购员', desc: '请在查询中包含采购员名称，例如：<b>张杰</b>、<b>付超英</b>、<b>刘洋</b>、<b>任情情</b>。<br/><br/>支持场景：<br/>• <b>滞销场景</b>：查看[采购员]滞销产品<br/>• <b>缺货场景</b>：查看[采购员]缺货产品<br/>• <b>进货建议场景</b>：查看[采购员]需要进货产品 ｜ 查看[产品名]进货情况' },
                     { type: 'p', text: '💡 试试以下查询：' },
                     { type: 'fallback-grid' }
                 ];
                 var aiMeta = {
-                    route: '毛利分析',
-                    thinking: ['解析查询参数', '未识别查询对象', '提示用户补充'],
+                    route: '采购员分析',
+                    thinking: ['解析查询参数', '未识别采购员', '提示用户补充采购员'],
                     blocks: fbBlocks,
                     time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
                 };
                 target.appendChild(renderMsg('ai', '', aiMeta));
             }
 
-            setTimeout(function() { dom.chatStream.scrollTop = dom.chatStream.scrollHeight; }, 100);
+            setTimeout(function() {
+                dom.chatStream.scrollTop = dom.chatStream.scrollHeight;
+            }, 100);
         }, 600);
 
-        setTimeout(function() { dom.chatStream.scrollTop = dom.chatStream.scrollHeight; }, 100);
+        setTimeout(function() {
+            dom.chatStream.scrollTop = dom.chatStream.scrollHeight;
+        }, 100);
+
         dom.chatInput.value = '';
         dom.chatInput.style.height = 'auto';
-        addHistoryItem(query);
+
+        if (!skipHistory) addHistoryItem(query);
+    }
+
+    // 重新执行场景查询（滞销下拉切换时使用）
+    function reRunSceneQuery(parsed) {
+        var products = getBuyerProducts(parsed.buyer);
+        if (!products) return;
+        
+        // 清除最后一次AI回复（重新生成）
+        var msgs = dom.chatStream.querySelectorAll('.msg.ai');
+        if (msgs.length > 0) {
+            var last = msgs[msgs.length - 1];
+            last.remove();
+        }
+        
+        var target = dom.chatStream.querySelector('.chat-stream-inner');
+        var subIdx = parsed.subFilterIndex || 0;
+        var blocks = buildSceneResponse(parsed.buyer, parsed.scene, products, subIdx);
+        var scene = SCENE_INFO[parsed.scene];
+        var aiMeta = {
+            route: '采购员分析 · ' + scene.label,
+            thinking: ['切换滞销筛选：' + (scene.subFilters[subIdx] ? scene.subFilters[subIdx].label : ''), '重新计算筛选结果'],
+            blocks: blocks,
+            time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+        };
+        target.appendChild(renderMsg('ai', '', aiMeta));
+        
+        setTimeout(function() {
+            dom.chatStream.scrollTop = dom.chatStream.scrollHeight;
+        }, 100);
     }
 
     function addHistoryItem(query) {
         var shortTitle = query.length > 22 ? query.slice(0,22) + '…' : query;
-        var icon = '💰';
+        var icon = '🛒';
+
         var item = document.createElement('div');
         item.className = 'h-item';
         item.dataset.query = query;
         item.innerHTML = '<span class="h-ico">' + icon + '</span><span class="h-title">' + shortTitle + '</span><input class="h-edit-input" value="' + query.replace(/"/g, '&quot;') + '" style="display:none" /><span class="h-actions"><button class="h-rename" title="重命名">✎</button><button class="h-del" title="删除">✕</button></span>';
         item.title = query;
-        item.querySelector('.h-title').addEventListener('click', function() { dom.welcome.classList.add('hidden'); submitQuery(query); });
-        item.querySelector('.h-ico').addEventListener('click', function() { dom.welcome.classList.add('hidden'); submitQuery(query); });
-        item.querySelector('.h-rename').addEventListener('click', function(e) { e.stopPropagation(); startRename(item); });
-        item.querySelector('.h-del').addEventListener('click', function(e) { e.stopPropagation(); item.style.opacity = '0'; item.style.transform = 'translateX(-12px)'; item.style.transition = 'all .2s'; setTimeout(function() { item.remove(); updateHistoryCount(); }, 200); });
+
+        item.querySelector('.h-title').addEventListener('click', function() {
+            dom.welcome.classList.add('hidden');
+            submitQuery(query, true);
+        });
+        item.querySelector('.h-ico').addEventListener('click', function() {
+            dom.welcome.classList.add('hidden');
+            submitQuery(query, true);
+        });
+
+        item.querySelector('.h-rename').addEventListener('click', function(e) {
+            e.stopPropagation();
+            startRename(item);
+        });
+
+        item.querySelector('.h-del').addEventListener('click', function(e) {
+            e.stopPropagation();
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-12px)';
+            item.style.transition = 'all .2s';
+            setTimeout(function() { item.remove(); updateHistoryCount(); }, 200);
+        });
+
         var firstItem = dom.historyList.firstChild;
-        if (firstItem) { dom.historyList.insertBefore(item, firstItem); }
-        else { dom.historyList.appendChild(item); }
+        if (firstItem) {
+            dom.historyList.insertBefore(item, firstItem);
+        } else {
+            dom.historyList.appendChild(item);
+        }
         updateHistoryCount();
     }
 
@@ -1269,12 +1533,18 @@ function fmtMoney(v) {
         input.value = item.dataset.query;
         input.focus();
         input.select();
+
         var finish = function() {
             var newVal = input.value.trim();
-            if (newVal) { item.dataset.query = newVal; titleSpan.textContent = newVal.length > 22 ? newVal.slice(0,22) + '…' : newVal; item.title = newVal; }
+            if (newVal) {
+                item.dataset.query = newVal;
+                titleSpan.textContent = newVal.length > 22 ? newVal.slice(0,22) + '…' : newVal;
+                item.title = newVal;
+            }
             item.classList.remove('editing');
             input.style.display = 'none';
         };
+
         input.addEventListener('blur', finish);
         input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
@@ -1288,20 +1558,70 @@ function fmtMoney(v) {
         if (el) el.textContent = count;
     }
 
-    /* ──── 下载 ──── */
+    /* ──── 下载 Excel (.xls HTML 格式) ──── */
     function downloadExcel(block, rows) {
+        // 下载时排除序号列(rk)
         var dlColumns = [];
         for (var di = 0; di < block.columns.length; di++) {
             if (block.columns[di].k !== 'rk') {
                 dlColumns.push(block.columns[di]);
             }
         }
-        var xlsHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><style>td{mso-number-format:"\\@";}</style></head><body><table>';
+
+        // 滞销场景：生成3个Sheet（每种子筛选一张）
+        if (block.sceneKey === 'S01' && block.allFilteredData) {
+            var sheetNames = ['15天到30天内滞销', '30天到60天内滞销', '60天内滞销'];
+            var xlsHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><style>td{mso-number-format:"\@";}</style></head><body>';
+            for (var si = 0; si < sheetNames.length; si++) {
+                xlsHtml += '<table><caption><b>' + sheetNames[si] + '</b></caption>';
+                xlsHtml += '<tr>';
+                for (var ci = 0; ci < dlColumns.length; ci++) {
+                    xlsHtml += '<th>' + (dlColumns[ci].label || dlColumns[ci].k || '') + '</th>';
+                }
+                xlsHtml += '</tr>';
+                var sheetRows = block.allFilteredData[si] || [];
+                for (var ri = 0; ri < sheetRows.length; ri++) {
+                    var r = sheetRows[ri];
+                    xlsHtml += '<tr>';
+                    for (var cj = 0; cj < dlColumns.length; cj++) {
+                        var c = dlColumns[cj];
+                        var v = r[c.k];
+                        if (v === undefined || v === null) { v = ''; }
+                        else if (typeof v === 'object' && v !== null) {
+                            if (v.name) { v = v.name; }
+                            else if (v.v !== undefined) { v = v.v; }
+                            else { v = ''; }
+                        }
+                        v = String(v);
+                        xlsHtml += '<td>' + v.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</td>';
+                    }
+                    xlsHtml += '</tr>';
+                }
+                xlsHtml += '</table><br/><br/>';
+            }
+            xlsHtml += '</body></html>';
+            var blob = new Blob([xlsHtml], { type: 'application/vnd.ms-excel' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = '滞销分析表.xls';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            return;
+        }
+
+        // 构建 HTML 表格（Excel 可识别的 HTML 格式）
+        var xlsHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><style>td{mso-number-format:"\@";}</style></head><body><table>';
+        // 表头
         xlsHtml += '<tr>';
         for (var i = 0; i < dlColumns.length; i++) {
-            xlsHtml += '<th>' + (dlColumns[i].label || dlColumns[i].k || '') + '</th>';
+            var c = dlColumns[i];
+            xlsHtml += '<th>' + (c.label || c.k || '') + '</th>';
         }
         xlsHtml += '</tr>';
+        // 数据行
         for (var i = 0; i < rows.length; i++) {
             var r = rows[i];
             xlsHtml += '<tr>';
@@ -1320,6 +1640,7 @@ function fmtMoney(v) {
             xlsHtml += '</tr>';
         }
         xlsHtml += '</table></body></html>';
+
         var blob = new Blob([xlsHtml], { type: 'application/vnd.ms-excel' });
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
@@ -1332,26 +1653,204 @@ function fmtMoney(v) {
         URL.revokeObjectURL(url);
     }
 
-    /* ──── 事件绑定 ──── */
-    dom.sendBtn.addEventListener('click', function() { var q = dom.chatInput.value.trim(); if (q) submitQuery(q); });
-    dom.chatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); var q = dom.chatInput.value.trim(); if (q) submitQuery(q); } });
-    dom.chatInput.addEventListener('input', function() { dom.chatInput.style.height = 'auto'; dom.chatInput.style.height = Math.min(dom.chatInput.scrollHeight, 160) + 'px'; });
-    dom.newChatBtn.addEventListener('click', function() { var inner = dom.chatStream.querySelector('.chat-stream-inner'); if (inner) inner.remove(); if (dom.welcome) dom.welcome.classList.remove('hidden'); dom.chatStream.scrollTop = 0; dom.chatInput.value = ''; dom.chatInput.focus(); });
+    /* ──── 输入事件 ──── */
+    dom.sendBtn.addEventListener('click', function() {
+        var q = dom.chatInput.value.trim();
+        if (q) submitQuery(q);
+    });
 
+    dom.chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            var q = dom.chatInput.value.trim();
+            if (q) submitQuery(q);
+        }
+    });
+
+    dom.chatInput.addEventListener('input', function() {
+        dom.chatInput.style.height = 'auto';
+        dom.chatInput.style.height = Math.min(dom.chatInput.scrollHeight, 160) + 'px';
+    });
+
+    /* ──── 新建对话 ──── */
+    dom.newChatBtn.addEventListener('click', function() {
+        var inner = dom.chatStream.querySelector('.chat-stream-inner');
+        if (inner) inner.remove();
+        if (dom.welcome) dom.welcome.classList.remove('hidden');
+        dom.chatStream.scrollTop = 0;
+        dom.chatInput.value = '';
+        dom.chatInput.focus();
+    });
+
+    /* ──── 快捷指令 ──── */
+    // 单品进货按钮：弹出输入框（委托事件，覆盖所有 .qc 按钮）
     dom.quickCmds.addEventListener('click', function(e) {
         var btn = e.target.closest('.qc');
         if (!btn) return;
         var q = btn.dataset.q;
-        if (q) { dom.chatInput.value = q; submitQuery(q); }
+        if (q && q.indexOf('单品进货') !== -1) {
+            e.preventDefault();
+            var productName = prompt('请输入要查询的商品名称：', '安大鸡排');
+            if (productName && productName.trim()) {
+                dom.chatInput.value = '查看' + productName.trim() + '进货情况';
+                submitQuery(dom.chatInput.value);
+            }
+            return;
+        }
+        if (q) {
+            dom.chatInput.value = q;
+            submitQuery(q);
+        }
     });
 
+    /* ──── 建议卡片 ──── */
     document.addEventListener('click', function(e) {
         var card = e.target.closest('.suggest-card');
         if (!card) return;
         var q = card.dataset.q;
         if (q) submitQuery(q);
     });
+
 })();
+</script>
+<!-- ============== PRD 抽屉 ============== -->
+<div id="prdOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.25);z-index:999;opacity:0;visibility:hidden;transition:all .25s ease;" onclick="closePrd()"></div>
+<div id="prdDrawer" style="position:fixed;top:0;right:0;width:520px;max-width:90vw;height:100%;background:#fff;z-index:1000;box-shadow:-4px 0 24px rgba(0,0,0,0.1);transform:translateX(100%);transition:transform .3s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:18px;">📄</span>
+            <span style="font-size:15px;font-weight:700;color:var(--text);">周转分析智能体 · PRD</span>
+        </div>
+        <button onclick="closePrd()" style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text-3);cursor:pointer;border:none;background:transparent;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">✕</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;font-size:13px;line-height:1.8;color:var(--text-2);">
+        
+        <div style="margin-bottom:20px;padding:12px 16px;background:linear-gradient(135deg,#EAF1FF,#F4F0FF);border-radius:10px;border-left:4px solid var(--primary);">
+            <div style="font-weight:600;color:var(--text);margin-bottom:2px;">💡 产品概述</div>
+            <div style="font-size:12.5px;">智能库存周转分析助手，帮助采购员快速掌握商品滞销、缺货和进货情况，降低库存成本，提升周转效率。</div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+            <div style="font-weight:700;color:var(--text);font-size:14px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--primary-soft);">一、三大业务场景</div>
+            
+            <div style="margin-bottom:12px;">
+                <div style="font-weight:600;color:var(--text);margin-bottom:4px;">📊 滞销场景</div>
+                <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;width:80px;font-weight:500;">筛选条件</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">周转率 > 1（默认>1且≤2），支持下拉切换三个档位</td></tr>
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;font-weight:500;">档位一</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">15天到30天内滞销（周转率 >1 且 ≤2）</td></tr>
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;font-weight:500;">档位二</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">30天到60天内滞销（周转率 >2 且 ≤4）</td></tr>
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;font-weight:500;">档位三</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">60天内滞销（周转率 >4）</td></tr>
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;font-weight:500;">排序规则</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">按周转率从高到低排序</td></tr>
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;font-weight:500;">列表字段</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">存货名称、一月销量、15天平均销量、库存、周转率、上年后15天销量</td></tr>
+                </table>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <div style="font-weight:600;color:var(--text);margin-bottom:4px;">🚨 缺货场景</div>
+                <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;width:80px;font-weight:500;">筛选条件</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">一月销量 > 50 且 库存 = 0</td></tr>
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;font-weight:500;">排序规则</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">按一月销量从高到低排序</td></tr>
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;font-weight:500;">列表字段</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">存货名称、一月销量、库存、上年后15天销量</td></tr>
+                </table>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <div style="font-weight:600;color:var(--text);margin-bottom:4px;">📦 进货建议场景</div>
+                <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;width:80px;font-weight:500;">筛选条件</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">周转率 ≤ 1</td></tr>
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;font-weight:500;">排序规则</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">按周转率从低到高排序</td></tr>
+                    <tr><td style="padding:3px 8px;border:1px solid #E5E7EB;background:#F9FAFB;font-weight:500;">单品查询</td><td style="padding:3px 8px;border:1px solid #E5E7EB;">支持输入商品名查询，列表首列显示采购员</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+            <div style="font-weight:700;color:var(--text);font-size:14px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--primary-soft);">二、数据来源与仓库规则</div>
+            <div style="font-size:12.5px;">
+                <div>· 仅查询4个固定仓库：<code style="background:#F3F4F6;padding:1px 6px;border-radius:3px;">01-发货区</code> <code style="background:#F3F4F6;padding:1px 6px;border-radius:3px;">03-奥州外仓</code> <code style="background:#F3F4F6;padding:1px 6px;border-radius:3px;">04-三农外仓</code> <code style="background:#F3F4F6;padding:1px 6px;border-radius:3px;">05-西库一楼</code></div>
+                <div>· 非固定仓库不参与计算、不展示</div>
+                <div>· 同一商品多仓库存按编号汇总为一条</div>
+                <div>· 商品只在非固定仓库有库存 → 不参与计算</div>
+            </div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+            <div style="font-weight:700;color:var(--text);font-size:14px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--primary-soft);">三、字段计算口径</div>
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                <tr style="background:#F3F4F6;"><td style="padding:4px 8px;border:1px solid #E5E7EB;font-weight:600;">字段</td><td style="padding:4px 8px;border:1px solid #E5E7EB;font-weight:600;">数据来源</td><td style="padding:4px 8px;border:1px solid #E5E7EB;font-weight:600;">取值规则</td></tr>
+                <tr><td style="padding:4px 8px;border:1px solid #E5E7EB;">存货名称</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">存货表-存货名称</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">取存货表格的存货名称</td></tr>
+                <tr><td style="padding:4px 8px;border:1px solid #E5E7EB;">一月销量</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">销货单统计表(数量(主单位))</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">查询日期往前推30天的数量合计</td></tr>
+                <tr><td style="padding:4px 8px;border:1px solid #E5E7EB;">15天平均销量</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">= 一月销量 ÷ 26 × 15，取整数</td></tr>
+                <tr><td style="padding:4px 8px;border:1px solid #E5E7EB;">库存</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">库存状况表-可用量(主)之和</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">4个固定仓库可用量之和</td></tr>
+                <tr><td style="padding:4px 8px;border:1px solid #E5E7EB;">周转率</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">= 库存 ÷ 15天平均销量，保留1位小数</td></tr>
+                <tr><td style="padding:4px 8px;border:1px solid #E5E7EB;">上年后15天销量</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">销货单统计表(数量(主单位))</td><td style="padding:4px 8px;border:1px solid #E5E7EB;">去年今天往后推17天的数量合计</td></tr>
+            </table>
+        </div>
+
+        <div style="margin-bottom:24px;">
+            <div style="font-weight:700;color:var(--text);font-size:14px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--primary-soft);">四、查询方式</div>
+            <div style="font-size:12.5px;">
+                <div>· 采购员查询：<code style="background:#F3F4F6;padding:1px 6px;border-radius:3px;">查看[采购员]滞销/缺货/进货产品</code></div>
+                <div>· 单品查询：<code style="background:#F3F4F6;padding:1px 6px;border-radius:3px;">查看[商品名]进货情况</code></div>
+                
+            </div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+            <div style="font-weight:700;color:var(--text);font-size:14px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--primary-soft);">五、推荐问法</div>
+            <div style="font-size:12.5px;">
+                <div>· <b>帮我查询张杰缺货产品</b></div>
+                <div>· <b>帮我查询张杰滞销产品</b></div>
+                <div>· <b>帮我查询张杰需要进货产品</b></div>
+                <div>· <b>帮我查询xx产品进货情况</b></div>
+            </div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+            <div style="font-weight:700;color:var(--text);font-size:14px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--primary-soft);">六、下载导出</div>
+            <div style="font-size:12.5px;">
+                <div>· 导出的 Excel 包含表中所有可见字段</div>
+                <div>· 滞销场景下载分三个sheet展示（15天到30天内滞销 / 30天到60天内滞销 / 60天内滞销）</div>
+                <div>· 单品查询额外包含采购员列</div>
+            </div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+            <div style="font-weight:700;color:var(--text);font-size:14px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--primary-soft);">七、本期说明</div>
+            <div style="font-size:12.5px;padding:12px;background:#FFFBEB;border-radius:8px;border:1px solid #FDE68A;">
+                <div>· 本期不涉及组合查询和日期查询，滞销和缺货场景默认展示对应仓库的全品，进货建议支持单品查询</div>
+                <div>· 本期不涉及推送企业微信的功能</div>
+                <div>· 本期暂不考虑权限问题，采购场景默认全部人可查看；后续扩展场景可能会涉及权限</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+/* ──── PRD 抽屉控制 ──── */
+var prdOpen = false;
+function togglePrd() {
+    prdOpen = !prdOpen;
+    var drawer = document.getElementById('prdDrawer');
+    var overlay = document.getElementById('prdOverlay');
+    if (prdOpen) {
+        drawer.style.transform = 'translateX(0)';
+        overlay.style.opacity = '1';
+        overlay.style.visibility = 'visible';
+    } else {
+        drawer.style.transform = 'translateX(100%)';
+        overlay.style.opacity = '0';
+        overlay.style.visibility = 'hidden';
+    }
+}
+function closePrd() {
+    if (prdOpen) togglePrd();
+}
+document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('prdToggle');
+    if (btn) btn.addEventListener('click', function(e) { e.stopPropagation(); togglePrd(); });
+});
 </script>
 </body>
 </html>
