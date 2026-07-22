@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>味冠 · 毛利分析智能体</title>
+<style>
+/* ============== 基础 ============== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --bg: #F6F8FB;
+    --bg-soft: #FBFCFE;
+    --card: #FFFFFF;
+    --border: #E6EAF0;
+    --border-soft: #EFF2F6;
+    --text: #1A2233;
+    --text-2: #4C5670;
+    --text-3: #8B95AB;
+    --text-4: #B4BCC9;
+    --primary: #2E6BFF;
+    --primary-soft: #EAF1FF;
+    --primary-grad: linear-gradient(135deg, #2E6BFF 0%, #7B5BFF 100%);
+    --success: #10B981;
+    --success-soft: #D1FAE5;
+    --warning: #F59E0B;
+    --warning-soft: #FEF3C7;
+    --danger:  #E5484D;
+    --danger-soft: #FEE2E2;
+    --info: #6366F1;
+    --info-soft: #E0E7FF;
+    --shadow-sm: 0 1px 2px rgba(16,24,40,0.04), 0 1px 3px rgba(16,24,40,0.04);
+    --shadow-md: 0 4px 12px rgba(16,24,40,0.05), 0 2px 6px rgba(16,24,40,0.04);
+    --shadow-lg: 0 12px 32px rgba(16,24,40,0.08), 0 4px 12px rgba(16,24,40,0.04);
+    --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+button { border: none; background: none; cursor: pointer; font: inherit; color: inherit; }
+input, textarea, select { font: inherit; color: inherit; outline: none; }
+a { color: inherit; text-decoration: none; cursor: pointer; }
+.hidden { display: none !important; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #D7DCE6; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #B4BCC9; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ============== 顶部导航 ============== */
+.topbar {
+    height: 56px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark { display: flex; align-items: center; justify-content: center; }
+.logo-name { font-size: 16px; font-weight: 700; letter-spacing: 0.2px; color: var(--text); }
+.logo-name span { background: var(--primary-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* ============== 对话页 ============== */
+.view-chat { display: flex; height: calc(100vh - 56px); background: var(--bg-soft); }
+.chat-sidebar {
+    flex: 0 0 232px; background: #fff; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+}
+.new-chat-btn {
+    margin: 14px 12px; padding: 9px 12px;
+    background: var(--text); color: #fff; border-radius: 8px;
+    display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500;
+    transition: all .15s; justify-content: center;
+}
+.new-chat-btn:hover { background: #000; }
+.new-chat-btn svg { stroke-width: 2.5; }
+
+.history-section { flex: 1; overflow-y: auto; padding: 6px 12px 14px; }
+.history-section-title { font-size: 11px; color: var(--text-3); margin: 10px 4px 8px; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: space-between; }
+.history-section-title .hs-count { font-size: 10px; background: var(--bg); padding: 1px 8px; border-radius: 999px; }
+.history-list { display: flex; flex-direction: column; gap: 2px; }
+.h-item {
+    padding: 7px 28px 7px 10px; border-radius: 6px; font-size: 12.5px; color: var(--text-2);
+    cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: flex; align-items: center; gap: 6px; position: relative;
+}
+.h-item:hover { background: var(--border-soft); }
+.h-item:hover .h-actions { display: flex; }
+.h-item.active { background: var(--primary-soft); color: var(--primary); }
+.h-item .h-ico { flex: 0 0 14px; }
+.h-item .h-title { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.h-actions { display: none; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); gap: 2px; }
+.h-actions button { width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-3); }
+.h-actions button:hover { background: #fff; color: var(--text); }
+
+.h-item.editing { background: var(--primary-soft); padding-right: 4px; }
+.h-item.editing .h-title { display: none; }
+.h-item.editing .h-actions { display: none; }
+.h-edit-input { display: none; flex: 1; border: none; background: #fff; border-radius: 4px; padding: 2px 6px; font-size: 12.5px; outline: none; border: 1px solid var(--primary); }
+.h-item.editing .h-edit-input { display: block; }
+
+/* 主对话区 */
+.chat-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.chat-header {
+    padding: 12px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: #fff;
+}
+.chat-header-left { display: flex; align-items: center; gap: 12px; }
+.agent-icon-sm { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.chat-title { font-size: 15px; font-weight: 600; }
+
+/* 对话流 */
+.chat-stream { flex: 1; overflow-y: auto; padding: 24px; }
+.chat-stream-inner { max-width: 920px; margin: 0 auto; }
+
+/* 欢迎屏 */
+.welcome { max-width: 880px; margin: 24px auto; text-align: center; padding: 24px 16px; }
+.welcome-avatar { width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, #F0FDF4, #D1FAE5); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: var(--shadow-md); }
+.welcome h2 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+.welcome > p { font-size: 14px; color: var(--text-2); line-height: 1.8; margin-bottom: 28px; }
+
+.suggest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.suggest-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r-md); padding: 14px; text-align: left; transition: all .15s; cursor: pointer; }
+.suggest-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: #A7F3D0; }
+.sc-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; margin-bottom: 8px; }
+.sc-title { font-size: 13.5px; font-weight: 500; line-height: 1.5; color: var(--text); margin-bottom: 4px; }
+.sc-sub { font-size: 11.5px; color: var(--text-3); line-height: 1.5; }
+
+.welcome-foot { font-size: 12.5px; color: var(--text-3); padding-top: 18px; border-top: 1px solid var(--border-soft); }
+
+/* 消息泡 */
+.msg { display: flex; gap: 14px; margin-bottom: 24px; max-width: 920px; margin-left: auto; margin-right: auto; }
+.msg.user { flex-direction: row-reverse; }
+.msg-avatar { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+.msg.user .msg-avatar { background: var(--primary-grad); color: #fff; }
+.msg.ai .msg-avatar { background: linear-gradient(135deg,#F0FDF4,#D1FAE5); border: 1px solid #A7F3D0; }
+
+.msg-body { flex: 1; min-width: 0; }
+.msg.user .msg-body { text-align: right; }
+.msg-meta { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-3); margin-bottom: 4px; }
+.msg.user .msg-meta { justify-content: flex-end; }
+.msg-meta b { color: var(--text-2); font-weight: 500; }
+.msg-meta .tag-ai { background: var(--primary-soft); color: var(--primary); padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+
+.bubble.user-bubble {
+    background: var(--primary); color: #fff;
+    padding: 10px 14px; border-radius: 14px 14px 4px 14px;
+    display: inline-block; max-width: 80%; line-height: 1.6; text-align: left;
+}
+.bubble.ai-bubble {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 4px 14px 14px 14px; padding: 16px 18px;
+    line-height: 1.7; color: var(--text);
+}
+.bubble.ai-bubble > * + * { margin-top: 14px; }
+.bubble.ai-bubble p { line-height: 1.75; }
+.bubble.ai-bubble strong { color: var(--text); font-weight: 600; }
+.bubble.ai-bubble em { font-style: normal; color: var(--primary); }
+
+/* AI 思考 */
+.ai-thinking {
+    display: flex; align-items: center; gap: 8px;
+    background: linear-gradient(90deg, #F0FDF4, #D1FAE5);
+    border-radius: 8px; padding: 8px 12px; font-size: 12.5px; color: var(--text-2);
+    margin-bottom: 12px; border: 1px solid #A7F3D0;
+}
+.thinking-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: blink 1.4s infinite both; }
+.thinking-dot:nth-child(2) { animation-delay: .2s; }
+.thinking-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
+
+.route-info {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--text-2);
+    background: var(--bg); padding: 8px 12px; border-radius: 6px;
+    border-left: 3px solid var(--primary);
+}
+.route-info .route-ico { font-size: 14px; }
+.route-info code { background: #fff; border: 1px solid var(--border); padding: 1px 6px; border-radius: 3px; font-size: 11.5px; color: var(--primary); }
+
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.kpi {
+    background: linear-gradient(180deg, #FAFBFF 0%, #fff 100%);
+    border: 1px solid var(--border); border-radius: var(--r-md);
+    padding: 12px 14px;
+}
+.kpi-label { font-size: 11.5px; color: var(--text-3); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+.kpi-value { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.2; display: flex; align-items: baseline; gap: 4px; }
+.kpi-value .unit { font-size: 12px; font-weight: 500; color: var(--text-3); }
+.kpi-delta { font-size: 11.5px; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+.kpi.danger { background: linear-gradient(180deg,#FFF5F5 0%, #fff 100%); border-color: #FECACA; }
+.kpi.success { background: linear-gradient(180deg,#F0FDF4 0%, #fff 100%); border-color: #BBF7D0; }
+.kpi.warning { background: linear-gradient(180deg,#FFFBEB 0%, #fff 100%); border-color: #FDE68A; }
+
+/* 表格 */
+.tbl-wrap {
+    border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; background: #fff;
+}
+.tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tbl-head-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg-soft); border-bottom: 1px solid var(--border-soft); }
+.tbl-title { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.tbl-title .tbl-emoji { font-size: 14px; }
+.tbl-act { display: flex; align-items: center; gap: 6px; }
+.tbl-act button { font-size: 11.5px; color: var(--text-2); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); background: #fff; }
+.tbl-act button:hover { color: var(--primary); border-color: var(--primary); }
+.tbl-dl-btn { font-size: 11.5px; color: var(--success); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--success); background: #fff; cursor: pointer; }
+.tbl-dl-btn:hover { background: var(--success-soft); }
+
+.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.tbl thead { position: sticky; top: 0; z-index: 2; }
+.tbl th {
+    background: var(--bg-soft); text-align: left; padding: 8px 10px;
+    font-weight: 600; font-size: 11.5px; color: var(--text-3);
+    border-bottom: 1px solid var(--border-soft); white-space: nowrap;
+}
+.tbl td {
+    padding: 8px 10px; border-bottom: 1px solid var(--border-soft);
+    vertical-align: middle; white-space: nowrap; color: var(--text-2);
+}
+.tbl td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: "SF Mono","JetBrains Mono","Menlo",monospace; font-size: 12px; }
+.tbl tr:hover td { background: #FAFBFD; }
+.tbl tbody tr:last-child td { border-bottom: none; }
+.tbl th.num { text-align: right; }
+
+.tbl-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 14px; background: var(--bg-soft); border-top: 1px solid var(--border-soft);
+    font-size: 11.5px; color: var(--text-3);
+}
+.tbl-page-btn { padding: 2px 8px; border-radius: 4px; font-size: 11.5px; border: 1px solid var(--border); background: #fff; margin: 0 1px; }
+.tbl-page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.tbl-page-btn:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+
+.sku-name { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.danger-cell { color: var(--danger) !important; font-weight: 600; }
+.warn-cell { color: var(--warning) !important; font-weight: 500; }
+.success-cell { color: var(--success) !important; font-weight: 500; }
+.muted-cell { color: var(--text-3) !important; }
+
+/* 公式卡 */
+.formula-card {
+    border: 1px solid var(--border); border-radius: var(--r-md); background: #fff; overflow: hidden;
+}
+.formula-head {
+    padding: 10px 14px; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none;
+}
+.formula-head:hover { background: var(--bg-soft); }
+.fh-toggle { font-size: 10px; color: var(--text-3); transition: transform .2s; }
+.formula-card.collapsed .fh-toggle { transform: rotate(-90deg); }
+.formula-body { padding: 0 14px 14px; }
+.formula-card.collapsed .formula-body { display: none; }
+.formula-step { display: flex; gap: 10px; margin-top: 8px; font-size: 12.5px; line-height: 1.6; }
+.fs-num {
+    flex: 0 0 22px; height: 22px; border-radius: 50%;
+    background: var(--primary-soft); color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+}
+.fs-body { flex: 1; color: var(--text-2); }
+.fs-body code { background: var(--bg); border: 1px solid var(--border-soft); padding: 1px 6px; border-radius: 3px; font-size: 11px; color: var(--primary); }
+.fs-body .ans { color: var(--primary); font-weight: 600; background: var(--primary-soft); padding: 1px 6px; border-radius: 3px; }
+.formula-foot { padding: 8px 14px; background: var(--bg-soft); border-top: 1px solid var(--border-soft); font-size: 11.5px; color: var(--text-3); }
+
+/* 建议卡 */
+.advise-card { border: 1px solid var(--border); border-radius: var(--r-md); background: #fff; overflow: hidden; }
+.advise-head { padding: 10px 14px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--border-soft); }
+.advise-body { padding: 8px 14px 14px; }
+.advise-item { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border-soft); }
+.advise-item:last-child { border-bottom: none; }
+.ai-prio {
+    flex: 0 0 28px; height: 22px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10.5px; font-weight: 700; margin-top: 1px;
+}
+.ai-prio.p0 { background: #FEE2E2; color: #C81E1E; }
+.ai-prio.p1 { background: #FEF3C7; color: #92400E; }
+.ai-prio.p2 { background: #E0E7FF; color: #4338CA; }
+.ai-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.ai-desc { font-size: 12.5px; color: var(--text-2); line-height: 1.6; }
+
+/* alert */
+.alert {
+    display: flex; gap: 12px; padding: 14px; border-radius: var(--r-md);
+    font-size: 13px; line-height: 1.7;
+}
+.alert.danger { background: var(--danger-soft); color: #991B1B; border: 1px solid #FECACA; }
+.alert.warning { background: var(--warning-soft); color: #92400E; border: 1px solid #FDE68A; }
+.alert.info { background: var(--info-soft); color: #3730A3; border: 1px solid #C7D2FE; }
+.alert-ico { font-size: 20px; flex-shrink: 0; }
+.alert-title { font-weight: 600; margin-bottom: 4px; }
+.alert-desc { font-size: 12.5px; }
+
+/* fade */
+.fade-in { animation: fadeIn .35s ease both; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 输入区 */
+.chat-input-bar {
+    padding: 12px 24px 16px; border-top: 1px solid var(--border);
+    background: #fff;
+}
+.chat-input-inner { max-width: 920px; margin: 0 auto; }
+.quick-cmds { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.qc {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px; border-radius: 6px;
+    background: var(--bg); border: 1px solid var(--border);
+    font-size: 12px; color: var(--text-2); white-space: nowrap;
+    transition: all .15s;
+}
+.qc:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+.qc-ico { font-size: 13px; }
+.input-row {
+    display: flex; align-items: flex-end; gap: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 8px 12px;
+    transition: border-color .15s;
+}
+.input-row:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46,107,255,0.1); }
+.input-row textarea {
+    flex: 1; background: none; border: none; resize: none;
+    font-size: 14px; line-height: 1.5; min-height: 24px; max-height: 160px;
+}
+.input-row textarea::placeholder { color: var(--text-3); }
+.send-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all .15s;
+}
+.send-btn:hover { background: #1E5BD6; }
+.send-btn svg { width: 16px; height: 16px; }
+
+@media (max-width: 768px) {
+    .chat-sidebar { display: none; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .suggest-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+    <defs>
+        <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#10B981"/>
+            <stop offset="100%" stop-color="#34D399"/>
+        </linearGradient>
+    </defs>
+</svg>
+
+<!-- ============== 顶部导航 ============== -->
+<header class="topbar">
+    <div class="topbar-left">
+        <div class="logo">
+            <div class="logo-mark">
+                <svg viewBox="0 0 32 32" width="28" height="28">
+                    <path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/>
+                    <path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/>
+                    <circle cx="13.5" cy="15" r="1.2" fill="#10B981"/>
+                    <circle cx="18.5" cy="15" r="1.2" fill="#10B981"/>
+                </svg>
+            </div>
+            <div class="logo-name">味冠 <span>· 毛利分析智能体</span></div>
+        </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#10B981,#34D399);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">味</div>
+        <span style="font-size:13px;font-weight:500;color:var(--text);">唯安</span>
+    </div>
+</header>
+
+<!-- ============== 对话页 ============== -->
+<main class="view-chat" data-view="chat">
+    <aside class="chat-sidebar">
+        <button class="new-chat-btn" id="newChatBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            新对话
+        </button>
+        <div class="history-section">
+            <div class="history-section-title"><span>对话历史</span><span class="hs-count">0</span></div>
+            <div class="history-list" id="historyList"></div>
+        </div>
+    </aside>
+
+    <section class="chat-main">
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <div class="agent-icon-sm" style="background:linear-gradient(135deg,#F0FDF4,#D1FAE5);font-size:18px;">💰</div>
+                <div class="chat-title" id="chatTitle">毛利分析智能体</div>
+            </div>
+        </div>
+
+        <div class="chat-stream" id="chatStream">
+            <div class="welcome" id="welcome">
+                <div class="welcome-avatar">
+                    <svg viewBox="0 0 32 32" width="36" height="36">
+                        <path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/>
+                        <path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/>
+                        <circle cx="13.5" cy="15" r="1.2" fill="#10B981"/>
+                        <circle cx="18.5" cy="15" r="1.2" fill="#10B981"/>
+                    </svg>
+                </div>
+                <h2>你好，我是毛利分析智能体</h2>
+                <p>查询采购员/供应商的毛利情况、毛利率分析<br>数据来源：4个固定仓库（发货区 · 奥州外仓 · 三农外仓 · 西库一楼）</p>
+
+                <div class="suggest-grid">
+                    <button class="suggest-card" data-q="查询张杰采购毛利">
+                        <div class="sc-tag" style="background:#D1FAE5;color:#065F46">采购毛利</div>
+                        <div class="sc-title">张杰 · 采购毛利</div>
+                        <div class="sc-sub">查询张杰所有品的毛利情况</div>
+                    </button>
+                    <button class="suggest-card" data-q="查询安大食品供应商毛利">
+                        <div class="sc-tag" style="background:#DBEAFE;color:#1E5BD6">供应商毛利</div>
+                        <div class="sc-title">安大食品 · 供应商毛利</div>
+                        <div class="sc-sub">查询安大食品所有品的毛利情况</div>
+                    </button>
+                    <button class="suggest-card" data-q="查询张杰供应商毛利汇总">
+                        <div class="sc-tag" style="background:#E0E7FF;color:#4338CA">供应商汇总</div>
+                        <div class="sc-title">张杰 · 供应商毛利汇总</div>
+                        <div class="sc-sub">查询张杰所有供应商毛利情况</div>
+                    </button>
+                </div>
+                <div class="welcome-foot">💡 推荐问法：<b>「查询[采购员]采购毛利」</b> · <b>「查询[供应商]供应商毛利」</b> · <b>「查询[采购员]供应商毛利汇总」</b><br>采购员：张杰 · 付超英 · 刘洋 · 任情情 &nbsp;|&nbsp; 时间：天/月/年 &nbsp;|&nbsp; 供应商：单个/全部</div>
+            </div>
+        </div>
+
+        <!-- 输入区 -->
+        <div class="chat-input-bar">
+            <div class="chat-input-inner">
+                <div class="quick-cmds" id="quickCmds">
+                    <button class="qc" data-q="查询张杰采购毛利"><span class="qc-ico">💰</span>张杰·采购毛利</button>
+                    <button class="qc" data-q="查询安大食品供应商毛利"><span class="qc-ico">🏭</span>安大食品·供应商毛利</button>
+                    <button class="qc" data-q="查询张杰供应商毛利汇总"><span class="qc-ico">📊</span>张杰·供应商汇总</button>
+                </div>
+                <div class="input-row">
+                    <textarea id="chatInput" rows="1" placeholder="输入查询，例如：查询张杰本月采购毛利"></textarea>
+                    <button class="send-btn" id="sendBtn" title="发送">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+/* ============== 毛利分析 · 核心数据 ============== */
+
+const FIXED_WAREHOUSES = {
+    '01': '发货区',
+    '03': '奥州外仓',
+    '04': '三农外仓',
+    '05': '西库一楼'
+};
+
+// 场景定义
+const SCENE_INFO = {
+    S01: { key: 'S01', label: '采购毛利查询', emoji: '💰', badgeCls: 's1', sortKey: 'grossProfit', sortDir: 'desc' },
+    S02: { key: 'S02', label: '供应商毛利查询', emoji: '🏭', badgeCls: 's2', sortKey: 'grossProfit', sortDir: 'desc' },
+    S03: { key: 'S03', label: '采购供应商毛利汇总', emoji: '📊', badgeCls: 's3', sortKey: 'grossProfit', sortDir: 'desc' }
+};
+
+const BUYER_AVATAR_COLORS = {
+    '张杰': 'linear-gradient(135deg,#6366F1,#8B5CF6)',
+    '付超英': 'linear-gradient(135deg,#EC4899,#F472B6)',
+    '刘洋': 'linear-gradient(135deg,#10B981,#34D399)',
+    '任情情': 'linear-gradient(135deg,#F59E0B,#FBBF24)'
+};
+
+// 采购员商品毛利原始数据
+const BUYER_MARGIN_PRODUCTS = {
+    '张杰': [
+        { name: '安井400克红糖发糕（总库）', code: 'AJ400KHTFG', spec: '400g×20包', supplier: '安井食品', qty: 5730, salesAmount: 424213.9, avgPurchasePrice: 51 },
+        { name: '安井老面鲜肉小笼包', code: 'AJLMXRXLB', spec: '360g×30包', supplier: '安井食品', qty: 5216, salesAmount: 772613.82, avgPurchasePrice: 143 },
+        { name: '安井袋装潮汕风味卷章', code: 'AJDZCSFWJZ', spec: '500g×20包', supplier: '安井食品', qty: 3854.9, salesAmount: 1313857.85, avgPurchasePrice: 322 },
+        { name: '安大70克台式烤香肠', code: 'AD70KTSKXC', spec: '70g×100支', supplier: '安大食品', qty: 3626, salesAmount: 232599.64, avgPurchasePrice: 46 },
+        { name: '安大10包小酥肉', code: 'AD10BXSR', spec: '1kg×10包', supplier: '安大食品', qty: 3566, salesAmount: 474621.74, avgPurchasePrice: 115 },
+        { name: '白象招牌咖喱牛肉拌饭', code: 'BXZPGLNRBF', spec: '350g×12盒', supplier: '白象食品', qty: 2813, salesAmount: 382664.3, avgPurchasePrice: 122 },
+        { name: '安大鸡排（蓝胶带）', code: 'ADJPLJD', spec: '100g×50片', supplier: '安大食品', qty: 2260, salesAmount: 240391.86, avgPurchasePrice: 87 },
+        { name: '美好农家小酥肉', code: 'MHNJXSR', spec: '1kg×10包', supplier: '美好食品', qty: 3854.9, salesAmount: 1313857.85, avgPurchasePrice: 322 },
+        { name: '幸福南路火山石烤肠', code: 'XFNLHSKSC', spec: '50g×200支', supplier: '幸福南路', qty: 1582, salesAmount: 380817.5, avgPurchasePrice: 200 },
+        { name: '三全油条', code: 'SQYT', spec: '450g×20袋', supplier: '三全食品', qty: 2036, salesAmount: 121509, avgPurchasePrice: 61 }
+    ],
+    '付超英': [
+        { name: '安大100克整条鱿鱼串（黄色十字胶带）', code: 'AD100KZTYYCHSJD', spec: '20串×5包', supplier: '安大食品', qty: 1032, salesAmount: 89650, avgPurchasePrice: 68 },
+        { name: '安大35克鱿鱼须串（红色胶带）', code: 'AD35KYYXCHSJD', spec: '35g×200串', supplier: '安大食品', qty: 2840, salesAmount: 185300, avgPurchasePrice: 52 },
+        { name: '川荣香辣鸭胗', code: 'CRXLYZ', spec: '500g×20袋', supplier: '川荣食品', qty: 960, salesAmount: 115200, avgPurchasePrice: 98 },
+        { name: '安大60克翅中串（红胶带）', code: 'AD60KCZCHJD', spec: '60g×200串', supplier: '安大食品', qty: 1760, salesAmount: 246400, avgPurchasePrice: 118 },
+        { name: '安大牛排肉串（黑椒味）', code: 'ADNPRCHJW', spec: '80g×100串', supplier: '安大食品', qty: 5600, salesAmount: 616000, avgPurchasePrice: 88 },
+        { name: '安大100克整条鱿鱼串（粉色胶带）', code: 'AD100KZTYYCFSJD', spec: '20串×5包', supplier: '安大食品', qty: 1360, salesAmount: 108800, avgPurchasePrice: 62 },
+        { name: '安大100克整条鱿鱼串（蓝色胶带）', code: 'AD100KZTYYCLSJD', spec: '20串×5包', supplier: '安大食品', qty: 1152, salesAmount: 92160, avgPurchasePrice: 60 }
+    ],
+    '刘洋': [
+        { name: '蹦蹦鱼金汤酸菜鱼', code: 'BBYJTSCY', spec: '450g×20盒', supplier: '蹦蹦鱼食品', qty: 672, salesAmount: 87360, avgPurchasePrice: 105 },
+        { name: '安大鸡翅根（绿胶带）', code: 'ADJCGLJD', spec: '1kg×10袋', supplier: '安大食品', qty: 4480, salesAmount: 448000, avgPurchasePrice: 78 },
+        { name: '安大鸡排（蓝胶带）', code: 'ADJPLJD', spec: '100g×50片', supplier: '安大食品', qty: 6080, salesAmount: 547200, avgPurchasePrice: 72 },
+        { name: '安大牛肉大串（黑椒）', code: 'ADNRDCHJ', spec: '80g×80串', supplier: '安大食品', qty: 2560, salesAmount: 358400, avgPurchasePrice: 120 },
+        { name: '精品三全韭菜鸡蛋素水饺', code: 'JPSQJCJDSSJ', spec: '1.2kg×12袋', supplier: '三全食品', qty: 7200, salesAmount: 432000, avgPurchasePrice: 48 }
+    ],
+    '任情情': [
+        { name: '安大100克优选翅中串（粉色）', code: 'AD100KYXCZCFS', spec: '100g×100串', supplier: '安大食品', qty: 1520, salesAmount: 273600, avgPurchasePrice: 156 },
+        { name: '安大120克无双剑翅（粉色）', code: 'AD120KWSJC', spec: '120g×60串', supplier: '安大食品', qty: 4480, salesAmount: 851200, avgPurchasePrice: 162 },
+        { name: '安大鸡心串（绿胶带）', code: 'ADJXCLJD', spec: '25g×300串', supplier: '安大食品', qty: 1680, salesAmount: 151200, avgPurchasePrice: 72 },
+        { name: '安大掌中宝（黄胶带）', code: 'ADZZBHJD', spec: '500g×30袋', supplier: '安大食品', qty: 1440, salesAmount: 216000, avgPurchasePrice: 128 },
+        { name: '安大骨肉相连（粉胶带）', code: 'ADGRXLFSJD', spec: '500g×30袋', supplier: '安大食品', qty: 4960, salesAmount: 396800, avgPurchasePrice: 64 },
+        { name: '安大鱿鱼板小号（绿胶带）', code: 'ADYYBXHLJD', spec: '500g×20袋', supplier: '安大食品', qty: 1200, salesAmount: 168000, avgPurchasePrice: 118 },
+        { name: '安大鲜切松板肉串（小）', code: 'ADXQSBRCX', spec: '30g×200串', supplier: '安大食品', qty: 4480, salesAmount: 582400, avgPurchasePrice: 105 }
+    ]
+};
+
+// 供应商列表（按采购员分组）
+function getAllSuppliers() {
+    var suppliers = {};
+    var buyerKeys = Object.keys(BUYER_MARGIN_PRODUCTS);
+    for (var bi = 0; bi < buyerKeys.length; bi++) {
+        var bName = buyerKeys[bi];
+        var products = BUYER_MARGIN_PRODUCTS[bName];
+        for (var pi = 0; pi < products.length; pi++) {
+            var sup = products[pi].supplier;
+            if (!suppliers[sup]) suppliers[sup] = [];
+            if (suppliers[sup].indexOf(bName) === -1) {
+                suppliers[sup].push(bName);
+            }
+        }
+    }
+    return Object.keys(suppliers).sort();
+}
+
+const ALL_SUPPLIERS = getAllSuppliers();
+
+// 计算商品的毛利指标
+function computeMarginMetrics(raw) {
+    var qty = raw.qty;
+    var salesAmount = raw.salesAmount;
+    var avgPrice = raw.avgPurchasePrice;
+    var cost = Math.round(qty * avgPrice);
+    var grossProfit = Math.round(salesAmount - cost);
+    var grossMarginRate = salesAmount > 0 ? grossProfit / salesAmount : 0;
+
+    return {
+        name: raw.name,
+        code: raw.code,
+        spec: raw.spec,
+        supplier: raw.supplier,
+        qty: qty,
+        salesAmount: salesAmount,
+        avgPurchasePrice: avgPrice,
+        grossProfit: grossProfit,
+        grossMarginRate: grossMarginRate,
+        buyerName: raw.buyerName || ''
+    };
+}
+
+function getBuyerMarginProducts(buyerName) {
+    var rawList = BUYER_MARGIN_PRODUCTS[buyerName];
+    if (!rawList) return null;
+    return rawList.map(function(raw) {
+        return computeMarginMetrics(raw);
+    });
+}
+
+function getSupplierProducts(supplierName) {
+    var results = [];
+    var buyerKeys = Object.keys(BUYER_MARGIN_PRODUCTS);
+    for (var bi = 0; bi < buyerKeys.length; bi++) {
+        var bName = buyerKeys[bi];
+        var products = BUYER_MARGIN_PRODUCTS[bName];
+        for (var pi = 0; pi < products.length; pi++) {
+            if (products[pi].supplier === supplierName) {
+                var p = computeMarginMetrics(products[pi]);
+                p.buyerName = bName;
+                results.push(p);
+            }
+        }
+    }
+    return results;
+}
+
+// 按供应商汇总
+function getSupplierSummary(buyerName) {
+    var products = getBuyerMarginProducts(buyerName);
+    if (!products) return null;
+    var summary = {};
+    for (var i = 0; i < products.length; i++) {
+        var p = products[i];
+        if (!summary[p.supplier]) {
+            summary[p.supplier] = { supplier: p.supplier, totalQty: 0, totalSales: 0, totalCost: 0, totalProfit: 0, items: [] };
+        }
+        var s = summary[p.supplier];
+        s.totalQty += p.qty;
+        s.totalSales += p.salesAmount;
+        s.totalCost += p.qty * p.avgPurchasePrice;
+        s.totalProfit += p.grossProfit;
+        s.items.push(p);
+    }
+    var result = [];
+    var allSales = 0;
+    var allProfit = 0;
+    var keys = Object.keys(summary);
+    for (var si = 0; si < keys.length; si++) {
+        allSales += summary[keys[si]].totalSales;
+        allProfit += summary[keys[si]].totalProfit;
+    }
+    for (var si = 0; si < keys.length; si++) {
+        var s = summary[keys[si]];
+        var avgPrice = s.totalQty > 0 ? s.totalCost / s.totalQty : 0;
+        var marginRate = s.totalSales > 0 ? s.totalProfit / s.totalSales : 0;
+        var salesShare = allSales > 0 ? s.totalSales / allSales : 0;
+        var profitShare = allProfit > 0 ? s.totalProfit / allProfit : 0;
+        result.push({
+            supplier: s.supplier,
+            totalQty: s.totalQty,
+            totalSales: s.totalSales,
+            avgPurchasePrice: Math.round(avgPrice),
+            totalProfit: s.totalProfit,
+            grossMarginRate: marginRate,
+            salesShare: salesShare,
+            profitShare: profitShare
+        });
+    }
+    // 按毛利从高到低排序
+    result.sort(function(a, b) { return b.totalProfit - a.totalProfit; });
+    return result;
+}
+
+/* ──── 查询解析（支持时间维度：天/月/年，支持全部供应商） ──── */
+function parseQuery(query) {
+    var q = query.trim();
+
+    // 提取采购员
+    var buyers = Object.keys(BUYER_MARGIN_PRODUCTS);
+    var matchedBuyer = null;
+    for (var i = 0; i < buyers.length; i++) {
+        if (q.indexOf(buyers[i]) !== -1) {
+            matchedBuyer = buyers[i];
+            break;
+        }
+    }
+
+    // 提取供应商（支持"全部"）
+    var matchedSupplier = null;
+    var allSupplier = false;
+    if (q.indexOf('全部供应商') !== -1 || q.indexOf('所有供应商') !== -1) {
+        allSupplier = true;
+    } else {
+        for (var i = 0; i < ALL_SUPPLIERS.length; i++) {
+            if (q.indexOf(ALL_SUPPLIERS[i]) !== -1) {
+                matchedSupplier = ALL_SUPPLIERS[i];
+                break;
+            }
+        }
+    }
+
+    // 提取时间维度
+    var timeDim = '';
+    if (q.indexOf('昨天') !== -1 || q.indexOf('今日') !== -1 || q.indexOf('今天') !== -1 || q.indexOf('日') !== -1) timeDim = '天';
+    else if (q.indexOf('月') !== -1) timeDim = '月';
+    else if (q.indexOf('年') !== -1 || q.indexOf('今年') !== -1) timeDim = '年';
+
+    // 场景判断
+    var sceneKey = 'S01';
+    if (matchedBuyer && (q.indexOf('供应商') !== -1 && q.indexOf('汇总') !== -1) || (matchedBuyer && allSupplier)) {
+        sceneKey = 'S03';
+    } else if ((matchedSupplier || allSupplier) && !matchedBuyer) {
+        sceneKey = 'S02';
+    } else if (matchedBuyer) {
+        sceneKey = 'S01';
+    } else {
+        return null;
+    }
+
+    return { buyer: matchedBuyer, supplier: matchedSupplier, scene: sceneKey, timeDim: timeDim, allSupplier: allSupplier };
+}
+
+/* ──── 格式化 ──── */
+function fmtNum(v, decimals) {
+    if (v === null || v === undefined || v === Infinity) return '-';
+    decimals = decimals !== undefined ? decimals : 0;
+    return Number(v.toFixed(decimals)).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function fmtInt(v) {
+    if (v === null || v === undefined) return '-';
+    return Math.round(v).toLocaleString();
+}
+
+function fmtPct(v) {
+    if (v === null || v === undefined) return '-';
+    return (v * 100).toFixed(2) + '%';
+}
+
+function fmtMoney(v) {
+    if (v === null || v === undefined) return '-';
+    return '¥' + Math.round(v).toLocaleString();
+}
+
+/* ──── 渲染引擎 ──── */
+(function () {
+    'use strict';
+
+    var $ = function(sel) { return document.querySelector(sel); };
+    var $$ = function(sel) { return document.querySelectorAll(sel); };
+
+    var dom = {
+        chatStream: $('#chatStream'),
+        welcome: $('#welcome'),
+        chatInput: $('#chatInput'),
+        sendBtn: $('#sendBtn'),
+        newChatBtn: $('#newChatBtn'),
+        historyList: $('#historyList'),
+        chatTitle: $('#chatTitle'),
+        quickCmds: $('#quickCmds')
+    };
+
+    function renderBlock(block) {
+        var div = document.createElement('div');
+        div.className = 'fade-in';
+
+        switch (block.type) {
+        case 'route': {
+            div.className += ' route-info';
+            div.innerHTML = '<span class="route-ico">' + (block.icon || '→') + '</span> ' + block.text;
+            return div;
+        }
+        case 'p': {
+            div.innerHTML = '<p>' + block.text + '</p>';
+            return div;
+        }
+        case 'scene-badge': {
+            div.innerHTML = '<div class="scene-badge ' + block.cls + '">' + block.icon + ' ' + block.label + '</div>';
+            return div;
+        }
+        case 'kpis': {
+            var grid = document.createElement('div');
+            grid.className = 'kpi-grid';
+            for (var i = 0; i < block.items.length; i++) {
+                var it = block.items[i];
+                var k = document.createElement('div');
+                k.className = 'kpi ' + (it.kind || '');
+                k.innerHTML = '<div class="kpi-label">' + it.label + '</div><div class="kpi-value">' + it.value + '<span class="unit">' + it.unit + '</span></div>';
+                grid.appendChild(k);
+            }
+            div.appendChild(grid);
+            return div;
+        }
+        case 'table': {
+            var wrap = document.createElement('div');
+            wrap.className = 'tbl-wrap';
+            var pageSize = block.pageSize || block.rows.length;
+            var totalRows = block.rows.length;
+            var totalPages = Math.ceil(totalRows / pageSize);
+            var currentPage = 1;
+            var allRows = block.rows;
+            var expandedAll = false;
+
+            function renderTable(page, expanded) {
+                var rowsToShow;
+                if (expanded) { rowsToShow = allRows; }
+                else { var start = (page - 1) * pageSize; rowsToShow = allRows.slice(start, start + pageSize); }
+
+                var headHtml = '';
+                if (block.title) {
+                    headHtml = '<div class="tbl-head-bar"><div class="tbl-title">' + block.title + '</div><div class="tbl-act"><button class="tbl-dl-btn" title="下载 Excel">📥 下载</button><button class="tbl-expand-btn">' + (expanded ? '收起' : '查看全部') + '</button></div></div>';
+                }
+                var colHtml = '<tr>';
+                for (var i = 0; i < block.columns.length; i++) {
+                    var c = block.columns[i];
+                    colHtml += '<th' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + c.label + '</th>';
+                }
+                colHtml += '</tr>';
+
+                var rowHtml = '';
+                for (var i = 0; i < rowsToShow.length; i++) {
+                    var r = rowsToShow[i];
+                    rowHtml += '<tr>';
+                    for (var j = 0; j < block.columns.length; j++) {
+                        var c = block.columns[j];
+                        var val = r[c.k];
+                        if (val === undefined || val === null) { rowHtml += '<td></td>'; }
+                        else if (typeof val === 'object' && val !== null) {
+                            if (val.name) { rowHtml += '<td><div class="sku-name">' + val.name + '</div></td>'; }
+                            else { rowHtml += '<td class="num ' + (val.cls || '') + '">' + (val.v !== undefined ? val.v : '') + '</td>'; }
+                        } else {
+                            rowHtml += '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + String(val) + '</td>';
+                        }
+                    }
+                    rowHtml += '</tr>';
+                }
+
+                var footHtml = '';
+                if (totalPages > 1) {
+                    var pageBtns = '';
+                    for (var p = 1; p <= totalPages; p++) {
+                        pageBtns += '<button class="tbl-page-btn' + (p === page && !expanded ? ' active' : '') + '" data-page="' + p + '">' + p + '</button>';
+                    }
+                    footHtml = '<div class="tbl-foot"><span>共 ' + totalRows + ' 条结果' + (!expanded ? ' · 第 ' + page + '/' + totalPages + ' 页' : ' · 全部展开') + '</span><span>' + pageBtns + '</span></div>';
+                }
+
+                wrap.innerHTML = headHtml + '<div class="tbl-scroll"><table class="tbl"><thead>' + colHtml + '</thead><tbody>' + rowHtml + '</tbody></table></div>' + footHtml;
+
+                var expandBtn = wrap.querySelector('.tbl-expand-btn');
+                if (expandBtn) {
+                    expandBtn.addEventListener('click', function() { expandedAll = !expandedAll; renderTable(currentPage, expandedAll); });
+                }
+                var dlBtn = wrap.querySelector('.tbl-dl-btn');
+                if (dlBtn) {
+                    dlBtn.addEventListener('click', function() { downloadExcel(block, allRows); });
+                }
+                var pageBtns = wrap.querySelectorAll('.tbl-page-btn');
+                for (var i = 0; i < pageBtns.length; i++) {
+                    (function(btn) {
+                        btn.addEventListener('click', function() { currentPage = parseInt(btn.dataset.page); expandedAll = false; renderTable(currentPage, false); });
+                    })(pageBtns[i]);
+                }
+            }
+
+            renderTable(currentPage, false);
+            return wrap;
+        }
+        case 'formula': {
+            var card = document.createElement('div');
+            card.className = 'formula-card';
+            if (block.collapsed) card.classList.add('collapsed');
+            var stepsHtml = '';
+            for (var i = 0; i < block.steps.length; i++) {
+                var s = block.steps[i];
+                stepsHtml += '<div class="formula-step"><div class="fs-num">' + (i + 1) + '</div><div class="fs-body">' + s.body + '</div></div>';
+            }
+            card.innerHTML = '<div class="formula-head">🧮 ' + (block.title || '计算逻辑') + '<span class="fh-toggle">▼</span></div><div class="formula-body">' + stepsHtml + '</div>';
+            card.querySelector('.formula-head').addEventListener('click', function() { card.classList.toggle('collapsed'); });
+            return card;
+        }
+        case 'advise': {
+            var card = document.createElement('div');
+            card.className = 'advise-card';
+            var itemsHtml = '';
+            for (var i = 0; i < block.items.length; i++) {
+                var it = block.items[i];
+                itemsHtml += '<div class="advise-item"><div class="ai-prio ' + it.prio.toLowerCase() + '">' + it.prio + '</div><div class="ai-body"><div class="ai-title">' + it.title + '</div><div class="ai-desc">' + it.desc + '</div></div></div>';
+            }
+            card.innerHTML = '<div class="advise-head">' + (block.title || '💡 经营建议') + '</div><div class="advise-body">' + itemsHtml + '</div>';
+            return card;
+        }
+        case 'alert': {
+            var alertEl = document.createElement('div');
+            alertEl.className = 'alert ' + block.kind;
+            alertEl.innerHTML = '<div class="alert-ico">' + (block.icon || '!') + '</div><div><div class="alert-title">' + block.title + '</div><div class="alert-desc">' + block.desc + '</div></div>';
+            return alertEl;
+        }
+        case 'fallback-grid': {
+            var grid = document.createElement('div');
+            grid.className = 'suggest-grid';
+            grid.style.marginTop = '8px';
+            var suggestions = [
+                { tag:'采购毛利', tagCls:'background:#D1FAE5;color:#065F46', title:'查询张杰本月采购毛利', sub:'张杰所有品的毛利情况（按天/月/年）' },
+                { tag:'供应商毛利', tagCls:'background:#DBEAFE;color:#1E5BD6', title:'查询安大食品本月供应商毛利', sub:'供应商所有品的毛利情况' },
+                { tag:'供应商汇总', tagCls:'background:#E0E7FF;color:#4338CA', title:'查询张杰本月供应商毛利汇总', sub:'按供应商汇总张杰的毛利情况' }
+            ];
+            for (var i = 0; i < suggestions.length; i++) {
+                var s = suggestions[i];
+                var btn = document.createElement('button');
+                btn.className = 'suggest-card';
+                btn.dataset.q = s.title;
+                btn.innerHTML = '<div class="sc-tag" style="' + s.tagCls + '">' + s.tag + '</div><div class="sc-title">' + s.title + '</div><div class="sc-sub">' + s.sub + '</div>';
+                grid.appendChild(btn);
+            }
+            return grid;
+        }
+        default: return null;
+        }
+    }
+
+    /* ──── 消息渲染 ──── */
+    function renderMsg(role, content, meta) {
+        var div = document.createElement('div');
+        div.className = 'msg ' + role;
+
+        var avatar = document.createElement('div');
+        avatar.className = 'msg-avatar';
+        if (role === 'user') { avatar.textContent = '味'; }
+        else { avatar.innerHTML = '<svg viewBox="0 0 32 32" width="16" height="16"><path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/><path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/><circle cx="13.5" cy="15" r="1.2" fill="#10B981"/><circle cx="18.5" cy="15" r="1.2" fill="#10B981"/></svg>'; }
+
+        var body = document.createElement('div');
+        body.className = 'msg-body';
+
+        var metaDiv = document.createElement('div');
+        metaDiv.className = 'msg-meta';
+        metaDiv.innerHTML = '<b>' + (role === 'user' ? '味冠 · 你' : '唯安') + '</b> <span class="tag-ai">' + (meta && meta.route || '') + '</span> ' + (meta && meta.time || new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }));
+        body.appendChild(metaDiv);
+
+        if (role === 'user') {
+            var bubble = document.createElement('div');
+            bubble.className = 'bubble user-bubble';
+            bubble.textContent = content;
+            body.appendChild(bubble);
+        } else {
+            var bubble = document.createElement('div');
+            bubble.className = 'bubble ai-bubble';
+            if (meta && meta.thinking && meta.thinking.length) {
+                var tDiv = document.createElement('div');
+                tDiv.className = 'ai-thinking';
+                for (var i = 0; i < 3; i++) { var dot = document.createElement('span'); dot.className = 'thinking-dot'; tDiv.appendChild(dot); }
+                var tSpan = document.createElement('span');
+                tSpan.style.marginLeft = '4px';
+                tSpan.textContent = meta.thinking[meta.thinking.length - 1];
+                tDiv.appendChild(tSpan);
+                bubble.appendChild(tDiv);
+            }
+            if (meta && meta.blocks) {
+                for (var i = 0; i < meta.blocks.length; i++) {
+                    var el = renderBlock(meta.blocks[i]);
+                    if (el) bubble.appendChild(el);
+                }
+            }
+            body.appendChild(bubble);
+        }
+
+        div.appendChild(avatar);
+        div.appendChild(body);
+        return div;
+    }
+
+    /* ──── 生成场景响应 ──── */
+    function buildSceneResponse(sceneKey, params) {
+        var blocks = [];
+        var scene = SCENE_INFO[sceneKey];
+        var titleLabel = '';
+        var tableColumns, tableRows;
+
+        if (sceneKey === 'S01') {
+            // 采购毛利查询
+            var buyerName = params.buyer;
+            var products = getBuyerMarginProducts(buyerName);
+            if (!products || products.length === 0) return [];
+            titleLabel = buyerName + ' · 毛利分析';
+
+            products.sort(function(a, b) { return b.grossProfit - a.grossProfit; });
+            tableColumns = [
+                { k:'name', label:'存货名称', w:200 },
+                { k:'salesAmount', label:'销售额(¥)', cls:'num' },
+                { k:'qty', label:'销售数量', cls:'num' },
+                { k:'avgPurchasePrice', label:'平均进价(¥)', cls:'num' },
+                { k:'grossProfit', label:'毛利(¥)', cls:'num' },
+                { k:'grossMarginRate', label:'毛利率', cls:'num' }
+            ];
+            tableRows = [];
+            for (var i = 0; i < products.length; i++) {
+                var p = products[i];
+                tableRows.push({
+                    name: { name: p.name },
+                    salesAmount: { v: fmtNum(p.salesAmount, 0) },
+                    qty: { v: fmtNum(p.qty, 1) },
+                    avgPurchasePrice: { v: fmtInt(p.avgPurchasePrice) },
+                    grossProfit: { v: fmtNum(p.grossProfit, 0) },
+                    grossMarginRate: { v: fmtPct(p.grossMarginRate) }
+                });
+            }
+
+            // 汇总信息只需展示在表格中，无需 KPI 卡片
+        } else if (sceneKey === 'S02') {
+            // 供应商毛利查询
+            var supplierName = params.supplier;
+            var products = getSupplierProducts(supplierName);
+            if (products.length === 0) return [];
+            titleLabel = supplierName + ' · 毛利分析';
+
+            products.sort(function(a, b) { return b.grossProfit - a.grossProfit; });
+            tableColumns = [
+                { k:'name', label:'存货名称', w:200 },
+                { k:'salesAmount', label:'销售额(¥)', cls:'num' },
+                { k:'qty', label:'销售数量', cls:'num' },
+                { k:'avgPurchasePrice', label:'平均进价(¥)', cls:'num' },
+                { k:'grossProfit', label:'毛利(¥)', cls:'num' },
+                { k:'grossMarginRate', label:'毛利率', cls:'num' }
+            ];
+            tableRows = [];
+            for (var i = 0; i < products.length; i++) {
+                var p = products[i];
+                tableRows.push({
+                    name: { name: p.name },
+                    salesAmount: { v: fmtNum(p.salesAmount, 0) },
+                    qty: { v: fmtNum(p.qty, 1) },
+                    avgPurchasePrice: { v: fmtInt(p.avgPurchasePrice) },
+                    grossProfit: { v: fmtNum(p.grossProfit, 0) },
+                    grossMarginRate: { v: fmtPct(p.grossMarginRate) }
+                });
+            }
+
+        } else if (sceneKey === 'S03') {
+            // 采购供应商毛利汇总
+            var buyerName = params.buyer;
+            var summary = getSupplierSummary(buyerName);
+            if (!summary || summary.length === 0) return [];
+            titleLabel = buyerName + ' · 供应商毛利汇总';
+
+            tableColumns = [
+                { k:'supplier', label:'供应商', w:120 },
+                { k:'totalSales', label:'销售额(¥)', cls:'num' },
+                { k:'totalQty', label:'销售数量', cls:'num' },
+                { k:'avgPurchasePrice', label:'平均进价(¥)', cls:'num' },
+                { k:'totalProfit', label:'毛利(¥)', cls:'num' },
+                { k:'grossMarginRate', label:'毛利率', cls:'num' },
+                { k:'salesShare', label:'销售额占比', cls:'num' },
+                { k:'profitShare', label:'毛利占比', cls:'num' }
+            ];
+            tableRows = [];
+            for (var i = 0; i < summary.length; i++) {
+                var s = summary[i];
+                tableRows.push({
+                    supplier: s.supplier,
+                    totalSales: { v: fmtNum(s.totalSales, 0) },
+                    totalQty: { v: fmtNum(s.totalQty, 1) },
+                    avgPurchasePrice: { v: fmtInt(s.avgPurchasePrice) },
+                    totalProfit: { v: fmtNum(s.totalProfit, 0) },
+                    grossMarginRate: { v: fmtPct(s.grossMarginRate) },
+                    salesShare: { v: fmtPct(s.salesShare) },
+                    profitShare: { v: fmtPct(s.profitShare) }
+                });
+            }
+        }
+
+        blocks.push({
+            type: 'table',
+            title: titleLabel,
+            pageSize: 10,
+            columns: tableColumns,
+            rows: tableRows,
+            foot: null
+        });
+
+        // 经营建议
+        var adviseItems = [];
+        var profitProducts = [];
+        var lossProducts = [];
+
+        if (sceneKey === 'S01') {
+            var products = getBuyerMarginProducts(params.buyer);
+            if (products) {
+                for (var i = 0; i < products.length; i++) {
+                    if (products[i].grossProfit > 0) profitProducts.push(products[i]);
+                    else if (products[i].grossProfit < 0) lossProducts.push(products[i]);
+                }
+            }
+        } else if (sceneKey === 'S02') {
+            var products = getSupplierProducts(params.supplier);
+            for (var i = 0; i < products.length; i++) {
+                if (products[i].grossProfit > 0) profitProducts.push(products[i]);
+                else if (products[i].grossProfit < 0) lossProducts.push(products[i]);
+            }
+        } else if (sceneKey === 'S03') {
+            var summary = getSupplierSummary(params.buyer);
+            if (summary) {
+                for (var i = 0; i < summary.length; i++) {
+                    if (summary[i].totalProfit > 0) profitProducts.push(summary[i]);
+                    else if (summary[i].totalProfit < 0) lossProducts.push(summary[i]);
+                }
+            }
+        }
+
+        if (lossProducts.length > 0) {
+            adviseItems.push({
+                prio: 'P0', title: '负毛利商品共 ' + lossProducts.length + ' 个',
+                desc: '存在负毛利商品，建议排查进价异常或售价过低问题，及时调整定价策略。'
+            });
+        }
+        if (profitProducts.length > 0) {
+            adviseItems.push({
+                prio: 'P2', title: '盈利商品共 ' + profitProducts.length + ' 个',
+                desc: '整体毛利健康，建议对高毛利商品加大推广力度，提升整体盈利能力。'
+            });
+        }
+        if (adviseItems.length > 0) {
+            blocks.push({
+                type: 'advise', title: '💡 经营建议', items: adviseItems
+            });
+        }
+
+        // 计算逻辑面板
+        var formulaSteps = buildFormulaSteps(sceneKey, params);
+        blocks.push({
+            type: 'formula', title: '🧮 完整计算逻辑（字段口径说明）',
+            collapsed: true, steps: formulaSteps
+        });
+
+        return blocks;
+    }
+
+    /* ──── 构建计算逻辑步骤 ──── */
+    function buildFormulaSteps(sceneKey, params) {
+        var steps = [];
+        var scene = SCENE_INFO[sceneKey] || SCENE_INFO['S01'];
+
+        // 一、数据来源
+        steps.push({
+            body: '<b>📌 一、数据来源</b><br/>' +
+                  '仅查询以下4个固定仓库的库存数据：<br/>' +
+                  '<table style="width:100%;border-collapse:collapse;margin-top:4px;font-size:12px">' +
+                  '<tr style="background:#F3F4F6"><td style="padding:3px 6px;border:1px solid #E5E7EB"><b>仓库编码</b></td><td style="padding:3px 6px;border:1px solid #E5E7EB"><b>仓库名称</b></td></tr>' +
+                  '<tr><td style="padding:3px 6px;border:1px solid #E5E7EB">01</td><td style="padding:3px 6px;border:1px solid #E5E7EB">发货区</td></tr>' +
+                  '<tr><td style="padding:3px 6px;border:1px solid #E5E7EB">03</td><td style="padding:3px 6px;border:1px solid #E5E7EB">奥州外仓</td></tr>' +
+                  '<tr><td style="padding:3px 6px;border:1px solid #E5E7EB">04</td><td style="padding:3px 6px;border:1px solid #E5E7EB">三农外仓</td></tr>' +
+                  '<tr><td style="padding:3px 6px;border:1px solid #E5E7EB">05</td><td style="padding:3px 6px;border:1px solid #E5E7EB">西库一楼</td></tr>' +
+                  '</table>'
+        });
+
+        // 二、场景与排序
+        var sceneLabels = { S01: '采购毛利查询', S02: '供应商毛利查询', S03: '采购供应商毛利汇总' };
+        var sortDesc = '';
+        if (sceneKey === 'S01') sortDesc = '按<B>毛利从高到低</B>排序';
+        else if (sceneKey === 'S02') sortDesc = '按<B>毛利从高到低</B>排序';
+        else if (sceneKey === 'S03') sortDesc = '按<B>毛利从高到低</B>排序';
+
+        steps.push({
+            body: '<b>📌 二、场景筛选与排序规则</b><br/>' +
+                  '当前场景：<b>' + (sceneLabels[sceneKey] || '采购毛利查询') + '</b><br/>' +
+                  '排序规则：' + sortDesc
+        });
+
+        // 三、各字段取值规则
+        steps.push({
+            body: '<b>📌 三、各字段取值规则（按列顺序）</b><br/>' +
+                  '<table style="width:100%;border-collapse:collapse;margin-top:4px;font-size:12px">' +
+                  '<tr style="background:#F3F4F6"><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>#</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>字段</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>数据来源</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>取值规则</b></td></tr>' +
+                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">①</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>存货名称</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">存货表-存货名称</td><td style="padding:4px 8px;border:1px solid #E5E7EB">取存货名称</td></tr>' +
+                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">②</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>销售额</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">销货单统计表-含税金额</td><td style="padding:4px 8px;border:1px solid #E5E7EB">查询时间范围内含税金额合计</td></tr>' +
+                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">③</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>销售数量</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">销货单统计表-数量(主单位)</td><td style="padding:4px 8px;border:1px solid #E5E7EB">查询时间范围内数量合计</td></tr>' +
+                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">④</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>平均进价</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">进货单明细表</td><td style="padding:4px 8px;border:1px solid #E5E7EB">查询时间往前倒推180天，4个仓库；公式=进货总金额÷进货总数量，取整数</td></tr>' +
+                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑤</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>毛利</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>= 销售额 −（销售数量 × 平均进价）</b>，取整数</td></tr>' +
+                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑥</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>毛利率</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>= 毛利 ÷ 销售额</b>，保留小数点2位，显示百分比</td></tr>' +
+                  (sceneKey === 'S03' ? '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑦</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>销售额占比</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB">= 该供应商销售额 ÷ 总销售额</td></tr>' +
+                  '<tr><td style="padding:4px 8px;border:1px solid #E5E7EB">⑧</td><td style="padding:4px 8px;border:1px solid #E5E7EB"><b>毛利占比</b></td><td style="padding:4px 8px;border:1px solid #E5E7EB">公式计算</td><td style="padding:4px 8px;border:1px solid #E5E7EB">= 该供应商毛利 ÷ 总毛利</td></tr>' : '') +
+                  '</table>'
+        });
+
+        // 四、下载说明
+        steps.push({
+            body: '<b>📌 四、下载导出说明</b><br/>' +
+                  '· 表格右上角 <b>📥 下载</b> 按钮可导出当前列表为 Excel 文件<br/>' +
+                  '· 下载内容默认包含表中所有可见字段'
+        });
+
+        // 五、场景问话
+        var queryExamples = '推荐问法（支持按天/月/年查询）：<br/>' +
+            '· <b>查询[采购员]昨天/本月/今年所有品的毛利情况</b><br/>' +
+            '· <b>查询[供应商]本月所有品的毛利情况</b><br/>' +
+            '· <b>查询[采购员]本月所有供应商毛利情况</b>';
+        steps.push({
+            body: '<b>📌 五、场景问话说明</b><br/>' + queryExamples
+        });
+
+        return steps;
+    }
+
+    /* ──── 提交查询 ──── */
+    function submitQuery(query) {
+        if (!query || !query.trim()) return;
+        if (dom.welcome && !dom.welcome.classList.contains('hidden')) {
+            dom.welcome.classList.add('hidden');
+        }
+
+        var inner = dom.chatStream.querySelector('.chat-stream-inner');
+        if (!inner) {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'chat-stream-inner';
+            dom.chatStream.appendChild(wrapper);
+        }
+        var target = dom.chatStream.querySelector('.chat-stream-inner');
+
+        var userMeta = { time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) };
+        target.appendChild(renderMsg('user', query, userMeta));
+
+        setTimeout(function() {
+            var parsed = parseQuery(query);
+            if (parsed) {
+                var blocks = [];
+                var scene = SCENE_INFO[parsed.scene];
+
+                if (parsed.scene === 'S01' && parsed.buyer) {
+                    blocks = buildSceneResponse('S01', { buyer: parsed.buyer });
+                } else if (parsed.scene === 'S02' && parsed.supplier) {
+                    blocks = buildSceneResponse('S02', { supplier: parsed.supplier });
+                } else if (parsed.scene === 'S03' && parsed.buyer) {
+                    blocks = buildSceneResponse('S03', { buyer: parsed.buyer });
+                }
+
+                if (blocks.length > 0) {
+                    var aiMeta = {
+                        route: scene.label,
+                        thinking: ['解析查询参数', '匹配场景：' + scene.label, '计算各项指标', '生成综合视图'],
+                        blocks: blocks,
+                        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                    };
+                    target.appendChild(renderMsg('ai', '', aiMeta));
+                    if (dom.chatTitle) dom.chatTitle.textContent = '毛利分析智能体 · ' + scene.label;
+                } else {
+                    var fbBlocks = [
+                        { type: 'route', text: '暂无数据', icon: '⚠' },
+                        { type: 'alert', kind: 'warning', icon: '⚠', title: '暂无数据', desc: '当前查询条件下未找到相关数据。' }
+                    ];
+                    var aiMeta = {
+                        route: scene.label,
+                        thinking: ['未找到相关数据'],
+                        blocks: fbBlocks,
+                        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                    };
+                    target.appendChild(renderMsg('ai', '', aiMeta));
+                }
+            } else {
+                var fbBlocks = [
+                    { type: 'route', text: '未识别到采购员或供应商，请补充查询对象', icon: '⚠' },
+                    { type: 'alert', kind: 'warning', icon: '⚠', title: '未识别查询对象', desc: '请在查询中包含采购员名称，例如：<b>张杰</b>、<b>付超英</b>、<b>刘洋</b>、<b>任情情</b>。或者供应商名称，例如：<b>安大食品</b>、<b>三全食品</b>。' },
+                    { type: 'p', text: '💡 试试以下查询：' },
+                    { type: 'fallback-grid' }
+                ];
+                var aiMeta = {
+                    route: '毛利分析',
+                    thinking: ['解析查询参数', '未识别查询对象', '提示用户补充'],
+                    blocks: fbBlocks,
+                    time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                };
+                target.appendChild(renderMsg('ai', '', aiMeta));
+            }
+
+            setTimeout(function() { dom.chatStream.scrollTop = dom.chatStream.scrollHeight; }, 100);
+        }, 600);
+
+        setTimeout(function() { dom.chatStream.scrollTop = dom.chatStream.scrollHeight; }, 100);
+        dom.chatInput.value = '';
+        dom.chatInput.style.height = 'auto';
+        addHistoryItem(query);
+    }
+
+    function addHistoryItem(query) {
+        var shortTitle = query.length > 22 ? query.slice(0,22) + '…' : query;
+        var icon = '💰';
+        var item = document.createElement('div');
+        item.className = 'h-item';
+        item.dataset.query = query;
+        item.innerHTML = '<span class="h-ico">' + icon + '</span><span class="h-title">' + shortTitle + '</span><input class="h-edit-input" value="' + query.replace(/"/g, '&quot;') + '" style="display:none" /><span class="h-actions"><button class="h-rename" title="重命名">✎</button><button class="h-del" title="删除">✕</button></span>';
+        item.title = query;
+        item.querySelector('.h-title').addEventListener('click', function() { dom.welcome.classList.add('hidden'); submitQuery(query); });
+        item.querySelector('.h-ico').addEventListener('click', function() { dom.welcome.classList.add('hidden'); submitQuery(query); });
+        item.querySelector('.h-rename').addEventListener('click', function(e) { e.stopPropagation(); startRename(item); });
+        item.querySelector('.h-del').addEventListener('click', function(e) { e.stopPropagation(); item.style.opacity = '0'; item.style.transform = 'translateX(-12px)'; item.style.transition = 'all .2s'; setTimeout(function() { item.remove(); updateHistoryCount(); }, 200); });
+        var firstItem = dom.historyList.firstChild;
+        if (firstItem) { dom.historyList.insertBefore(item, firstItem); }
+        else { dom.historyList.appendChild(item); }
+        updateHistoryCount();
+    }
+
+    function startRename(item) {
+        var titleSpan = item.querySelector('.h-title');
+        var input = item.querySelector('.h-edit-input');
+        item.classList.add('editing');
+        input.style.display = 'block';
+        input.value = item.dataset.query;
+        input.focus();
+        input.select();
+        var finish = function() {
+            var newVal = input.value.trim();
+            if (newVal) { item.dataset.query = newVal; titleSpan.textContent = newVal.length > 22 ? newVal.slice(0,22) + '…' : newVal; item.title = newVal; }
+            item.classList.remove('editing');
+            input.style.display = 'none';
+        };
+        input.addEventListener('blur', finish);
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+            if (e.key === 'Escape') { input.value = item.dataset.query; input.blur(); }
+        });
+    }
+
+    function updateHistoryCount() {
+        var count = dom.historyList.querySelectorAll('.h-item').length;
+        var el = document.querySelector('.hs-count');
+        if (el) el.textContent = count;
+    }
+
+    /* ──── 下载 ──── */
+    function downloadExcel(block, rows) {
+        var dlColumns = [];
+        for (var di = 0; di < block.columns.length; di++) {
+            if (block.columns[di].k !== 'rk') {
+                dlColumns.push(block.columns[di]);
+            }
+        }
+        var xlsHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><style>td{mso-number-format:"\\@";}</style></head><body><table>';
+        xlsHtml += '<tr>';
+        for (var i = 0; i < dlColumns.length; i++) {
+            xlsHtml += '<th>' + (dlColumns[i].label || dlColumns[i].k || '') + '</th>';
+        }
+        xlsHtml += '</tr>';
+        for (var i = 0; i < rows.length; i++) {
+            var r = rows[i];
+            xlsHtml += '<tr>';
+            for (var j = 0; j < dlColumns.length; j++) {
+                var c = dlColumns[j];
+                var v = r[c.k];
+                if (v === undefined || v === null) { v = ''; }
+                else if (typeof v === 'object' && v !== null) {
+                    if (v.name) { v = v.name; }
+                    else if (v.v !== undefined) { v = v.v; }
+                    else { v = ''; }
+                }
+                v = String(v);
+                xlsHtml += '<td>' + v.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</td>';
+            }
+            xlsHtml += '</tr>';
+        }
+        xlsHtml += '</table></body></html>';
+        var blob = new Blob([xlsHtml], { type: 'application/vnd.ms-excel' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        var title = (block.title || 'data').replace(/[^一-龥a-zA-Z0-9]/g, '_');
+        a.download = title + '.xls';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    /* ──── 事件绑定 ──── */
+    dom.sendBtn.addEventListener('click', function() { var q = dom.chatInput.value.trim(); if (q) submitQuery(q); });
+    dom.chatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); var q = dom.chatInput.value.trim(); if (q) submitQuery(q); } });
+    dom.chatInput.addEventListener('input', function() { dom.chatInput.style.height = 'auto'; dom.chatInput.style.height = Math.min(dom.chatInput.scrollHeight, 160) + 'px'; });
+    dom.newChatBtn.addEventListener('click', function() { var inner = dom.chatStream.querySelector('.chat-stream-inner'); if (inner) inner.remove(); if (dom.welcome) dom.welcome.classList.remove('hidden'); dom.chatStream.scrollTop = 0; dom.chatInput.value = ''; dom.chatInput.focus(); });
+
+    dom.quickCmds.addEventListener('click', function(e) {
+        var btn = e.target.closest('.qc');
+        if (!btn) return;
+        var q = btn.dataset.q;
+        if (q) { dom.chatInput.value = q; submitQuery(q); }
+    });
+
+    document.addEventListener('click', function(e) {
+        var card = e.target.closest('.suggest-card');
+        if (!card) return;
+        var q = card.dataset.q;
+        if (q) submitQuery(q);
+    });
+})();
+</script>
+</body>
+</html>
