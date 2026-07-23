@@ -216,8 +216,7 @@ a { color: inherit; text-decoration: none; cursor: pointer; }
 .tbl-act { display: flex; align-items: center; gap: 6px; }
 .tbl-act button { font-size: 11.5px; color: var(--text-2); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); background: #fff; }
 .tbl-act button:hover { color: var(--primary); border-color: var(--primary); }
-.tbl-expand-btn { font-size: 11.5px; color: var(--primary); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--primary); background: #fff; cursor: pointer; }
-.tbl-expand-btn:hover { background: var(--primary-soft); }
+
 .tbl-dl-btn { font-size: 11.5px; color: var(--success); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--success); background: #fff; cursor: pointer; }
 .tbl-dl-btn:hover { background: var(--success-soft); }
 
@@ -870,21 +869,15 @@ function fmtInt(v) {
             var totalPages = Math.ceil(totalRows / pageSize);
             var currentPage = 1;
             var allRows = block.rows;
-            var expandedAll = false;
 
-            function renderTable(page, expanded) {
-                var rowsToShow;
-                if (expanded) {
-                    rowsToShow = allRows;
-                } else {
-                    var start = (page - 1) * pageSize;
-                    rowsToShow = allRows.slice(start, start + pageSize);
-                }
+            function renderTable(page) {
+                var start = (page - 1) * pageSize;
+                var rowsToShow = allRows.slice(start, start + pageSize);
 
                 var headHtml = '';
                 if (block.title) {
                     var extraHtml = block.headBarExtra || '';
-                    headHtml = '<div class="tbl-head-bar"><div class="tbl-title">' + block.title + '</div><div class="tbl-act" style="gap:8px">' + extraHtml + '<button class="tbl-dl-btn" title="下载 Excel">📥 下载</button><button class="tbl-expand-btn">' + (expanded ? '收起' : '查看全部') + '</button></div></div>';
+                    headHtml = '<div class="tbl-head-bar"><div class="tbl-title">' + block.title + '</div><div class="tbl-act" style="gap:8px">' + extraHtml + '<button class="tbl-dl-btn" title="下载 Excel">📥 下载</button></div></div>';
                 }
                 var colHtml = '<tr>';
                 for (var i = 0; i < block.columns.length; i++) {
@@ -919,22 +912,14 @@ function fmtInt(v) {
                 if (totalPages > 1) {
                     var pageBtns = '';
                     for (var p = 1; p <= totalPages; p++) {
-                        pageBtns += '<button class="tbl-page-btn' + (p === page && !expanded ? ' active' : '') + '" data-page="' + p + '">' + p + '</button>';
+                        pageBtns += '<button class="tbl-page-btn' + (p === page ? ' active' : '') + '" data-page="' + p + '">' + p + '</button>';
                     }
-                    footHtml = '<div class="tbl-foot"><span>共 ' + totalRows + ' 条结果' + (!expanded ? ' · 第 ' + page + '/' + totalPages + ' 页' : ' · 全部展开') + '</span><span>' + pageBtns + '</span></div>';
+                    footHtml = '<div class="tbl-foot"><span>共 ' + totalRows + ' 条结果 · 第 ' + page + '/' + totalPages + ' 页</span><span>' + pageBtns + '</span></div>';
                 } else if (block.foot) {
                     footHtml = '<div class="tbl-foot"><span>' + (block.foot.left || '') + '</span><span>' + (block.foot.right || '') + '</span></div>';
                 }
 
                 wrap.innerHTML = headHtml + '<div class="tbl-scroll"><table class="tbl"><thead>' + colHtml + '</thead><tbody>' + rowHtml + '</tbody></table></div>' + footHtml;
-
-                var expandBtn = wrap.querySelector('.tbl-expand-btn');
-                if (expandBtn) {
-                    expandBtn.addEventListener('click', function() {
-                        expandedAll = !expandedAll;
-                        renderTable(currentPage, expandedAll);
-                    });
-                }
 
                 var dlBtn = wrap.querySelector('.tbl-dl-btn');
                 if (dlBtn) {
@@ -948,8 +933,7 @@ function fmtInt(v) {
                     (function(btn) {
                         btn.addEventListener('click', function() {
                             currentPage = parseInt(btn.dataset.page);
-                            expandedAll = false;
-                            renderTable(currentPage, false);
+                            renderTable(currentPage);
                         });
                     })(pageBtns[i]);
                 }
@@ -970,7 +954,7 @@ function fmtInt(v) {
                 }
             }
 
-            renderTable(currentPage, false);
+            renderTable(currentPage);
             return wrap;
         }
         case 'formula': {
