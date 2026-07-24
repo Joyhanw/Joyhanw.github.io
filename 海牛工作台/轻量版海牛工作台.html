@@ -1,0 +1,3285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轻量化海牛工作台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f0f2f5;
+            color: #262626;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ========== 顶部导航 ========== */
+        .top-header {
+            height: 64px;
+            background: #001529;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .logo-text {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 20px;
+            color: rgba(255, 255, 255, 0.65);
+            background: none;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-tab:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-tab.active {
+            color: #fff;
+            background: #1890ff;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px 6px 6px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .user-info:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #13c2c2 0%, #08979c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .user-name {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+        }
+        .prd-badge {
+            display: inline-flex; align-items: center; height: 20px; padding: 0 6px;
+            border-radius: 3px; font-size: 10px; font-weight: 600;
+            background: #f5222d; color: #fff; margin-left: 4px; letter-spacing: .5px;
+        }
+
+        /* ========== 主容器 ========== */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px;
+            flex: 1;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        /* ========== 视图切换 ========== */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== 工具栏 ========== */
+        .toolbar {
+            background: #fff;
+            border-radius: 4px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            width: 320px;
+            height: 36px;
+            padding: 0 12px 0 36px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23999' d='M11.7 10.3l3.9 3.9-1.4 1.4-3.9-3.9c-1 .8-2.3 1.3-3.7 1.3C3.5 13 1 10.5 1 7.5S3.5 2 6.5 2 12 4.5 12 7.5c0 1.4-.5 2.7-1.3 3.8zM6.5 3.5C4.3 3.5 2.5 5.3 2.5 7.5S4.3 11.5 6.5 11.5 10.5 9.7 10.5 7.5 8.7 3.5 6.5 3.5z'/%3E%3C/svg%3E") no-repeat 12px center;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #40a9ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+
+        .search-box::placeholder {
+            color: #bfbfbf;
+        }
+
+        .btn {
+            height: 36px;
+            padding: 0 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1890ff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #40a9ff;
+            box-shadow: 0 2px 4px rgba(24, 144, 255, 0.3);
+        }
+
+        .btn-default {
+            background: #fff;
+            color: #595959;
+            border: 1px solid #d9d9d9;
+        }
+
+        .btn-default:hover {
+            color: #40a9ff;
+            border-color: #40a9ff;
+        }
+
+        .btn-danger {
+            background: #ff4d4f;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #ff7875;
+        }
+
+        .btn-success {
+            background: #52c41a;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: #73d13d;
+        }
+
+        /* ========== 项目网格 ========== */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        /* ========== 项目卡片 ========== */
+        .project-card {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 4px;
+            padding: 24px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .project-card:hover {
+            border-color: #1890ff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .project-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .backend-icon {
+            background: linear-gradient(135deg, #e6fffb 0%, #b5f5ec 100%);
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .project-name {
+            font-size: 17px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .project-desc {
+            font-size: 13px;
+            color: #8c8c8c;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .project-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .role-tag {
+            display: inline-flex;
+            align-items: center;
+            height: 22px;
+            padding: 0 10px;
+            border-radius: 11px;
+            font-size: 12px;
+            background: #f0f5ff;
+            color: #2f54eb;
+            border: 1px solid #adc6ff;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            height: 22px;
+            padding: 0 8px;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+
+        .tag-running {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+
+        .tag-stopped {
+            background: #fff1f0;
+            border: 1px solid #ffa39e;
+            color: #ff4d4f;
+        }
+
+        .meta-text {
+            color: #8c8c8c;
+            font-size: 13px;
+        }
+
+        /* ========== 卡片更多按钮 ========== */
+        .card-more-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: none;
+            color: #8c8c8c;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .card-more-btn:hover {
+            background: #f5f5f5;
+            color: #262626;
+        }
+
+        /* ========== 下拉菜单 ========== */
+        .card-dropdown {
+            position: absolute;
+            top: 48px;
+            right: 20px;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 10;
+            min-width: 140px;
+        }
+
+        .card-dropdown.show {
+            display: block;
+            animation: dropdownSlide 0.2s;
+        }
+
+        @keyframes dropdownSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #262626;
+            transition: all 0.3s;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .dropdown-item.danger {
+            color: #ff4d4f;
+        }
+
+        .dropdown-item.danger:hover {
+            background: #fff1f0;
+        }
+
+        /* ========== 弹窗 ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 540px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            animation: modalSlide 0.3s;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            color: #8c8c8c;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #f5f5f5;
+            color: #262626;
+        }
+
+        .modal-body {
+            padding: 24px;
+            max-height: calc(85vh - 140px);
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* ========== 表单样式 ========== */
+        .form-item {
+            margin-bottom: 20px;
+        }
+
+        .form-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #262626;
+            font-weight: 500;
+        }
+
+        .form-label .required {
+            color: #ff4d4f;
+            margin-right: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #40a9ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #40a9ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+
+        .form-hint {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #8c8c8c;
+        }
+
+        .form-error {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #ff4d4f;
+        }
+
+        /* 单选框组 */
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            padding-top: 4px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #262626;
+        }
+
+        .radio-group input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #1890ff;
+            cursor: pointer;
+        }
+
+        /* ========== 通知 ========== */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            background: #fff;
+            border-radius: 4px;
+            padding: 16px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 1002;
+            min-width: 300px;
+            animation: slideInRight 0.3s;
+        }
+
+        .notification.show {
+            display: flex;
+        }
+
+        .notification.success {
+            border-left: 4px solid #52c41a;
+        }
+
+        .notification.error {
+            border-left: 4px solid #ff4d4f;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .notification-icon {
+            font-size: 20px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .notification-message {
+            font-size: 13px;
+            color: #595959;
+        }
+
+        .notification-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: none;
+            color: #8c8c8c;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .notification-close:hover {
+            background: #f5f5f5;
+        }
+
+        /* ========== 详情页通用样式 ========== */
+        .detail-view {
+            display: none;
+        }
+        .detail-view.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .detail-header {
+            background: #fff;
+            border-radius: 8px;
+            padding: 28px 32px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .detail-header-left {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .detail-header-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+        .detail-header-icon.backend {
+            background: linear-gradient(135deg, #e6fffb 0%, #b5f5ec 100%);
+        }
+
+        .detail-header-info h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .detail-header-info p {
+            color: #8c8c8c;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .detail-header-actions {
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        /* 详情页生成入口按钮 */
+        .gen-entry-btn {
+            height: 40px;
+            padding: 0 20px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            background: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #262626;
+            white-space: nowrap;
+        }
+        .gen-entry-btn:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+            background: #f0f5ff;
+        }
+        .gen-entry-btn .link-icon {
+            font-size: 16px;
+        }
+        .gen-entry-btn .hash-icon {
+            font-size: 16px;
+            color: #8c8c8c;
+            margin-right: -4px;
+        }
+
+        /* 后端详情tabs */
+        .detail-tabs {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .detail-tab-nav {
+            display: flex;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 0 24px;
+        }
+        .detail-tab-item {
+            padding: 16px 24px;
+            font-size: 14px;
+            color: #595959;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            top: 1px;
+        }
+        .detail-tab-item:hover {
+            color: #1890ff;
+        }
+        .detail-tab-item.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+            font-weight: 500;
+        }
+
+        .detail-tab-content {
+            display: none;
+            padding: 24px;
+            min-height: 300px;
+        }
+        .detail-tab-content.active {
+            display: block;
+        }
+
+        /* 右侧占位区 */
+        .detail-layout {
+            display: flex;
+            gap: 20px;
+        }
+        .detail-layout-main {
+            flex: 1;
+        }
+        .detail-layout-side {
+            width: 280px;
+            flex-shrink: 0;
+        }
+        .detail-side-placeholder {
+            background: #fafafa;
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            padding: 24px;
+            text-align: center;
+            color: #bfbfbf;
+            font-size: 13px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .detail-side-placeholder .placeholder-icon {
+            font-size: 32px;
+            opacity: 0.5;
+        }
+
+        /* 接口列表 */
+        .api-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+            gap: 16px;
+        }
+        .api-item:last-child { border-bottom: none; }
+        .api-method {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            min-width: 48px;
+            text-align: center;
+        }
+        .api-method.get { background: #61affe; }
+        .api-method.post { background: #49cc90; }
+        .api-method.put { background: #fca130; }
+        .api-method.delete { background: #f93e3e; }
+        .api-path {
+            font-size: 13px;
+            color: #262626;
+            flex: 1;
+            font-family: monospace;
+        }
+        .api-desc {
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+
+        /* 文档区域 */
+        .doc-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #bfbfbf;
+        }
+        .doc-empty .doc-icon { font-size: 48px; margin-bottom: 16px; }
+
+        /* 生成弹窗进度 */
+        .gen-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .gen-step:last-child { border-bottom: none; }
+        .gen-step-indicator {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: #f0f0f0;
+            color: #8c8c8c;
+        }
+        .gen-step-indicator.active {
+            background: #1890ff;
+            color: #fff;
+        }
+        .gen-step-indicator.done {
+            background: #52c41a;
+            color: #fff;
+        }
+        .gen-step-content { flex: 1; }
+        .gen-step-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+        .gen-step-desc { font-size: 13px; color: #8c8c8c; }
+
+        /* 进度条 */
+        .progress-bar-wrap {
+            width: 100%;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1890ff, #52c41a);
+            border-radius: 3px;
+            transition: width 0.5s;
+            width: 0%;
+        }
+
+        /* 发布弹窗 */
+        .publish-info {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .publish-info .publish-icon { font-size: 48px; margin-bottom: 12px; }
+        .publish-info h3 { font-size: 18px; margin-bottom: 8px; }
+        .publish-info p { color: #8c8c8c; font-size: 14px; }
+
+        .publish-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .publish-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .publish-option:hover { border-color: #1890ff; background: #f0f5ff; }
+        .publish-option.selected { border-color: #1890ff; background: #f0f5ff; }
+        .publish-option-icon { font-size: 24px; }
+        .publish-option-text { flex: 1; }
+        .publish-option-text h4 { font-size: 14px; margin-bottom: 4px; }
+        .publish-option-text p { font-size: 12px; color: #8c8c8c; }
+
+        /* 联调loading */
+        .debug-loading {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .debug-loading .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #f0f0f0;
+            border-top-color: #1890ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 1400px) {
+            .project-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .detail-layout {
+                flex-direction: column;
+            }
+            .detail-layout-side {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-header {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 12px 16px;
+                gap: 10px;
+            }
+
+            .header-left {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .main-container {
+                padding: 12px;
+            }
+
+            .radio-group {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            
+            .detail-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+
+        /* ===== 后端服务详情专用样式 ===== */
+        .backend-detail-wrapper .detail-header {
+            background: #fff; border-radius: 8px; padding: 16px 24px; margin-bottom: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,.03); display: flex; justify-content: space-between; align-items: center;
+        }
+        .backend-detail-wrapper .detail-header-left { display: flex; align-items: center; gap: 12px; }
+        .backend-detail-wrapper .detail-header-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+        .backend-detail-wrapper .detail-header-info { display: flex; align-items: center; gap: 12px; }
+        .backend-detail-wrapper .detail-header-info h1 { font-size: 18px; font-weight: 600; }
+        .backend-detail-wrapper .tag {
+            display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 2px; font-size: 12px;
+        }
+        .backend-detail-wrapper .detail-tabs { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+        .backend-detail-wrapper .detail-tab-nav { display: flex; border-bottom: 1px solid #f0f0f0; padding: 0 24px; }
+        .backend-detail-wrapper .detail-tab-item {
+            padding: 14px 24px; font-size: 14px; color: #595959; cursor: pointer;
+            border-bottom: 2px solid transparent; transition: all .3s; position: relative; top: 1px;
+        }
+        .backend-detail-wrapper .detail-tab-item:hover { color: #1890ff; }
+        .backend-detail-wrapper .detail-tab-item.active { color: #1890ff; border-bottom-color: #1890ff; font-weight: 500; }
+        .backend-detail-wrapper .detail-tab-content { display: none; }
+        .backend-detail-wrapper .detail-tab-content.active { display: block; }
+        .backend-detail-wrapper .detail-layout { display: flex; gap: 20px; min-height: 500px; }
+        .backend-detail-wrapper .detail-layout-left { width: 440px; flex-shrink: 0; padding: 20px 0 20px 20px; overflow-y: auto; }
+        .backend-detail-wrapper .detail-layout-right { flex: 1; padding: 20px 20px 20px 0; overflow-y: auto; min-height: 500px; }
+        .backend-detail-wrapper .left-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+        .backend-detail-wrapper .search-input {
+            height: 32px; padding: 0 12px; border: 1px solid #d9d9d9; border-radius: 4px;
+            font-size: 13px; outline: none; transition: all .3s; flex: 1; min-width: 0;
+        }
+        .backend-detail-wrapper .search-input:focus { border-color: #40a9ff; box-shadow: 0 0 0 2px rgba(24,144,255,.1); }
+        .backend-detail-wrapper .btn {
+            height: 32px; padding: 0 14px; border: 1px solid #d9d9d9; border-radius: 4px;
+            background: #fff; font-size: 13px; cursor: pointer; transition: all .3s;
+            display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+        }
+        .backend-detail-wrapper .btn:hover { color: #1890ff; border-color: #1890ff; }
+        .backend-detail-wrapper .btn-primary { background: #1890ff; color: #fff; border-color: #1890ff; }
+        .backend-detail-wrapper .btn-primary:hover { background: #40a9ff; }
+        .backend-detail-wrapper .dropdown-wrap { position: relative; display: inline-block; }
+        .backend-detail-wrapper .dropdown-menu {
+            position: absolute; top: 100%; left: 0; margin-top: 4px;
+            background: #fff; border: 1px solid #f0f0f0; border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.15); display: none; z-index: 999; min-width: 130px;
+        }
+        .backend-detail-wrapper .dropdown-menu.show { display: block; animation: dropdownSlide .2s; }
+        .backend-detail-wrapper .dropdown-menu.right { left: auto; right: 0; }
+        .backend-detail-wrapper .dropdown-item {
+            padding: 9px 14px; cursor: pointer; font-size: 13px; color: #262626; transition: all .3s;
+        }
+        .backend-detail-wrapper .dropdown-item:hover { background: #f5f5f5; }
+        .backend-detail-wrapper .dropdown-item .icon { margin-right: 6px; }
+        .backend-detail-wrapper .api-panel { margin-bottom: 8px; border: 1px solid #f0f0f0; border-radius: 6px; overflow: hidden; }
+        .backend-detail-wrapper .api-panel-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px; background: #fafafa; cursor: pointer; transition: background .3s;
+        }
+        .backend-detail-wrapper .api-panel-header:hover { background: #f0f5ff; }
+        .backend-detail-wrapper .api-panel-header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+        .backend-detail-wrapper .api-panel-header-right { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+        .backend-detail-wrapper .api-panel-header .arrow { transition: transform .3s; font-size: 11px; color: #8c8c8c; }
+        .backend-detail-wrapper .api-panel-header .arrow.open { transform: rotate(90deg); }
+        .backend-detail-wrapper .api-panel-title { font-size: 13px; font-weight: 500; }
+        .backend-detail-wrapper .api-panel-badge {
+            display: inline-flex; align-items: center; height: 18px; padding: 0 6px;
+            border-radius: 9px; font-size: 11px; background: #e6f7ff; color: #1890ff;
+        }
+        .backend-detail-wrapper .api-panel-body { display: none; border-top: 1px solid #f0f0f0; }
+        .backend-detail-wrapper .api-panel-body.open { display: block; }
+        .backend-detail-wrapper .api-item {
+            display: flex; align-items: center; padding: 9px 16px;
+            border-bottom: 1px solid #f5f5f5; gap: 12px; cursor: pointer;
+        }
+        .backend-detail-wrapper .api-item:last-child { border-bottom: none; }
+        .backend-detail-wrapper .api-item:hover { background: #f8f8f8; }
+        .backend-detail-wrapper .api-method {
+            display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 11px;
+            font-weight: 600; color: #fff; min-width: 42px; text-align: center;
+        }
+        .backend-detail-wrapper .api-method.get { background: #61affe; }
+        .backend-detail-wrapper .api-method.post { background: #49cc90; }
+        .backend-detail-wrapper .api-method.put { background: #fca130; }
+        .backend-detail-wrapper .api-method.delete { background: #f93e3e; }
+        .backend-detail-wrapper .api-path { font-size: 12px; color: #262626; flex: 1; font-family: monospace; }
+        .backend-detail-wrapper .api-desc { font-size: 11px; color: #8c8c8c; white-space: nowrap; }
+        .backend-detail-wrapper .detail-view-area {
+            background: #fafafa; border: 1px dashed #d9d9d9; border-radius: 8px;
+            height: 100%; min-height: 500px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; color: #bfbfbf; padding: 40px;
+        }
+        .backend-detail-wrapper .detail-view-area .big-icon { font-size: 64px; margin-bottom: 16px; opacity: .5; }
+        .backend-detail-wrapper .detail-view-area h3 { font-size: 16px; color: #8c8c8c; font-weight: 400; margin-bottom: 6px; }
+        .backend-detail-wrapper .detail-view-area p { font-size: 13px; color: #d9d9d9; }
+        .backend-detail-wrapper .doc-sub-tab-nav {
+            display: flex; border-bottom: 1px solid #f0f0f0; padding: 0 24px; background: #fafafa;
+        }
+        .backend-detail-wrapper .doc-sub-tab-item {
+            padding: 12px 20px; font-size: 13px; color: #595959; cursor: pointer;
+            border-bottom: 2px solid transparent; transition: all .3s; position: relative; top: 1px;
+        }
+        .backend-detail-wrapper .doc-sub-tab-item:hover { color: #1890ff; }
+        .backend-detail-wrapper .doc-sub-tab-item.active { color: #1890ff; border-bottom-color: #1890ff; font-weight: 500; }
+        .backend-detail-wrapper .doc-sub-content { display: none; }
+        .backend-detail-wrapper .doc-sub-content.active { display: block; }
+        .backend-detail-wrapper .doc-empty {
+            text-align: center; padding: 60px 20px; color: #bfbfbf;
+        }
+        .backend-detail-wrapper .doc-empty .doc-icon { font-size: 56px; margin-bottom: 16px; opacity: .4; }
+        @media (max-width: 1100px) {
+            .backend-detail-wrapper .detail-layout { flex-direction: column; }
+            .backend-detail-wrapper .detail-layout-left { width: 100%; padding: 16px; }
+            .backend-detail-wrapper .detail-layout-right { padding: 16px; min-height: 300px; }
+        }
+
+        /* ========== PRD 抽屉 ========== */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 2000;
+        }
+        .drawer-overlay.show {
+            display: block;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -480px;
+            width: 480px;
+            max-width: calc(100vw - 48px);
+            height: 100vh;
+            background: #fff;
+            box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+            z-index: 2001;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .drawer.open {
+            right: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            flex-shrink: 0;
+        }
+        .drawer-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #262626;
+        }
+        .drawer-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #f5222d, #cf1322);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+        }
+        .drawer-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            color: #8c8c8c;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .drawer-close:hover {
+            background: #f5f5f5;
+            color: #262626;
+        }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        /* 抽屉内容空状态 */
+        .drawer-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #bfbfbf;
+            text-align: center;
+        }
+        .drawer-empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .drawer-empty-text {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* 点击 PRD 时指针样式 */
+        .prd-badge {
+            cursor: pointer;
+            user-select: none;
+        }
+        .prd-badge:hover {
+            opacity: 0.85;
+        }
+
+        /* ========== 前端详情 - 生成/发布流程（来自 light-hainiu-workbench） ========== */
+        .fd-conn-bar {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 24px; background: #e6f4ea; color: #137333; font-size: 13px; font-weight: 500;
+            border-bottom: 1px solid #ceead6;
+        }
+        .fd-conn-bar .dot { width: 8px; height: 8px; background: #34a853; border-radius: 50%; display: inline-block; }
+        .fd-conn-bar .sep { color: #9aa0a6; font-weight: 400; margin: 0 4px; }
+
+        .fd-gen-section { border-top: 1px solid #f0f0f0; padding-top: 18px; margin-top: 8px; }
+        .fd-gen-section-title {
+            font-size: 14px; font-weight: 600; margin-bottom: 14px; color: #262626;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .fd-gen-step {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 16px; background: #fafafa; border-radius: 8px; margin-bottom: 10px;
+            border: 1px solid #f0f0f0; transition: all .3s;
+        }
+        .fd-gen-step:last-child { margin-bottom: 0; }
+        .fd-gen-step-icon {
+            width: 36px; height: 36px; border-radius: 50%; display: flex; flex-shrink: 0;
+            align-items: center; justify-content: center;
+            font-size: 15px; font-weight: 700; transition: all .3s;
+        }
+        .fd-gen-step-icon.idle { background: #f5f5f5; color: #8c8c8c; }
+        .fd-gen-step-icon.running { background: #e6f7ff; color: #1890ff; animation: fdPulse 1.5s ease-in-out infinite; }
+        .fd-gen-step-icon.done { background: #f6ffed; color: #52c41a; }
+        .fd-gen-step-icon.fail { background: #fff1f0; color: #ff4d4f; }
+        @keyframes fdPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(24,144,255,.25); } 50% { box-shadow: 0 0 0 8px rgba(24,144,255,0); } }
+
+        .fd-gen-step-content { flex: 1; display: flex; align-items: center; justify-content: space-between; min-width: 0; }
+        .fd-gen-step-left { display: flex; align-items: center; gap: 10px; }
+        .fd-gen-step-name { font-size: 14px; font-weight: 500; color: #262626; }
+        .fd-gen-actions { display: flex; gap: 8px; align-items: center; }
+
+        .fd-inline-status {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 3px 12px; border-radius: 14px; font-size: 12px; font-weight: 500;
+        }
+        .fd-inline-status.idle { background: #f5f5f5; color: #8c8c8c; }
+        .fd-inline-status.running { background: #e6f7ff; color: #1890ff; }
+        .fd-inline-status.running .dot { display: inline-block; width: 6px; height: 6px; background: #1890ff; border-radius: 50%; animation: fdBlink 1s infinite; }
+        @keyframes fdBlink { 0%,100% { opacity: 1; } 50% { opacity: .2; } }
+        .fd-inline-status.done { background: #f6ffed; color: #52c41a; }
+        .fd-inline-status.fail { background: #fff1f0; color: #ff4d4f; }
+
+        .fd-task-section { margin-top: 16px; }
+        .fd-task-section-title {
+            font-size: 13px; font-weight: 500; color: #8c8c8c;
+            display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
+        }
+        .fd-task-list { max-height: 140px; overflow-y: auto; }
+        .fd-task-list-empty { text-align: center; color: #bfbfbf; padding: 20px 0; font-size: 13px; }
+        .fd-task-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 14px; background: #fafafa; border-radius: 6px; margin-bottom: 6px;
+            border: 1px solid #f0f0f0;
+        }
+        .fd-task-item:last-child { margin-bottom: 0; }
+        .fd-task-item .fd-task-info { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+        .fd-task-item .fd-task-name { font-size: 13px; color: #262626; }
+        .fd-task-item .fd-task-meta { font-size: 12px; color: #bfbfbf; }
+
+        .fd-global-loading {
+            position: fixed; inset: 0; background: rgba(255,255,255,.88);
+            display: none; align-items: center; justify-content: center; z-index: 9999;
+            flex-direction: column; gap: 20px;
+        }
+        .fd-global-loading.active { display: flex; }
+        .fd-global-loading .spinner { width: 44px; height: 44px; border: 4px solid #f0f0f0; border-top-color: #1890ff; border-radius: 50%; animation: fdSpin .8s linear infinite; }
+        @keyframes fdSpin { to { transform: rotate(360deg); } }
+        .fd-global-loading p { color: #8c8c8c; font-size: 15px; }
+
+        .fd-publish-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,.45);
+            display: none; align-items: flex-start; justify-content: center; z-index: 1100;
+            padding-top: 5vh;
+        }
+        .fd-publish-overlay.show { display: flex; }
+        .fd-publish-modal {
+            background: #fff; border-radius: 8px; width: 480px; max-width: 94vw;
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,.18); animation: fdModalIn .2s ease-out;
+        }
+        @keyframes fdModalIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fd-publish-footer {
+            display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .fd-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .fd-upload-area {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 14px; border: 1px dashed #d9d9d9; border-radius: 6px;
+            background: #fafafa; cursor: pointer; transition: all .2s;
+        }
+        .fd-upload-area:hover { border-color: #40a9ff; background: #f0f5ff; }
+        .fd-upload-area input[type="file"] { display: none; }
+        .fd-upload-placeholder { display: flex; align-items: center; gap: 8px; color: #bfbfbf; font-size: 13px; }
+        .fd-upload-hint { font-size: 12px; color: #bfbfbf; margin-top: 4px; }
+        .fd-icon-upload-wrapper { display: flex; align-items: center; gap: 10px; }
+        .fd-icon-upload-area { flex: 1; min-width: 0; margin-bottom: 0 !important; }
+        .fd-icon-samples { display: flex; gap: 6px; flex-shrink: 0; }
+        .fd-icon-sample, .fd-icon-sample-circle {
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .fd-icon-sample { border-radius: 9px; }
+        .fd-icon-sample-circle { border-radius: 50%; }
+
+        .fd-breadcrumb { display: flex; align-items: center; gap: 8px; padding: 0 0 16px 0; font-size: 13px; color: #bfbfbf; }
+        .fd-breadcrumb a { color: #1890ff; text-decoration: none; cursor: pointer; }
+        .fd-breadcrumb a:hover { text-decoration: underline; }
+        .fd-breadcrumb .sep { color: #d9d9d9; user-select: none; }
+        .fd-breadcrumb .current { color: #262626; font-weight: 500; }
+
+        .fd-mb-0 { margin-bottom: 0 !important; }
+
+        /* ========== 后端新建服务弹窗 Tab ========== */
+        .bd-create-tabs {
+            display: flex;
+            border-bottom: 1px solid #e8ecf1;
+            margin: 0 0 20px 0;
+            background: #fff;
+        }
+        .bd-create-tab {
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #595959;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all .3s;
+            position: relative;
+            top: 1px;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+        .bd-create-tab:hover {
+            color: #1890ff;
+        }
+        .bd-create-tab.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+            font-weight: 500;
+        }
+        .bd-create-tab-content {
+            display: none;
+        }
+        .bd-create-tab-content.active {
+            display: block;
+        }
+        /* Headers 键值对行 */
+        .header-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .header-row input {
+            flex: 1;
+        }
+        .header-row .btn-remove {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #fff1f0;
+            color: #ff4d4f;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .header-row .btn-remove:hover {
+            background: #ffccc7;
+        }
+        .btn-add-header {
+            padding: 6px 16px;
+            border: 1px dashed #d9d9d9;
+            background: #fff;
+            color: #1890ff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all .3s;
+        }
+        .btn-add-header:hover {
+            border-color: #1890ff;
+            background: #e6f7ff;
+        }
+</style>
+</head>
+<body>
+
+    <!-- ===== 顶部导航 ===== -->
+    <div class="top-header">
+        <div class="header-left">
+            <div class="logo-area" onclick="app.goHome()">
+                <div class="logo-icon">海</div>
+                <span class="logo-text">轻量化海牛工作台</span>
+            </div>
+            <div class="main-nav">
+                <button class="nav-tab active" data-tab="frontend">应用开发</button>
+                <button class="nav-tab" data-tab="backend">应用服务</button>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <span class="prd-badge" onclick="app.openPrdDrawer()">PRD</span>
+                <div class="user-avatar">唯</div>
+                <span class="user-name">唯安</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 主容器 ===== -->
+    <div class="main-container" id="mainContainer">
+
+        <!-- ===== 首页视图1: 应用开发 ===== -->
+        <div id="frontendHome" class="view active">
+            <div class="toolbar">
+                <input type="text" class="search-box" id="frontendSearch" placeholder="搜索应用名称或描述..." oninput="app.filterFrontend()">
+                <button class="btn btn-primary" onclick="app.showCreateModal()">+ 新建应用</button>
+            </div>
+            <div id="frontendGrid" class="project-grid"></div>
+        </div>
+
+        <!-- ===== 应用开发 - 详情页 ===== -->
+        <div id="frontendDetail" class="detail-view">
+            <div class="fd-detail-wrapper" style="padding:0;">
+                <div class="back-bar" style="background:#fff;border-bottom:1px solid #f0f0f0;padding:12px 24px;display:flex;align-items:center;gap:8px;font-size:13px;color:#8c8c8c;">
+                    <a style="color:#1890ff;text-decoration:none;cursor:pointer;" onclick="app.backToList('frontend')">应用开发列表</a>
+                    <span style="color:#d9d9d9;user-select:none;">›</span>
+                    <span style="color:#262626;font-weight:500;" id="fdBreadcrumbName">应用名称</span>
+                </div>
+                <div class="detail-header" style="padding:16px 24px;display:flex;align-items:center;justify-content:space-between;">
+                    <div class="detail-header-left" style="display:flex;align-items:center;gap:12px;">
+                        <div class="detail-header-icon" id="fdDetailIcon" style="width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:linear-gradient(135deg,#e6f7ff,#bae7ff);">📊</div>
+                        <div class="detail-header-info" style="display:flex;align-items:center;gap:12px;">
+                            <h1 id="fdDetailName" style="font-size:18px;font-weight:600;">应用名称</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 前端详情内容 -->
+            <div style="background:#fff;border-radius:8px;padding:32px 24px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.03);">
+                <h2 style="font-size:20px;font-weight:600;color:#262626;margin-bottom:8px;">后端代码管理</h2>
+                <p style="color:#8c8c8c;margin-bottom:24px;">选择项目和分组，一键生成后端代码并完成联调</p>
+                <div style="display:flex;gap:12px;justify-content:center;">
+                    <button class="btn btn-primary" onclick="app.openFdGenModal()">生成后端代码</button>
+                    <button class="btn btn-success" onclick="app.openFdPublishModal()" style="background:#52c41a;color:#fff;border:none;">发布</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 首页视图2: 应用服务 ===== -->
+        <div id="backendHome" class="view">
+            <div class="toolbar">
+                <input type="text" class="search-box" id="backendSearch" placeholder="搜索服务名称或描述..." oninput="app.filterBackend()">
+                <button class="btn btn-primary" onclick="app.showBackendCreateModal()">+ 新建服务</button>
+            </div>
+            <div id="backendGrid" class="project-grid"></div>
+        </div>
+
+        <!-- ===== 应用服务 - 详情页 ===== -->
+        <div id="backendDetail" class="detail-view">
+            <div class="backend-detail-wrapper" style="padding:0;">
+                <div class="back-bar" style="background:#fff;border-bottom:1px solid #f0f0f0;padding:12px 24px;display:flex;align-items:center;gap:8px;font-size:13px;color:#8c8c8c;">
+                    <a style="color:#1890ff;text-decoration:none;cursor:pointer;" onclick="app.backToList('backend')">应用服务列表</a>
+                    <span style="color:#d9d9d9;user-select:none;">›</span>
+                    <span style="color:#262626;font-weight:500;" id="bdBreadcrumbName">服务名称</span>
+                </div>
+                <div class="detail-header">
+                    <div class="detail-header-left">
+                        <div class="detail-header-icon" style="background:linear-gradient(135deg,#e6fffb,#b5f5ec);">🔌</div>
+                        <div class="detail-header-info">
+                            <h1 id="bdDetailName">服务名称</h1>
+                            <span class="tag" id="bdDetailStatus">运行中</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="detail-tabs">
+                    <div class="detail-tab-nav">
+                        <div class="detail-tab-item active" onclick="bdSwitchMainTab('api')">接口</div>
+                        <div class="detail-tab-item" onclick="bdSwitchMainTab('doc')">文档</div>
+                    </div>
+                    <div class="detail-tab-content active" id="bdTabApi">
+                        <div class="detail-layout">
+                            <div class="detail-layout-left">
+                                <div class="left-toolbar">
+                                    <input class="search-input" placeholder="搜索接口名称或英文名称" id="bdApiSearch">
+                                    <button class="btn btn-primary" onclick="bdDoSearch()">查询</button>
+                                    <div class="dropdown-wrap">
+                                        <button class="btn btn-primary" onclick="bdToggleDropdown(event,'bdAddMenu')">+ 添加</button>
+                                        <div class="dropdown-menu right" id="bdAddMenu">
+                                            <div class="dropdown-item" onclick="bdDoAction('新建分组')"><span class="icon">📂</span>新建分组</div>
+                                            <div class="dropdown-item" onclick="bdDoAction('生成接口')"><span class="icon">⚡</span>生成接口</div>
+                                            <div class="dropdown-item" onclick="bdDoAction('标签管理')"><span class="icon">🏷️</span>标签管理</div>
+                                        </div>
+                                    </div>
+                                    <button class="btn" onclick="bdReloadAll()" title="重新加载">↻</button>
+                                </div>
+                                <div id="bdApiPanelList">
+                                    <div class="api-panel">
+                                        <div class="api-panel-header" onclick="bdTogglePanel(this)">
+                                            <div class="api-panel-header-left"><span class="arrow open">▶</span><span class="api-panel-title">用户管理</span><span class="api-panel-badge">4</span></div>
+                                            <div class="api-panel-header-right">
+                                                <button class="btn" onclick="event.stopPropagation();bdReloadPanel(this)">↻</button>
+                                                <div class="dropdown-wrap">
+                                                    <button class="btn" onclick="event.stopPropagation();bdToggleDropdown(event,'bdPanelAdd1')">+</button>
+                                                    <div class="dropdown-menu right" id="bdPanelAdd1">
+                                                        <div class="dropdown-item" onclick="bdDoAction('新建接口')"><span class="icon">🔌</span>新建接口</div>
+                                                        <div class="dropdown-item" onclick="bdDoAction('新建方法')"><span class="icon">➕</span>新建方法</div>
+                                                        <div class="dropdown-item" onclick="bdDoAction('新建分组')"><span class="icon">📂</span>新建分组</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="api-panel-body open">
+                                            <div class="api-item" onclick="bdShowApiDetail('GET /api/v1/users - 获取用户列表')"><span class="api-method get">GET</span><span class="api-path">/api/v1/users</span><span class="api-desc">获取用户列表</span></div>
+                                            <div class="api-item" onclick="bdShowApiDetail('POST /api/v1/users - 创建用户')"><span class="api-method post">POST</span><span class="api-path">/api/v1/users</span><span class="api-desc">创建用户</span></div>
+                                            <div class="api-item" onclick="bdShowApiDetail('PUT /api/v1/users/{id} - 更新用户信息')"><span class="api-method put">PUT</span><span class="api-path">/api/v1/users/{id}</span><span class="api-desc">更新用户信息</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="api-panel">
+                                        <div class="api-panel-header" onclick="bdTogglePanel(this)">
+                                            <div class="api-panel-header-left"><span class="arrow open">▶</span><span class="api-panel-title">项目管理</span><span class="api-panel-badge">3</span></div>
+                                            <div class="api-panel-header-right">
+                                                <button class="btn" onclick="event.stopPropagation();bdReloadPanel(this)">↻</button>
+                                                <div class="dropdown-wrap">
+                                                    <button class="btn" onclick="event.stopPropagation();bdToggleDropdown(event,'bdPanelAdd2')">+</button>
+                                                    <div class="dropdown-menu right" id="bdPanelAdd2">
+                                                        <div class="dropdown-item" onclick="bdDoAction('新建接口')"><span class="icon">🔌</span>新建接口</div>
+                                                        <div class="dropdown-item" onclick="bdDoAction('新建方法')"><span class="icon">➕</span>新建方法</div>
+                                                        <div class="dropdown-item" onclick="bdDoAction('新建分组')"><span class="icon">📂</span>新建分组</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="api-panel-body open">
+                                            <div class="api-item" onclick="bdShowApiDetail('GET /api/v1/projects - 获取项目列表')"><span class="api-method get">GET</span><span class="api-path">/api/v1/projects</span><span class="api-desc">获取项目列表</span></div>
+                                            <div class="api-item" onclick="bdShowApiDetail('POST /api/v1/projects - 创建项目')"><span class="api-method post">POST</span><span class="api-path">/api/v1/projects</span><span class="api-desc">创建项目</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="api-panel">
+                                        <div class="api-panel-header" onclick="bdTogglePanel(this)">
+                                            <div class="api-panel-header-left"><span class="arrow">▶</span><span class="api-panel-title">数据报表</span><span class="api-panel-badge">2</span></div>
+                                            <div class="api-panel-header-right">
+                                                <button class="btn" onclick="event.stopPropagation();bdReloadPanel(this)">↻</button>
+                                                <div class="dropdown-wrap">
+                                                    <button class="btn" onclick="event.stopPropagation();bdToggleDropdown(event,'bdPanelAdd3')">+</button>
+                                                    <div class="dropdown-menu right" id="bdPanelAdd3">
+                                                        <div class="dropdown-item" onclick="bdDoAction('新建接口')"><span class="icon">🔌</span>新建接口</div>
+                                                        <div class="dropdown-item" onclick="bdDoAction('新建方法')"><span class="icon">➕</span>新建方法</div>
+                                                        <div class="dropdown-item" onclick="bdDoAction('新建分组')"><span class="icon">📂</span>新建分组</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="api-panel-body">
+                                            <div class="api-item" onclick="bdShowApiDetail('GET /api/v1/reports/summary - 获取报表概要')"><span class="api-method get">GET</span><span class="api-path">/api/v1/reports/summary</span><span class="api-desc">获取报表概要</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="detail-layout-right">
+                                <div class="detail-view-area" id="bdApiDetailArea">
+                                    <div class="big-icon">🔍</div>
+                                    <h3>点击接口查看详情</h3>
+                                    <p>选择左侧接口列表中的接口查看详细信息</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-tab-content" id="bdTabDoc">
+                        <div class="doc-sub-tab-nav">
+                            <div class="doc-sub-tab-item active" onclick="bdSwitchDocSubTab('apiDoc')">接口文档</div>
+                            <div class="doc-sub-tab-item" onclick="bdSwitchDocSubTab('debugDoc')">联调文档</div>
+                        </div>
+                        <div class="doc-sub-content active" id="bdSubTabApiDoc">
+                            <div class="detail-layout">
+                                <div class="detail-layout-left">
+                                    <div class="left-toolbar">
+                                        <input class="search-input" placeholder="搜索接口名称或英文名称">
+                                        <div class="dropdown-wrap">
+                                            <button class="btn" onclick="bdToggleDropdown(event,'bdFilterMenu1')" title="过滤器">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+                                            </button>
+                                            <div class="dropdown-menu" id="bdFilterMenu1">
+                                                <div class="dropdown-item" onclick="bdSetFilter('标签')">📌 标签</div>
+                                                <div class="dropdown-item" onclick="bdSetFilter('创建人')">👤 创建人</div>
+                                                <div class="dropdown-item" onclick="bdSetFilter('创建时间')">🕐 创建时间</div>
+                                                <div class="dropdown-item" onclick="bdSetFilter('发布时间')">🚀 发布时间</div>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown-wrap" style="margin-left:auto;">
+                                            <button class="btn" onclick="bdToggleDropdown(event,'bdMoreMenu1')">更多 ▾</button>
+                                            <button class="btn" onclick="bdDoAction('刷新')" title="刷新">↻</button>
+                                            <div class="dropdown-menu right" id="bdMoreMenu1">
+                                                <div class="dropdown-item" onclick="bdDoAction('导出')"><span class="icon">📥</span>导出</div>
+                                                <div class="dropdown-item" onclick="bdDoAction('地址配置')"><span class="icon">🔗</span>地址配置</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="bdDocPanelList">
+                                        <div class="api-panel">
+                                            <div class="api-panel-header" onclick="bdTogglePanel(this)">
+                                                <div class="api-panel-header-left"><span class="arrow open">▶</span><span class="api-panel-title">用户管理</span><span class="api-panel-badge">4</span></div>
+                                            </div>
+                                            <div class="api-panel-body open">
+                                                <div class="api-item" onclick="bdShowDocDetail('用户管理接口文档')"><span class="api-method get">GET</span><span class="api-path">/api/v1/users</span><span class="api-desc">获取用户列表</span></div>
+                                                <div class="api-item" onclick="bdShowDocDetail('用户管理接口文档')"><span class="api-method post">POST</span><span class="api-path">/api/v1/users</span><span class="api-desc">创建用户</span></div>
+                                                <div class="api-item" onclick="bdShowDocDetail('用户管理接口文档')"><span class="api-method put">PUT</span><span class="api-path">/api/v1/users/{id}</span><span class="api-desc">更新用户信息</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="api-panel">
+                                            <div class="api-panel-header" onclick="bdTogglePanel(this)">
+                                                <div class="api-panel-header-left"><span class="arrow open">▶</span><span class="api-panel-title">项目管理</span><span class="api-panel-badge">3</span></div>
+                                            </div>
+                                            <div class="api-panel-body open">
+                                                <div class="api-item" onclick="bdShowDocDetail('项目管理接口文档')"><span class="api-method get">GET</span><span class="api-path">/api/v1/projects</span><span class="api-desc">获取项目列表</span></div>
+                                                <div class="api-item" onclick="bdShowDocDetail('项目管理接口文档')"><span class="api-method post">POST</span><span class="api-path">/api/v1/projects</span><span class="api-desc">创建项目</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail-layout-right">
+                                    <div class="detail-view-area" id="bdDocDetailArea">
+                                        <div class="big-icon">📄</div>
+                                        <h3>选择文档查看详情</h3>
+                                        <p>点击左侧文档条目查看接口文档内容</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="doc-sub-content" id="bdSubTabDebugDoc">
+                            <div class="detail-layout">
+                                <div class="detail-layout-left">
+                                    <div class="left-toolbar">
+                                        <input class="search-input" placeholder="搜索联调记录">
+                                        <div class="dropdown-wrap">
+                                            <button class="btn" onclick="bdToggleDropdown(event,'bdFilterMenu2')" title="过滤器">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+                                            </button>
+                                            <div class="dropdown-menu" id="bdFilterMenu2">
+                                                <div class="dropdown-item" onclick="bdSetFilter('标签')">📌 标签</div>
+                                                <div class="dropdown-item" onclick="bdSetFilter('创建人')">👤 创建人</div>
+                                                <div class="dropdown-item" onclick="bdSetFilter('创建时间')">🕐 创建时间</div>
+                                                <div class="dropdown-item" onclick="bdSetFilter('发布时间')">🚀 发布时间</div>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown-wrap" style="margin-left:auto;">
+                                            <button class="btn" onclick="bdToggleDropdown(event,'bdMoreMenu2')">更多 ▾</button>
+                                            <button class="btn" onclick="bdDoAction('刷新')" title="刷新">↻</button>
+                                            <div class="dropdown-menu right" id="bdMoreMenu2">
+                                                <div class="dropdown-item" onclick="bdDoAction('导出')"><span class="icon">📥</span>导出</div>
+                                                <div class="dropdown-item" onclick="bdDoAction('地址配置')"><span class="icon">🔗</span>地址配置</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="doc-empty" style="padding:40px 20px;">
+                                        <div class="doc-icon">📋</div>
+                                        <p>暂无联调记录</p>
+                                    </div>
+                                </div>
+                                <div class="detail-layout-right">
+                                    <div class="detail-view-area">
+                                        <div class="big-icon">🔍</div>
+                                        <h3>选择联调记录查看详情</h3>
+                                        <p>点击左侧联调记录查看详细信息</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- ===== 新建应用弹窗 ===== -->
+    <div id="createModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">新建应用</div>
+                <button class="modal-close" onclick="app.closeModal('createModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-item">
+                    <label class="form-label"><span class="required">*</span>应用名称</label>
+                    <input type="text" class="form-input" id="newAppName" placeholder="请输入应用名称">
+                    <div class="form-error" id="nameError"></div>
+                </div>
+                <div class="form-item">
+                    <label class="form-label"><span class="required">*</span>页面形态</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="pageType" value="PC" checked> PC</label>
+                        <label><input type="radio" name="pageType" value="小程序"> 小程序</label>
+                    </div>
+                    <div class="form-error" id="typeError"></div>
+                </div>
+                <div class="form-item">
+                    <label class="form-label">应用描述</label>
+                    <textarea class="form-textarea" id="newAppDesc" placeholder="请简要描述应用的功能和目标用户..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="app.closeModal('createModal')">取消</button>
+                <button class="btn btn-primary" onclick="app.createProject()">创建应用</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 编辑弹窗（可编辑，无角色字段） ===== -->
+    <div id="configModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="configModalTitle">编辑</div>
+                <button class="modal-close" onclick="app.closeModal('configModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-item">
+                    <label class="form-label"><span class="required">*</span>应用名称</label>
+                    <input type="text" class="form-input" id="configAppName" placeholder="请输入应用名称">
+                    <div class="form-error" id="configNameError"></div>
+                </div>
+                <div class="form-item">
+                    <label class="form-label"><span class="required">*</span>页面形态</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="configPageType" value="PC"> PC</label>
+                        <label><input type="radio" name="configPageType" value="小程序"> 小程序</label>
+                    </div>
+                    <div class="form-error" id="configTypeError"></div>
+                </div>
+                <div class="form-item">
+                    <label class="form-label">应用描述</label>
+                    <textarea class="form-textarea" id="configAppDesc" placeholder="请简要描述应用的功能和目标用户..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="app.closeModal('configModal')">取消</button>
+                <button class="btn btn-primary" onclick="app.saveConfig()">保存修改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 删除确认弹窗 ===== -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">确认删除</div>
+                <button class="modal-close" onclick="app.closeModal('deleteModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>确定要删除 <strong id="deleteName"></strong> 吗？<br><br>删除后将无法恢复，请谨慎操作。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="app.closeModal('deleteModal')">取消</button>
+                <button class="btn btn-danger" onclick="app.confirmDelete()">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 生成后端代码弹窗 ===== -->
+    <div id="genModal" class="modal-overlay">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-header">
+                <div class="modal-title" id="genModalTitle">生成后端代码</div>
+                <button class="modal-close" onclick="app.closeGenModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="padding:4px 0;">
+                    <!-- 步骤1: 生成后端代码 -->
+                    <div class="gen-step" id="genStep1">
+                        <div class="gen-step-indicator" id="genStep1Ind">1</div>
+                        <div class="gen-step-content">
+                            <div class="gen-step-title">生成后端接口代码</div>
+                            <div class="gen-step-desc" id="genStep1Desc">等待开始生成...</div>
+                            <div class="progress-bar-wrap" id="genStep1Bar">
+                                <div class="progress-bar-fill" id="genStep1Fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 步骤2: 开始联调 -->
+                    <div class="gen-step" id="genStep2" style="display:none;">
+                        <div class="gen-step-indicator" id="genStep2Ind">2</div>
+                        <div class="gen-step-content">
+                            <div class="gen-step-title" id="genStep2Title">联调测试</div>
+                            <div class="gen-step-desc" id="genStep2Desc">点击下方按钮开始前后端联调</div>
+                        </div>
+                    </div>
+                    <!-- 步骤3: 完成 -->
+                    <div class="gen-step" id="genStep3" style="display:none;">
+                        <div class="gen-step-indicator" id="genStep3Ind">✓</div>
+                        <div class="gen-step-content">
+                            <div class="gen-step-title">联调完成</div>
+                            <div class="gen-step-desc">前后端联调已完成，可进行发布</div>
+                        </div>
+                    </div>
+                    <!-- 联调loading区域 -->
+                    <div id="debugLoadingArea" style="display:none;">
+                        <div class="debug-loading">
+                            <div class="spinner"></div>
+                            <div style="color:#595959;font-size:14px;">正在联调中，请稍候...</div>
+                            <div style="color:#bfbfbf;font-size:13px;margin-top:8px;">前后端接口联调预计需要1-2分钟</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="genModalFooter">
+                <button class="btn btn-default" onclick="app.closeGenModal()">关闭</button>
+                <button class="btn btn-primary" id="genStartBtn" onclick="app.startGeneration()" style="min-width:100px;">开始生成</button>
+                <button class="btn btn-primary" id="genDebugBtn" style="display:none;min-width:100px;" onclick="app.startDebug()">开始联调</button>
+                <button class="btn btn-primary" id="genPublishBtn" style="display:none;min-width:100px;" onclick="app.openPublishModal()">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 发布弹窗 ===== -->
+    <div id="publishModal" class="modal-overlay">
+        <div class="modal" style="max-width:440px;">
+            <div class="modal-header">
+                <div class="modal-title">发布应用</div>
+                <button class="modal-close" onclick="app.closeModal('publishModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="publish-info">
+                    <div class="publish-icon">🚀</div>
+                    <h3 style="font-size:20px;font-weight:600;">准备就绪</h3>
+                    <p style="color:#8c8c8c;margin-top:8px;">应用已完成联调，选择一个发布环境进行发布</p>
+                </div>
+                <div class="publish-options">
+                    <div class="publish-option selected" onclick="app.selectPublishEnv(this, 'test')">
+                        <div class="publish-option-icon">🧪</div>
+                        <div class="publish-option-text">
+                            <h4>测试环境</h4>
+                            <p>发布到测试环境进行验证</p>
+                        </div>
+                    </div>
+                    <div class="publish-option" onclick="app.selectPublishEnv(this, 'pre')">
+                        <div class="publish-option-icon">🔬</div>
+                        <div class="publish-option-text">
+                            <h4>预发布环境</h4>
+                            <p>发布到预发布环境进行最终验证</p>
+                        </div>
+                    </div>
+                    <div class="publish-option" onclick="app.selectPublishEnv(this, 'prod')">
+                        <div class="publish-option-icon">🌐</div>
+                        <div class="publish-option-text">
+                            <h4>生产环境</h4>
+                            <p>发布到生产环境，正式上线</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="app.closeModal('publishModal')">取消</button>
+                <button class="btn btn-primary" onclick="app.confirmPublish()" style="min-width:80px;">确认发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 通知 ===== -->
+    <div id="notification" class="notification">
+        <div class="notification-icon" id="notiIcon">✓</div>
+        <div class="notification-content">
+            <div class="notification-title" id="notiTitle">操作成功</div>
+            <div class="notification-message" id="notiMsg"></div>
+        </div>
+        <button class="notification-close" onclick="app.hideNotification()">✕</button>
+    </div>
+
+    <!-- ===== PRD 抽屉 ===== -->
+    <div class="drawer-overlay" id="prdOverlay" onclick="app.closePrdDrawer()"></div>
+    <div class="drawer" id="prdDrawer">
+        <div class="drawer-header">
+            <div class="drawer-title">
+                <div class="drawer-title-icon">文</div>
+                <span>PRD 文档</span>
+            </div>
+            <button class="drawer-close" onclick="app.closePrdDrawer()">✕</button>
+        </div>
+        <div class="drawer-body" id="prdDrawerBody">
+            <div class="drawer-empty">
+                <div class="drawer-empty-icon">📋</div>
+                <div class="drawer-empty-text">
+                    PRD 内容加载中...<br>
+                    请稍候
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 前端详情 - 生成代码弹窗 ===== -->
+    <div class="modal-overlay" id="fdGenModal">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-header">
+                <div class="modal-title">生成后端代码</div>
+                <button class="modal-close" onclick="app.closeFdGenModal()">✕</button>
+            </div>
+            <div class="fd-conn-bar">
+                <span class="dot"></span>
+                连接正常 检测到6个工作空间
+            </div>
+            <div class="modal-body">
+                <div class="form-item">
+                    <label class="form-label"><span class="required">*</span>所属项目</label>
+                    <select class="form-input" id="fdSelProject" onchange="app.fdOnProjectChange()">
+                        <option value="">请选择项目</option>
+                        <option value="传播大脑">传播大脑</option>
+                        <option value="融易算">融易算</option>
+                        <option value="OPC联合门户">OPC联合门户</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label class="form-label">所属分组</label>
+                    <select class="form-input" id="fdSelGroup">
+                        <option value="">请选择分组</option>
+                        <option value="用户中心">用户中心</option>
+                        <option value="推荐系统">推荐系统</option>
+                        <option value="内容中心">内容中心</option>
+                        <option value="数据中心">数据中心</option>
+                        <option value="标签系统">标签系统</option>
+                    </select>
+                </div>
+                <div class="fd-gen-section">
+                    <div class="fd-gen-section-title">
+                        任务流程
+                    </div>
+                    <div class="fd-gen-step" id="fdStepGen">
+                        <div class="fd-gen-step-icon idle" id="fdStepGenIcon">1</div>
+                        <div class="fd-gen-step-content">
+                            <div class="fd-gen-step-left">
+                                <span class="fd-gen-step-name">生成后端代码</span>
+                            </div>
+                            <div class="fd-gen-actions">
+                                <span class="fd-inline-status idle" id="fdStepGenStatus">待生成</span>
+                                <button class="btn btn-primary" style="height:32px;font-size:13px;padding:0 16px;" id="fdBtnStartGen" onclick="app.fdStartGeneration()">生成</button>
+                                <button class="btn btn-default" style="height:32px;font-size:13px;padding:0 16px;display:none;" id="fdBtnRetryGen" onclick="app.fdStartGeneration()">重新生成</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fd-gen-step" id="fdStepIntegrate">
+                        <div class="fd-gen-step-icon idle" id="fdStepIntIcon">2</div>
+                        <div class="fd-gen-step-content">
+                            <div class="fd-gen-step-left">
+                                <span class="fd-gen-step-name">接口联调</span>
+                            </div>
+                            <div class="fd-gen-actions">
+                                <span class="fd-inline-status idle" id="fdStepIntStatus">待联调</span>
+                                <button class="btn btn-success" style="height:32px;font-size:13px;padding:0 16px;display:none;background:#52c41a;color:#fff;border:none;" id="fdBtnStartInt" onclick="app.fdStartIntegration()">开始联调</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fd-task-section">
+                        <div class="fd-task-section-title">生成记录</div>
+                        <div class="fd-task-list" id="fdTaskList">
+                            <div class="fd-task-list-empty">暂无记录</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="app.closeFdGenModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 前端详情 - 发布弹窗 ===== -->
+    <div class="fd-publish-overlay" id="fdPublishModal">
+        <div class="fd-publish-modal">
+            <div class="modal-header">
+                <div class="modal-title">发布</div>
+                <button class="modal-close" onclick="app.closeFdPublishModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="fd-form-row">
+                    <div class="form-item fd-mb-0">
+                        <label class="form-label"><span class="required">*</span>小程序名称</label>
+                        <input class="form-input" id="fdPubName" placeholder="请输入小程序名称">
+                    </div>
+                    <div class="form-item fd-mb-0">
+                        <label class="form-label">图标</label>
+                        <div class="fd-icon-upload-wrapper">
+                            <div class="fd-upload-area fd-icon-upload-area" onclick="document.getElementById('fdPubIcon').click()">
+                                <input type="file" id="fdPubIcon" accept="image/*" onchange="app.fdUpdateUploadLabel(this, 'fdIconLabel')">
+                                <div class="fd-upload-placeholder">
+                                    <span id="fdIconLabel">点击上传图标</span>
+                                </div>
+                            </div>
+                            <div class="fd-icon-samples">
+                                <div class="fd-icon-sample" style="background:#f0f0f0;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#b0b0b0" stroke-width="1.5" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="16" cy="8" r="2" fill="#b0b0b0" stroke="none"/><path d="M3 16l5-5 4 4 3-3 6 6" stroke="#b0b0b0"/></svg>
+                                </div>
+                                <div class="fd-icon-sample" style="background:#f0f0f0;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#b0b0b0" stroke-width="1.5" width="16" height="16"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+                                </div>
+                                <div class="fd-icon-sample-circle" style="background:#f0f0f0;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#b0b0b0" stroke-width="1.5" width="18" height="18"><circle cx="12" cy="12" r="8"/><path d="M12 7v10M7 12h10"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fd-upload-hint">建议尺寸 96x96px，支持 PNG、JPG 格式</div>
+                    </div>
+                </div>
+                <div class="form-item">
+                    <label class="form-label"><span class="required">*</span>小程序类型</label>
+                    <div class="radio-group" id="fdPubTypeGroup">
+                        <label><input type="radio" name="fdPubType" value="mini" checked> 小程序</label>
+                        <label><input type="radio" name="fdPubType" value="game"> 小游戏</label>
+                        <label><input type="radio" name="fdPubType" value="h5"> H5应用</label>
+                        <label><input type="radio" name="fdPubType" value="widget"> 小组件</label>
+                        <label><input type="radio" name="fdPubType" value="lite"> 低功能</label>
+                    </div>
+                </div>
+                <div class="form-item">
+                    <label class="form-label"><span class="required">*</span>分类</label>
+                    <select class="form-input" id="fdPubCategory">
+                        <option value="">请选择分类</option>
+                        <option value="cat1">工具类</option>
+                        <option value="cat2">社交类</option>
+                        <option value="cat3">娱乐类</option>
+                        <option value="cat4">资讯类</option>
+                        <option value="cat5">商业类</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label class="form-label"><span class="required">*</span>小程序简介</label>
+                    <input class="form-input" id="fdPubIntro" placeholder="请输入小程序简介">
+                </div>
+                <div class="form-item">
+                    <label class="form-label">截图</label>
+                    <div class="fd-upload-area" onclick="document.getElementById('fdPubScreenshot').click()">
+                        <input type="file" id="fdPubScreenshot" accept="image/*" multiple onchange="app.fdUpdateUploadLabel(this, 'fdScreenshotLabel')">
+                        <div class="fd-upload-placeholder">
+                            <span id="fdScreenshotLabel">点击上传截图</span>
+                        </div>
+                    </div>
+                    <div class="fd-upload-hint">建议尺寸 750x1334px，支持 PNG、JPG 格式，最多可上传 5 张</div>
+                </div>
+                <div class="form-item">
+                    <label class="form-label"><span class="required">*</span>小程序描述</label>
+                    <textarea class="form-textarea" id="fdPubDesc" placeholder="请输入小程序描述"></textarea>
+                </div>
+            </div>
+            <div class="fd-publish-footer">
+                <button class="btn btn-default" onclick="app.closeFdPublishModal()">取消</button>
+                <button class="btn btn-primary" onclick="app.fdConfirmPublish()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 前端详情 - 全局加载层 ===== -->
+    <div class="fd-global-loading" id="fdGlobalLoading">
+        <div class="spinner"></div>
+        <p id="fdGlobalLoadingText">正在联调中，请稍候...</p>
+    </div>
+
+    <!-- ===== 后端新建服务弹窗 ===== -->
+    <div id="backendCreateModal" class="modal-overlay">
+        <div class="modal" style="max-width:620px;">
+            <div class="modal-header">
+                <div class="modal-title" id="bdCreateTitle">新建后端服务</div>
+                <button class="modal-close" onclick="app.closeBackendCreateModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- Tab 导航 -->
+                <div class="bd-create-tabs">
+                    <button class="bd-create-tab active" data-bdcreate-tab="basic" onclick="app.switchBdCreateTab('basic')">基础配置</button>
+                    <button class="bd-create-tab" data-bdcreate-tab="advanced" onclick="app.switchBdCreateTab('advanced')">高级配置</button>
+                    <button class="bd-create-tab" data-bdcreate-tab="global" onclick="app.switchBdCreateTab('global')">全局配置</button>
+                </div>
+
+                <!-- Tab: 基础配置 -->
+                <div class="bd-create-tab-content active" id="bdCreateTabBasic">
+                    <div class="form-item">
+                        <label class="form-label"><span class="required">*</span>服务名称</label>
+                        <input type="text" class="form-input" id="bdCreateName" placeholder="请输入服务名称">
+                        <div class="form-error" id="bdCreateNameError"></div>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">描述</label>
+                        <textarea class="form-textarea" id="bdCreateDesc" placeholder="请简要描述服务的功能..."></textarea>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">项目图标</label>
+                        <div class="fd-upload-area" onclick="document.getElementById('bdCreateIconInput').click()">
+                            <input type="file" id="bdCreateIconInput" accept="image/*" onchange="app.updateBdCreateIconLabel(this)">
+                            <div class="fd-upload-placeholder">
+                                <span id="bdCreateIconLabel">点击上传图标</span>
+                            </div>
+                        </div>
+                        <div class="fd-upload-hint">建议尺寸 96x96px，支持 PNG、JPG 格式</div>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label"><span class="required">*</span>环境</label>
+                        <select class="form-input" id="bdCreateEnv" onchange="app.onBdCreateEnvChange()">
+                            <option value="">请选择环境</option>
+                            <option value="dev">开发环境</option>
+                            <option value="test">测试环境</option>
+                            <option value="pre">预发布环境</option>
+                            <option value="prod">生产环境</option>
+                        </select>
+                    </div>
+                    <div class="form-item" id="bdCreateEnvAddrRow">
+                        <label class="form-label"><span class="required">*</span>地址</label>
+                        <input type="text" class="form-input" id="bdCreateEnvAddr" placeholder="环境地址">
+                    </div>
+                </div>
+
+                <!-- Tab: 高级配置 -->
+                <div class="bd-create-tab-content" id="bdCreateTabAdvanced">
+                    <div class="form-item">
+                        <label class="form-label">返回值结构</label>
+                        <input type="text" class="form-input" id="bdCreateReturnStruct" placeholder="如：{ code, data, message }">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">异常类型</label>
+                        <div style="margin-bottom:8px;font-size:13px;color:#8c8c8c;">默认展示不允许删除，可新增自定义异常</div>
+                        <table style="width:100%;border-collapse:collapse;font-size:13px;" id="bdCreateExceptionTable">
+                            <thead>
+                                <tr style="background:#fafafa;border-bottom:2px solid #f0f0f0;">
+                                    <th style="padding:8px 4px;text-align:left;font-weight:500;color:#262626;">异常名称</th>
+                                    <th style="padding:8px 4px;text-align:left;font-weight:500;color:#262626;">异常英文名称</th>
+                                    <th style="padding:8px 4px;text-align:left;font-weight:500;color:#262626;width:80px;">状态码</th>
+                                    <th style="padding:8px 4px;text-align:center;font-weight:500;color:#262626;width:60px;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bdCreateExceptionBody">
+                                <!-- 默认异常类型（不允许删除） -->
+                                <tr data-exception="default">
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" value="业务异常" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" value="BizException" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;width:70px;" value="400" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;text-align:center;color:#d9d9d9;">—</td>
+                                </tr>
+                                <tr data-exception="default">
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" value="参数异常" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" value="ParamException" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;width:70px;" value="400" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;text-align:center;color:#d9d9d9;">—</td>
+                                </tr>
+                                <tr data-exception="default">
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" value="鉴权异常" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" value="AuthException" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;width:70px;" value="401" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;text-align:center;color:#d9d9d9;">—</td>
+                                </tr>
+                                <tr data-exception="default">
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" value="系统异常" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" value="SystemException" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;width:70px;" value="500" readonly disabled></td>
+                                    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;text-align:center;color:#d9d9d9;">—</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="btn-add-header" style="margin-top:8px;" onclick="app.addBdCreateExceptionRow()">+ 新增异常类型</button>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">调试超时时间（秒）</label>
+                        <input type="number" class="form-input" id="bdCreateTimeout" placeholder="30" value="30">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">其他配置</label>
+                        <textarea class="form-textarea" id="bdCreateOtherConfig" placeholder="其他配置项，每行一个..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Tab: 全局配置 -->
+                <div class="bd-create-tab-content" id="bdCreateTabGlobal">
+                    <div class="form-item">
+                        <label class="form-label">Headers</label>
+                        <div id="bdCreateHeadersList">
+                            <!-- 动态 Headers 行 -->
+                        </div>
+                        <button class="btn-add-header" onclick="app.addBdCreateHeader()">+ 添加 Header</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="app.closeBackendCreateModal()">取消</button>
+                <button class="btn btn-primary" onclick="app.confirmCreateBackend()">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 应用状态
+        // ============================================================
+        const app = {
+            state: {
+                currentTab: 'frontend',
+                deleteId: null,
+                deleteType: null,
+                configTargetId: null,
+                // 当前查看的应用/服务的id
+                viewingFrontendId: null,
+                viewingBackendId: null,
+                // 生成状态: null | generating | complete | debugging | debugDone | published
+                genState: null,
+                publishEnv: 'test',
+                frontendProjects: [
+                    { id: 1, name: '投资管理系统', desc: '企业投资项目全生命周期管理平台', role: '管理员', icon: '📊', pageType: 'PC', genStatus: null },
+                    { id: 2, name: '数据员工', desc: '智能数据分析与可视化助手', role: '开发者', icon: '🤖', pageType: 'PC', genStatus: null },
+                    { id: 3, name: '数字员工', desc: '历史导入的业务系统', role: '访客', icon: '📁', pageType: '小程序', genStatus: null },
+                    { id: 4, name: '智能客服系统', desc: '基于AI的智能对话客服平台', role: '管理员', icon: '💬', pageType: 'PC', genStatus: null }
+                ],
+                backendProjects: [
+                    { id: 1, name: '投资管理系统-后端', desc: '投资管理系统的后端服务', status: 'running', role: '管理员' },
+                    { id: 2, name: '数据员工-后端', desc: '数据分析服务端接口', status: 'running', role: '开发者' },
+                    { id: 3, name: 'shop-user', desc: '用户中心服务', status: 'stopped', role: '开发者' },
+                    { id: 4, name: 'shop-item', desc: '商品管理服务', status: 'stopped', role: '开发者' }
+                ],
+                nextId: 5
+            },
+
+            // ============================================================
+            // 初始化
+            // ============================================================
+            init() {
+                this.renderFrontend();
+                this.renderBackend();
+
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const tabName = tab.dataset.tab;
+                        this.switchTab(tabName);
+                    });
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.card-more-btn')) {
+                        this.closeAllDropdowns();
+                    }
+                });
+
+                document.getElementById('newAppName').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') this.createProject();
+                });
+
+                document.getElementById('configAppName').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') this.saveConfig();
+                });
+
+                // ESC 关闭抽屉和前端弹窗
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closePrdDrawer();
+                        this.closeFdGenModal();
+                        this.closeFdPublishModal();
+                        this.closeBackendCreateModal();
+                    }
+                });
+
+                // 前端详情弹窗点击遮罩关闭
+                document.getElementById('fdGenModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) this.closeFdGenModal();
+                });
+                document.getElementById('fdPublishModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) this.closeFdPublishModal();
+                });
+                document.getElementById('backendCreateModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) this.closeBackendCreateModal();
+                });
+            },
+
+            // ============================================================
+            // 首页 / 列表切换
+            // ============================================================
+            goHome() {
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.querySelectorAll('.detail-view').forEach(v => v.classList.remove('active'));
+                if (this.state.currentTab === 'frontend') {
+                    document.getElementById('frontendHome').classList.add('active');
+                } else {
+                    document.getElementById('backendHome').classList.add('active');
+                }
+            },
+
+            backToList(type) {
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.querySelectorAll('.detail-view').forEach(v => v.classList.remove('active'));
+                if (type === 'frontend') {
+                    this.state.viewingFrontendId = null;
+                    document.getElementById('frontendHome').classList.add('active');
+                } else {
+                    this.state.viewingBackendId = null;
+                    document.getElementById('backendHome').classList.add('active');
+                }
+            },
+
+            // ============================================================
+            // 切换Tab
+            // ============================================================
+            switchTab(tab) {
+                this.state.currentTab = tab;
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector(`.nav-tab[data-tab="${tab}"]`).classList.add('active');
+
+                // 切回首页视图
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.querySelectorAll('.detail-view').forEach(v => v.classList.remove('active'));
+                document.getElementById(tab === 'frontend' ? 'frontendHome' : 'backendHome').classList.add('active');
+
+                if (tab === 'frontend') {
+                    document.getElementById('frontendSearch').value = '';
+                } else {
+                    document.getElementById('backendSearch').value = '';
+                }
+            },
+
+            // ============================================================
+            // 渲染应用开发列表
+            // ============================================================
+            renderFrontend(filterText = '') {
+                const grid = document.getElementById('frontendGrid');
+                const list = this.state.frontendProjects.filter(p =>
+                    p.name.includes(filterText) || p.desc.includes(filterText)
+                );
+
+                if (list.length === 0) {
+                    grid.innerHTML =
+                        `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8c8c8c;">暂无匹配的应用</div>`;
+                    return;
+                }
+
+                grid.innerHTML = list.map(p => {
+                    const genLabel = p.genStatus === 'published' ? '<span style="color:#52c41a;font-size:12px;">已发布</span>' :
+                                   p.genStatus === 'debugDone' ? '<span style="color:#1890ff;font-size:12px;">联调完成</span>' :
+                                   p.genStatus ? '<span style="color:#faad14;font-size:12px;">生成中</span>' : '';
+                    return `
+                    <div class="project-card" onclick="app.openFrontendDetail(${p.id})">
+                        <button class="card-more-btn" onclick="event.stopPropagation(); app.toggleMenu(event, ${p.id}, 'frontend')">⋮</button>
+                        <div class="card-dropdown" id="menu-f-${p.id}">
+                            <div class="dropdown-item" onclick="event.stopPropagation(); app.openConfig(${p.id})">编辑</div>
+                            <div class="dropdown-item danger" onclick="event.stopPropagation(); app.showDeleteModal(${p.id}, 'frontend')">删除</div>
+                        </div>
+                        <div class="card-header">
+                            <div class="project-icon">${p.icon || '📱'}</div>
+                            <div class="card-info">
+                                <div class="project-name">${p.name}</div>
+                                <div class="project-desc">${p.desc}</div>
+                                <div class="project-meta">
+                                    <span class="role-tag">${p.role}</span>
+                                    ${genLabel}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `}).join('');
+            },
+
+            // ============================================================
+            // 渲染应用服务列表
+            // ============================================================
+            renderBackend(filterText = '') {
+                const grid = document.getElementById('backendGrid');
+                const list = this.state.backendProjects.filter(p =>
+                    p.name.includes(filterText) || p.desc.includes(filterText)
+                );
+
+                if (list.length === 0) {
+                    grid.innerHTML =
+                        `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8c8c8c;">暂无匹配的服务</div>`;
+                    return;
+                }
+
+                grid.innerHTML = list.map(p => {
+                    const statusLabel = p.status === 'running' ? '运行中' : '已停止';
+                    const statusClass = p.status === 'running' ? 'tag-running' : 'tag-stopped';
+                    return `
+                    <div class="project-card" onclick="app.openBackendDetail(${p.id})">
+                        <button class="card-more-btn" onclick="event.stopPropagation(); app.toggleMenu(event, ${p.id}, 'backend')">⋮</button>
+                        <div class="card-dropdown" id="menu-b-${p.id}">
+                            <div class="dropdown-item danger" onclick="event.stopPropagation(); app.showDeleteModal(${p.id}, 'backend')">删除</div>
+                        </div>
+                        <div class="card-header">
+                            <div class="project-icon backend-icon">🔌</div>
+                            <div class="card-info">
+                                <div class="project-name">${p.name}</div>
+                                <div class="project-desc">${p.desc}</div>
+                                <div class="project-meta">
+                                    <span class="tag ${statusClass}">${statusLabel}</span>
+                                    <span class="role-tag">${p.role}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+            },
+
+            // ================ 前端详情页 =================
+            openFrontendDetail(id) {
+                const p = this.state.frontendProjects.find(x => x.id === id);
+                if (!p) return;
+                this.state.viewingFrontendId = id;
+                document.getElementById('fdDetailIcon').textContent = p.icon || '📱';
+                document.getElementById('fdDetailName').textContent = p.name;
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.querySelectorAll('.detail-view').forEach(v => v.classList.remove('active'));
+                document.getElementById('frontendDetail').classList.add('active');
+            },
+
+            // ============================================================
+            // 前端详情 - 生成/发布流程
+            // ============================================================
+            fdGetTask(project) {
+                if (!project) return null;
+                if (!this._fdTasks) this._fdTasks = {};
+                if (!this._fdTasks[project]) this._fdTasks[project] = { gen: 'idle', int: 'idle', group: '' };
+                return this._fdTasks[project];
+            },
+            fdUpdateUI() {
+                const pName = document.getElementById('fdSelProject').value;
+                const $ = id => document.getElementById(id);
+                const icon = (el, cls) => { el.className = 'fd-gen-step-icon ' + cls; };
+                const badge = (el, cls, html) => { el.className = 'fd-inline-status ' + cls; el.innerHTML = html; };
+                if (!pName) {
+                    icon($('fdStepGenIcon'), 'idle'); badge($('fdStepGenStatus'), 'idle', '待生成');
+                    $('fdBtnStartGen').style.display = 'inline-flex'; $('fdBtnRetryGen').style.display = 'none';
+                    icon($('fdStepIntIcon'), 'idle'); badge($('fdStepIntStatus'), 'idle', '待联调');
+                    $('fdBtnStartInt').style.display = 'none';
+                    return;
+                }
+                const t = this.fdGetTask(pName);
+                if (t.gen === 'idle') {
+                    icon($('fdStepGenIcon'), 'idle'); badge($('fdStepGenStatus'), 'idle', '待生成');
+                    $('fdBtnStartGen').style.display = 'inline-flex'; $('fdBtnRetryGen').style.display = 'none';
+                } else if (t.gen === 'generating') {
+                    icon($('fdStepGenIcon'), 'running'); badge($('fdStepGenStatus'), 'running', '<span class="dot"></span>生成中');
+                    $('fdBtnStartGen').style.display = 'none'; $('fdBtnRetryGen').style.display = 'none';
+                } else if (t.gen === 'done') {
+                    icon($('fdStepGenIcon'), 'done'); badge($('fdStepGenStatus'), 'done', '生成完成');
+                    $('fdBtnStartGen').style.display = 'none'; $('fdBtnRetryGen').style.display = 'none';
+                } else if (t.gen === 'fail') {
+                    icon($('fdStepGenIcon'), 'fail'); badge($('fdStepGenStatus'), 'fail', '生成失败');
+                    $('fdBtnStartGen').style.display = 'none'; $('fdBtnRetryGen').style.display = 'inline-flex';
+                }
+                if (t.int === 'idle') {
+                    icon($('fdStepIntIcon'), 'idle'); badge($('fdStepIntStatus'), 'idle', '待联调');
+                    $('fdBtnStartInt').style.display = (t.gen === 'done') ? 'inline-flex' : 'none';
+                } else if (t.int === 'integrating') {
+                    icon($('fdStepIntIcon'), 'running'); badge($('fdStepIntStatus'), 'running', '<span class="dot"></span>联调中');
+                    $('fdBtnStartInt').style.display = 'none';
+                } else if (t.int === 'done') {
+                    icon($('fdStepIntIcon'), 'done'); badge($('fdStepIntStatus'), 'done', '联调完成');
+                    $('fdBtnStartInt').style.display = 'none';
+                }
+            },
+            fdOnProjectChange() { this.fdUpdateUI(); },
+            fdAddRecord(project, group, status, label) {
+                const taskList = document.getElementById('fdTaskList');
+                const empty = taskList.querySelector('.fd-task-list-empty');
+                if (empty) empty.remove();
+                const div = document.createElement('div');
+                div.className = 'fd-task-item';
+                div.dataset.project = project;
+                div.innerHTML = '<div class="fd-task-info"><span class="fd-task-name">' + project + (group ? ' · ' + group : '') + '</span><span class="fd-task-meta">' + new Date().toLocaleString() + '</span></div><span class="fd-inline-status ' + status + '">' + label + '</span>';
+                taskList.prepend(div);
+            },
+            fdUpdateRecord(project, status, label) {
+                const items = document.getElementById('fdTaskList').querySelectorAll('.fd-task-item');
+                for (const item of items) {
+                    if (item.dataset.project === project) {
+                        const el = item.querySelector('.fd-inline-status');
+                        if (el) { el.className = 'fd-inline-status ' + status; el.innerHTML = label; }
+                        break;
+                    }
+                }
+            },
+            openFdGenModal() {
+                const p = this.state.frontendProjects.find(x => x.id === this.state.viewingFrontendId);
+                if (!p) return;
+                document.getElementById('fdGenModal').classList.add('show');
+                const sel = document.getElementById('fdSelProject');
+                if ([...sel.options].some(o => o.value === p.name)) { sel.value = p.name; }
+                this.fdUpdateUI();
+            },
+            closeFdGenModal() {
+                document.getElementById('fdGenModal').classList.remove('show');
+            },
+            fdStartGeneration() {
+                const pName = document.getElementById('fdSelProject').value;
+                if (!pName) { alert('请选择所属项目'); return; }
+                const gName = document.getElementById('fdSelGroup').value || '';
+                const t = this.fdGetTask(pName);
+                if (t.gen === 'generating') return;
+                t.gen = 'generating'; t.group = gName;
+                this.fdUpdateUI();
+                this.fdAddRecord(pName, gName, 'running', '生成中...');
+                if (this._fdTimeouts && this._fdTimeouts[pName]) clearTimeout(this._fdTimeouts[pName]);
+                if (!this._fdTimeouts) this._fdTimeouts = {};
+                this._fdTimeouts[pName] = setTimeout(() => {
+                    t.gen = 'done'; this.fdUpdateUI(); this.fdUpdateRecord(pName, 'done', '生成完成');
+                    delete this._fdTimeouts[pName];
+                }, 2500);
+            },
+            fdStartIntegration() {
+                const pName = document.getElementById('fdSelProject').value;
+                const t = this.fdGetTask(pName);
+                if (!t || t.gen !== 'done' || t.int === 'integrating') return;
+                t.int = 'integrating'; this.fdUpdateUI(); this.fdUpdateRecord(pName, 'running', '联调中...');
+                document.getElementById('fdGlobalLoadingText').textContent = '正在联调中，请稍候...';
+                document.getElementById('fdGlobalLoading').classList.add('active');
+                setTimeout(() => {
+                    document.getElementById('fdGlobalLoading').classList.remove('active');
+                    t.int = 'done'; this.fdUpdateUI(); this.fdUpdateRecord(pName, 'done', '联调完成');
+                }, 2000);
+            },
+            openFdPublishModal() { document.getElementById('fdPublishModal').classList.add('show'); },
+            closeFdPublishModal() { document.getElementById('fdPublishModal').classList.remove('show'); },
+            fdConfirmPublish() {
+                const name = document.getElementById('fdPubName').value;
+                const type = document.querySelector('#fdPubTypeGroup input[name="fdPubType"]:checked');
+                const category = document.getElementById('fdPubCategory').value;
+                const intro = document.getElementById('fdPubIntro').value;
+                const desc = document.getElementById('fdPubDesc').value;
+                if (!name || !category || !intro || !desc) { alert('请填写所有必填项'); return; }
+                this.closeFdPublishModal();
+                this.showNotification('发布成功');
+            },
+            fdUpdateUploadLabel(input, labelId) {
+                if (input.files.length > 0) {
+                    const names = Array.from(input.files).map(f => f.name).join(', ');
+                    document.getElementById(labelId).textContent = names.length > 20 ? input.files.length + ' 个文件已选择' : names;
+                }
+            },
+
+            // ================ 后端详情页 =================
+            openBackendDetail(id) {
+                const p = this.state.backendProjects.find(x => x.id === id);
+                if (!p) return;
+                this.state.viewingBackendId = id;
+                document.getElementById('bdDetailName').textContent = p.name;
+                document.getElementById('bdBreadcrumbName').textContent = p.name;
+                // 设置图标
+                const iconEl = document.querySelector('#backendDetail .detail-header-icon');
+                if (iconEl && p.icon) {
+                    iconEl.textContent = p.icon;
+                }
+                const stEl = document.getElementById('bdDetailStatus');
+                if (p.status === 'running') {
+                    stEl.textContent = '运行中';
+                    stEl.className = 'tag tag-running';
+                } else {
+                    stEl.textContent = '已停止';
+                    stEl.className = 'tag tag-stopped';
+                }
+
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.querySelectorAll('.detail-view').forEach(v => v.classList.remove('active'));
+                document.getElementById('backendDetail').classList.add('active');
+                // Default to api tab
+                document.querySelector('.backend-detail-wrapper .detail-tab-item').click();
+            },
+
+            // ================ 生成流程 =================
+            openGenModal() {
+                const id = this.state.viewingFrontendId;
+                const p = this.state.frontendProjects.find(x => x.id === id);
+                if (!p) return;
+
+                // 重置弹窗显示
+                this.state.genState = p.genStatus || null;
+                document.getElementById('genStep1').style.display = 'block';
+                document.getElementById('genStep2').style.display = 'none';
+                document.getElementById('genStep3').style.display = 'none';
+                document.getElementById('debugLoadingArea').style.display = 'none';
+                document.getElementById('genStartBtn').style.display = 'none';
+                document.getElementById('genDebugBtn').style.display = 'none';
+                document.getElementById('genPublishBtn').style.display = 'none';
+                document.getElementById('genStep1Ind').className = 'gen-step-indicator';
+                document.getElementById('genStep1Desc').textContent = '准备生成...';
+                document.getElementById('genStep1Fill').style.width = '0%';
+
+                if (p.genStatus === 'published') {
+                    // 全部完成
+                    document.getElementById('genStep1Ind').className = 'gen-step-indicator done';
+                    document.getElementById('genStep1Ind').textContent = '✓';
+                    document.getElementById('genStep1Desc').textContent = '已完成';
+                    document.getElementById('genStep1Fill').style.width = '100%';
+                    document.getElementById('genStep2').style.display = 'block';
+                    document.getElementById('genStep2Ind').className = 'gen-step-indicator done';
+                    document.getElementById('genStep2Ind').textContent = '✓';
+                    document.getElementById('genStep2Title').textContent = '联调测试';
+                    document.getElementById('genStep2Desc').textContent = '联调已完成 ✓';
+                    document.getElementById('genStep3').style.display = 'block';
+                    document.getElementById('genStep3Ind').className = 'gen-step-indicator done';
+                } else if (p.genStatus === 'debugDone') {
+                    document.getElementById('genStep1Ind').className = 'gen-step-indicator done';
+                    document.getElementById('genStep1Ind').textContent = '✓';
+                    document.getElementById('genStep1Desc').textContent = '已完成';
+                    document.getElementById('genStep1Fill').style.width = '100%';
+                    document.getElementById('genStep2').style.display = 'block';
+                    document.getElementById('genStep2Ind').className = 'gen-step-indicator done';
+                    document.getElementById('genStep2Ind').textContent = '✓';
+                    document.getElementById('genStep2Title').textContent = '联调测试';
+                    document.getElementById('genStep2Desc').textContent = '联调已完成 ✓';
+                    document.getElementById('genStep3').style.display = 'block';
+                    document.getElementById('genStep3Ind').className = 'gen-step-indicator active';
+                    document.getElementById('genStep3Ind').textContent = '3';
+                    document.getElementById('genPublishBtn').style.display = 'inline-flex';
+                } else if (p.genStatus === 'complete') {
+                    document.getElementById('genStep1Ind').className = 'gen-step-indicator done';
+                    document.getElementById('genStep1Ind').textContent = '✓';
+                    document.getElementById('genStep1Desc').textContent = '已完成';
+                    document.getElementById('genStep1Fill').style.width = '100%';
+                    document.getElementById('genStep2').style.display = 'block';
+                    document.getElementById('genStep2Ind').className = 'gen-step-indicator active';
+                    document.getElementById('genStep2Ind').textContent = '2';
+                    document.getElementById('genStep2Title').textContent = '联调测试';
+                    document.getElementById('genStep2Desc').textContent = '生成完成，点击下方按钮开始联调';
+                    document.getElementById('genDebugBtn').style.display = 'inline-flex';
+                } else if (p.genStatus === 'generating') {
+                    // 生成中 - 显示进度
+                    document.getElementById('genStep1Ind').className = 'gen-step-indicator active';
+                    document.getElementById('genStep1Ind').textContent = '1';
+                    document.getElementById('genStep1Desc').textContent = '正在生成后端接口代码...';
+                    document.getElementById('genStep1Fill').style.width = '60%';
+                } else {
+                    // 未生成
+                    document.getElementById('genStartBtn').style.display = 'inline-flex';
+                }
+
+                this.showModal('genModal');
+            },
+
+            closeGenModal() {
+                this.closeModal('genModal');
+                // 刷新详情页状态
+                const id = this.state.viewingFrontendId;
+                if (id) this.openFrontendDetail(id);
+            },
+
+            startGeneration() {
+                const id = this.state.viewingFrontendId;
+                const p = this.state.frontendProjects.find(x => x.id === id);
+                if (!p) return;
+                p.genStatus = 'generating';
+                this.state.genState = 'generating';
+                document.getElementById('genStartBtn').style.display = 'none';
+                document.getElementById('genStep1Ind').className = 'gen-step-indicator active';
+                document.getElementById('genStep1Desc').textContent = '正在生成后端接口代码...';
+
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 8 + 3;
+                    if (progress > 95) progress = 95;
+                    document.getElementById('genStep1Fill').style.width = progress + '%';
+                }, 400);
+
+                // 模拟生成完成
+                setTimeout(() => {
+                    clearInterval(interval);
+                    document.getElementById('genStep1Fill').style.width = '100%';
+                    document.getElementById('genStep1Ind').className = 'gen-step-indicator done';
+                    document.getElementById('genStep1Ind').textContent = '✓';
+                    document.getElementById('genStep1Desc').textContent = '生成完成 ✓';
+                    p.genStatus = 'complete';
+                    this.state.genState = 'complete';
+
+                    document.getElementById('genStep2').style.display = 'block';
+                    document.getElementById('genStep2Ind').className = 'gen-step-indicator active';
+                    document.getElementById('genStep2Ind').textContent = '2';
+                    document.getElementById('genStep2Title').textContent = '联调测试';
+                    document.getElementById('genStep2Desc').textContent = '生成完成，点击下方按钮开始联调';
+                    document.getElementById('genDebugBtn').style.display = 'inline-flex';
+                    this.showNotification('✅ 后端代码生成完成！');
+                    this.openFrontendDetail(id);
+                }, 5000);
+            },
+
+            startDebug() {
+                const id = this.state.viewingFrontendId;
+                const p = this.state.frontendProjects.find(x => x.id === id);
+                if (!p) return;
+                p.genStatus = 'debugging';
+                this.state.genState = 'debugging';
+
+                document.getElementById('genDebugBtn').style.display = 'none';
+                document.getElementById('genStep2Ind').className = 'gen-step-indicator active';
+                document.getElementById('genStep2Title').textContent = '联调测试';
+                document.getElementById('genStep2Desc').textContent = '正在联调...';
+                document.getElementById('debugLoadingArea').style.display = 'block';
+
+                setTimeout(() => {
+                    document.getElementById('debugLoadingArea').style.display = 'none';
+                    document.getElementById('genStep2Ind').className = 'gen-step-indicator done';
+                    document.getElementById('genStep2Ind').textContent = '✓';
+                    document.getElementById('genStep2Title').textContent = '联调测试';
+                    document.getElementById('genStep2Desc').textContent = '联调已完成 ✓';
+                    document.getElementById('genStep3').style.display = 'block';
+                    document.getElementById('genStep3Ind').className = 'gen-step-indicator active';
+                    document.getElementById('genStep3Ind').textContent = '3';
+                    document.getElementById('genPublishBtn').style.display = 'inline-flex';
+                    p.genStatus = 'debugDone';
+                    this.state.genState = 'debugDone';
+                    this.showNotification('✅ 联调完成！');
+                    this.openFrontendDetail(id);
+                }, 3000);
+            },
+
+            // ================ 发布流程 =================
+            openPublishModal() {
+                this.selectPublishEnv(document.querySelector('.publish-option'), 'test');
+                this.showModal('publishModal');
+            },
+
+            selectPublishEnv(el, env) {
+                document.querySelectorAll('.publish-option').forEach(o => o.classList.remove('selected'));
+                if (el) el.classList.add('selected');
+                this.state.publishEnv = env;
+            },
+
+            confirmPublish() {
+                const id = this.state.viewingFrontendId;
+                const p = this.state.frontendProjects.find(x => x.id === id);
+                if (!p) return;
+
+                const envNames = { test: '测试环境', pre: '预发布环境', prod: '生产环境' };
+                const envName = envNames[this.state.publishEnv] || '未知环境';
+                p.genStatus = 'published';
+                this.state.genState = 'published';
+
+                this.closeModal('publishModal');
+                this.closeGenModal();
+                this.showNotification('✅ 已发布到' + envName + '！');
+                this.renderFrontend();
+                if (id) this.openFrontendDetail(id);
+            },
+
+            // ============================================================
+            // 搜索过滤
+            // ============================================================
+            filterFrontend() {
+                const val = document.getElementById('frontendSearch').value.trim();
+                this.renderFrontend(val);
+            },
+
+            filterBackend() {
+                const val = document.getElementById('backendSearch').value.trim();
+                this.renderBackend(val);
+            },
+
+            // ============================================================
+            // 下拉菜单
+            // ============================================================
+            toggleMenu(e, id, type) {
+                e.stopPropagation();
+                const menuId = `menu-${type[0]}-${id}`;
+                const menu = document.getElementById(menuId);
+                this.closeAllDropdowns();
+                menu.classList.toggle('show');
+            },
+
+            closeAllDropdowns() {
+                document.querySelectorAll('.card-dropdown').forEach(d => d.classList.remove('show'));
+            },
+
+            // ============================================================
+            // 新建应用弹窗
+            // ============================================================
+            showCreateModal() {
+                document.getElementById('newAppName').value = '';
+                document.getElementById('newAppDesc').value = '';
+                document.querySelector('input[name="pageType"][value="PC"]').checked = true;
+                document.getElementById('nameError').textContent = '';
+                document.getElementById('typeError').textContent = '';
+                this.showModal('createModal');
+                setTimeout(() => document.getElementById('newAppName').focus(), 100);
+            },
+
+            createProject() {
+                const name = document.getElementById('newAppName').value.trim();
+                const desc = document.getElementById('newAppDesc').value.trim();
+                const pageType = document.querySelector('input[name="pageType"]:checked')?.value || 'PC';
+
+                let hasError = false;
+                if (!name) {
+                    document.getElementById('nameError').textContent = '请输入应用名称';
+                    hasError = true;
+                } else {
+                    document.getElementById('nameError').textContent = '';
+                }
+                if (!pageType) {
+                    document.getElementById('typeError').textContent = '请选择页面形态';
+                    hasError = true;
+                } else {
+                    document.getElementById('typeError').textContent = '';
+                }
+                if (hasError) return;
+
+                const newProject = {
+                    id: this.state.nextId++,
+                    name: name,
+                    desc: desc || '暂无描述',
+                    role: '开发者',
+                    icon: '📱',
+                    pageType: pageType,
+                    genStatus: null
+                };
+
+                this.state.frontendProjects.unshift(newProject);
+                this.closeModal('createModal');
+                this.renderFrontend(document.getElementById('frontendSearch').value.trim());
+                this.showNotification(`✅ 应用「${name}」创建成功！`);
+            },
+
+            // ============================================================
+            // 新建服务（示意）
+            // ============================================================
+            showBackendCreateModal() {
+                // 重置表单
+                document.getElementById('bdCreateName').value = '';
+                document.getElementById('bdCreateDesc').value = '';
+                document.getElementById('bdCreateNameError').textContent = '';
+                document.getElementById('bdCreateReturnStruct').value = '';
+                // Reset exception table - keep only default rows, remove custom ones
+                const excBody = document.getElementById('bdCreateExceptionBody');
+                const customRows = excBody.querySelectorAll('tr[data-exception="custom"]');
+                customRows.forEach(r => r.remove());
+                document.getElementById('bdCreateTimeout').value = '30';
+                document.getElementById('bdCreateOtherConfig').value = '';
+                document.getElementById('bdCreateIconLabel').textContent = '点击上传图标';
+                document.getElementById('bdCreateEnv').value = 'dev';
+                
+                document.getElementById('bdCreateEnvAddr').value = '';
+                document.getElementById('bdCreateEnvAddrRow').style.display = 'block';
+                // 清空 Headers
+                document.getElementById('bdCreateHeadersList').innerHTML = '';
+                // 默认添加一行 Header
+                this.addBdCreateHeader();
+                // 切换到基础配置Tab
+                this.switchBdCreateTab('basic');
+                document.getElementById('backendCreateModal').classList.add('show');
+            },
+
+            closeBackendCreateModal() {
+                document.getElementById('backendCreateModal').classList.remove('show');
+            },
+
+            switchBdCreateTab(tab) {
+                document.querySelectorAll('.bd-create-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.bd-create-tab-content').forEach(t => t.classList.remove('active'));
+                document.querySelector(`.bd-create-tab[data-bdcreate-tab="${tab}"]`).classList.add('active');
+                document.getElementById('bdCreateTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+            },
+
+            addBdCreateHeader() {
+                const list = document.getElementById('bdCreateHeadersList');
+                const row = document.createElement('div');
+                row.className = 'header-row';
+                const idx = list.children.length;
+                row.innerHTML = '<input type="text" class="form-input" placeholder="Key" id="bdHdrKey' + idx + '" style="flex:0 0 160px;">' +
+                    '<input type="text" class="form-input" placeholder="Value" id="bdHdrVal' + idx + '">' +
+                    '<button class="btn-remove" onclick="this.parentElement.remove()">✕</button>';
+                list.appendChild(row);
+            },
+
+            addBdCreateExceptionRow() {
+                const tbody = document.getElementById('bdCreateExceptionBody');
+                const row = document.createElement('tr');
+                row.dataset.exception = 'custom';
+                const cnt = tbody.querySelectorAll('tr[data-exception="custom"]').length;
+                const idx = Date.now();
+                row.innerHTML =
+                    '<td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" id="bdExcName' + idx + '" placeholder="异常名称"></td>' +
+                    '<td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;" id="bdExcEname' + idx + '" placeholder="英文名称"></td>' +
+                    '<td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;"><input type="text" class="form-input" style="height:30px;font-size:13px;width:70px;" id="bdExcCode' + idx + '" placeholder="状态码"></td>' +
+                    '<td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;text-align:center;"><button style="width:28px;height:28px;border:none;background:#fff1f0;color:#ff4d4f;border-radius:4px;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;justify-content:center;" onclick="this.parentElement.parentElement.remove()">✕</button></td>';
+                tbody.appendChild(row);
+            },
+
+            updateBdCreateIconLabel(input) {
+                if (input.files.length > 0) {
+                    document.getElementById('bdCreateIconLabel').textContent = input.files[0].name;
+                }
+            },
+
+            onBdCreateEnvChange() {
+                const env = document.getElementById('bdCreateEnv').value;
+                const addrRow = document.getElementById('bdCreateEnvAddrRow');
+                if (env) {
+                    addrRow.style.display = 'block';
+                } else {
+                    addrRow.style.display = 'none';
+                }
+            },
+
+            confirmCreateBackend() {
+                const name = document.getElementById('bdCreateName').value.trim();
+                const nameError = document.getElementById('bdCreateNameError');
+                if (!name) {
+                    nameError.textContent = '请输入服务名称';
+                    document.getElementById('bdCreateName').focus();
+                    return;
+                }
+                nameError.textContent = '';
+                const desc = document.getElementById('bdCreateDesc').value.trim();
+                const env = document.getElementById('bdCreateEnv').value;
+                const envAddr = document.getElementById('bdCreateEnvAddr').value.trim();
+                if (env && !envAddr) {
+                    alert('请填写环境地址');
+                    return;
+                }
+                const returnStruct = document.getElementById('bdCreateReturnStruct').value.trim();
+                // Collect exception types from table
+                const exceptions = [];
+                const excRows = document.getElementById('bdCreateExceptionBody').querySelectorAll('tr');
+                excRows.forEach((row, i) => {
+                    const nameInput = row.querySelector('input[id^="bdExcName"]') || row.querySelector('input:not([readonly])');
+                    const enameInput = row.querySelector('input[id^="bdExcEname"]');
+                    const codeInput = row.querySelector('input[id^="bdExcCode"]');
+                    // For default rows, inputs are readonly, we need their values
+                    const cells = row.querySelectorAll('td');
+                    if (row.dataset.exception === 'custom') {
+                        const inpName = row.querySelector('input[id^="bdExcName"]');
+                        const inpEname = row.querySelector('input[id^="bdExcEname"]');
+                        const inpCode = row.querySelector('input[id^="bdExcCode"]');
+                        if (inpName && inpName.value.trim()) {
+                            exceptions.push({ name: inpName.value.trim(), ename: inpEname ? inpEname.value.trim() : '', code: inpCode ? inpCode.value.trim() : '' });
+                        }
+                    } else {
+                        // Default rows - get values from readonly inputs
+                        const inputs = row.querySelectorAll('input');
+                        if (inputs.length >= 3) {
+                            exceptions.push({ name: inputs[0].value, ename: inputs[1].value, code: inputs[2].value });
+                        }
+                    }
+                });
+                const timeout = document.getElementById('bdCreateTimeout').value;
+                const otherConfig = document.getElementById('bdCreateOtherConfig').value.trim();
+                // Collect headers
+                const headers = [];
+                const list = document.getElementById('bdCreateHeadersList');
+                for (let i = 0; i < list.children.length; i++) {
+                    const key = document.getElementById('bdHdrKey' + i);
+                    const val = document.getElementById('bdHdrVal' + i);
+                    if (key && val && key.value.trim()) {
+                        headers.push({ key: key.value.trim(), value: val.value.trim() });
+                    }
+                }
+
+                const newId = this.state.nextId++;
+                this.state.backendProjects.push({
+                    id: newId,
+                    name: name,
+                    desc: desc || '暂无描述',
+                    status: 'running',
+                    role: '管理员',
+                    icon: '🔌',
+                    env: env,
+                    envAddr: envAddr,
+                    returnStruct: returnStruct,
+                    exceptions: exceptions,
+                    timeout: timeout,
+                    otherConfig: otherConfig,
+                    headers: headers
+                });
+                this.closeBackendCreateModal();
+                this.renderBackend();
+                this.openBackendDetail(newId);
+            },
+
+            // ============================================================
+            // 项目配置 - 弹窗形式（可编辑，无角色字段）
+            // ============================================================
+            openConfig(id) {
+                this.closeAllDropdowns();
+                const project = this.state.frontendProjects.find(p => p.id === id);
+                if (!project) {
+                    this.showNotification('项目不存在', 'error');
+                    return;
+                }
+
+                this.state.configTargetId = id;
+
+                document.getElementById('configModalTitle').textContent = `编辑 · ${project.name}`;
+                document.getElementById('configAppName').value = project.name;
+                document.getElementById('configAppDesc').value = project.desc || '';
+
+                document.getElementById('configNameError').textContent = '';
+                document.getElementById('configTypeError').textContent = '';
+
+                const radios = document.querySelectorAll('input[name="configPageType"]');
+                radios.forEach(radio => {
+                    radio.checked = radio.value === (project.pageType || 'PC');
+                });
+
+                this.showModal('configModal');
+                setTimeout(() => document.getElementById('configAppName').focus(), 100);
+            },
+
+            saveConfig() {
+                const id = this.state.configTargetId;
+                const project = this.state.frontendProjects.find(p => p.id === id);
+                if (!project) {
+                    this.showNotification('项目不存在', 'error');
+                    return;
+                }
+
+                const name = document.getElementById('configAppName').value.trim();
+                const desc = document.getElementById('configAppDesc').value.trim();
+                const pageType = document.querySelector('input[name="configPageType"]:checked')?.value || 'PC';
+
+                let hasError = false;
+                if (!name) {
+                    document.getElementById('configNameError').textContent = '请输入应用名称';
+                    hasError = true;
+                } else {
+                    document.getElementById('configNameError').textContent = '';
+                }
+                if (!pageType) {
+                    document.getElementById('configTypeError').textContent = '请选择页面形态';
+                    hasError = true;
+                } else {
+                    document.getElementById('configTypeError').textContent = '';
+                }
+                if (hasError) return;
+
+                project.name = name;
+                project.desc = desc || '暂无描述';
+                project.pageType = pageType;
+
+                this.closeModal('configModal');
+                this.renderFrontend(document.getElementById('frontendSearch').value.trim());
+                this.showNotification(`✅ 项目「${name}」配置已更新！`);
+            },
+
+            // ============================================================
+            // 删除弹窗
+            // ============================================================
+            showDeleteModal(id, type) {
+                this.closeAllDropdowns();
+                this.state.deleteId = id;
+                this.state.deleteType = type;
+
+                const project = type === 'frontend' ?
+                    this.state.frontendProjects.find(p => p.id === id) :
+                    this.state.backendProjects.find(p => p.id === id);
+
+                document.getElementById('deleteName').textContent = project ? project.name : '项目';
+                this.showModal('deleteModal');
+            },
+
+            confirmDelete() {
+                const id = this.state.deleteId;
+                const type = this.state.deleteType;
+                let name = '';
+
+                if (type === 'frontend') {
+                    const p = this.state.frontendProjects.find(item => item.id === id);
+                    name = p ? p.name : '';
+                    this.state.frontendProjects = this.state.frontendProjects.filter(item => item.id !== id);
+                    this.renderFrontend(document.getElementById('frontendSearch').value.trim());
+                } else {
+                    const p = this.state.backendProjects.find(item => item.id === id);
+                    name = p ? p.name : '';
+                    this.state.backendProjects = this.state.backendProjects.filter(item => item.id !== id);
+                    this.renderBackend(document.getElementById('backendSearch').value.trim());
+                }
+
+                this.closeModal('deleteModal');
+                this.showNotification(`✅ 已删除「${name || '项目'}」`);
+            },
+
+            // ============================================================
+            // 弹窗管理
+            // ============================================================
+            showModal(modalId) {
+                document.getElementById(modalId).classList.add('show');
+            },
+
+            closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('show');
+            },
+
+            // ============================================================
+            // 通知
+            // ============================================================
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                const icon = document.getElementById('notiIcon');
+                const title = document.getElementById('notiTitle');
+                const msg = document.getElementById('notiMsg');
+
+                notification.className = 'notification show ' + type;
+                icon.textContent = type === 'success' ? '✓' : '✕';
+                title.textContent = type === 'success' ? '操作成功' : '操作失败';
+                msg.textContent = message;
+
+                clearTimeout(this._notiTimer);
+                this._notiTimer = setTimeout(() => {
+                    this.hideNotification();
+                }, 3000);
+            },
+
+            hideNotification() {
+                document.getElementById('notification').classList.remove('show');
+            },
+
+            // ============================================================
+            // PRD 抽屉
+            // ============================================================
+            openPrdDrawer() {
+                document.getElementById('prdOverlay').classList.add('show');
+                document.getElementById('prdDrawer').classList.add('open');
+                document.body.style.overflow = 'hidden';
+            },
+
+            closePrdDrawer() {
+                document.getElementById('prdOverlay').classList.remove('show');
+                document.getElementById('prdDrawer').classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        };
+
+        // ============================================================
+        // 启动
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+    
+            // ============================================================
+            // 后端详情页交互函数
+            // ============================================================
+            window.bdSwitchMainTab = function(tab) {
+                var wrapper = document.querySelector('.backend-detail-wrapper');
+                var items = wrapper.querySelectorAll('.detail-tab-item');
+                var contents = wrapper.querySelectorAll('.detail-tab-content');
+                items.forEach(function(t){t.classList.remove('active')});
+                contents.forEach(function(t){t.classList.remove('active')});
+                items.forEach(function(t){
+                    if(t.textContent.trim() === (tab === 'api' ? '接口' : '文档')) t.classList.add('active');
+                });
+                document.getElementById('bdTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+            };
+            window.bdSwitchDocSubTab = function(sub) {
+                var wrapper = document.querySelector('.backend-detail-wrapper');
+                var items = wrapper.querySelectorAll('.doc-sub-tab-item');
+                var contents = wrapper.querySelectorAll('.doc-sub-content');
+                items.forEach(function(t){t.classList.remove('active')});
+                contents.forEach(function(t){t.classList.remove('active')});
+                items.forEach(function(t){
+                    if(t.textContent.trim() === (sub === 'apiDoc' ? '接口文档' : '联调文档')) t.classList.add('active');
+                });
+                document.getElementById('bdSubTab' + sub.charAt(0).toUpperCase() + sub.slice(1)).classList.add('active');
+            };
+            window.bdTogglePanel = function(headerEl) {
+                var body = headerEl.parentElement.querySelector('.api-panel-body');
+                var arrow = headerEl.querySelector('.arrow');
+                if(body.classList.contains('open')) { body.classList.remove('open'); arrow.classList.remove('open'); }
+                else { body.classList.add('open'); arrow.classList.add('open'); }
+            };
+            window.bdToggleDropdown = function(e, id) {
+                e.stopPropagation();
+                bdCloseAllDropdowns();
+                document.getElementById(id).classList.toggle('show');
+            };
+            window.bdCloseAllDropdowns = function() {
+                document.querySelectorAll('.backend-detail-wrapper .dropdown-menu').forEach(function(m){m.classList.remove('show')});
+            };
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.backend-detail-wrapper .dropdown-wrap')) {
+                    document.querySelectorAll('.backend-detail-wrapper .dropdown-menu').forEach(function(m){m.classList.remove('show')});
+                }
+            });
+            window.bdDoAction = function(name) { bdCloseAllDropdowns(); alert(name); };
+            window.bdReloadAll = function() { alert('重新加载所有接口'); };
+            window.bdReloadPanel = function(btn) { alert('重新加载该分组'); };
+            window.bdDoSearch = function() {
+                var q = document.getElementById('bdApiSearch').value.trim();
+                alert('搜索: ' + (q || '显示全部'));
+            };
+            window.bdSetFilter = function(name) { bdCloseAllDropdowns(); alert('筛选: ' + name); };
+            window.bdShowApiDetail = function(text) {
+                var area = document.getElementById('bdApiDetailArea');
+                area.innerHTML = '<div style="text-align:left;width:100%;padding:20px;">' +
+                    '<div style="font-size:20px;font-weight:600;margin-bottom:12px;">📄 接口详情</div>' +
+                    '<div style="background:#fff;border-radius:6px;padding:20px;border:1px solid #f0f0f0;">' +
+                    '<div style="font-size:14px;color:#262626;font-family:monospace;">' + text + '</div>' +
+                    '<div style="margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f0;color:#8c8c8c;font-size:13px;">' +
+                    '请求参数、响应格式、错误码等详细信息将在此处展示。</div></div></div>';
+            };
+            window.bdShowDocDetail = function(name) {
+                var area = document.getElementById('bdDocDetailArea');
+                area.innerHTML = '<div style="text-align:left;width:100%;padding:20px;">' +
+                    '<div style="font-size:20px;font-weight:600;margin-bottom:12px;">📄 ' + name + '</div>' +
+                    '<div style="background:#fff;border-radius:6px;padding:20px;border:1px solid #f0f0f0;color:#8c8c8c;font-size:13px;">' +
+                    '接口文档内容将在此处展示。</div></div>';
+            };
+
+    </script>
+
+</body>
+
+</html>
