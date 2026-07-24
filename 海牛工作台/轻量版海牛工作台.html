@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -515,7 +516,7 @@
 
         .modal-body {
             padding: 24px;
-            max-height: calc(85vh - 140px);
+            max-height: calc(90vh - 120px);
             overflow-y: auto;
         }
 
@@ -1077,7 +1078,7 @@
         .backend-detail-wrapper .detail-layout { display: flex; gap: 20px; min-height: 500px; }
         .backend-detail-wrapper .detail-layout-left { width: 440px; flex-shrink: 0; padding: 20px 0 20px 20px; overflow-y: auto; }
         .backend-detail-wrapper .detail-layout-right { flex: 1; padding: 20px 20px 20px 0; overflow-y: auto; min-height: 500px; }
-        .backend-detail-wrapper .left-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+        .backend-detail-wrapper .left-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 0; }
         .backend-detail-wrapper .search-input {
             height: 32px; padding: 0 12px; border: 1px solid #d9d9d9; border-radius: 4px;
             font-size: 13px; outline: none; transition: all .3s; flex: 1; min-width: 0;
@@ -1475,6 +1476,57 @@
             border-color: #1890ff;
             background: #e6f7ff;
         }
+        /* ========== 接口文档筛选行 ========== */
+        .doc-filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 4px 0 0 0;
+            width: 100%;
+        }
+        .doc-filter-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 13px;
+            color: #262626;
+            animation: fadeIn 0.2s;
+        }
+        .doc-filter-row .filter-label {
+            color: #595959;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .doc-filter-row select,
+        .doc-filter-row input {
+            height: 28px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            padding: 0 8px;
+            font-size: 13px;
+            outline: none;
+            background: #fff;
+            min-width: 80px;
+        }
+        .doc-filter-row select:focus,
+        .doc-filter-row input:focus {
+            border-color: #40a9ff;
+        }
+        .doc-filter-row .filter-remove {
+            cursor: pointer;
+            color: #8c8c8c;
+            font-size: 14px;
+            margin-left: 4px;
+            flex-shrink: 0;
+        }
+        .doc-filter-row .filter-remove:hover {
+            color: #ff4d4f;
+        }
+
 </style>
 </head>
 <body>
@@ -1484,7 +1536,7 @@
         <div class="header-left">
             <div class="logo-area" onclick="app.goHome()">
                 <div class="logo-icon">海</div>
-                <span class="logo-text">轻量化海牛工作台</span>
+                <span class="logo-text">轻量版海牛工作台</span>
             </div>
             <div class="main-nav">
                 <button class="nav-tab active" data-tab="frontend">应用开发</button>
@@ -1663,24 +1715,26 @@
                         <div class="doc-sub-tab-nav">
                             <div class="doc-sub-tab-item active" onclick="bdSwitchDocSubTab('apiDoc')">接口文档</div>
                             <div class="doc-sub-tab-item" onclick="bdSwitchDocSubTab('debugDoc')">联调文档</div>
+                            <div class="doc-sub-tab-item" onclick="bdSwitchDocSubTab('externalDoc')">外部文档</div>
                         </div>
                         <div class="doc-sub-content active" id="bdSubTabApiDoc">
                             <div class="detail-layout">
                                 <div class="detail-layout-left">
                                     <div class="left-toolbar">
-                                        <input class="search-input" placeholder="搜索接口名称或英文名称">
+                                        <input class="search-input" placeholder="搜索接口名称或英文名称" style="flex:0 0 200px;">
                                         <div class="dropdown-wrap">
                                             <button class="btn" onclick="bdToggleDropdown(event,'bdFilterMenu1')" title="过滤器">
                                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
                                             </button>
                                             <div class="dropdown-menu" id="bdFilterMenu1">
-                                                <div class="dropdown-item" onclick="bdSetFilter('标签')">📌 标签</div>
-                                                <div class="dropdown-item" onclick="bdSetFilter('创建人')">👤 创建人</div>
-                                                <div class="dropdown-item" onclick="bdSetFilter('创建时间')">🕐 创建时间</div>
-                                                <div class="dropdown-item" onclick="bdSetFilter('发布时间')">🚀 发布时间</div>
+                                                <div class="dropdown-item" onclick="bdSetDocFilter('类型')">🏷️ 类型</div>
+                                                <div class="dropdown-item" onclick="bdSetDocFilter('标签')">📌 标签</div>
+                                                <div class="dropdown-item" onclick="bdSetDocFilter('创建人')">👤 创建人</div>
+                                                <div class="dropdown-item" onclick="bdSetDocFilter('创建时间')">🕐 创建时间</div>
+                                                <div class="dropdown-item" onclick="bdSetDocFilter('发布时间')">🚀 发布时间</div>
                                             </div>
                                         </div>
-                                        <div class="dropdown-wrap" style="margin-left:auto;">
+                                        <div class="dropdown-wrap">
                                             <button class="btn" onclick="bdToggleDropdown(event,'bdMoreMenu1')">更多 ▾</button>
                                             <button class="btn" onclick="bdDoAction('刷新')" title="刷新">↻</button>
                                             <div class="dropdown-menu right" id="bdMoreMenu1">
@@ -1689,6 +1743,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="doc-filter-container" id="bdDocFilterContainer1"></div>
                                     <div id="bdDocPanelList">
                                         <div class="api-panel">
                                             <div class="api-panel-header" onclick="bdTogglePanel(this)">
@@ -1724,26 +1779,9 @@
                             <div class="detail-layout">
                                 <div class="detail-layout-left">
                                     <div class="left-toolbar">
-                                        <input class="search-input" placeholder="搜索联调记录">
-                                        <div class="dropdown-wrap">
-                                            <button class="btn" onclick="bdToggleDropdown(event,'bdFilterMenu2')" title="过滤器">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
-                                            </button>
-                                            <div class="dropdown-menu" id="bdFilterMenu2">
-                                                <div class="dropdown-item" onclick="bdSetFilter('标签')">📌 标签</div>
-                                                <div class="dropdown-item" onclick="bdSetFilter('创建人')">👤 创建人</div>
-                                                <div class="dropdown-item" onclick="bdSetFilter('创建时间')">🕐 创建时间</div>
-                                                <div class="dropdown-item" onclick="bdSetFilter('发布时间')">🚀 发布时间</div>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown-wrap" style="margin-left:auto;">
-                                            <button class="btn" onclick="bdToggleDropdown(event,'bdMoreMenu2')">更多 ▾</button>
-                                            <button class="btn" onclick="bdDoAction('刷新')" title="刷新">↻</button>
-                                            <div class="dropdown-menu right" id="bdMoreMenu2">
-                                                <div class="dropdown-item" onclick="bdDoAction('导出')"><span class="icon">📥</span>导出</div>
-                                                <div class="dropdown-item" onclick="bdDoAction('地址配置')"><span class="icon">🔗</span>地址配置</div>
-                                            </div>
-                                        </div>
+                                        <input class="search-input" placeholder="搜索联调记录" style="flex:0 0 200px;">
+                                        <button class="btn" onclick="bdDoAction('新建分组')" style="height:32px;padding:0 12px;font-size:13px;">+ 新增</button>
+                                        <button class="btn" onclick="bdDoAction('刷新')" title="刷新" style="height:32px;">↻</button>
                                     </div>
                                     <div class="doc-empty" style="padding:40px 20px;">
                                         <div class="doc-icon">📋</div>
@@ -1755,6 +1793,28 @@
                                         <div class="big-icon">🔍</div>
                                         <h3>选择联调记录查看详情</h3>
                                         <p>点击左侧联调记录查看详细信息</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="doc-sub-content" id="bdSubTabExternalDoc">
+                            <div class="detail-layout">
+                                <div class="detail-layout-left">
+                                    <div class="left-toolbar">
+                                        <input class="search-input" placeholder="搜索文档名称" style="flex:0 0 200px;">
+                                        <button class="btn" onclick="bdDoAction('新建分组')" style="height:32px;padding:0 12px;font-size:13px;">+ 新增</button>
+                                        <button class="btn" onclick="bdDoAction('刷新')" title="刷新" style="height:32px;">↻</button>
+                                    </div>
+                                    <div class="doc-empty" style="padding:40px 20px;">
+                                        <div class="doc-icon">📄</div>
+                                        <p>暂无外部文档</p>
+                                    </div>
+                                </div>
+                                <div class="detail-layout-right">
+                                    <div class="detail-view-area">
+                                        <div class="big-icon">🔍</div>
+                                        <h3>选择文档查看详情</h3>
+                                        <p>点击左侧文档查看详细信息</p>
                                     </div>
                                 </div>
                             </div>
@@ -1848,7 +1908,7 @@
 
     <!-- ===== 生成后端代码弹窗 ===== -->
     <div id="genModal" class="modal-overlay">
-        <div class="modal" style="max-width:600px;">
+        <div class="modal" style="max-width:600px;max-height:90vh;">
             <div class="modal-header">
                 <div class="modal-title" id="genModalTitle">生成后端代码</div>
                 <button class="modal-close" onclick="app.closeGenModal()">✕</button>
@@ -3230,7 +3290,8 @@
                 items.forEach(function(t){t.classList.remove('active')});
                 contents.forEach(function(t){t.classList.remove('active')});
                 items.forEach(function(t){
-                    if(t.textContent.trim() === (sub === 'apiDoc' ? '接口文档' : '联调文档')) t.classList.add('active');
+                    var tabMap = {'apiDoc':'接口文档','debugDoc':'联调文档','externalDoc':'外部文档'};
+                    if(t.textContent.trim() === tabMap[sub]) t.classList.add('active');
                 });
                 document.getElementById('bdSubTab' + sub.charAt(0).toUpperCase() + sub.slice(1)).classList.add('active');
             };
@@ -3259,6 +3320,74 @@
             window.bdDoSearch = function() {
                 var q = document.getElementById('bdApiSearch').value.trim();
                 alert('搜索: ' + (q || '显示全部'));
+            };
+            window.bdSetDocFilter = function(name) { bdAddDocFilter('bdDocFilterContainer1', name); };
+            window.bdAddDocFilter = function(containerId, name) {
+                bdCloseAllDropdowns();
+                var container = document.getElementById(containerId);
+                if (!container) return;
+                // Check if this filter type already exists
+                var existing = container.querySelector('.doc-filter-row[data-filter="' + name + '"]');
+                if (existing) return;
+                var row = document.createElement('div');
+                row.className = 'doc-filter-row';
+                row.dataset.filter = name;
+                var label = document.createElement('span');
+                label.className = 'filter-label';
+                label.textContent = name + '：';
+                row.appendChild(label);
+                if (name === '类型') {
+                    var sel = document.createElement('select');
+                    var opts = ['GET', 'POST', 'PUT', 'DELETE'];
+                    for (var i = 0; i < opts.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.value = opts[i];
+                        opt.textContent = opts[i];
+                        sel.appendChild(opt);
+                    }
+                    sel.onchange = function() { bdApplyDocFilters(); };
+                    row.appendChild(sel);
+                } else if (name === '标签') {
+                    var inp = document.createElement('input');
+                    inp.type = 'text';
+                    inp.placeholder = '输入标签';
+                    inp.oninput = function() { bdApplyDocFilters(); };
+                    row.appendChild(inp);
+                } else if (name === '创建人') {
+                    var inp = document.createElement('input');
+                    inp.type = 'text';
+                    inp.placeholder = '输入创建人';
+                    inp.oninput = function() { bdApplyDocFilters(); };
+                    row.appendChild(inp);
+                } else if (name === '创建时间') {
+                    var inp = document.createElement('input');
+                    inp.type = 'text';
+                    inp.placeholder = 'YYYY-MM-DD';
+                    inp.style.width = '110px';
+                    inp.oninput = function() { bdApplyDocFilters(); };
+                    row.appendChild(inp);
+                } else if (name === '发布时间') {
+                    var inp = document.createElement('input');
+                    inp.type = 'text';
+                    inp.placeholder = 'YYYY-MM-DD';
+                    inp.style.width = '110px';
+                    inp.oninput = function() { bdApplyDocFilters(); };
+                    row.appendChild(inp);
+                }
+                var close = document.createElement('span');
+                close.className = 'filter-remove';
+                close.innerHTML = '✕';
+                close.onclick = function() { row.remove(); bdApplyDocFilters(); };
+                row.appendChild(close);
+                container.appendChild(row);
+                bdApplyDocFilters();
+            };
+            window.bdApplyDocFilters = function() {
+                // Currently placeholder for actual filter logic
+                // Will filter the doc list when data is dynamic
+            };
+            window.bdClearDocFilter = function() {
+                // Kept for backward compatibility - no longer used
             };
             window.bdSetFilter = function(name) { bdCloseAllDropdowns(); alert('筛选: ' + name); };
             window.bdShowApiDetail = function(text) {
