@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>渠道版海牛工作台</title>
+    <title>研发工作台</title>
     <style>
         * {
             margin: 0;
@@ -127,11 +127,6 @@
         .user-name {
             color: rgba(255, 255, 255, 0.85);
             font-size: 14px;
-        }
-        .prd-badge {
-            display: inline-flex; align-items: center; height: 20px; padding: 0 6px;
-            border-radius: 3px; font-size: 10px; font-weight: 600;
-            background: #f5222d; color: #fff; margin-left: 4px; letter-spacing: .5px;
         }
 
         /* ========== 主容器 ========== */
@@ -311,17 +306,7 @@
             white-space: nowrap;
         }
 
-        .project-desc {
-            font-size: 13px;
-            color: #8c8c8c;
-            line-height: 1.6;
-            margin-bottom: 10px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
+
 
         .project-meta {
             display: flex;
@@ -1170,119 +1155,6 @@
             .backend-detail-wrapper .detail-layout-right { padding: 16px; min-height: 300px; }
         }
 
-        /* ========== PRD 抽屉 ========== */
-        .drawer-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.45);
-            z-index: 2000;
-        }
-        .drawer-overlay.show {
-            display: block;
-        }
-
-        .drawer {
-            position: fixed;
-            top: 0;
-            right: -480px;
-            width: 480px;
-            max-width: calc(100vw - 48px);
-            height: 100vh;
-            background: #fff;
-            box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
-            z-index: 2001;
-            display: flex;
-            flex-direction: column;
-            transition: right 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .drawer.open {
-            right: 0;
-        }
-
-        .drawer-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 24px;
-            border-bottom: 1px solid #f0f0f0;
-            flex-shrink: 0;
-        }
-        .drawer-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 17px;
-            font-weight: 600;
-            color: #262626;
-        }
-        .drawer-title-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            background: linear-gradient(135deg, #f5222d, #cf1322);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 16px;
-        }
-        .drawer-close {
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: none;
-            color: #8c8c8c;
-            font-size: 20px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .drawer-close:hover {
-            background: #f5f5f5;
-            color: #262626;
-        }
-
-        .drawer-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-        }
-
-        /* 抽屉内容空状态 */
-        .drawer-empty {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #bfbfbf;
-            text-align: center;
-        }
-        .drawer-empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-        .drawer-empty-text {
-            font-size: 14px;
-            line-height: 1.8;
-        }
-
-        /* 点击 PRD 时指针样式 */
-        .prd-badge {
-            cursor: pointer;
-            user-select: none;
-        }
-        .prd-badge:hover {
-            opacity: 0.85;
-        }
-
         /* ========== 前端详情 - 生成/发布流程（来自 light-hainiu-workbench） ========== */
         .fd-conn-bar {
             display: flex; align-items: center; gap: 8px;
@@ -1529,6 +1401,93 @@
             color: #ff4d4f;
         }
 
+        /* ========== PRD 抽屉 ========== */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 2000;
+        }
+        .drawer-overlay.show { display: block; }
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -480px;
+            width: 480px;
+            max-width: calc(100vw - 48px);
+            height: 100vh;
+            background: #fff;
+            box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+            z-index: 2001;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: right 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .drawer.open { right: 0; }
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            flex-shrink: 0;
+        }
+        .drawer-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #262626;
+        }
+        .drawer-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #f5222d, #cf1322);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+        }
+        .drawer-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            color: #8c8c8c;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .drawer-close:hover { background: #f5f5f5; color: #262626; }
+        .drawer-body { flex: 1; overflow-y: auto; padding: 24px; }
+        .drawer-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #bfbfbf;
+            text-align: center;
+        }
+        .drawer-empty-icon { font-size: 48px; margin-bottom: 16px; }
+        .drawer-empty-text { font-size: 14px; line-height: 1.8; }
+        .prd-badge {
+            display: inline-flex; align-items: center; height: 20px; padding: 0 6px;
+            border-radius: 3px; font-size: 10px; font-weight: 600;
+            background: #f5222d; color: #fff; margin-left: 4px; letter-spacing: .5px;
+            cursor: pointer;
+        }
+        .prd-badge:hover { opacity: 0.85; }
+
 </style>
 </head>
 <body>
@@ -1538,7 +1497,7 @@
         <div class="header-left">
             <div class="logo-area" onclick="app.goHome()">
                 <div class="logo-icon">海</div>
-                <span class="logo-text">渠道版海牛工作台</span>
+                <span class="logo-text">研发工作台</span>
             </div>
             <div class="main-nav">
                 <button class="nav-tab active" data-tab="frontend">前端</button>
@@ -1560,7 +1519,7 @@
         <!-- ===== 首页视图1: 应用开发 ===== -->
         <div id="frontendHome" class="view active">
             <div class="toolbar">
-                <input type="text" class="search-box" id="frontendSearch" placeholder="输入名称或描述" oninput="app.filterFrontend()">
+                <input type="text" class="search-box" id="frontendSearch" placeholder="搜索" oninput="app.filterFrontend()">
                 <button class="btn btn-primary" onclick="app.showCreateModal()">+ 新建</button>
             </div>
             <div id="frontendGrid" class="project-grid"></div>
@@ -1590,7 +1549,7 @@
         <!-- ===== 首页视图2: 应用服务 ===== -->
         <div id="backendHome" class="view">
             <div class="toolbar">
-                <input type="text" class="search-box" id="backendSearch" placeholder="搜索名称或描述" oninput="app.filterBackend()">
+                <input type="text" class="search-box" id="backendSearch" placeholder="搜索" oninput="app.filterBackend()">
                 <button class="btn btn-primary" onclick="app.showBackendCreateModal()">+ 新建</button>
             </div>
             <div id="backendGrid" class="project-grid"></div>
@@ -1604,209 +1563,10 @@
                     <span style="color:#d9d9d9;user-select:none;">›</span>
                     <span style="color:#262626;font-weight:500;" id="bdBreadcrumbName">服务名称</span>
                 </div>
-
-                <div class="detail-tabs">
-                    <div class="detail-tab-nav">
-                        <div class="detail-tab-item active" onclick="bdSwitchMainTab('api')">接口</div>
-                        <div class="detail-tab-item" onclick="bdSwitchMainTab('doc')">文档</div>
-                    </div>
-                    <div class="detail-tab-content active" id="bdTabApi">
-                        <div class="detail-layout">
-                            <div class="detail-layout-left">
-                                <div class="left-toolbar">
-                                    <input class="search-input" placeholder="搜索接口名称或英文名称" id="bdApiSearch">
-                                    <button class="btn btn-primary" onclick="bdDoSearch()">查询</button>
-                                    <div class="dropdown-wrap">
-                                        <button class="btn btn-primary" onclick="bdToggleDropdown(event,'bdAddMenu')">+ 添加</button>
-                                        <div class="dropdown-menu right" id="bdAddMenu">
-                                            <div class="dropdown-item" onclick="bdDoAction('新建分组')"><span class="icon">📂</span>新建分组</div>
-                                            <div class="dropdown-item" onclick="bdDoAction('生成接口')"><span class="icon">⚡</span>生成接口</div>
-                                            <div class="dropdown-item" onclick="bdDoAction('标签管理')"><span class="icon">🏷️</span>标签管理</div>
-                                        </div>
-                                    </div>
-                                    <button class="btn" onclick="bdReloadAll()" title="重新加载">↻</button>
-                                </div>
-                                <div id="bdApiPanelList">
-                                    <div class="api-panel">
-                                        <div class="api-panel-header" onclick="bdTogglePanel(this)">
-                                            <div class="api-panel-header-left"><span class="arrow open">▶</span><span class="api-panel-title">用户管理</span><span class="api-panel-badge">4</span></div>
-                                            <div class="api-panel-header-right">
-                                                <button class="btn" onclick="event.stopPropagation();bdReloadPanel(this)">↻</button>
-                                                <div class="dropdown-wrap">
-                                                    <button class="btn" onclick="event.stopPropagation();bdToggleDropdown(event,'bdPanelAdd1')">+</button>
-                                                    <div class="dropdown-menu right" id="bdPanelAdd1">
-                                                        <div class="dropdown-item" onclick="bdDoAction('新建接口')"><span class="icon">🔌</span>新建接口</div>
-                                                        <div class="dropdown-item" onclick="bdDoAction('新建方法')"><span class="icon">➕</span>新建方法</div>
-                                                        <div class="dropdown-item" onclick="bdDoAction('新建分组')"><span class="icon">📂</span>新建分组</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="api-panel-body open">
-                                            <div class="api-item" onclick="bdShowApiDetail('GET /api/v1/users - 获取用户列表')"><span class="api-method get">GET</span><span class="api-path">获取用户列表</span><span class="api-desc">/api/v1/users</span><span class="api-item-more" style="font-size:16px;color:#8c8c8c;cursor:pointer;padding:0 4px;user-select:none;" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                            <div class="api-item" onclick="bdShowApiDetail('POST /api/v1/users - 创建用户')"><span class="api-method post">POST</span><span class="api-path">创建用户</span><span class="api-desc">/api/v1/users</span><span class="api-item-more" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                            <div class="api-item" onclick="bdShowApiDetail('PUT /api/v1/users/{id} - 更新用户信息')"><span class="api-method put">PUT</span><span class="api-path">更新用户信息</span><span class="api-desc">/api/v1/users/{id}</span><span class="api-item-more" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                        </div>
-                                    </div>
-                                    <div class="api-panel">
-                                        <div class="api-panel-header" onclick="bdTogglePanel(this)">
-                                            <div class="api-panel-header-left"><span class="arrow open">▶</span><span class="api-panel-title">项目管理</span><span class="api-panel-badge">3</span></div>
-                                            <div class="api-panel-header-right">
-                                                <button class="btn" onclick="event.stopPropagation();bdReloadPanel(this)">↻</button>
-                                                <div class="dropdown-wrap">
-                                                    <button class="btn" onclick="event.stopPropagation();bdToggleDropdown(event,'bdPanelAdd2')">+</button>
-                                                    <div class="dropdown-menu right" id="bdPanelAdd2">
-                                                        <div class="dropdown-item" onclick="bdDoAction('新建接口')"><span class="icon">🔌</span>新建接口</div>
-                                                        <div class="dropdown-item" onclick="bdDoAction('新建方法')"><span class="icon">➕</span>新建方法</div>
-                                                        <div class="dropdown-item" onclick="bdDoAction('新建分组')"><span class="icon">📂</span>新建分组</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="api-panel-body open">
-                                            <div class="api-item" onclick="bdShowApiDetail('GET /api/v1/projects - 获取项目列表')"><span class="api-method get">GET</span><span class="api-path">获取项目列表</span><span class="api-desc">/api/v1/projects</span><span class="api-item-more" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                            <div class="api-item" onclick="bdShowApiDetail('POST /api/v1/projects - 创建项目')"><span class="api-method post">POST</span><span class="api-path">创建项目</span><span class="api-desc">/api/v1/projects</span><span class="api-item-more" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                        </div>
-                                    </div>
-                                    <div class="api-panel">
-                                        <div class="api-panel-header" onclick="bdTogglePanel(this)">
-                                            <div class="api-panel-header-left"><span class="arrow">▶</span><span class="api-panel-title">数据报表</span><span class="api-panel-badge">2</span></div>
-                                            <div class="api-panel-header-right">
-                                                <button class="btn" onclick="event.stopPropagation();bdReloadPanel(this)">↻</button>
-                                                <div class="dropdown-wrap">
-                                                    <button class="btn" onclick="event.stopPropagation();bdToggleDropdown(event,'bdPanelAdd3')">+</button>
-                                                    <div class="dropdown-menu right" id="bdPanelAdd3">
-                                                        <div class="dropdown-item" onclick="bdDoAction('新建接口')"><span class="icon">🔌</span>新建接口</div>
-                                                        <div class="dropdown-item" onclick="bdDoAction('新建方法')"><span class="icon">➕</span>新建方法</div>
-                                                        <div class="dropdown-item" onclick="bdDoAction('新建分组')"><span class="icon">📂</span>新建分组</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="api-panel-body">
-                                            <div class="api-item" onclick="bdShowApiDetail('GET /api/v1/reports/summary - 获取报表概要')"><span class="api-method get">GET</span><span class="api-path">获取报表概要</span><span class="api-desc">/api/v1/reports/summary</span><span class="api-item-more" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="detail-layout-right">
-                                <div class="detail-view-area" id="bdApiDetailArea">
-                                    <div class="big-icon">🔍</div>
-                                    <h3>点击接口查看详情</h3>
-                                    <p>选择左侧接口列表中的接口查看详细信息</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="detail-tab-content" id="bdTabDoc">
-                        <div class="doc-sub-tab-nav">
-                            <div class="doc-sub-tab-item active" onclick="bdSwitchDocSubTab('apiDoc')">接口文档</div>
-                            <div class="doc-sub-tab-item" onclick="bdSwitchDocSubTab('debugDoc')">联调文档</div>
-                            <div class="doc-sub-tab-item" onclick="bdSwitchDocSubTab('externalDoc')">外部文档</div>
-                        </div>
-                        <div class="doc-sub-content active" id="bdSubTabApiDoc">
-                            <div class="detail-layout">
-                                <div class="detail-layout-left">
-                                    <div class="left-toolbar">
-                                        <input class="search-input" placeholder="搜索接口名称或英文名称" style="flex:0 0 200px;">
-                                        <div class="dropdown-wrap">
-                                            <button class="btn" onclick="bdToggleDropdown(event,'bdFilterMenu1')" title="过滤器">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
-                                            </button>
-                                            <div class="dropdown-menu" id="bdFilterMenu1">
-                                                <div class="dropdown-item" onclick="bdSetDocFilter('类型')">🏷️ 类型</div>
-                                                <div class="dropdown-item" onclick="bdSetDocFilter('标签')">📌 标签</div>
-                                                <div class="dropdown-item" onclick="bdSetDocFilter('创建人')">👤 创建人</div>
-                                                <div class="dropdown-item" onclick="bdSetDocFilter('创建时间')">🕐 创建时间</div>
-                                                <div class="dropdown-item" onclick="bdSetDocFilter('发布时间')">🚀 发布时间</div>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown-wrap">
-                                            <button class="btn" onclick="bdToggleDropdown(event,'bdMoreMenu1')">更多 ▾</button>
-                                            <button class="btn" onclick="bdDoAction('刷新')" title="刷新">↻</button>
-                                            <div class="dropdown-menu right" id="bdMoreMenu1">
-                                                <div class="dropdown-item" onclick="bdDoAction('导出')"><span class="icon">📥</span>导出</div>
-                                                <div class="dropdown-item" onclick="bdDoAction('地址配置')"><span class="icon">🔗</span>地址配置</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="doc-filter-container" id="bdDocFilterContainer1"></div>
-                                    <div id="bdDocPanelList">
-                                        <div class="api-panel">
-                                            <div class="api-panel-header" onclick="bdTogglePanel(this)">
-                                                <div class="api-panel-header-left"><span class="arrow open">▶</span><span class="api-panel-title">用户管理</span><span class="api-panel-badge">4</span></div>
-                                            </div>
-                                            <div class="api-panel-body open">
-                                                <div class="api-item" onclick="bdShowDocDetail('用户管理接口文档')"><span class="api-method get">GET</span><span class="api-path">获取用户列表</span><span class="api-desc">/api/v1/users</span><span class="api-item-more" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                                <div class="api-item" onclick="bdShowDocDetail('用户管理接口文档')"><span class="api-method post">POST</span><span class="api-path">创建用户</span><span class="api-desc">/api/v1/users</span><span class="api-item-more" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                                <div class="api-item" onclick="bdShowDocDetail('用户管理接口文档')"><span class="api-method put">PUT</span><span class="api-path">更新用户信息</span><span class="api-desc">/api/v1/users/{id}</span><span class="api-item-more" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                            </div>
-                                        </div>
-                                        <div class="api-panel">
-                                            <div class="api-panel-header" onclick="bdTogglePanel(this)">
-                                                <div class="api-panel-header-left"><span class="arrow open">▶</span><span class="api-panel-title">项目管理</span><span class="api-panel-badge">3</span></div>
-                                            </div>
-                                            <div class="api-panel-body open">
-                                                <div class="api-item" onclick="bdShowDocDetail('项目管理接口文档')"><span class="api-method get">GET</span><span class="api-path">获取项目列表</span><span class="api-desc">/api/v1/projects</span></div>
-                                                <div class="api-item" onclick="bdShowDocDetail('项目管理接口文档')"><span class="api-method post">POST</span><span class="api-path">创建项目</span><span class="api-desc">/api/v1/projects</span><span class="api-item-more" onclick="event.stopPropagation();bdToggleApiMenu(event)">⋯</span></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="detail-layout-right">
-                                    <div class="detail-view-area" id="bdDocDetailArea">
-                                        <div class="big-icon">📄</div>
-                                        <h3>选择文档查看详情</h3>
-                                        <p>点击左侧文档条目查看接口文档内容</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="doc-sub-content" id="bdSubTabDebugDoc">
-                            <div class="detail-layout">
-                                <div class="detail-layout-left">
-                                    <div class="left-toolbar">
-                                        <input class="search-input" placeholder="搜索联调记录" style="flex:0 0 200px;">
-                                        <button class="btn" onclick="bdDoAction('新建分组')" style="height:32px;padding:0 12px;font-size:13px;">+ 新增</button>
-                                        <button class="btn" onclick="bdDoAction('刷新')" title="刷新" style="height:32px;">↻</button>
-                                    </div>
-                                    <div class="doc-empty" style="padding:40px 20px;">
-                                        <div class="doc-icon">📋</div>
-                                        <p>暂无联调记录</p>
-                                    </div>
-                                </div>
-                                <div class="detail-layout-right">
-                                    <div class="detail-view-area">
-                                        <div class="big-icon">🔍</div>
-                                        <h3>选择联调记录查看详情</h3>
-                                        <p>点击左侧联调记录查看详细信息</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="doc-sub-content" id="bdSubTabExternalDoc">
-                            <div class="detail-layout">
-                                <div class="detail-layout-left">
-                                    <div class="left-toolbar">
-                                        <input class="search-input" placeholder="搜索文档名称" style="flex:0 0 200px;">
-                                        <button class="btn" onclick="bdDoAction('新建分组')" style="height:32px;padding:0 12px;font-size:13px;">+ 新增</button>
-                                        <button class="btn" onclick="bdDoAction('刷新')" title="刷新" style="height:32px;">↻</button>
-                                    </div>
-                                    <div class="doc-empty" style="padding:40px 20px;">
-                                        <div class="doc-icon">📄</div>
-                                        <p>暂无外部文档</p>
-                                    </div>
-                                </div>
-                                <div class="detail-layout-right">
-                                    <div class="detail-view-area">
-                                        <div class="big-icon">🔍</div>
-                                        <h3>选择文档查看详情</h3>
-                                        <p>点击左侧文档查看详细信息</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:calc(100vh - 140px);color:#bfbfbf;text-align:center;">
+                    <div style="font-size:64px;margin-bottom:16px;opacity:.4;">🔧</div>
+                    <div style="font-size:16px;color:#8c8c8c;font-weight:400;margin-bottom:6px;">见原系统页面及PRD说明</div>
+                    
                 </div>
             </div>
         </div>
@@ -1824,17 +1584,14 @@
                     <div class="form-error" id="nameError"></div>
                 </div>
                 <div class="form-item">
-                    <label class="form-label"><span class="required">*</span>页面形态</label>
+                    <label class="form-label"><span class="required">*</span>类型</label>
                     <div class="radio-group">
                         <label><input type="radio" name="pageType" value="PC" checked> PC</label>
                         <label><input type="radio" name="pageType" value="小程序"> 小程序</label>
                     </div>
                     <div class="form-error" id="typeError"></div>
                 </div>
-                <div class="form-item">
-                    <label class="form-label">应用描述</label>
-                    <textarea class="form-textarea" id="newAppDesc" placeholder="请简要描述功能..."></textarea>
-                </div>
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-default" onclick="app.closeModal('createModal')">取消</button>
@@ -1857,17 +1614,14 @@
                     <div class="form-error" id="configNameError"></div>
                 </div>
                 <div class="form-item">
-                    <label class="form-label"><span class="required">*</span>页面形态</label>
+                    <label class="form-label"><span class="required">*</span>类型</label>
                     <div class="radio-group">
                         <label><input type="radio" name="configPageType" value="PC"> PC</label>
                         <label><input type="radio" name="configPageType" value="小程序"> 小程序</label>
                     </div>
                     <div class="form-error" id="configTypeError"></div>
                 </div>
-                <div class="form-item">
-                    <label class="form-label">应用描述</label>
-                    <textarea class="form-textarea" id="configAppDesc" placeholder="请简要描述功能..."></textarea>
-                </div>
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-default" onclick="app.closeModal('configModal')">取消</button>
@@ -2012,15 +1766,62 @@
             </div>
             <button class="drawer-close" onclick="app.closePrdDrawer()">✕</button>
         </div>
-        <div class="drawer-body" id="prdDrawerBody">
-            <div class="drawer-empty">
-                <div class="drawer-empty-icon">📋</div>
-                <div class="drawer-empty-text">
-                    PRD 内容加载中...<br>
-                    请稍候
-                </div>
-            </div>
+        <div class="drawer-body" id="prdDrawerBody" style="padding:20px 24px;">
+            <div style="font-size:18px;font-weight:600;color:#262626;margin-bottom:4px;">功能清单 - 渠道版海牛工作台</div>
+
+<div style="font-size:15px;font-weight:600;color:#262626;margin-top:20px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;">【首页】</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 保留原系统工作台标题和用户头像区域；删除原系统概览、应用中心、模板中心、数据中心等与本项目无关的顶部导航。首页主体按"前端"和"后端"两个独立列表展示</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 提供"前端"和"后端"两个模块入口，两个列表独立搜索、展示和管理</div>
+
+<div style="font-size:15px;font-weight:600;color:#262626;margin-top:20px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;">【前端 - 列表】</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 卡片展示：名称、类型（PC / 小程序）</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 搜索：支持按照名称进行模糊搜索</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 功能按键：保留"新增"按钮。点击后打开新建弹窗，填写名称、类型后创建应用，创建成功后进入对应应用的 AI Coding 开发页面</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 操作项：卡片"更多"只保留"编辑"和"删除"。编辑用于修改名称、类型；删除同当前</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 详情：点击进入 AI Coding 生成页。详情同步后端接口和同步需要调整</div>
+
+<div style="font-size:15px;font-weight:600;color:#262626;margin-top:20px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;">【前端 - 同步接口入口】</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 弹窗新增任务状态，分为"生成后端"和"开始联调"两个阶段</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 异步生成任务：点击生成后创建异步任务，由服务端后台执行。用户关闭弹窗、切换项目或离开当前页面时任务继续执行</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 展示后端代码生成状态：待生成、生成中（动态状态）、生成完成、生成失败</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 生成完成后开放"开始联调"按钮；生成失败后支持重新生成</div>
+
+<div style="font-size:15px;font-weight:600;color:#262626;margin-top:20px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;">【前端 - 开始联调】</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 后端代码生成完成后，用户点击"开始联调"。未完成后端生成时按钮置灰不可点击</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 联调全局加载：发起联调后展示全局 Loading，提示"正在联调中，请稍候"，避免用户重复操作</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 联调成功：任务状态更新为"联调完成"，应用进入可发布状态</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 联调失败：任务状态更新为"联调失败"，展示失败结果，允许用户修改前后端后重新联调，展示"重新联调"按钮</div>
+
+<div style="font-size:15px;font-weight:600;color:#262626;margin-top:20px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;">【前端 - 发布入口】</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 发布弹窗包含：小程序名称、图标、小程序类型、分类、小程序简介、截图、小程序描述等字段</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 推送至凡泰：应用发布成功后，将应用信息及生成结果推送至凡泰小程序平台。凡泰平台的审核上架不属于本项目范围</div>
+
+<div style="font-size:15px;font-weight:600;color:#262626;margin-top:20px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;">【后端 - 列表】</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 列表：卡片展示名称、状态（状态同当前逻辑判断）</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 搜索：支持按照名称进行模糊搜索</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 功能按键：保留后端"新增"按钮，点击后打开新建弹窗，弹窗内容同当前保持一致</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 操作项：卡片"更多"只保留"删除"。删除提示文案同原型</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 详情：点击进入后端详情页，详情页详见下方说明</div>
+
+<div style="font-size:15px;font-weight:600;color:#262626;margin-top:20px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;">【后端 - 接口列表】</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 侧边栏只保留"接口"和"文档"两个菜单。数据对象、任务等其他原系统菜单不在渠道版展示</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 保留核心布局：项目选择、接口搜索、接口分组、接口列表和接口详情区域</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 删除顶部"分享""导入""导出"操作入口。只保留"接口"页签，删除"数据对象"页签</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 保留接口列表刷新能力。新增菜单只保留"新建分组"和"标签管理"，删除"生成接口""发现"等</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 单接口更多操作项均保留</div>
+
+<div style="font-size:15px;font-weight:600;color:#262626;margin-top:20px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;">【后端 - 文档列表】</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 文档菜单中只保留"接口文档"。删除"联调文档"页签及相关内容</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 更多操作只保留"刷新"/接口搜索和更多查询项。删除"导出""地址配置"等</div>
+
+<div style="font-size:15px;font-weight:600;color:#262626;margin-top:20px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;">【后端 - 其他删除项】</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 删除对象库：接口详情左侧工具区删除"对象库"页签及相关对象内容。组件库、方法库保持原系统不变</div>
+<div style="font-size:13px;color:#595959;line-height:1.8;padding-left:12px;">• 删除测试用例选项：接口发布弹窗中删除"需要生成或更新测试用例"复选框及说明文字</div>
         </div>
+
+            <div class="notification-message" id="notiMsg"></div>
+        </div>
+        <button class="notification-close" onclick="app.hideNotification()">✕</button>
     </div>
 
     <!-- ===== 前端详情 - 生成代码弹窗 ===== -->
@@ -2187,7 +1988,7 @@
     <div id="backendCreateModal" class="modal-overlay">
         <div class="modal" style="max-width:620px;max-height:90vh;">
             <div class="modal-header">
-                <div class="modal-title" id="bdCreateTitle">新建后端服务</div>
+                <div class="modal-title" id="bdCreateTitle">新建</div>
                 <button class="modal-close" onclick="app.closeBackendCreateModal()">✕</button>
             </div>
             <div class="modal-body">
@@ -2201,13 +2002,13 @@
                 <!-- Tab: 基础配置 -->
                 <div class="bd-create-tab-content active" id="bdCreateTabBasic">
                     <div class="form-item">
-                        <label class="form-label"><span class="required">*</span>服务名称</label>
-                        <input type="text" class="form-input" id="bdCreateName" placeholder="请输入服务名称">
+                        <label class="form-label"><span class="required">*</span>名称</label>
+                        <input type="text" class="form-input" id="bdCreateName" placeholder="请输入名称">
                         <div class="form-error" id="bdCreateNameError"></div>
                     </div>
                     <div class="form-item">
                         <label class="form-label">描述</label>
-                        <textarea class="form-textarea" id="bdCreateDesc" placeholder="请简要描述服务的功能..."></textarea>
+                        <textarea class="form-textarea" id="bdCreateDesc" placeholder="请输入描述"></textarea>
                     </div>
                     <div class="form-item">
                         <label class="form-label">项目图标</label>
@@ -2364,10 +2165,9 @@
                 // ESC 关闭抽屉和前端弹窗
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') {
-                        this.closePrdDrawer();
                         this.closeFdGenModal();
                         this.closeFdPublishModal();
-                        this.closeBackendCreateModal();
+                        this.closeBackendCreateModal(); this.closePrdDrawer();
                     }
                 });
 
@@ -2458,7 +2258,6 @@
                             <div class="project-icon">${p.icon || '📱'}</div>
                             <div class="card-info">
                                 <div class="project-name">${p.name}</div>
-                                <div class="project-desc">${p.desc}</div>
                                 <div class="project-meta">
                                     <span class="tag tag-running" style="font-size:12px;padding:0 8px;height:22px;display:inline-flex;align-items:center;border-radius:2px;background:#f6ffed;border:1px solid #b7eb8f;color:#52c41a;">${p.pageType || 'PC'}</span>
                                     ${genLabel}
@@ -2497,7 +2296,6 @@
                             <div class="project-icon backend-icon">🔌</div>
                             <div class="card-info">
                                 <div class="project-name">${p.name}</div>
-                                <div class="project-desc">${p.desc}</div>
                                 <div class="project-meta">
                                     <span class="tag ${statusClass}">${statusLabel}</span>
                                 </div>
@@ -2652,8 +2450,6 @@
                 document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
                 document.querySelectorAll('.detail-view').forEach(v => v.classList.remove('active'));
                 document.getElementById('backendDetail').classList.add('active');
-                // Default to api tab
-                document.querySelector('.backend-detail-wrapper .detail-tab-item').click();
             },
 
             // ================ 生成流程 =================
@@ -2864,7 +2660,6 @@
             // ============================================================
             showCreateModal() {
                 document.getElementById('newAppName').value = '';
-                document.getElementById('newAppDesc').value = '';
                 document.querySelector('input[name="pageType"][value="PC"]').checked = true;
                 document.getElementById('nameError').textContent = '';
                 document.getElementById('typeError').textContent = '';
@@ -2874,7 +2669,7 @@
 
             createProject() {
                 const name = document.getElementById('newAppName').value.trim();
-                const desc = document.getElementById('newAppDesc').value.trim();
+                const desc = '';
                 const pageType = document.querySelector('input[name="pageType"]:checked')?.value || 'PC';
 
                 let hasError = false;
@@ -2885,7 +2680,7 @@
                     document.getElementById('nameError').textContent = '';
                 }
                 if (!pageType) {
-                    document.getElementById('typeError').textContent = '请选择页面形态';
+                    document.getElementById('typeError').textContent = '请选择类型';
                     hasError = true;
                 } else {
                     document.getElementById('typeError').textContent = '';
@@ -2905,7 +2700,7 @@
                 this.state.frontendProjects.unshift(newProject);
                 this.closeModal('createModal');
                 this.renderFrontend(document.getElementById('frontendSearch').value.trim());
-                this.showNotification(`✅ 应用「${name}」创建成功！`);
+                this.openFrontendDetail(newProject.id);
             },
 
             // ============================================================
@@ -2945,6 +2740,22 @@
                 document.getElementById('bdCreateTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
             },
 
+            // ============================================================
+            // PRD 抽屉
+            // ============================================================
+            openPrdDrawer() {
+                console.log('PRD drawer opened');
+                document.getElementById('prdOverlay').classList.add('show');
+                document.getElementById('prdDrawer').classList.add('open');
+                document.body.style.overflow = 'hidden';
+            },
+
+            closePrdDrawer() {
+                document.getElementById('prdOverlay').classList.remove('show');
+                document.getElementById('prdDrawer').classList.remove('open');
+                document.body.style.overflow = '';
+            },
+
             addBdCreateHeader() {
                 const list = document.getElementById('bdCreateHeadersList');
                 const row = document.createElement('div');
@@ -2980,7 +2791,7 @@
                 const name = document.getElementById('bdCreateName').value.trim();
                 const nameError = document.getElementById('bdCreateNameError');
                 if (!name) {
-                    nameError.textContent = '请输入服务名称';
+                    nameError.textContent = '请输入名称';
                     document.getElementById('bdCreateName').focus();
                     return;
                 }
@@ -3036,7 +2847,6 @@
                     role: '管理员',
                     icon: '🔌',
 
-
                     returnStruct: returnStruct,
                     exceptions: exceptions,
                     timeout: timeout,
@@ -3061,9 +2871,9 @@
 
                 this.state.configTargetId = id;
 
-                document.getElementById('configModalTitle').textContent = `编辑 · ${project.name}`;
+                document.getElementById('configModalTitle').textContent = `编辑`;
                 document.getElementById('configAppName').value = project.name;
-                document.getElementById('configAppDesc').value = project.desc || '';
+                // desc removed
 
                 document.getElementById('configNameError').textContent = '';
                 document.getElementById('configTypeError').textContent = '';
@@ -3086,7 +2896,7 @@
                 }
 
                 const name = document.getElementById('configAppName').value.trim();
-                const desc = document.getElementById('configAppDesc').value.trim();
+                const desc = '';
                 const pageType = document.querySelector('input[name="configPageType"]:checked')?.value || 'PC';
 
                 let hasError = false;
@@ -3097,7 +2907,7 @@
                     document.getElementById('configNameError').textContent = '';
                 }
                 if (!pageType) {
-                    document.getElementById('configTypeError').textContent = '请选择页面形态';
+                    document.getElementById('configTypeError').textContent = '请选择类型';
                     hasError = true;
                 } else {
                     document.getElementById('configTypeError').textContent = '';
@@ -3185,20 +2995,6 @@
                 document.getElementById('notification').classList.remove('show');
             },
 
-            // ============================================================
-            // PRD 抽屉
-            // ============================================================
-            openPrdDrawer() {
-                document.getElementById('prdOverlay').classList.add('show');
-                document.getElementById('prdDrawer').classList.add('open');
-                document.body.style.overflow = 'hidden';
-            },
-
-            closePrdDrawer() {
-                document.getElementById('prdOverlay').classList.remove('show');
-                document.getElementById('prdDrawer').classList.remove('open');
-                document.body.style.overflow = '';
-            }
         };
 
         // ============================================================
