@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -354,20 +355,23 @@ table th{color:#7b8190;font-size:11px;font-weight:650;background:#f8f9fb}
         <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')" data-label="企业AI大屏"><i class="fas fa-chart-pie"></i>企业AI大屏</div>
         </div>
       <div class="nav-group">
-        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> 需求与Skill管理</div>
+        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> 需求管理</div>
         <div class="nav-item" data-page="requirements" onclick="navigate('requirements')" data-label="需求池"><i class="fas fa-clipboard-list"></i>需求池</div>
-        <div class="nav-item" data-page="skills" onclick="navigate('skills')" data-label="Skill管理"><i class="fas fa-cubes"></i>Skill管理</div>
-        <div class="nav-item" data-page="skill-market" onclick="navigate('skill-market')" data-label="Skill市场"><i class="fas fa-store"></i>Skill市场</div>
-        <div class="nav-item" data-page="skill-calls" onclick="navigate('skill-calls')" data-label="Skill调用记录"><i class="fas fa-phone"></i>Skill调用记录</div>
       </div>
       <div class="nav-group">
-        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> 智能体权限网关</div>
-        <div class="nav-item" data-page="gateway" onclick="navigate('gateway')" data-label="网关概览"><i class="fas fa-shield-halved"></i>网关概览</div>
+        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> Skill管理</div>
+        <div class="nav-item" data-page="skills" onclick="navigate('skills')" data-label="Skill管理"><i class="fas fa-cubes"></i>Skill管理</div>
+        <div class="nav-item" data-page="skill-market" onclick="navigate('skill-market')" data-label="Skill市场"><i class="fas fa-store"></i>Skill市场</div>
+        <div class="nav-item" data-page="skill-calls" onclick="navigate('skill-calls')" data-label="调用记录"><i class="fas fa-phone"></i>调用记录</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> AI能力接入</div>
+        <div class="nav-item" data-page="gateway" onclick="navigate('gateway')" data-label="接入与运行概览"><i class="fas fa-shield-halved"></i>接入与运行概览</div>
         <div class="nav-item" data-page="connectors" onclick="navigate('connectors')" data-label="连接器管理"><i class="fas fa-plug"></i>连接器管理</div>
-        <div class="nav-item" data-page="mcp-market" onclick="navigate('mcp-market')" data-label="公共服务市场"><i class="fas fa-cloud"></i>公共服务市场</div>
+        <div class="nav-item" data-page="mcp-market" onclick="navigate('mcp-market')" data-label="公共能力市场"><i class="fas fa-cloud"></i>公共能力市场</div>
         <div class="nav-item" data-page="mcp-access" onclick="navigate('mcp-access')" data-label="我的MCP接入"><i class="fas fa-link"></i>我的MCP接入</div>
-        <div class="nav-item" data-page="mcp-debug" onclick="navigate('mcp-debug')" data-label="调用调试"><i class="fas fa-flask"></i>调用调试</div>
-        <div class="nav-item" data-page="gateway-calls" onclick="navigate('gateway-calls')" data-label="网关调用记录"><i class="fas fa-list"></i>网关调用记录</div>
+        <div class="nav-item" data-page="mcp-debug" onclick="navigate('mcp-debug')" data-label="接入调试"><i class="fas fa-flask"></i>接入调试</div>
+        <div class="nav-item" data-page="gateway-calls" onclick="navigate('gateway-calls')" data-label="调用日志"><i class="fas fa-list"></i>调用日志</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> 系统与权限</div>
@@ -512,13 +516,65 @@ var D = {
 };
 
 
+
+// Demo OpenAPI tools for REST API connector auto-discovery
+
+// DB policy demo data
+var DB_CONNECTORS = [
+  {id:'db-001', name:'核心业务数据库', type:'数据库', status:'已发布', tools:[
+    {name:'执行查询', desc:'执行SQL查询语句', status:'启用', tables:['orders','salary','attendance','employees','departments'], fields:{orders:['id','order_no','customer_name','department_code','amount','status','created_at','creator'],salary:['id','employee_id','employee_name','department_code','amount','month','paid_at'],attendance:['id','employee_id','employee_name','department_code','date','status'],employees:['id','name','employee_no','department_code','phone','email','role'],departments:['id','name','code','manager','parent_id']}},
+    {name:'获取数据库模式', desc:'获取数据库表结构和Schema信息', status:'启用'},
+    {name:'获取示例查询', desc:'获取示例查询模板', status:'启用'}
+  ]},
+  {id:'db-002', name:'人力资源数据库', type:'数据库', status:'已发布', tools:[
+    {name:'执行查询', desc:'执行SQL查询语句', status:'启用', tables:['employees','departments'], fields:{employees:['id','name','employee_no','department_code','phone','email','role'],departments:['id','name','code','manager','parent_id']}},
+    {name:'获取数据库模式', desc:'获取数据库表结构和Schema信息', status:'启用'}
+  ]}
+];
+
+var DB_POLICIES = [
+  {id:'POL-DB-001', name:'核心业务数据查询策略', scope:'普通员工', connectorId:'db-001', connectorName:'核心业务数据库', status:'启用',
+    toolPerms:[
+      {toolName:'执行查询', tables:'orders, salary, attendance', rowFilters:[
+        {table:'orders', field:'department_code', operator:'等于', value:'{{user.deptCode}}'},
+        {table:'salary', field:'employee_id', operator:'等于', value:'{{user.employeeId}}'},
+        {table:'attendance', field:'department_code', operator:'等于', value:'技术部'}
+      ]},
+      {toolName:'获取数据库模式', tables:'orders, salary', rowFilters:[]}
+    ]},
+  {id:'POL-DB-002', name:'HR数据查询策略', scope:'平台管理员', connectorId:'db-002', connectorName:'人力资源数据库', status:'启用',
+    toolPerms:[
+      {toolName:'执行查询', tables:'employees, departments', rowFilters:[
+        {table:'employees', field:'department_code', operator:'包含于', value:'{{user.deptCode}}'}
+      ]}
+    ]}
+];
+var DEMO_TOOLS = [
+  {name:'getPetById', method:'GET', path:'/pet/{petId}', desc:'Find pet by ID', fields:['id','name','category','photoUrls','tags','status']},
+  {name:'updatePet', method:'PUT', path:'/pet', desc:'Update an existing pet', fields:['id','name','category','photoUrls','tags','status']},
+  {name:'addPet', method:'POST', path:'/pet', desc:'Add a new pet to the store', fields:['id','name','category','photoUrls','tags','status']},
+  {name:'deletePet', method:'DELETE', path:'/pet/{petId}', desc:'Deletes a pet', fields:['api_key']},
+  {name:'findPetsByStatus', method:'GET', path:'/pet/findByStatus', desc:'Finds Pets by status', fields:['status']},
+  {name:'findPetsByTags', method:'GET', path:'/pet/findByTags', desc:'Finds Pets by tags', fields:['tags']},
+  {name:'getInventory', method:'GET', path:'/store/inventory', desc:'Returns pet inventories by status', fields:['id','name','status','count']},
+  {name:'placeOrder', method:'POST', path:'/store/order', desc:'Place an order for a pet', fields:['id','petId','quantity','shipDate','status','complete']},
+  {name:'getOrderById', method:'GET', path:'/store/order/{orderId}', desc:'Find purchase order by ID', fields:['id','petId','quantity','shipDate','status','complete']},
+  {name:'deleteOrder', method:'DELETE', path:'/store/order/{orderId}', desc:'Delete purchase order by ID', fields:['orderId']},
+  {name:'createUser', method:'POST', path:'/user', desc:'Create user', fields:['id','username','firstName','lastName','email','password','phone','userStatus']},
+  {name:'getUserByName', method:'GET', path:'/user/{username}', desc:'Get user by user name', fields:['id','username','firstName','lastName','email','password','phone','userStatus']},
+  {name:'loginUser', method:'GET', path:'/user/login', desc:'Logs user into the system', fields:['username','password']},
+  {name:'getCustomerInfo', method:'GET', path:'/customers/{customerId}', desc:'查询客户基本信息', fields:['customerId','name','type','phone','email','address','creditLevel']},
+  {name:'searchContracts', method:'GET', path:'/contracts', desc:'按条件查询合同列表', fields:['contractNo','customerName','status','amount','startDate','endDate','page','pageSize']},
+  {name:'createApproval', method:'POST', path:'/approvals', desc:'提交审批申请', fields:['approvalType','title','content','attachments','applicantId','approverId']},
+];
+
 var currentPage = 'dashboard';
 var reqFilter = 'all';
 var skillFilter = 'all';
 
 // ===== ROUTER =====
 function navigate(page) {
-  var titles = {dashboard:'企业AI大屏', requirements:'需求池', skills:'Skill管理', 'skill-market':'Skill市场', 'skill-calls':'Skill调用记录', gateway:'网关概览', connectors:'连接器管理', 'mcp-market':'公共服务市场', 'mcp-access':'我的MCP接入', 'mcp-debug':'调用调试', 'gateway-calls':'网关调用记录', users:'用户管理', roles:'角色管理', permissions:'权限管理'};
+  var titles = {dashboard:'企业AI大屏', requirements:'需求池', skills:'Skill管理', 'skill-market':'Skill市场', 'skill-calls':'调用记录', gateway:'接入与运行概览', connectors:'连接器管理', 'mcp-market':'公共能力市场', 'mcp-access':'我的MCP接入', 'mcp-debug':'接入调试', 'gateway-calls':'调用日志', users:'用户管理', roles:'角色管理', permissions:'权限管理'};
   if (!titles[page]) return;
   currentPage = page;
   document.getElementById('pageTitle').textContent = titles[page];
@@ -846,6 +902,7 @@ function renderSkills() {
       var sc=sk.status==='启用'?'tag-green':'tag-gray',tFn=sk.status==='启用'?'disableSkill':'enableSkill',tIc=sk.status==='启用'?'fa-pause':'fa-play',tL=sk.status==='启用'?'停用':'启用';
       return '<tr><td><i class="fas '+sk.icon+'" style="color:'+sk.color+';margin-right:6px"></i>'+sk.name+'</td><td>'+sk.cat+'</td><td>'+sk.src+'</td><td><span class="tag '+sc+'">'+sk.status+'</span></td><td>'+sk.calls.toLocaleString()+'</td><td>'+sk.dls+'</td><td>'+sk.ctime+'</td><td class="cell-actions">'+
         '<button class="btn btn-text btn-xs" onclick="viewMarketSkill(\''+sk.id+'\')"><i class="fas fa-eye"></i> 查看</button>'+
+        '<button class="btn btn-text btn-xs" onclick="editSkill(\''+sk.id+'\')"><i class="fas fa-pen"></i> 编辑</button>'+
         '<button class="btn btn-text btn-xs" onclick="'+tFn+'(\''+sk.id+'\')"><i class="fas '+tIc+'"></i> '+tL+'</button>'+
         '<button class="btn btn-text btn-xs" onclick="quickInstall(\''+sk.id+'\')"><i class="fas fa-download"></i> 安装</button></td></tr>';
     }).join('');
@@ -864,11 +921,166 @@ function renderSkills() {
 function enableSkill(id){D.skills.find(function(x){return x.id===id;}).status='启用';renderSkills();showToast('已启用','','s');}
 function disableSkill(id){D.skills.find(function(x){return x.id===id;}).status='停用';renderSkills();showToast('已停用','','i');}
 function newSkill(){
-  openModal('新增Skill','<div class="form-group"><label>Skill名称 <span class="required">*</span></label><input class="form-control" id="skN" placeholder="请输入Skill名称"></div><div class="form-group"><label>描述</label><textarea class="form-control" id="skD" placeholder="描述Skill的功能和使用场景" style="min-height:80px"></textarea></div><div class="form-group"><label>分类</label><select class="form-control" id="skC"><option>文档处理</option><option>数据分析</option><option>流程自动化</option><option>法务</option><option>其他</option></select></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="cNS()">创建</button>');
+  var rh = '';
+  D.requirements.forEach(function(r){
+    rh += '<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;border-bottom:1px solid var(--border-light)">' +
+      '<input type="checkbox" class="ns-req-cb" value="'+r.id+'" style="width:14px;height:14px;accent-color:var(--primary);cursor:pointer"> ' +
+      '<span style="flex:1">'+r.name+'</span>' +
+      '<span class="tag '+(r.status==='已转Skill'?'tag-green':r.status==='开发中'?'tag-yellow':'tag-blue')+'" style="font-size:10px">'+r.status+'</span></label>';
+  });
+  openModal('新增Skill',
+    '<div class="form-group"><label>Skill名称 <span class="required">*</span></label><input class="form-control" id="skN" placeholder="请输入Skill名称"></div>' +
+    '<div class="form-group"><label>描述</label><textarea class="form-control" id="skD" placeholder="描述Skill的功能和使用场景" style="min-height:80px"></textarea></div>' +
+    '<div class="form-group"><label>分类</label><select class="form-control" id="skC"><option>文档处理</option><option>数据分析</option><option>流程自动化</option><option>法务</option><option>其他</option></select></div>' +
+    // 关联需求
+    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
+    '<div style="font-size:14px;font-weight:600;margin-bottom:8px">关联需求</div>' +
+    '<div class="search-box" style="width:auto;margin-bottom:6px"><i class="fas fa-search"></i><input placeholder="搜索需求..." oninput="filterNsReq(this.value)" style="font-size:12px;padding:5px 10px 5px 28px"></div>' +
+    '<div id="nsReqList" style="max-height:160px;overflow-y:auto;border:1px solid var(--border-light);border-radius:6px;padding:4px">'+rh+'</div></div>' +
+    // 上传技能包
+    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
+    '<div style="font-size:14px;font-weight:600;margin-bottom:8px">上传技能包</div>' +
+    '<div style="border:2px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer" id="nsPkgArea" onclick="document.getElementById(\'nsPkgInput\').click()">' +
+    '<i class="fas fa-folder-open" style="font-size:28px;color:var(--text-muted);display:block;margin-bottom:6px"></i>' +
+    '<span style="font-size:13px;color:var(--text-secondary)">选择文件夹</span>' +
+    '<input type="file" id="nsPkgInput" webkitdirectory style="display:none" onchange="handleNsPkgSelect(this)"></div>' +
+    '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.5">所有资源文件仅来自所选文件夹，不支持逐条手动添加资源。<br>选择文件夹时建议使用 Chrome 或 Edge 以获得最佳体验。</div>' +
+    '<div id="nsPkgValidate" style="margin-top:10px;padding:12px;background:#f9fafb;border-radius:6px;font-size:12px;color:var(--text-muted);min-height:40px">' +
+    '<i class="fas fa-circle-info" style="margin-right:4px"></i>尚未选择文件夹。选择技能包后，将在此处显示针对包内文件的校验结果。</div></div>',
+    '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="cNS()">创建</button>');
 }
-function cNS(){var n=document.getElementById('skN').value.trim();if(!n){showToast('请输入名称','','w');return;}D.skills.unshift({id:'SK-'+String(D.skills.length+1).padStart(3,'0'),name:n,cat:document.getElementById('skC').value,src:'手动创建',status:'停用',calls:0,dls:0,ctime:new Date().toISOString().slice(0,10),icon:'fa-cube',color:'#6b7280',desc:document.getElementById('skD').value.trim()||''});closeModal();renderSkills();showToast('创建成功','','s');}
-function importSkill(){openModal('导入','<div class="form-group"><div style="border:2px dashed var(--border);border-radius:8px;padding:28px;text-align:center;cursor:pointer" id="iT"><i class="fas fa-file-zipper" style="font-size:32px;color:var(--text-muted);display:block;margin-bottom:8px"></i><span>点击上传ZIP</span><input id="iF" type="file" accept=".zip" style="display:none"></div></div><div class="form-group"><label>名称</label><input class="form-control" id="iN" placeholder="请输入Skill名称"></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="cIm()">导入</button>');setTimeout(function(){document.getElementById('iT').onclick=function(){document.getElementById('iF').click();};},50);}
-function cIm(){var n=document.getElementById('iN').value.trim()||'导入的Skill';D.skills.unshift({id:'SK-'+String(D.skills.length+1).padStart(3,'0'),name:n,cat:'其他',src:'外部导入',status:'停用',calls:0,dls:0,ctime:new Date().toISOString().slice(0,10),icon:'fa-cube',color:'#6b7280',desc:'通过安装包导入'});closeModal();renderSkills();showToast('导入成功','','s');}
+function cNS(){var n=document.getElementById('skN').value.trim();if(!n){showToast('请输入名称','','w');return;}
+  var reqIds=[];document.querySelectorAll('.ns-req-cb:checked').forEach(function(el){reqIds.push(el.value);});
+  var sk={id:'SK-'+String(D.skills.length+1).padStart(3,'0'),name:n,cat:document.getElementById('skC').value,src:'手动创建',status:'停用',calls:0,dls:0,ctime:new Date().toISOString().slice(0,10),icon:'fa-cube',color:'#6b7280',desc:document.getElementById('skD').value.trim()||'',reqs:reqIds.join(','),pkg:window._nsPkgInfo||null};
+  // Update requirements' skills array
+  reqIds.forEach(function(rid){var r=D.requirements.find(function(x){return x.id===rid;});if(r){if(!r.skills)r.skills=[];if(r.skills.indexOf(sk.name)<0)r.skills.push(sk.name);r.status='已转Skill';}});
+  D.skills.unshift(sk);window._nsPkgInfo=null;closeModal();renderSkills();showToast('创建成功','','s');}
+
+// ===== EDIT SKILL =====
+function editSkill(id) {
+  var sk = D.skills.find(function(x){return x.id===id;});
+  if (!sk) return;
+  window._editSkillId = id;
+  var curReqIds = sk.reqs ? sk.reqs.split(',').map(function(x){return x.trim();}).filter(function(x){return x;}) : [];
+  var rh = '';
+  D.requirements.forEach(function(r){
+    var checked = curReqIds.indexOf(r.id) >= 0 ? 'checked' : '';
+    rh += '<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;border-bottom:1px solid var(--border-light)">' +
+      '<input type="checkbox" class="es-req-cb" value="'+r.id+'" '+checked+' style="width:14px;height:14px;accent-color:var(--primary);cursor:pointer"> ' +
+      '<span style="flex:1">'+r.name+'</span>' +
+      '<span class="tag '+(r.status==='已转Skill'?'tag-green':r.status==='开发中'?'tag-yellow':'tag-blue')+'" style="font-size:10px">'+r.status+'</span></label>';
+  });
+  // Package info
+  var pkgHtml = '';
+  if (sk.pkg) {
+    pkgHtml = '<div id="esPkgInfo" style="margin-bottom:8px;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;display:flex;align-items:center;justify-content:space-between">' +
+      '<div><span style="font-size:13px;font-weight:500">'+sk.pkg.folderName+'</span><span style="font-size:11px;color:var(--text-muted);margin-left:8px">'+sk.pkg.fileCount+'个文件</span></div>' +
+      '<span class="tag tag-green" style="font-size:10px">校验通过</span></div>';
+  } else {
+    pkgHtml = '<div id="esPkgInfo" style="display:none"></div>';
+  }
+  openModal('编辑Skill - '+sk.name,
+    '<div class="form-group"><label>Skill名称 <span class="required">*</span></label><input class="form-control" id="esN" value="'+sk.name+'"></div>' +
+    '<div class="form-group"><label>描述</label><textarea class="form-control" id="esD" style="min-height:80px">'+(sk.desc||'')+'</textarea></div>' +
+    '<div class="form-group"><label>分类</label><select class="form-control" id="esC"><option '+(sk.cat==='文档处理'?'selected':'')+'>文档处理</option><option '+(sk.cat==='数据分析'?'selected':'')+'>数据分析</option><option '+(sk.cat==='流程自动化'?'selected':'')+'>流程自动化</option><option '+(sk.cat==='法务'?'selected':'')+'>法务</option><option '+(sk.cat==='其他'?'selected':'')+'>其他</option></select></div>' +
+    // 关联需求
+    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
+    '<div style="font-size:14px;font-weight:600;margin-bottom:8px">关联需求</div>' +
+    '<div class="search-box" style="width:auto;margin-bottom:6px"><i class="fas fa-search"></i><input placeholder="搜索需求..." oninput="filterEsReq(this.value)" style="font-size:12px;padding:5px 10px 5px 28px"></div>' +
+    '<div id="esReqList" style="max-height:160px;overflow-y:auto;border:1px solid var(--border-light);border-radius:6px;padding:4px">'+rh+'</div></div>' +
+    // 上传技能包
+    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
+    '<div style="font-size:14px;font-weight:600;margin-bottom:8px">上传技能包</div>' + pkgHtml +
+    '<div style="border:2px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer" id="esPkgArea" onclick="document.getElementById(\'esPkgInput\').click()">' +
+    '<i class="fas fa-folder-open" style="font-size:28px;color:var(--text-muted);display:block;margin-bottom:6px"></i>' +
+    '<span style="font-size:13px;color:var(--text-secondary)">'+(sk.pkg?'重新选择文件夹':'选择文件夹')+'</span>' +
+    '<input type="file" id="esPkgInput" webkitdirectory style="display:none" onchange="handleEsPkgSelect(this)"></div>' +
+    '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.5">所有资源文件仅来自所选文件夹，不支持逐条手动添加资源。<br>选择文件夹时建议使用 Chrome 或 Edge 以获得最佳体验。</div>' +
+    '<div id="esPkgValidate" style="margin-top:10px;padding:12px;background:#f9fafb;border-radius:6px;font-size:12px;color:var(--text-muted);min-height:40px">' +
+    (sk.pkg?'<i class="fas fa-check-circle" style="color:var(--success);margin-right:4px"></i><span style="color:var(--success)">校验通过</span><span style="margin-left:8px;color:var(--text-muted)">'+sk.pkg.folderName+'，'+sk.pkg.fileCount+'个文件</span>':'<i class="fas fa-circle-info" style="margin-right:4px"></i>尚未选择文件夹。选择技能包后，将在此处显示针对包内文件的校验结果。')+'</div></div>',
+    '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmEditSkill()">保存</button>');
+}
+
+function confirmEditSkill() {
+  var sk = D.skills.find(function(x){return x.id===window._editSkillId;});
+  if (!sk) return;
+  var name = document.getElementById('esN').value.trim();
+  if (!name) { showToast('请输入Skill名称','','w'); return; }
+  var oldName = sk.name;
+  sk.name = name;
+  sk.desc = document.getElementById('esD').value.trim();
+  sk.cat = document.getElementById('esC').value;
+  // Handle 关联需求
+  var newReqIds = [];
+  document.querySelectorAll('.es-req-cb:checked').forEach(function(el){newReqIds.push(el.value);});
+  var oldReqIds = sk.reqs ? sk.reqs.split(',').map(function(x){return x.trim();}).filter(function(x){return x;}) : [];
+  // Remove associations that were unchecked
+  oldReqIds.forEach(function(rid){
+    if (newReqIds.indexOf(rid) < 0) {
+      var r = D.requirements.find(function(x){return x.id===rid;});
+      if (r && r.skills) r.skills = r.skills.filter(function(s){return s !== oldName && s !== name;});
+    }
+  });
+  // Add new associations
+  newReqIds.forEach(function(rid){
+    var r = D.requirements.find(function(x){return x.id===rid;});
+    if (r) {
+      if (!r.skills) r.skills = [];
+      if (r.skills.indexOf(name) < 0) {
+        r.skills.push(name);
+        if (r.status !== '已关闭') r.status = '已转Skill';
+      }
+    }
+  });
+  sk.reqs = newReqIds.join(',');
+  // Handle 技能包
+  if (window._esPkgInfo) sk.pkg = window._esPkgInfo;
+  window._editSkillId = null;
+  window._esPkgInfo = null;
+  closeModal();
+  renderSkills();
+  showToast('已保存','Skill「'+name+'」已更新','s');
+}
+
+function filterNsReq(q) {
+  document.querySelectorAll('#nsReqList label').forEach(function(l){
+    l.style.display = l.textContent.indexOf(q) >= 0 ? '' : 'none';
+  });
+}
+
+function filterEsReq(q) {
+  document.querySelectorAll('#esReqList label').forEach(function(l){
+    l.style.display = l.textContent.indexOf(q) >= 0 ? '' : 'none';
+  });
+}
+
+function handleNsPkgSelect(input) {
+  var files = input.files;
+  if (!files || files.length === 0) return;
+  var folderName = files[0].webkitRelativePath.split('/')[0];
+  var fileCount = files.length;
+  window._nsPkgInfo = {folderName: folderName, fileCount: fileCount, validated: true};
+  var el = document.getElementById('nsPkgArea');
+  if (el) el.innerHTML = '<i class="fas fa-folder-open" style="font-size:28px;color:var(--primary);display:block;margin-bottom:6px"></i><span style="font-size:13px;color:var(--primary);font-weight:500">'+folderName+'</span><span style="font-size:11px;color:var(--text-muted);display:block;margin-top:2px">'+fileCount+'个文件</span>';
+  var ve = document.getElementById('nsPkgValidate');
+  if (ve) ve.innerHTML = '<div style="display:flex;align-items:center;gap:6px;color:var(--success)"><i class="fas fa-check-circle"></i><span>校验通过</span></div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">文件夹 '+folderName+'，共 '+fileCount+' 个文件，格式正确，可正常导入。</div>';
+}
+
+function handleEsPkgSelect(input) {
+  var files = input.files;
+  if (!files || files.length === 0) return;
+  var folderName = files[0].webkitRelativePath.split('/')[0];
+  var fileCount = files.length;
+  window._esPkgInfo = {folderName: folderName, fileCount: fileCount, validated: true};
+  var el = document.getElementById('esPkgArea');
+  if (el) el.innerHTML = '<i class="fas fa-folder-open" style="font-size:28px;color:var(--primary);display:block;margin-bottom:6px"></i><span style="font-size:13px;color:var(--primary);font-weight:500">'+folderName+'</span><span style="font-size:11px;color:var(--text-muted);display:block;margin-top:2px">'+fileCount+'个文件</span>';
+  var pi = document.getElementById('esPkgInfo');
+  if (pi) { pi.style.display = ''; pi.innerHTML = '<span><span style="font-size:13px;font-weight:500">'+folderName+'</span><span style="font-size:11px;color:var(--text-muted);margin-left:8px">'+fileCount+'个文件</span></span><span class="tag tag-green" style="font-size:10px">校验通过</span>'; }
+  var ve = document.getElementById('esPkgValidate');
+  if (ve) ve.innerHTML = '<div style="display:flex;align-items:center;gap:6px;color:var(--success)"><i class="fas fa-check-circle"></i><span>校验通过</span></div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">文件夹 '+folderName+'，共 '+fileCount+' 个文件，格式正确，可正常导入。</div>';
+}
+function importSkill(){openModal('导入','<div class="form-group"><label>名称</label><input class="form-control" id="iN" placeholder="请输入Skill名称"></div><div class="form-group"><label>分类</label><select class="form-control" id="iC"><option>文档处理</option><option>数据分析</option><option>流程自动化</option><option>法务</option><option>其他</option></select></div><div class="form-group"><div style="border:2px dashed var(--border);border-radius:8px;padding:28px;text-align:center;cursor:pointer" id="iT"><i class="fas fa-file-zipper" style="font-size:32px;color:var(--text-muted);display:block;margin-bottom:8px"></i><span>点击上传ZIP</span><input id="iF" type="file" accept=".zip" style="display:none"></div></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="cIm()">导入</button>');setTimeout(function(){document.getElementById('iT').onclick=function(){document.getElementById('iF').click();};},50);}
+function cIm(){var n=document.getElementById('iN').value.trim()||'导入的Skill';var c=document.getElementById('iC').value;D.skills.unshift({id:'SK-'+String(D.skills.length+1).padStart(3,'0'),name:n,cat:c,src:'外部导入',status:'停用',calls:0,dls:0,ctime:new Date().toISOString().slice(0,10),icon:'fa-cube',color:'#6b7280',desc:'通过安装包导入'});closeModal();renderSkills();showToast('导入成功','','s');}
 function quickInstall(id) {
   var s=D.skills.find(function(x){return x.id===id;});if(!s)return;
   var key='mcp-'+s.id.toLowerCase()+'-'+Math.random().toString(36).slice(2,8);
@@ -894,8 +1106,19 @@ function viewSkill(id) {
 function viewMarketSkill(id) {
   var s=D.skills.find(function(x){return x.id===id;});if(!s)return;
   s._v='text';
+  // Build 关联需求 line for 需求转化 source
+  var reqHtml = '';
+  if (s.src === '需求转化' && s.reqs) {
+    var reqNames = s.reqs.split(',').map(function(rid){
+      var r = D.requirements.find(function(x){return x.id===rid.trim();});
+      return r ? r.name : rid.trim();
+    }).filter(function(n){return n;}).join('、');
+    if (reqNames) {
+      reqHtml = '<div style="font-size:13px;color:var(--text-secondary);margin-top:2px">关联需求：'+reqNames+'</div>';
+    }
+  }
   document.getElementById('pageContent').innerHTML='<div class="page-hd"><div class="page-hd-title"><a href="#" onclick="navigate(\'skill-market\');return false" style="font-size:12px;color:var(--text-muted)"><i class="fas fa-chevron-left" style="margin-right:6px"></i>Skill市场</a><span style="margin:0 8px;color:var(--text-muted)">/</span>'+s.name+'</div><div class="page-hd-actions"><button class="btn btn-primary" onclick="quickInstall(\''+s.id+'\')"><i class="fas fa-download"></i> 安装</button></div></div>'+
-    '<div class="card"><div style="display:flex;align-items:center;gap:12px"><div class="sc-icon" style="width:44px;height:44px;background:'+s.color+'15;color:'+s.color+';border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px"><i class="fas '+s.icon+'"></i></div><div><div style="font-size:18px;font-weight:600">'+s.name+'</div><div style="margin-top:4px;display:flex;gap:6px"><span class="tag tag-blue">'+s.cat+'</span><span style="font-size:13px;color:var(--text-muted)">调用:'+s.calls.toLocaleString()+'次</span><span style="font-size:13px;color:var(--text-muted)">下载:'+s.dls+'次</span></div></div></div></div>'+
+    '<div class="card"><div style="display:flex;align-items:center;gap:12px"><div class="sc-icon" style="width:44px;height:44px;background:'+s.color+'15;color:'+s.color+';border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px"><i class="fas '+s.icon+'"></i></div><div><div style="font-size:18px;font-weight:600">'+s.name+'</div><div style="margin-top:4px;display:flex;gap:6px"><span class="tag tag-blue">'+s.cat+'</span><span style="font-size:13px;color:var(--text-muted)">调用:'+s.calls.toLocaleString()+'次</span><span style="font-size:13px;color:var(--text-muted)">下载:'+s.dls+'次</span></div>'+reqHtml+'</div></div></div>'+
     '<div class="card" style="margin-bottom:0"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font-size:14px;font-weight:600"><i class="fas fa-align-left" style="color:var(--text-muted);margin-right:6px"></i>Skill介绍</span><div style="display:flex;gap:4px"><button class="btn btn-sm btn-primary" id="mEye" onclick="mTog('+id+')"><i class="fas fa-eye"></i></button><button class="btn btn-sm btn-outline" id="mCode" onclick="mTog('+id+')"><i class="fas fa-code"></i></button></div></div><div id="mDesc">'+s.desc+'</div></div>';
 }
 function mTog(id) {
@@ -942,7 +1165,7 @@ function renderSkillCalls() {
     }
     document.getElementById('sCC').innerHTML='<div class="table-wrap"><table><thead><tr><th>调用时间</th><th>用户</th><th>部门</th><th>Skill</th><th>状态</th><th>耗时</th><th>反馈</th><th>结果</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="9"><div class="empty-state"><p>暂无</p></div></td></tr>')+'</tbody></table></div>'+pg;
   }
-  document.getElementById('pageContent').innerHTML='<div class="page-hd"><div class="page-hd-title">Skill调用记录</div></div><div class="card" style="margin-bottom:0"><div class="filter-row"><div class="filter-row-left"><select class="filter-select" id="scT" onchange="apF()"><option value="all">全部时间</option><option value="today">今天</option><option value="week">近7天</option></select><div class="search-box" style="width:130px"><i class="fas fa-search"></i><input placeholder="用户..." id="scU" oninput="apF()"></div><div class="search-box" style="width:130px"><i class="fas fa-search"></i><input placeholder="Skill..." id="scSk" oninput="apF()"></div><select class="filter-select" id="scSt" onchange="apF()"><option value="all">全部状态</option><option value="成功">成功</option><option value="失败">失败</option><option value="异常">异常</option></select><select class="filter-select" id="scFb" onchange="apF()"><option value="all">全部反馈</option><option value="yes">已反馈</option><option value="no">未反馈</option></select></div></div><div id="sCC"></div></div>';
+  document.getElementById('pageContent').innerHTML='<div class="page-hd"><div class="page-hd-title">调用记录</div></div><div class="card" style="margin-bottom:0"><div class="filter-row"><div class="filter-row-left"><select class="filter-select" id="scT" onchange="apF()"><option value="all">全部时间</option><option value="today">今天</option><option value="week">近7天</option></select><div class="search-box" style="width:130px"><i class="fas fa-search"></i><input placeholder="用户..." id="scU" oninput="apF()"></div><div class="search-box" style="width:130px"><i class="fas fa-search"></i><input placeholder="Skill..." id="scSk" oninput="apF()"></div><select class="filter-select" id="scSt" onchange="apF()"><option value="all">全部状态</option><option value="成功">成功</option><option value="失败">失败</option><option value="异常">异常</option></select><select class="filter-select" id="scFb" onchange="apF()"><option value="all">全部反馈</option><option value="yes">已反馈</option><option value="no">未反馈</option></select></div></div><div id="sCC"></div></div>';
   window.scP=rP; window.apF=function(){f.time=document.getElementById('scT').value;f.user=document.getElementById('scU').value;f.skill=document.getElementById('scSk').value;f.status=document.getElementById('scSt').value;f.feedback=document.getElementById('scFb').value;rP(1);};
   rP(1);
 }
@@ -1077,14 +1300,14 @@ function showConnectorDetail(id) {
       return '<div class="tool-card"><div class="tc-top"><div class="tc-info">' +
         '<div class="tc-name"><span class="status-dot '+tDot+'" style="width:6px;height:6px;display:inline-block;border-radius:50%"></span>'+t.name+'</div>' +
         '<div class="tc-desc">'+t.desc+'</div>' +
-        '<div class="tc-meta"><span class="tag '+tTypeTag+'" style="font-size:10px">'+t.type+'</span><span>方法: '+t.method+'</span><span>路径: '+t.path+'</span><span>参数: '+(t.params||0)+'个</span></div></div>' +
+        '<div class="tc-meta"><span class="tag '+tTypeTag+'" style="font-size:10px">'+t.type+'</span><span>方法: '+t.method+'</span><span>路径: '+t.path+'</span>'+(t.allowedFields?'<span>允许字段: '+t.allowedFields.split(',').length+'个</span>':'<span>参数: '+(t.params||0)+'个</span>')+'</div></div>' +
         '<div class="tc-actions">' +
         '<button class="btn btn-text btn-xs" onclick="showToast(\'测试\',\'工具调用成功\',\'s\')"><i class="fas fa-play"></i></button>' +
         '<button class="btn btn-text btn-xs" onclick="editTool(\''+id+'\',\''+t.name+'\')"><i class="fas fa-pen"></i></button>' +
         '</div></div></div>';
     }).join('');
   } else {
-    toolsHtml = '<div class="cn-empty-tools"><i class="fas fa-toolbox"></i><p>尚未配置MCP工具，可从MCP服务器发现、导入工具或手动添加工具。</p></div>';
+    toolsHtml = '<div class="cn-empty-tools"><i class="fas fa-toolbox"></i><p>尚未配置MCP工具，可通过导入工具或手动添加工具进行配置。</p></div>';
   }
   
   document.getElementById('pageContent').innerHTML =
@@ -1114,9 +1337,8 @@ function showConnectorDetail(id) {
     // MCP Tools
     '<div class="card connector-section-card"><div class="sc-hd connector-section-hd"><span class="card-title">MCP工具 <span style="font-size:12px;color:var(--text-muted);font-weight:400">'+(c.mcpTools?c.mcpTools.length:0)+'个</span></span>' +
     '<div class="connector-section-actions">' +
+    (c.type==='REST API'?'<button class="btn btn-outline btn-sm" onclick="editConnector(\''+c.id+'\')"><i class="fas fa-pen"></i> 编辑接口权限</button>':'') +
     '<button class="btn btn-outline btn-sm" onclick="toggleImportTool(\''+c.id+'\')"><i class="fas fa-upload"></i> 导入工具</button>' +
-    (c.type==='REST API'?'<button class="btn btn-outline btn-sm" onclick="showToast(\'从规范自动导入\',\'\',\'i\')"><i class="fas fa-file-code"></i> 从规范自动导入</button>':'') +
-    (c.type==='MCP服务'?'<button class="btn btn-outline btn-sm" onclick="showToast(\'从MCP服务器发现\',\'\',\'i\')"><i class="fas fa-search"></i> 从MCP服务器发现</button>':'') +
     '<button class="btn btn-primary btn-sm" onclick="toggleCreateTool(\''+c.id+'\')"><i class="fas fa-plus"></i> 添加工具</button></div></div>' +
     '<div id="toolListContent">'+toolsHtml+'</div><div id="createToolArea"></div><div id="importToolArea"></div></div>'
 }
@@ -1131,9 +1353,9 @@ function newConnector() {
     '<button class="btn btn-sm cn-type-btn" data-type="MCP服务" onclick="swCnT(this)">MCP服务</button></div><input type="hidden" id="cnT" value="REST API"></div>' +
     '<div class="form-group"><label>可见范围 <span class="required">*</span></label><div style="display:flex;gap:10px;padding:4px 0">' +
     '<div class="cn-vis-card active" data-vis="公共" onclick="swCnV(this)"><div class="vc-title"><i class="fas fa-globe" style="color:var(--primary);font-size:13px"></i> 公共</div>' +
-    '<div class="vc-desc">发布后可进入公共服务市场，平台用户可以发现和使用。</div></div>' +
+    '<div class="vc-desc">发布后可进入公共能力市场，平台用户可以发现和使用。</div></div>' +
     '<div class="cn-vis-card" data-vis="私有" onclick="swCnV(this)"><div class="vc-title"><i class="fas fa-lock" style="color:var(--text-muted);font-size:13px"></i> 私有</div>' +
-    '<div class="vc-desc">仅创建人可见和使用，不进入公共服务市场。</div></div></div><input type="hidden" id="cnV" value="公共"></div>' +
+    '<div class="vc-desc">仅创建人可见和使用，不进入公共能力市场。</div></div></div><input type="hidden" id="cnV" value="公共"></div>' +
     // Dynamic config section
     '<div id="cnConfigArea"><div id="cnREST" class="cn-config-section">' +
     '<div class="cc-title">REST API 连接配置</div>' +
@@ -1144,7 +1366,15 @@ function newConnector() {
     '<div id="cnAuthFields"></div>' +
     '<div class="form-group"><label>自定义标头</label><div id="cnHeaders"><div class="header-row"><input class="form-control" placeholder="Header名称" style="flex:1;font-size:12px;padding:5px 8px"><input class="form-control" placeholder="Header值" style="flex:1;font-size:12px;padding:5px 8px;margin-left:4px"><button class="btn btn-ghost btn-xs" onclick="rmHeader(this)"><i class="fas fa-xmark" style="color:var(--text-muted)"></i></button></div></div>' +
     '<button class="btn btn-text btn-xs" onclick="addHeader()"><i class="fas fa-plus"></i> 添加标头</button>' +
-    '<div style="font-size:11px;color:var(--text-muted);margin-top:4px">每次向此API发送请求时都会发送这些信息。</div></div></div>' +
+    '<div style="font-size:11px;color:var(--text-muted);margin-top:4px">每次向此API发送请求时都会发送这些信息。</div>' +
+    // 接口与字段权限
+    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
+    '<div style="font-size:13px;font-weight:600;margin-bottom:4px">接口与字段权限</div>' +
+    '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">选择允许通过该连接器访问的接口及字段，未选择的接口或字段不会暴露给MCP服务。</div>' +
+    '<button class="btn btn-primary btn-sm" type="button" onclick="discoverToolsNew()" id="cnDiscoverBtn"><i class="fas fa-magnifying-glass"></i> 从 OpenAPI 自动发现工具</button>' +
+    '<div id="cnToolListArea" style="display:none;margin-top:10px"></div>' +
+    '<div id="cnEmptyTools" style="margin-top:10px;padding:16px;background:#f9fafb;border-radius:6px;font-size:12px;color:var(--text-muted);text-align:center">尚未发现工具。请先填写 Base URL 或 OpenAPI/Swagger 规范地址，然后点击"从 OpenAPI 自动发现工具"。</div></div>' +
+    '</div></div>' +  // close cnREST
     '<div id="cnDB" class="cn-config-section" style="display:none">' +
     '<div class="cc-title">数据库连接配置</div>' +
     '<div class="form-group"><label>连接字符串 <span class="required">*</span></label><input class="form-control" id="cnCS" placeholder="postgresql://user:pass@host:5432/db"></div>' +
@@ -1235,21 +1465,38 @@ function confirmNewConnector(mode) {
     config.mcpUrl = document.getElementById('cnMCPURL').value.trim();
     config.authType = '没有任何';
   }
+  // Collect selected tools for REST API
+  var mcpTools = [];
+  if (t === 'REST API' && window._cnDiscoveredTools) {
+    window._cnDiscoveredTools.forEach(function(tool, idx){
+      var cb = document.getElementById('cn_tk_' + idx);
+      var selected = cb ? cb.checked : false;
+      if (selected) {
+        var fieldsEl = document.getElementById('cn_tf_' + idx);
+        var allowedFields = fieldsEl ? fieldsEl.value.trim() : '';
+        mcpTools.push({
+          name: tool.name, desc: tool.desc, type: 'API调用',
+          method: tool.method, path: tool.path, status: '启用',
+          params: tool.fields ? tool.fields.length : 0,
+          allowedFields: allowedFields
+        });
+      }
+    });
+  }
   var id = 'cn-' + String(D.connectors.length + 1).padStart(3,'0');
   var desc = document.getElementById('cnD').value.trim();
   var status = mode === 'publish' ? '已发布' : '草稿';
   D.connectors.push({
     id: id, name: name, type: t, visibility: vis, status: status,
-    creator: '唯安', tools: 0, createdAt: new Date().toISOString().slice(0,10),
-    description: desc, config: config, envVars: [], mcpTools: []
+    creator: '唯安', tools: mcpTools.length, createdAt: new Date().toISOString().slice(0,10),
+    description: desc, config: config, envVars: [], mcpTools: mcpTools
   });
+  window._cnDiscoveredTools = null;
   closeModal();
   showConnectorDetail(id);
   var msg = mode === 'publish' ? '连接器「'+name+'」已发布' : '连接器已保存为草稿';
   showToast('创建成功',msg,'s');
-}
-
-function editConnector(id) {
+}function editConnector(id) {
   var c = D.connectors.find(function(x){return x.id===id;});
   if (!c) return;
   var hdrsHtml = '';
@@ -1261,6 +1508,21 @@ function editConnector(id) {
     hdrsHtml = '<div class="header-row"><input class="form-control" placeholder="Header名称" style="flex:1;font-size:12px;padding:5px 8px"><input class="form-control" placeholder="Header值" style="flex:1;font-size:12px;padding:5px 8px;margin-left:4px"><button class="btn btn-ghost btn-xs" onclick="rmHeader(this)"><i class="fas fa-xmark" style="color:var(--text-muted)"></i></button></div>';
   }
   
+  // Build tool list HTML for edit if REST API and has tools
+  var editToolHtml = '';
+  if (c.type === 'REST API') {
+    window._editConnectorId = id;
+    var hasTools = c.mcpTools && c.mcpTools.length > 0;
+    // Build discovered tools from existing mcpTools for editing
+    if (hasTools) {
+      window._editDiscoveredTools = c.mcpTools.map(function(t){ return {name:t.name, method:t.method, path:t.path, desc:t.desc, fields:[], selected:true, allowedFields:t.allowedFields||''}; });
+      editToolHtml = buildEditToolListHtml('edit', window._editDiscoveredTools);
+    } else {
+      window._editDiscoveredTools = null;
+      editToolHtml = '<div id="editEmptyTools" style="margin-top:10px;padding:14px;background:#f9fafb;border-radius:6px;font-size:12px;color:var(--text-muted);text-align:center">尚未发现工具。请先填写 Base URL 或 OpenAPI/Swagger 规范地址，然后点击"从 OpenAPI 自动发现工具"。</div>';
+    }
+  }
+  
   openModal('编辑连接器',
     '<div class="form-group"><label>连接器名称 <span class="required">*</span></label><input class="form-control" id="enN" value="'+c.name+'"></div>' +
     '<div class="form-group"><label>描述</label><textarea class="form-control" id="enD" style="min-height:56px">'+c.description+'</textarea></div>' +
@@ -1268,7 +1530,7 @@ function editConnector(id) {
     '<div class="form-group"><label>可见范围 <span class="required">*</span></label><select class="form-control" id="enV"><option value="公共" '+(c.visibility==='公共'?'selected':'')+'>公共</option><option value="私有" '+(c.visibility==='私有'?'selected':'')+'>私有</option></select></div>' +
     // Edit dynamic fields
     (c.type === 'REST API' ?
-      '<div class="cn-config-section"><div class="cc-title">REST API 连接配置</div>' +
+      '<div id="editCnREST" class="cn-config-section"><div class="cc-title">REST API 连接配置</div>' +
       '<div class="form-group"><label>基本URL <span class="required">*</span></label><input class="form-control" id="enBaseURL" value="'+(c.config.baseUrl||'')+'" placeholder="https://api.example.com/v1"></div>' +
       '<div class="form-group"><label>OpenAPI规范URL</label><input class="form-control" id="enOpenAPI" value="'+(c.config.openApiUrl||'')+'" placeholder="https://api.example.com/openapi.json"></div>' +
       '<div class="form-group"><label>验证 <span class="required">*</span></label><select class="form-control" id="enAuth">' +
@@ -1277,7 +1539,14 @@ function editConnector(id) {
       '<option value="Bearer Token" '+(c.config.authType==='Bearer Token'?'selected':'')+'>Bearer Token</option>' +
       '<option value="Basic Auth" '+(c.config.authType==='Basic Auth'?'selected':'')+'>Basic Auth</option></select></div>' +
       '<div class="form-group"><label>自定义标头</label><div id="enHeaders">'+hdrsHtml+'</div>' +
-      '<button class="btn btn-text btn-xs" onclick="addHeaderE()"><i class="fas fa-plus"></i> 添加标头</button></div></div>' : '') +
+      '<button class="btn btn-text btn-xs" onclick="addHeaderE()"><i class="fas fa-plus"></i> 添加标头</button></div>' +
+      // 接口与字段权限
+      '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
+      '<div style="font-size:13px;font-weight:600;margin-bottom:4px">接口与字段权限</div>' +
+      '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">选择允许通过该连接器访问的接口及字段，未选择的接口或字段不会暴露给MCP服务。</div>' +
+      '<button class="btn btn-primary btn-sm" type="button" onclick="discoverToolsEdit()" id="editDiscoverBtn"><i class="fas fa-magnifying-glass"></i> '+(hasTools?'重新发现工具':'从 OpenAPI 自动发现工具')+'</button>' +
+      '<div id="editToolListArea" style="margin-top:10px">'+editToolHtml+'</div></div>' +
+      '</div>' : '') +
     (c.type === '数据库' ?
       '<div class="cn-config-section"><div class="cc-title">数据库连接配置</div>' +
       '<div class="form-group"><label>连接字符串 <span class="required">*</span></label><input class="form-control" id="enCS" value="'+(c.config.connectionString||'')+'" placeholder="postgresql://user:pass@host:5432/db"></div>' +
@@ -1286,12 +1555,18 @@ function editConnector(id) {
       '<div class="cn-config-section"><div class="cc-title">MCP服务连接配置</div>' +
       '<div class="form-group"><label>MCP地址 <span class="required">*</span></label><input class="form-control" id="enMCPURL" value="'+(c.config.mcpUrl||'')+'" placeholder="https://mcp.example.com"></div></div>' : ''),
     '<button class="btn btn-outline" onclick="closeModal()">取消</button>' +
-    '<button class="btn btn-outline" onclick="testConnEdit(\''+c.id+'\')"><i class="fas fa-plug"></i> 测试连接</button>' +
-    '<button class="btn btn-primary" onclick="confirmEditConnector(\''+c.id+'\')">保存</button>'
+    '<button class="btn btn-outline" onclick="testConnEdit(\'\'+c.id+\'\')"><i class="fas fa-plug"></i> 测试连接</button>' +
+    '<button class="btn btn-primary" onclick="confirmEditConnector(\'\'+c.id+\'\')">保存</button>'
   );
   cnHeadersCountE = 1;
-}
-var cnHeadersCountE = 1;
+  // After modal opens, attach change listeners for "re-discover" hint
+  setTimeout(function(){
+    var baseEl = document.getElementById('enBaseURL');
+    var oaEl = document.getElementById('enOpenAPI');
+    if (baseEl) baseEl.oninput = function(){ showEditReDiscoverHint(); };
+    if (oaEl) oaEl.oninput = function(){ showEditReDiscoverHint(); };
+  }, 100);
+}var cnHeadersCountE = 1;
 function addHeaderE() {
   var el = document.getElementById('enHeaders');
   if (!el) return;
@@ -1332,18 +1607,38 @@ function confirmEditConnector(id) {
       if (ins.length >= 2 && ins[0].value.trim()) hdrs.push({name:ins[0].value.trim(),value:ins[1].value.trim()});
     });
     c.config.headers = hdrs;
+    // Collect tool selections
+    var newTools = [];
+    if (window._editDiscoveredTools) {
+      window._editDiscoveredTools.forEach(function(tool, idx){
+        var cb = document.getElementById('edit_tk_' + idx);
+        var selected = cb ? cb.checked : false;
+        if (selected) {
+          var fieldsEl = document.getElementById('edit_tf_' + idx);
+          var allowedFields = fieldsEl ? fieldsEl.value.trim() : '';
+          newTools.push({
+            name: tool.name, desc: tool.desc, type: 'API调用',
+            method: tool.method, path: tool.path, status: '启用',
+            params: tool.fields ? tool.fields.length : 0,
+            allowedFields: allowedFields
+          });
+        }
+      });
+    }
+    c.mcpTools = newTools;
+    c.tools = newTools.length;
   } else if (c.type === '数据库') {
     c.config.connectionString = document.getElementById('enCS').value.trim();
     c.config.accessMode = document.getElementById('enAM').value;
   } else if (c.type === 'MCP服务') {
     c.config.mcpUrl = document.getElementById('enMCPURL').value.trim();
   }
+  window._editDiscoveredTools = null;
+  window._editConnectorId = null;
   closeModal();
   showConnectorDetail(id);
   showToast('已保存','连接器已更新','s');
-}
-
-function deleteConnector(id) {
+}function deleteConnector(id) {
   var c = D.connectors.find(function(x){return x.id===id;});
   if (!c) return;
   openModal('删除连接器',
@@ -1358,6 +1653,10 @@ function publishConnector(id) {
   var c = D.connectors.find(function(x){return x.id===id;});
   if (!c) return;
   if (c.status === '已发布') { showToast('已发布','该连接器已是发布状态','i'); return; }
+  if (c.type === 'REST API' && (!c.mcpTools || c.mcpTools.length === 0)) {
+    showToast('请先完成接口配置','请先完成接口与字段权限配置，并至少选择一个工具。','w');
+    return;
+  }
   if (!c.mcpTools || c.mcpTools.length === 0) {
     openModal('确认发布','<p style="font-size:13px;color:var(--text-secondary)">该连接器尚未配置任何工具，确定要发布吗？</p>',
       '<button class="btn btn-outline" onclick="closeModal()">取消</button>' +
@@ -1372,7 +1671,7 @@ function confirmPublishConnector(id) {
   if (!c) return;
   c.status = '已发布';
   showConnectorDetail(id);
-  showToast('已发布','连接器「'+c.name+'」已发布'+(c.visibility==='公共'?'，已进入公共服务市场。':''),'s');
+  showToast('已发布','连接器「'+c.name+'」已发布'+(c.visibility==='公共'?'，已进入公共能力市场。':''),'s');
 }
 
 
@@ -1585,7 +1884,7 @@ function toggleImportTool(id) {
   if (createArea) { createArea.style.display = 'none'; createArea.innerHTML = ''; }
   el.style.display = '';
   setToolListVisibility(false);
-  var importMethods = ['OpenAPI / Swagger','Postman集合','cURL命令','GraphQL自省','WSDL','JSON定义','MCP发现'];
+  var importMethods = ['OpenAPI / Swagger','Postman集合','cURL命令','JSON定义','MCP发现'];
   var tabs = importMethods.map(function(m, i){
     return '<button class="ftab '+(i===0?'active':'')+'" onclick="swImportTab(this)" style="font-size:11px">'+m+'</button>';
   }).join('');
@@ -1674,35 +1973,43 @@ function addToolParam() {
 function addToDefaultMcp(cnId, fromMarket, backToMarket) {
   var cn = D.connectors.find(function(x){return x.id===cnId;});
   if (!cn) { showToast('连接器不存在','','e'); return; }
-  var mcp = D.mcpSvcs.find(function(s){ return s.isDefault; });
-  if (!mcp) { showToast('未找到默认MCP服务','','w'); return; }
-  if (!mcp.assignedConnectors) mcp.assignedConnectors = [];
-  if (mcp.assignedConnectors.indexOf(cnId) >= 0) { showToast('已添加','该连接器已在默认MCP服务中','i'); return; }
-  
   if (fromMarket) {
+    var availMcps = D.mcpSvcs.filter(function(s){ return s.status === '已启用'; });
+    if (availMcps.length === 0) { showToast('没有可用的MCP服务','','w'); return; }
+    var alreadyAdded = false;
+    availMcps.forEach(function(s){ if (s.assignedConnectors && s.assignedConnectors.indexOf(cnId) >= 0) alreadyAdded = true; });
+    if (alreadyAdded) { showToast('已添加','该连接器已在MCP服务中','i'); return; }
+    
+    var mcpRow;
+    if (availMcps.length === 1) {
+      mcpRow = '<span>'+availMcps[0].name+'</span><input type="hidden" id="mcpSelectTarget" value="'+availMcps[0].id+'">';
+    } else {
+      mcpRow = '<select class="form-control" id="mcpSelectTarget" style="width:auto;min-width:140px;padding:4px 24px 4px 8px;font-size:12px">' +
+        availMcps.map(function(s){ return '<option value="'+s.id+'">'+s.name+'</option>'; }).join('') + '</select>';
+    }
+    
     openModal('确认添加','<div style="padding:6px 0">' +
       '<p style="font-size:14px;margin-bottom:12px">确认连接到我的MCP接入？</p>' +
       '<div style="background:#f9fafb;border-radius:6px;padding:12px 14px;font-size:13px">' +
       '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text-muted)">连接器</span><span>'+cn.name+'</span></div>' +
-      '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text-muted)">目标MCP服务</span><span>'+mcp.name+'</span></div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text-muted)">目标MCP服务</span>'+mcpRow+'</div>' +
       '<div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">类型</span><span>'+cn.type+'</span></div></div>' +
-      '<p style="font-size:12px;color:var(--text-muted);margin-top:10px">添加后，该连接器中已启用的工具将分配到您的默认MCP服务。</p></div>',
+      '<p style="font-size:12px;color:var(--text-muted);margin-top:10px">添加后，该连接器中已启用的工具将分配到所选MCP服务。</p></div>',
       '<button class="btn btn-outline" onclick="closeModal()">取消</button>' +
-      '<button class="btn btn-primary" onclick="doAddToDefaultMcp(\''+cnId+'\','+(backToMarket?'true':'false')+');closeModal()">确认添加</button>');
+      '<button class="btn btn-primary" onclick="var sel=document.getElementById(\'mcpSelectTarget\');doAddToDefaultMcp(\''+cnId+'\','+(backToMarket?'true':'false')+',sel?sel.value:\'\');closeModal()">确认添加</button>');
   } else {
     doAddToDefaultMcp(cnId, false);
   }
 }
-
-function doAddToDefaultMcp(cnId, backToMarket) {
+function doAddToDefaultMcp(cnId, backToMarket, mcpId) {
   var cn = D.connectors.find(function(x){return x.id===cnId;});
   if (!cn) return;
-  var mcp = D.mcpSvcs.find(function(s){ return s.isDefault; });
-  if (!mcp) return;
+  var mcp = mcpId ? D.mcpSvcs.find(function(s){ return s.id === mcpId; }) : D.mcpSvcs.find(function(s){ return s.isDefault; });
+  if (!mcp) { showToast('未找到MCP服务','','w'); return; }
   if (!mcp.assignedConnectors) mcp.assignedConnectors = [];
-  if (mcp.assignedConnectors.indexOf(cnId) >= 0) { showToast('已添加','已在默认MCP服务中','i'); return; }
+  if (mcp.assignedConnectors.indexOf(cnId) >= 0) { showToast('已添加','已在MCP服务中','i'); return; }
   mcp.assignedConnectors.push(cnId);
-  showToast('添加成功','「'+cn.name+'」已添加到默认MCP服务','s');
+  showToast('添加成功','「'+cn.name+'」已添加到「'+mcp.name+'」','s');
   if (backToMarket) {
     navigate('skill-market');
   } else {
@@ -1733,7 +2040,7 @@ function showPublicConnectorDetail(id) {
   document.getElementById('pageContent').innerHTML =
     '<div class="page-hd" style="margin-bottom:4px"><div class="page-hd-title">' +
     '<a href="#" onclick="navigate(\'skill-market\');return false" style="font-size:12px;color:var(--text-muted)">' +
-    '<i class="fas fa-chevron-left" style="margin-right:6px"></i>公共服务市场</a>' +
+    '<i class="fas fa-chevron-left" style="margin-right:6px"></i>公共能力市场</a>' +
     '<span style="margin:0 8px;color:var(--text-muted)">/</span>'+cn.name+'</div></div>' +
     // Header card
     '<div class="card" style="margin-bottom:14px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">' +
@@ -1777,7 +2084,7 @@ function renderMcpMarket() {
       '<div class="sc-desc" style="margin:4px 0 10px">'+(cn.description||'')+'</div></div>' +
       btnHtml + '</div>';
   }).join('') || '<div class="empty-state"><i class="fas fa-store"></i><p>暂无公共连接器</p></div>';
-  document.getElementById('pageContent').innerHTML = '<div class="page-hd"><div class="page-hd-title">公共服务市场</div></div>' +
+  document.getElementById('pageContent').innerHTML = '<div class="page-hd"><div class="page-hd-title">公共能力市场</div></div>' +
     '<div class="filter-row"><div class="filter-row-left"><div class="search-box"><i class="fas fa-search"></i>' +
     '<input placeholder="搜索连接器名称或描述..." oninput="var q=this.value.toLowerCase();' +
     'document.querySelectorAll(\'#mcpMarketGrid .skill-card\').forEach(function(c){c.style.display=c.textContent.toLowerCase().indexOf(q)>=0?\'\':\'none\';})">' +
@@ -2096,7 +2403,7 @@ function renderGatewayCalls() {
       '<button class="pg-btn '+(p>=tp?'disabled':'')+'" onclick="window.gcp('+(p+1)+')"><i class="fas fa-chevron-right"></i></button></div></div>' : '';
     document.getElementById('gwTC').innerHTML = '<div class="table-wrap"><table><thead><tr><th>时间</th><th>用户</th><th>部门</th><th>客户端</th><th>MCP服务</th><th>工具</th><th>权限决策</th><th>状态</th><th>耗时</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="10"><div class="empty-state"><i class="fas fa-list"></i><p>暂无记录</p></div></td></tr>')+'</tbody></table></div>'+pg;
   }
-  document.getElementById('pageContent').innerHTML = '<div class="page-hd"><div class="page-hd-title">网关调用记录</div><div class="page-hd-actions"><button class="btn btn-outline btn-sm" onclick="showToast(\'导出中\',\'\',\'i\')"><i class="fas fa-download"></i> 导出</button></div></div><div class="card" style="margin-bottom:0"><div class="filter-row"><div class="filter-row-left"><div class="search-box"><i class="fas fa-search"></i><input placeholder="搜索用户或服务..."></div></div></div><div id="gwTC"></div></div></div>';
+  document.getElementById('pageContent').innerHTML = '<div class="page-hd"><div class="page-hd-title">调用日志</div><div class="page-hd-actions"><button class="btn btn-outline btn-sm" onclick="showToast(\'导出中\',\'\',\'i\')"><i class="fas fa-download"></i> 导出</button></div></div><div class="card" style="margin-bottom:0"><div class="filter-row"><div class="filter-row-left"><div class="search-box"><i class="fas fa-search"></i><input placeholder="搜索用户或服务..."></div></div></div><div id="gwTC"></div></div></div>';
   window.gcp = rp;
   rp(1);
 }
@@ -2223,8 +2530,9 @@ function renderPermissions() {
     // === Menu permissions ===
     '<div id="pm_menu" class="perm-panel perm-panel-active"><div class="card" style="margin-bottom:0"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span style="font-size:14px;font-weight:600">角色：平台管理员</span><div><button class="btn btn-outline btn-sm" onclick="switchRole()" style="margin-right:6px"><i class="fas fa-exchange-alt"></i> 切换角色</button><button class="btn btn-primary btn-sm" onclick="showToast(\'已保存\',\'\',\'s\')"><i class="fas fa-check"></i> 保存配置</button></div></div>' +
     '<div class="perm-tree"><div class="pt-group"><div class="pt-hd" onclick="togglePermGroup(this)"><span class="pt-toggle open">\u25b6</span><input type="checkbox" checked><span>运营驾驶舱</span></div><div class="pt-body open"><div class="pt-item"><input type="checkbox" checked><span>企业AI大屏</span></div></div></div>' +
-    '<div class="pt-group"><div class="pt-hd" onclick="togglePermGroup(this)"><span class="pt-toggle open">\u25b6</span><input type="checkbox" checked><span>需求与Skill管理</span></div><div class="pt-body open"><div class="pt-item"><input type="checkbox" checked><span>需求池</span></div><div class="pt-item"><input type="checkbox" checked><span>Skill管理</span></div><div class="pt-item"><input type="checkbox" checked><span>Skill市场</span></div><div class="pt-item"><input type="checkbox" checked><span>Skill调用记录</span></div></div></div>' +
-    '<div class="pt-group"><div class="pt-hd" onclick="togglePermGroup(this)"><span class="pt-toggle open">\u25b6</span><input type="checkbox" checked><span>智能体权限网关</span></div><div class="pt-body open"><div class="pt-item"><input type="checkbox" checked><span>网关概览</span></div><div class="pt-item"><input type="checkbox" checked><span>连接器管理</span></div><div class="pt-item"><input type="checkbox" checked><span>公共服务市场</span></div><div class="pt-item"><input type="checkbox" checked><span>我的MCP接入</span></div><div class="pt-item"><input type="checkbox" checked><span>调用调试</span></div><div class="pt-item"><input type="checkbox" checked><span>网关调用记录</span></div></div></div>' +
+    '<div class="pt-group"><div class="pt-hd" onclick="togglePermGroup(this)"><span class="pt-toggle open">\u25b6</span><input type="checkbox" checked><span>需求管理</span></div><div class="pt-body open"><div class="pt-item"><input type="checkbox" checked><span>需求池</span></div></div></div>' +
+    '<div class="pt-group"><div class="pt-hd" onclick="togglePermGroup(this)"><span class="pt-toggle open">\u25b6</span><input type="checkbox" checked><span>Skill管理</span></div><div class="pt-body open"><div class="pt-item"><input type="checkbox" checked><span>Skill管理</span></div><div class="pt-item"><input type="checkbox" checked><span>Skill市场</span></div><div class="pt-item"><input type="checkbox" checked><span>调用记录</span></div></div></div>' +
+    '<div class="pt-group"><div class="pt-hd" onclick="togglePermGroup(this)"><span class="pt-toggle open">\u25b6</span><input type="checkbox" checked><span>AI能力接入</span></div><div class="pt-body open"><div class="pt-item"><input type="checkbox" checked><span>接入与运行概览</span></div><div class="pt-item"><input type="checkbox" checked><span>连接器管理</span></div><div class="pt-item"><input type="checkbox" checked><span>公共能力市场</span></div><div class="pt-item"><input type="checkbox" checked><span>我的MCP接入</span></div><div class="pt-item"><input type="checkbox" checked><span>接入调试</span></div><div class="pt-item"><input type="checkbox" checked><span>调用日志</span></div></div></div>' +
     '<div class="pt-group"><div class="pt-hd" onclick="togglePermGroup(this)"><span class="pt-toggle open">\u25b6</span><input type="checkbox" checked><span>系统与权限</span></div><div class="pt-body open"><div class="pt-item"><input type="checkbox" checked><span>用户管理</span></div><div class="pt-item"><input type="checkbox" checked><span>角色管理</span></div><div class="pt-item"><input type="checkbox" checked><span>权限管理</span></div></div></div></div></div></div>' +
     
     // === Data permissions ===
@@ -2235,14 +2543,13 @@ function renderPermissions() {
     '<tr><td>普通员工</td><td>Skill市场</td><td><span class="tag tag-green">全部数据</span></td><td><button class="btn btn-text btn-xs" onclick="editDataScope(\x27普通员工\x27)"><i class="fas fa-pen"></i> 编辑</button></td></tr>' +
     '<tr><td>查看人员</td><td>大屏/概览</td><td><span class="tag tag-green">全部数据</span></td><td><button class="btn btn-text btn-xs" onclick="editDataScope(\x27查看人员\x27)"><i class="fas fa-pen"></i> 编辑</button></td></tr></tbody></table></div></div></div>' +
     
-    // === API permissions ===
-    '<div id="pm_api" class="perm-panel"><div class="card" style="margin-bottom:0"><div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary" onclick="newPolicy()"><i class="fas fa-plus"></i> 新增策略</button></div><div class="table-wrap"><table><thead><tr><th>策略名称</th><th>适用范围</th><th>连接器</th><th>工具</th><th>数据范围</th><th>确认</th><th>状态</th><th>操作</th></tr></thead><tbody>' +
-    '<tr><td>员工本人数据策略</td><td>普通员工</td><td>出差申请系统</td><td>查询出差申请</td><td><span class="tag tag-blue">仅本人</span></td><td>否</td><td><span class="tag tag-green">启用</span></td><td><button class="btn btn-text btn-xs" onclick="editPolicy(\x27员工本人数据策略\x27)"><i class="fas fa-pen"></i> 编辑</button><button class="btn btn-text btn-xs" onclick="togglePolicy(\x27员工本人数据策略\x27)"><i class="fas fa-ban"></i> 禁用</button><button class="btn btn-text btn-xs" onclick="deletePolicy(\x27员工本人数据策略\x27)" style="color:var(--danger);margin-left:4px"><i class="fas fa-trash-can"></i> 删除</button></td></tr>' +
-    '<tr><td>创建需确认</td><td>普通员工</td><td>出差申请系统</td><td>创建出差申请</td><td><span class="tag tag-blue">仅本人</span></td><td>是</td><td><span class="tag tag-green">启用</span></td><td><button class="btn btn-text btn-xs" onclick="editPolicy(\x27创建需确认\x27)"><i class="fas fa-pen"></i> 编辑</button><button class="btn btn-text btn-xs" onclick="togglePolicy(\x27创建需确认\x27)"><i class="fas fa-ban"></i> 禁用</button><button class="btn btn-text btn-xs" onclick="deletePolicy(\x27创建需确认\x27)" style="color:var(--danger);margin-left:4px"><i class="fas fa-trash-can"></i> 删除</button></td></tr>' +
-    '<tr><td>管理员全数据</td><td>平台管理员</td><td>全部</td><td>全部工具</td><td><span class="tag tag-green">全部数据</span></td><td>否</td><td><span class="tag tag-green">启用</span></td><td><button class="btn btn-text btn-xs" onclick="editPolicy(\x27管理员全数据\x27)"><i class="fas fa-pen"></i> 编辑</button><button class="btn btn-text btn-xs" onclick="togglePolicy(\x27管理员全数据\x27)"><i class="fas fa-ban"></i> 禁用</button><button class="btn btn-text btn-xs" onclick="deletePolicy(\x27管理员全数据\x27)" style="color:var(--danger);margin-left:4px"><i class="fas fa-trash-can"></i> 删除</button></td></tr>' +
-    '<tr><td>部门数据策略</td><td>业务管理部</td><td>CRM</td><td>查询客户信息</td><td><span class="tag tag-yellow">本部门</span></td><td>否</td><td><span class="tag tag-green">启用</span></td><td><button class="btn btn-text btn-xs" onclick="editPolicy(\x27部门数据策略\x27)"><i class="fas fa-pen"></i> 编辑</button><button class="btn btn-text btn-xs" onclick="togglePolicy(\x27部门数据策略\x27)"><i class="fas fa-ban"></i> 禁用</button><button class="btn btn-text btn-xs" onclick="deletePolicy(\x27部门数据策略\x27)" style="color:var(--danger);margin-left:4px"><i class="fas fa-trash-can"></i> 删除</button></td></tr></tbody></table></div></div></div>';
-  
-  function swPerm(el) { document.querySelectorAll('.perm-tab').forEach(function(b){b.classList.remove('active');}); el.classList.add('active'); document.querySelectorAll('.perm-panel').forEach(function(p){p.classList.remove('perm-panel-active');}); document.getElementById('pm_'+el.dataset.panel).classList.add('perm-panel-active'); }
+    // === API permissions === (DB only)
+    '<div id="pm_api" class="perm-panel"><div class="card" style="margin-bottom:0"><div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary" onclick="newPolicy()"><i class="fas fa-plus"></i> \u65B0\u589E\u7B56\u7565</button></div><div class="table-wrap"><table><thead><tr><th>\u7B56\u7565\u540D\u79F0</th><th>\u6570\u636E\u5E93\u8FDE\u63A5\u5668</th><th>\u5DE5\u5177\u6570\u91CF</th><th>\u72B6\u6001</th><th>\u64CD\u4F5C</th></tr></thead><tbody>' +
+    DB_POLICIES.map(function(p){
+      var sCls = p.status === '启用' ? 'tag-green' : 'tag-gray';
+      var st = p.status === '启用' ? '启用' : '停用';
+      return '<tr><td><strong>'+p.name+'</strong></td><td>'+p.connectorName+'</td><td>'+(p.toolPerms?p.toolPerms.length:0)+'个</td><td><span class="tag '+sCls+'\">'+st+'</span></td><td class="cell-actions"><button class="btn btn-text btn-xs" onclick="viewDbPolicy(\x27'+p.id+'\x27)"><i class="fas fa-eye"></i> 查看</button><button class="btn btn-text btn-xs" onclick="editPolicy(\x27'+p.id+'\x27)"><i class="fas fa-pen"></i> 编辑</button><button class="btn btn-text btn-xs" onclick="togglePolicy2(\x27'+p.id+'\x27)"><i class="fas fa-'+(p.status==='启用'?'ban':'check')+'"></i> '+(p.status==='启用'?'禁用':'启用')+'</button><button class="btn btn-text btn-xs" onclick="deletePolicy2(\x27'+p.id+'\x27)" style="color:var(--danger)"><i class="fas fa-trash-can"></i> 删除</button></td></tr>';
+    }).join('') + '</tbody></table></div></div></div>';function swPerm(el) { document.querySelectorAll('.perm-tab').forEach(function(b){b.classList.remove('active');}); el.classList.add('active'); document.querySelectorAll('.perm-panel').forEach(function(p){p.classList.remove('perm-panel-active');}); document.getElementById('pm_'+el.dataset.panel).classList.add('perm-panel-active'); }
 }
 
 function togglePermGroup(el) { var b=el.nextElementSibling; var t=el.querySelector('.pt-toggle'); b.classList.toggle('open'); if(t)t.classList.toggle('open'); }
@@ -2252,20 +2559,308 @@ function switchRole() {
 function editDataScope(r) {
   openModal('编辑数据权限','<div class="form-group"><label>角色</label><input class="form-control" value="'+(r||'')+'" disabled></div><div class="form-group"><label>模块</label><select class="form-control"><option>连接器管理</option><option>Skill管理</option><option selected>全部模块</option></select></div><div class="form-group"><label>数据范围</label><select class="form-control"><option>仅本人</option><option>本部门</option><option selected>全部数据</option></select></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="showToast(\'已保存\',\'数据权限已更新\',\'s\');closeModal()">保存</button>');
 }
-function editPolicy(n) {
+function editPolicy(id) {
+  var p = DB_POLICIES.find(function(x){return x.id===id;});
+  if (!p) { showToast('未找到策略','','e'); return; }
+  window._epPolicyId = id;
+  var dbConns = DB_CONNECTORS;
+  var connOptions = dbConns.map(function(d){ return '<option value="'+d.id+'" '+(d.id===p.connectorId?'selected':'')+'>'+d.name+'</option>'; }).join('');
   openModal('编辑权限策略',
-    '<div class="form-group"><label>策略名称</label><input class="form-control" value="'+(n||'')+'"></div>' +
-    '<div class="form-row"><div class="form-group"><label>连接器</label><select class="form-control"><option selected>出差申请系统</option><option>CRM客户管理</option></select></div>' +
-    '<div class="form-group"><label>工具</label><select class="form-control"><option selected>查询出差申请</option><option>创建出差申请</option></select></div></div>' +
-    '<div class="form-group"><label>适用范围</label><select class="form-control"><option>全部员工</option><option selected>普通员工</option><option>平台管理员</option></select></div>' +
-    '<div class="form-row"><div class="form-group"><label>数据范围</label><select class="form-control"><option selected>仅本人</option><option>本部门</option><option>全部数据</option></select></div>' +
-    '<div class="form-group"><label>写操作需确认</label><div class="toggle-wrap" style="padding:8px 0"><button class="toggle" onclick="toggle(this)"></button><span style="font-size:13px;color:var(--text-secondary)">不需要</span></div></div></div>' +
-    '<div class="form-group"><label>状态</label><div class="toggle-wrap" style="padding:6px 0"><button class="toggle on" onclick="toggle(this)"></button><span style="font-size:13px;color:var(--text-secondary)">启用</span></div></div>' +
-    '<div class="form-group"><label>参数约束</label><textarea class="form-control" placeholder="JSON格式约束条件" style="font-family:monospace;font-size:11px;min-height:50px"></textarea></div>',
-    '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="showToast(\u0027已保存\u0027,\u0027\u0027,\u0027s\u0027);closeModal()">保存</button>');
+    '<div class="form-group"><label>策略名称 <span class="required">*</span></label><input class="form-control" id="epName" value="'+p.name+'"></div>' +
+    '<div class="form-group"><label>数据库连接器 <span class="required">*</span></label><select class="form-control" id="epConn" onchange="onDbConnChange(\'ep\')">' + connOptions + '</select></div>' +
+    '<div class="form-group"><label>数据库工具 <span class="required">*</span></label><div id="epToolsList"></div><div id="epToolsTags" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px"></div></div>' +
+    '<div id="epToolPerms"><div style="font-size:14px;font-weight:600;margin-bottom:8px;padding-top:8px;border-top:1px solid var(--border-light)">工具数据权限</div><div id="epToolPermCards"></div></div>' +
+    '<div class="form-group" style="margin-top:8px"><label>状态</label><div class="toggle-wrap" style="padding:6px 0"><button class="toggle '+(p.status==='启用'?'on':'')+'" id="epStatus" onclick="toggle(this)"></button><span style="font-size:13px;color:var(--text-secondary)">'+(p.status==='启用'?'启用':'停用')+'</span></div></div>',
+    '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmEditPolicy()">保存</button>');
+  window._epDbConnId = p.connectorId;
+  window._epToolPerms = [];
+  (p.toolPerms || []).forEach(function(tp){
+    window._epToolPerms.push({
+      toolName: tp.toolName, tables: tp.tables || '',
+      rowFilters: (tp.rowFilters || []).map(function(rf){ return {table:rf.table, condition:rf.condition}; })
+    });
+  });
+  setTimeout(function(){ onDbConnChange('ep', true); }, 100);
 }
 function deletePolicy(n) {
   openModal('删除权限策略','<p style="font-size:14px;color:var(--text-secondary)">确认删除策略「<strong>'+(n||'')+'</strong>」？<br><span style="font-size:12px;color:var(--danger)">删除后不可恢复</span></p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-danger" onclick="showToast(\'已删除\',\'\',\'s\');closeModal()">确认删除</button>');
+}
+// ===== DB POLICY HELPERS =====
+var OPERATORS = ['等于','不等于','包含于','不包含于','大于','大于等于','小于','小于等于','为空','不为空'];
+
+function onDbConnChange(prefix, isEdit) {
+  var connId = document.getElementById(prefix + 'Conn').value;
+  if (!connId) return;
+  var conn = DB_CONNECTORS.find(function(x){return x.id===connId;});
+  if (!conn) return;
+  var oldConnId = prefix === 'np' ? window._npDbConnId : window._epDbConnId;
+  if (oldConnId && oldConnId !== connId && !isEdit) {
+    var hasTools = document.querySelectorAll('#' + prefix + 'ToolsTags .tag').length > 0;
+    if (hasTools && !confirm('\u5207\u6362\u6570\u636E\u5E93\u8FDE\u63A5\u5668\u540E\uFF0C\u5F53\u524D\u5DF2\u9009\u5DE5\u5177\u53CA\u6570\u636E\u6743\u9650\u914D\u7F6E\u5C06\u88AB\u6E05\u7A7A\uFF0C\u662F\u5426\u7EE7\u7EED\uFF1F')) {
+      document.getElementById(prefix + 'Conn').value = oldConnId;
+      return;
+    }
+  }
+  if (prefix === 'np') window._npDbConnId = connId;
+  else window._epDbConnId = connId;
+  var tools = conn.tools || [];
+  var toolsHtml = '';
+  tools.forEach(function(t, i){
+    toolsHtml += '<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;cursor:pointer;font-size:13px">' +
+      '<input type="checkbox" class="' + prefix + '-tool-cb" value="' + t.name + '" onchange="onToolCheckChange(\'' + prefix + '\')" style="width:14px;height:14px;accent-color:var(--primary);cursor:pointer"> ' +
+      '<span>' + t.name + '</span>' +
+      '<span style="font-size:11px;color:var(--text-muted)">' + t.desc + '</span></label>';
+  });
+  document.getElementById(prefix + 'ToolsList').innerHTML = toolsHtml;
+  var hint = document.getElementById(prefix + 'ToolsHint');
+  if (hint) hint.style.display = 'none';
+  if (isEdit && prefix === 'ep' && window._epToolPerms) {
+    var checkedTools = window._epToolPerms.map(function(tp){ return tp.toolName; });
+    document.querySelectorAll('.ep-tool-cb').forEach(function(cb){
+      if (checkedTools.indexOf(cb.value) >= 0) cb.checked = true;
+    });
+    renderToolPermCards('ep', window._epToolPerms);
+  }
+}
+
+function onToolCheckChange(prefix) {
+  var selected = [];
+  document.querySelectorAll('.' + prefix + '-tool-cb:checked').forEach(function(cb){ selected.push({toolName:cb.value}); });
+  var tagsHtml = selected.map(function(t){
+    return '<span class="tag tag-blue" style="font-size:10px;padding:3px 8px">' + t.toolName +
+      ' <span style="cursor:pointer;margin-left:3px" onclick="removeToolTag(\'' + prefix + '\',\'' + t.toolName + '\')">\u00D7</span></span>';
+  }).join('');
+  document.getElementById(prefix + 'ToolsTags').innerHTML = tagsHtml;
+  if (selected.length === 0) {
+    document.getElementById(prefix + 'ToolPerms').style.display = 'none';
+    return;
+  }
+  document.getElementById(prefix + 'ToolPerms').style.display = '';
+  var existingPerms = (prefix === 'ep' ? (window._epToolPerms || []) : (window._npToolPerms || []));
+  var connId = document.getElementById(prefix + 'Conn').value;
+  var conn = DB_CONNECTORS.find(function(x){return x.id===connId;});
+  var newPerms = [];
+  selected.forEach(function(t){
+    var existing = existingPerms.find(function(e){ return e.toolName === t.toolName; });
+    if (existing) {
+      newPerms.push({toolName:t.toolName, tables:existing.tables, rowFilters:(existing.rowFilters||[]).map(function(r){return {table:r.table, field:r.field||'', operator:r.operator||'\u7B49\u4E8E', value:r.value||''};})});
+    } else {
+      newPerms.push({toolName:t.toolName, tables:'', rowFilters:[]});
+    }
+  });
+  if (prefix === 'np') window._npToolPerms = newPerms;
+  else window._epToolPerms = newPerms;
+  renderToolPermCards(prefix, newPerms);
+}
+
+function removeToolTag(prefix, toolName) {
+  document.querySelectorAll('.' + prefix + '-tool-cb').forEach(function(cb){
+    if (cb.value === toolName) { cb.checked = false; }
+  });
+  onToolCheckChange(prefix);
+}
+
+function renderToolPermCards(prefix, perms) {
+  var html = '';
+  perms.forEach(function(p, idx){
+    var connId = document.getElementById(prefix + 'Conn').value;
+    var conn = DB_CONNECTORS.find(function(x){return x.id===connId;});
+    var tool = conn ? conn.tools.find(function(t){return t.name===p.toolName;}) : null;
+    var knownTables = tool && tool.tables ? tool.tables : [];
+    var knownFields = [];
+    if (tool && tool.fields && p.tables) {
+      var tableList = (p.tables || '').split(',').map(function(t){return t.trim();}).filter(function(t){return t;});
+      tableList.forEach(function(tb){
+        if (tool.fields[tb]) {
+          tool.fields[tb].forEach(function(f){
+            if (knownFields.indexOf(f) < 0) knownFields.push(f);
+          });
+        }
+      });
+    }
+    var tableOpts = knownTables.map(function(t){ return '<option value="'+t+'">'+t+'</option>'; }).join('');
+    var opOpts = OPERATORS.map(function(o){ return '<option value="'+o+'">'+o+'</option>'; }).join('');
+    
+    var filterRowsHtml = '';
+    (p.rowFilters || []).forEach(function(rf, fi){
+      var isOperatorEmpty = rf.operator === '\u4E3A\u7A7A' || rf.operator === '\u4E0D\u4E3A\u7A7A';
+      var fieldsForTable = [];
+      if (knownFields.length > 0) {
+        fieldsForTable = knownFields;
+      } else if (tool && tool.fields && rf.table && tool.fields[rf.table]) {
+        fieldsForTable = tool.fields[rf.table];
+      }
+      var fieldOpts = fieldsForTable.map(function(f){ return '<option value="'+f+'">'+f+'</option>'; }).join('');
+      
+      filterRowsHtml += '<div class="perm-filter-row" id="' + prefix + '_fr_' + idx + '_' + fi + '" style="margin-bottom:6px;padding:8px 10px;background:#f9fafb;border-radius:6px">' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1.5fr 28px;gap:6px;align-items:center">' +
+        // Table name - flat input
+        '<div><input class="form-control" value="' + (rf.table||'') + '" placeholder="\u8868\u540D" style="font-size:11px;padding:3px 5px;width:100%" onchange="updateRowFilterSimple(\'\'+prefix+\'\','+idx+','+fi+',\'table\',this.value)"></div>' +
+        // Field - flat input
+        '<div><input class="form-control" value="' + (rf.field||'') + '" placeholder="\u5B57\u6BB5\u540D" style="font-size:11px;padding:3px 5px;width:100%" onchange="updateRowFilterSimple(\'\'+prefix+\'\','+idx+','+fi+',\'field\',this.value)"></div>' +// Operator
+        '<div><select class="form-control" style="font-size:11px;padding:3px 5px;width:100%" onchange="updateRowFilterSimple(\''+prefix+'\','+idx+','+fi+',\'operator\',this.value);renderToolPermCards(\''+prefix+'\',(prefix===\'np\'?window._npToolPerms:window._epToolPerms))">' +
+        opOpts.replace('value="'+rf.operator+'"', 'value="'+rf.operator+'" selected') + '</select></div>' +
+        // Value (hidden for empty operators)
+        (isOperatorEmpty ?
+        '<div style="font-size:11px;color:var(--text-muted);padding:4px 6px">\u2014</div>' :
+        '<div><input class="form-control" value="' + (rf.value||'') + '" placeholder="\u56FA\u5B9A\u503C\u6216{\{user.xxx\}}" style="font-size:11px;padding:3px 5px;width:100%;font-family:monospace" onchange="updateRowFilterSimple(\''+prefix+'\','+idx+','+fi+',\'value\',this.value)"></div>') +
+        // Delete
+        '<div><button class="btn btn-ghost btn-xs" onclick="this.closest(\'.perm-filter-row\').remove();removeRowFilter(\''+prefix+'\','+idx+','+fi+')" style="padding:2px 4px"><i class="fas fa-xmark" style="font-size:12px;color:var(--text-muted)"></i></button></div>' +
+        '</div>'
+    });
+    
+    html += '<div class="perm-tool-card" style="border:1px solid var(--border-light);border-radius:8px;margin-bottom:8px;overflow:hidden">' +
+      '<div class="perm-tool-hd" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9fafb;cursor:pointer;font-size:13px;font-weight:500" onclick="var b=this.nextElementSibling;var a=this.querySelector(\'.perm-arrow\');if(b){b.style.display=b.style.display===\'none\'?\'\':\'none\';if(a)a.textContent=b.style.display===\'none\'?\'\u25B6\':\'\u25BC\';}">' +
+      '<span class="perm-arrow" style="font-size:10px;color:var(--text-muted);width:14px">\u25BC</span>' + p.toolName + '</div>' +
+      '<div class="perm-tool-body" style="padding:10px 14px">' +
+      '<div class="form-group" style="margin-bottom:8px"><label style="font-size:12px">\u8868\u767D\u540D\u5355</label>' +
+      '<input class="form-control" id="' + prefix + '_tb_' + idx + '" value="' + p.tables + '" placeholder="\u591A\u4E2A\u8868\u540D\u4F7F\u7528\u82F1\u6587\u9017\u53F7\u5206\u9694" style="font-size:12px;padding:5px 8px" onchange="updateTableWhitelist(\''+prefix+'\','+idx+',this.value);renderToolPermCards(\''+prefix+'\',(prefix===\'np\'?window._npToolPerms:window._epToolPerms))">' +
+      '<div style="font-size:10px;color:var(--text-muted);margin-top:2px">\u591A\u4E2A\u8868\u540D\u4F7F\u7528\u82F1\u6587\u9017\u53F7\u5206\u9694\uFF1B\u7559\u7A7A\u8868\u793A\u4E0D\u9650\u5236\u3002</div></div>' +
+      '<div style="margin-bottom:4px"><label style="font-size:12px;margin-bottom:2px;display:block;font-weight:500">\u884C\u8FC7\u6EE4\u89C4\u5219</label></div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1.5fr 28px;gap:4px;margin-bottom:4px;padding:0 8px;font-size:10px;color:var(--text-muted)">' +
+      '<div>\u8868\u540D</div><div>\u4E1A\u52A1\u5B57\u6BB5</div><div>\u6761\u4EF6</div><div>\u53D6\u503C\u5185\u5BB9</div><div></div></div>' +
+      '<div id="' + prefix + '_rf_' + idx + '">' + filterRowsHtml + '</div>' +
+      '<button class="btn btn-text btn-xs" style="margin-top:4px" onclick="addRowFilterRow(\''+prefix+'\','+idx+')"><i class="fas fa-plus"></i> \u6DFB\u52A0\u884C\u8FC7\u6EE4</button>' +
+      '</div></div>';
+  });
+  document.getElementById(prefix + 'ToolPermCards').innerHTML = html;
+}
+
+function addRowFilterRow(prefix, permIdx) {
+  var perms = prefix === 'np' ? window._npToolPerms : window._epToolPerms;
+  if (!perms || !perms[permIdx]) return;
+  if (!perms[permIdx].rowFilters) perms[permIdx].rowFilters = [];
+  perms[permIdx].rowFilters.push({table:'', field:'', operator:'\u7B49\u4E8E', value:''});
+  renderToolPermCards(prefix, perms);
+}
+
+function updateTableWhitelist(prefix, permIdx, val) {
+  var perms = prefix === 'np' ? window._npToolPerms : window._epToolPerms;
+  if (perms && perms[permIdx]) perms[permIdx].tables = val;
+}
+
+function updateRowFilterSimple(prefix, permIdx, fi, field, val) {
+  var perms = prefix === 'np' ? window._npToolPerms : window._epToolPerms;
+  if (!perms || !perms[permIdx]) return;
+  if (!perms[permIdx].rowFilters) perms[permIdx].rowFilters = [];
+  while (perms[permIdx].rowFilters.length <= fi) perms[permIdx].rowFilters.push({table:'', field:'', operator:'\u7B49\u4E8E', value:''});
+  perms[permIdx].rowFilters[fi][field] = val;
+}
+
+function removeRowFilter(prefix, permIdx, fi) {
+  var perms = prefix === 'np' ? window._npToolPerms : window._epToolPerms;
+  if (perms && perms[permIdx] && perms[permIdx].rowFilters) {
+    perms[permIdx].rowFilters.splice(fi, 1);
+  }
+}
+
+function confirmNewPolicy() {
+  var name = document.getElementById('npName').value.trim();
+  if (!name) { showToast('\u8BF7\u8F93\u5165\u7B56\u7565\u540D\u79F0','','w'); return; }
+  var connId = document.getElementById('npConn').value;
+  if (!connId) { showToast('\u8BF7\u9009\u62E9\u6570\u636E\u5E93\u8FDE\u63A5\u5668','','w'); return; }
+  var selectedTools = [];
+  document.querySelectorAll('.np-tool-cb:checked').forEach(function(cb){ selectedTools.push(cb.value); });
+  if (selectedTools.length === 0) { showToast('\u8BF7\u9009\u62E9\u81F3\u5C11\u4E00\u4E2A\u5DE5\u5177','','w'); return; }
+  var conn = DB_CONNECTORS.find(function(x){return x.id===connId;});
+  var perms = window._npToolPerms || [];
+  var toolPerms = [];
+  selectedTools.forEach(function(tn){
+    var p = perms.find(function(x){return x.toolName === tn;});
+    var tables = p ? p.tables : '';
+    var filters = p ? (p.rowFilters || []) : [];
+    var cleanFilters = filters.filter(function(f){ return f.table && f.field; });
+    toolPerms.push({toolName:tn, tables:tables, rowFilters:cleanFilters});
+  });
+  var statusEl = document.getElementById('npStatus');
+  var status = statusEl && statusEl.classList.contains('on') ? '\u542F\u7528' : '\u505C\u7528';
+  var newId = 'POL-DB-' + String(DB_POLICIES.length + 1).padStart(3,'0');
+  DB_POLICIES.push({
+    id: newId, name:name, scope:'\u666E\u901A\u5458\u5DE5', connectorId:connId, connectorName:conn?conn.name:'', status:status,
+    toolPerms: toolPerms
+  });
+  window._npToolPerms = null;
+  closeModal();
+  renderPermissions();
+  showToast('\u521B\u5EFA\u6210\u529F','\u7B56\u7565\u300C'+name+'\u300D\u5DF2\u521B\u5EFA','s');
+}
+
+function confirmEditPolicy() {
+  var p = DB_POLICIES.find(function(x){return x.id===window._epPolicyId;});
+  if (!p) return;
+  p.name = document.getElementById('epName').value.trim() || p.name;
+  var connId = document.getElementById('epConn').value;
+  p.connectorId = connId;
+  var conn = DB_CONNECTORS.find(function(x){return x.id===connId;});
+  p.connectorName = conn ? conn.name : '';
+  var perms = window._epToolPerms || [];
+  p.toolPerms = perms.map(function(tp){
+    var cleanFilters = (tp.rowFilters||[]).filter(function(f){ return f.table && f.field; });
+    return {toolName:tp.toolName, tables:tp.tables, rowFilters:cleanFilters};
+  });
+  p.scope = '\u666E\u901A\u5458\u5DE5';
+  var statusEl = document.getElementById('epStatus');
+  p.status = statusEl && statusEl.classList.contains('on') ? '\u542F\u7528' : '\u505C\u7528';
+  window._epPolicyId = null;
+  window._epToolPerms = null;
+  closeModal();
+  renderPermissions();
+  showToast('\u5DF2\u4FDD\u5B58','\u7B56\u7565\u300C'+p.name+'\u300D\u5DF2\u66F4\u65B0','s');
+}
+
+function togglePolicy2(id) {
+  var p = DB_POLICIES.find(function(x){return x.id===id;});
+  if (!p) return;
+  p.status = p.status === '\u542F\u7528' ? '\u505C\u7528' : '\u542F\u7528';
+  renderPermissions();
+  showToast('\u5DF2\u64CD\u4F5C','\u7B56\u7565\u300C'+p.name+'\u300D\u5DF2'+(p.status==='\u542F\u7528'?'\u542F\u7528':'\u505C\u7528'),'s');
+}
+
+function deletePolicy2(id) {
+  var p = DB_POLICIES.find(function(x){return x.id===id;});
+  if (!p) return;
+  openModal('\u5220\u9664\u6743\u9650\u7B56\u7565','<p style="font-size:14px;color:var(--text-secondary)">\u786E\u8BA4\u5220\u9664\u7B56\u7565\u300C<strong>'+p.name+'</strong>\u300D\uFF1F<br><span style="font-size:12px;color:var(--danger)">\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D</span></p>','<button class="btn btn-outline" onclick="closeModal()">\u53D6\u6D88</button><button class="btn btn-danger" onclick="confirmDeletePolicy2(\''+id+'\')"><i class="fas fa-trash-can"></i> \u786E\u8BA4\u5220\u9664</button>');
+}
+
+function confirmDeletePolicy2(id) {
+  DB_POLICIES = DB_POLICIES.filter(function(x){ return x.id !== id; });
+  closeModal();
+  renderPermissions();
+  showToast('\u5DF2\u5220\u9664','','i');
+}
+
+function viewDbPolicy(id) {
+  var p = DB_POLICIES.find(function(x){return x.id===id;});
+  if (!p) return;
+  var toolHtml = '';
+  (p.toolPerms || []).forEach(function(tp){
+    var tableWhitelist = tp.tables ? tp.tables.split(',').map(function(t){return t.trim();}).filter(function(t){return t;}).join('\u3001') : '\u4E0D\u9650\u5236';
+    var filterHtml = '';
+    if (tp.rowFilters && tp.rowFilters.length > 0) {
+      filterHtml = '<table style="width:100%;font-size:12px;border-collapse:collapse">' +
+        '<thead><tr style="background:#f3f4f6"><th style="padding:4px 8px;text-align:left;font-weight:500;color:var(--text-muted);font-size:10px">\u8868\u540D</th><th style="padding:4px 8px;text-align:left;font-weight:500;color:var(--text-muted);font-size:10px">\u5B57\u6BB5</th><th style="padding:4px 8px;text-align:left;font-weight:500;color:var(--text-muted);font-size:10px">\u6761\u4EF6</th><th style="padding:4px 8px;text-align:left;font-weight:500;color:var(--text-muted);font-size:10px">\u53D6\u503C</th></tr></thead><tbody>';
+      tp.rowFilters.forEach(function(rf){
+        filterHtml += '<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:4px 8px;font-weight:500">' + (rf.table||'') + '</td><td style="padding:4px 8px;color:var(--text-secondary)">' + (rf.field||'') + '</td><td style="padding:4px 8px;color:var(--text-secondary)">' + (rf.operator||'') + '</td><td style="padding:4px 8px;color:var(--text-secondary);font-family:monospace;font-size:11px">' + (rf.value||'') + '</td></tr>';
+      });
+      filterHtml += '</tbody></table>';
+    } else {
+      filterHtml = '<div style="font-size:12px;color:var(--text-muted);margin-top:4px">\u672A\u914D\u7F6E\u884C\u8FC7\u6EE4\u89C4\u5219</div>';
+    }
+    toolHtml += '<div style="border:1px solid var(--border-light);border-radius:6px;padding:12px;margin-bottom:8px">' +
+      '<div style="font-size:14px;font-weight:600;margin-bottom:8px">' + tp.toolName + '</div>' +
+      '<div style="margin-bottom:4px"><span style="font-size:12px;color:var(--text-muted)">\u8868\u767D\u540D\u5355\uFF1A</span><span style="font-size:13px">' + tableWhitelist + '</span></div>' +
+      '<div><span style="font-size:12px;color:var(--text-muted)">\u884C\u8FC7\u6EE4\u89C4\u5219\uFF1A</span>' + filterHtml + '</div></div>';
+  });
+  var stTag = p.status === '\u542F\u7528' ? 'tag-green' : 'tag-gray';
+  openDrawer('\u6743\u9650\u7B56\u7565\u8BE6\u60C5 - ' + p.name,
+    '<div style="margin-bottom:16px;padding:14px;background:#f9fafb;border-radius:8px">' +
+    '<div style="font-size:16px;font-weight:600">' + p.name + '</div>' +
+    '<div style="display:flex;gap:6px;margin-top:6px"><span class="tag '+stTag+'">'+p.status+'</span></div></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;padding:14px;background:#f9fafb;border-radius:8px">' +
+    '<div><div style="font-size:11px;color:var(--text-muted)">\u7B56\u7565\u540D\u79F0</div><div style="font-size:13px;font-weight:500">'+p.name+'</div></div>' +
+    '<div><div style="font-size:11px;color:var(--text-muted)">\u6570\u636E\u5E93\u8FDE\u63A5\u5668</div><div style="font-size:13px">'+p.connectorName+'</div></div>' +
+    '<div><div style="font-size:11px;color:var(--text-muted)">\u72B6\u6001</div><div><span class="tag '+stTag+'">'+p.status+'</span></div></div></div>' +
+    '<div style="font-size:14px;font-weight:600;margin-bottom:8px">\u5DE5\u5177\u6743\u9650</div>' + toolHtml);
 }
 function togglePolicy(name) {
   showToast('已操作','策略「'+name+'」状态已切换','s');
@@ -2282,16 +2877,245 @@ function togglePolicy(name) {
 
 
 function newPolicy() {
+  var dbConns = DB_CONNECTORS;
+  if (!dbConns || dbConns.length === 0) {
+    openModal('新增权限策略',
+      '<div class="empty-state" style="padding:24px"><i class="fas fa-database" style="font-size:32px;opacity:.35"></i><p>暂无可用的数据库连接器，请先在连接器管理中创建并发布数据库连接器。</p></div>',
+      '<button class="btn btn-outline" onclick="closeModal()">关闭</button>');
+    return;
+  }
+  var connOptions = dbConns.map(function(d){ return '<option value="'+d.id+'">'+d.name+'</option>'; }).join('');
   openModal('新增权限策略',
-    '<div class="form-group"><label>策略名称 <span class="required">*</span></label><input class="form-control" placeholder="例如：员工本人数据策略"></div>' +
-    '<div class="form-group"><label>适用范围</label><select class="form-control"><option>全部员工</option><option selected>普通员工</option><option>平台管理员</option></select></div>' +
-    '<div class="form-row"><div class="form-group"><label>连接器</label><select class="form-control"><option selected>出差申请系统</option><option>CRM客户管理</option></select></div>' +
-    '<div class="form-group"><label>工具</label><select class="form-control"><option selected>查询出差申请</option><option>创建出差申请</option></select></div></div>' +
-    '<div class="form-row"><div class="form-group"><label>数据范围</label><select class="form-control"><option selected>仅本人</option><option>本部门</option><option>全部数据</option></select></div>' +
-    '<div class="form-group"><label>写操作需确认</label><div class="toggle-wrap" style="padding:8px 0"><button class="toggle" onclick="toggle(this)"></button><span style="font-size:13px;color:var(--text-secondary)">不需要</span></div></div></div>' +
-    '<div class="form-group"><label>状态</label><div class="toggle-wrap" style="padding:6px 0"><button class="toggle on" onclick="toggle(this)"></button><span style="font-size:13px;color:var(--text-secondary)">启用</span></div></div>' +
-    '<div class="form-group"><label>参数约束</label><textarea class="form-control" placeholder="JSON格式约束条件" style="font-family:monospace;font-size:11px;min-height:50px"></textarea></div>',
-    '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="showToast(\u0027创建成功\u0027,\u0027权限策略已创建\u0027,\u0027s\u0027);closeModal()">创建</button>');
+    '<div class="form-group"><label>策略名称 <span class="required">*</span></label><input class="form-control" id="npName" placeholder="例如：核心业务数据查询策略"></div>' +
+    '<div class="form-group"><label>数据库连接器 <span class="required">*</span></label><select class="form-control" id="npConn" onchange="onDbConnChange(\'np\')">' + connOptions + '</select></div>' +
+    '<div class="form-group"><label>数据库工具 <span class="required">*</span></label><div id="npToolsList" style="margin-bottom:6px"></div><div id="npToolsTags" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px"></div>' +
+    '<div style="font-size:11px;color:var(--text-secondary)" id="npToolsHint">请先选择数据库连接器</div></div>' +
+    '<div id="npToolPerms" style="display:none"><div style="font-size:14px;font-weight:600;margin-bottom:8px;padding-top:8px;border-top:1px solid var(--border-light)">工具数据权限</div><div id="npToolPermCards"></div></div>' +
+    '<div class="form-group" style="margin-top:8px"><label>状态</label><div class="toggle-wrap" style="padding:6px 0"><button class="toggle on" id="npStatus" onclick="toggle(this)"></button><span style="font-size:13px;color:var(--text-secondary)">启用</span></div></div>',
+    '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmNewPolicy()">创建</button>');
+  window._npDbConnId = null;
+  onDbConnChange('np');
+}
+// ===== REST API TOOL DISCOVERY =====
+function buildEditToolListHtml(prefix, tools) {
+  var html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+    '<span style="font-size:12px;color:var(--text-muted)">发现 ' + tools.length + ' 个工具 · 已选 ' + tools.filter(function(t){return t.selected!==false;}).length + '</span></div>' +
+    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap">' +
+    '<div class="search-box" style="width:auto;flex:1;min-width:140px"><i class="fas fa-search"></i><input placeholder="搜索工具名 / 路径 / 描述..." oninput="searchToolsList(\''+prefix+'\',this.value)" style="font-size:12px;padding:5px 10px 5px 28px"></div>' +
+    '<button class="btn btn-sm btn-outline" onclick="selectAllTools(\''+prefix+'\')" style="font-size:11px;padding:4px 8px">全选本页</button>' +
+    '<button class="btn btn-sm btn-outline" onclick="deselectAllTools(\''+prefix+'\')" style="font-size:11px;padding:4px 8px">全不选</button>' +
+    '<button class="btn btn-sm btn-primary" onclick="confirmToolSelection(\''+prefix+'\')" style="font-size:11px;padding:4px 10px">确认选择（'+tools.filter(function(t){return t.selected!==false;}).length+'）</button>' +
+    '<button class="btn btn-sm btn-ghost" onclick="collapseAllTools(\''+prefix+'\')" style="font-size:11px;padding:4px 8px">收起</button></div>' +
+    '<div id="'+prefix+'ToolList" style="max-height:300px;overflow-y:auto;border:1px solid var(--border-light);border-radius:6px">';
+  tools.forEach(function(tool, i){
+    var checked = tool.selected !== false ? 'checked' : '';
+    var fieldsHtml = '';
+    if (tool.fields && tool.fields.length > 0) {
+      var fieldVal = tool.allowedFields || '';
+      fieldsHtml = '<div class="tool-fields" id="'+prefix+'_tf_area_'+i+'" style="display:none;padding:8px 12px 8px 36px;background:#f9fafb;border-top:1px solid var(--border-light)">' +
+        '<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">字段权限</div>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px">' +
+        tool.fields.map(function(f){ return '<span style="font-size:10px;padding:2px 6px;background:#eef1ff;color:var(--primary);border-radius:3px">'+f+'</span>'; }).join('') +
+        '</div>' +
+        '<input class="form-control" id="'+prefix+'_tf_'+i+'" value="'+fieldVal+'" placeholder="输入允许访问的字段名称，逗号分隔" style="font-size:12px;padding:5px 8px">' +
+        '<div style="font-size:10px;color:var(--text-muted);margin-top:2px">留空表示允许所有字段</div></div>';
+    }
+    html += '<div class="disc-tool-row" id="'+prefix+'_tr_'+i+'" style="border-bottom:1px solid var(--border-light)">' +
+      '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer" onclick="toggleToolExpand(\''+prefix+'\','+i+')">' +
+      '<input type="checkbox" id="'+prefix+'_tk_'+i+'" '+checked+' onclick="event.stopPropagation();updateToolCount(\''+prefix+'\')" style="width:14px;height:14px;accent-color:var(--primary);cursor:pointer">' +
+      '<span style="flex:1;font-size:13px;font-weight:500">'+tool.name+'</span>' +
+      '<span class="tag '+(tool.method==='GET'?'tag-green':tool.method==='POST'?'tag-blue':tool.method==='PUT'?'tag-yellow':tool.method==='DELETE'?'tag-red':'tag-gray')+'" style="font-size:9px;padding:1px 5px">'+tool.method+'</span>' +
+      '<span style="font-size:11px;color:var(--text-muted);font-family:monospace">'+tool.path+'</span>' +
+      '<span style="font-size:11px;color:var(--text-secondary);flex:0 0 auto;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+tool.desc+'</span>' +
+      '<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();showToast(\'测试\',\'工具调用成功\',\'s\')" style="padding:2px 6px;font-size:10px"><i class="fas fa-play"></i></button>' +
+      '<span style="font-size:10px;color:var(--text-muted);width:12px;text-align:center" id="'+prefix+'_exp_'+i+'"><i class="fas fa-chevron-down"></i></span></div>' +
+      fieldsHtml + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function buildNewToolListHtml(prefix, tools) {
+  var html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+    '<span style="font-size:12px;color:var(--text-muted)">发现 ' + tools.length + ' 个工具 · 已选 ' + tools.length + '</span></div>' +
+    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap">' +
+    '<div class="search-box" style="width:auto;flex:1;min-width:140px"><i class="fas fa-search"></i><input placeholder="搜索工具名 / 路径 / 描述..." oninput="searchToolsList(\''+prefix+'\',this.value)" style="font-size:12px;padding:5px 10px 5px 28px"></div>' +
+    '<button class="btn btn-sm btn-outline" onclick="selectAllTools(\''+prefix+'\')" style="font-size:11px;padding:4px 8px">全选本页</button>' +
+    '<button class="btn btn-sm btn-outline" onclick="deselectAllTools(\''+prefix+'\')" style="font-size:11px;padding:4px 8px">全不选</button>' +
+    '<button class="btn btn-sm btn-primary" onclick="confirmToolSelection(\''+prefix+'\')" style="font-size:11px;padding:4px 10px">确认选择（'+tools.length+'）</button>' +
+    '<button class="btn btn-sm btn-ghost" onclick="collapseAllTools(\''+prefix+'\')" style="font-size:11px;padding:4px 8px">收起</button></div>' +
+    '<div id="'+prefix+'ToolList" style="max-height:300px;overflow-y:auto;border:1px solid var(--border-light);border-radius:6px">';
+  tools.forEach(function(tool, i){
+    var fieldsHtml = '';
+    if (tool.fields && tool.fields.length > 0) {
+      fieldsHtml = '<div class="tool-fields" id="'+prefix+'_tf_area_'+i+'" style="display:none;padding:8px 12px 8px 36px;background:#f9fafb;border-top:1px solid var(--border-light)">' +
+        '<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">字段权限</div>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px">' +
+        tool.fields.map(function(f){ return '<span style="font-size:10px;padding:2px 6px;background:#eef1ff;color:var(--primary);border-radius:3px">'+f+'</span>'; }).join('') +
+        '</div>' +
+        '<input class="form-control" id="'+prefix+'_tf_'+i+'" placeholder="输入允许访问的字段名称，逗号分隔" style="font-size:12px;padding:5px 8px">' +
+        '<div style="font-size:10px;color:var(--text-muted);margin-top:2px">留空表示允许所有字段</div></div>';
+    }
+    html += '<div class="disc-tool-row" id="'+prefix+'_tr_'+i+'" style="border-bottom:1px solid var(--border-light)">' +
+      '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer" onclick="toggleToolExpand(\''+prefix+'\','+i+')">' +
+      '<input type="checkbox" id="'+prefix+'_tk_'+i+'" checked onclick="event.stopPropagation();updateToolCount(\''+prefix+'\')" style="width:14px;height:14px;accent-color:var(--primary);cursor:pointer">' +
+      '<span style="flex:1;font-size:13px;font-weight:500">'+tool.name+'</span>' +
+      '<span class="tag '+(tool.method==='GET'?'tag-green':tool.method==='POST'?'tag-blue':tool.method==='PUT'?'tag-yellow':tool.method==='DELETE'?'tag-red':'tag-gray')+'" style="font-size:9px;padding:1px 5px">'+tool.method+'</span>' +
+      '<span style="font-size:11px;color:var(--text-muted);font-family:monospace">'+tool.path+'</span>' +
+      '<span style="font-size:11px;color:var(--text-secondary);flex:0 0 auto;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+tool.desc+'</span>' +
+      '<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();showToast(\'测试\',\'工具调用成功\',\'s\')" style="padding:2px 6px;font-size:10px"><i class="fas fa-play"></i></button>' +
+      '<span style="font-size:10px;color:var(--text-muted);width:12px;text-align:center" id="'+prefix+'_exp_'+i+'"><i class="fas fa-chevron-down"></i></span></div>' +
+      fieldsHtml + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function discoverToolsNew() {
+  var url = document.getElementById('cnBaseURL').value.trim();
+  if (!url) { showToast('请先填写基本URL','','w'); return; }
+  var btn = document.getElementById('cnDiscoverBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在解析...'; }
+  setTimeout(function(){
+    window._cnDiscoveredTools = DEMO_TOOLS.slice();
+    var html = buildNewToolListHtml('cn', window._cnDiscoveredTools);
+    var area = document.getElementById('cnToolListArea');
+    if (area) { area.style.display = ''; area.innerHTML = html; }
+    var empty = document.getElementById('cnEmptyTools');
+    if (empty) empty.style.display = 'none';
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-magnifying-glass"></i> 从 OpenAPI 自动发现工具'; }
+    showToast('解析完成','共发现 '+DEMO_TOOLS.length+' 个工具','s');
+  }, 800);
+}
+
+function discoverToolsEdit() {
+  var url = document.getElementById('enBaseURL').value.trim();
+  if (!url) { showToast('请先填写基本URL','','w'); return; }
+  var btn = document.getElementById('editDiscoverBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在解析...'; }
+  setTimeout(function(){
+    // Preserve existing selections from current checkboxes
+    var oldSelections = {};
+    if (window._editDiscoveredTools) {
+      window._editDiscoveredTools.forEach(function(t, i){
+        var cb = document.getElementById('edit_tk_' + i);
+        if (cb) oldSelections[t.name] = {selected: cb.checked, allowedFields: document.getElementById('edit_tf_' + i) ? document.getElementById('edit_tf_' + i).value : ''};
+      });
+    }
+    window._editDiscoveredTools = DEMO_TOOLS.slice().map(function(t){
+      var old = oldSelections[t.name];
+      return {name:t.name, method:t.method, path:t.path, desc:t.desc, fields:t.fields, selected: old ? old.selected : true, allowedFields: old ? old.allowedFields : ''};
+    });
+    var html = buildEditToolListHtml('edit', window._editDiscoveredTools);
+    var area = document.getElementById('editToolListArea');
+    if (area) { area.style.display = ''; area.innerHTML = html; }
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-magnifying-glass"></i> 重新发现工具'; }
+    showToast('解析完成','共发现 '+DEMO_TOOLS.length+' 个工具','s');
+  }, 800);
+}
+
+function showEditReDiscoverHint() {
+  var area = document.getElementById('editToolListArea');
+  if (!area) return;
+  // Add a small hint if tools were already discovered
+  if (window._editDiscoveredTools && window._editDiscoveredTools.length > 0) {
+    var hint = document.getElementById('editRediscoverHint');
+    if (!hint) {
+      var h = document.createElement('div');
+      h.id = 'editRediscoverHint';
+      h.style.cssText = 'margin-top:6px;padding:6px 10px;background:var(--warning-bg);border-radius:4px;font-size:11px;color:#d97706';
+      h.innerHTML = '<i class="fas fa-circle-info"></i> 连接配置已变更，建议重新发现工具。';
+      area.parentNode.insertBefore(h, area);
+    }
+  }
+}
+
+function toggleToolExpand(prefix, idx) {
+  var area = document.getElementById(prefix + '_tf_area_' + idx);
+  var arrow = document.getElementById(prefix + '_exp_' + idx);
+  if (area) {
+    var isOpen = area.style.display !== 'none';
+    area.style.display = isOpen ? 'none' : '';
+    if (arrow) arrow.innerHTML = isOpen ? '<i class="fas fa-chevron-down"></i>' : '<i class="fas fa-chevron-up"></i>';
+  }
+}
+
+function searchToolsList(prefix, q) {
+  var list = document.getElementById(prefix + 'ToolList');
+  if (!list) return;
+  var rows = list.querySelectorAll('.disc-tool-row');
+  rows.forEach(function(row){
+    row.style.display = row.textContent.indexOf(q) >= 0 ? '' : 'none';
+  });
+}
+
+function selectAllTools(prefix) {
+  var list = document.getElementById(prefix + 'ToolList');
+  if (!list) return;
+  var visible = list.querySelectorAll('.disc-tool-row:not([style*="display: none"])');
+  visible.forEach(function(row){
+    var cb = row.querySelector('input[type="checkbox"]');
+    if (cb) cb.checked = true;
+  });
+  updateToolCount(prefix);
+}
+
+function deselectAllTools(prefix) {
+  var list = document.getElementById(prefix + 'ToolList');
+  if (!list) return;
+  var visible = list.querySelectorAll('.disc-tool-row:not([style*="display: none"])');
+  visible.forEach(function(row){
+    var cb = row.querySelector('input[type="checkbox"]');
+    if (cb) cb.checked = false;
+  });
+  updateToolCount(prefix);
+}
+
+function collapseAllTools(prefix) {
+  var list = document.getElementById(prefix + 'ToolList');
+  if (!list) return;
+  var allAreas = list.querySelectorAll('[id^="'+prefix+'_tf_area_"]');
+  allAreas.forEach(function(area){ area.style.display = 'none'; });
+  var allArrows = list.querySelectorAll('[id^="'+prefix+'_exp_"]');
+  allArrows.forEach(function(a){ a.innerHTML = '<i class="fas fa-chevron-down"></i>'; });
+}
+
+function updateToolCount(prefix) {
+  var list = document.getElementById(prefix + 'ToolList');
+  if (!list) return;
+  var total = 0, selected = 0;
+  var rows = list.querySelectorAll('.disc-tool-row');
+  rows.forEach(function(row){
+    total++;
+    var cb = row.querySelector('input[type="checkbox"]');
+    if (cb && cb.checked) selected++;
+  });
+  // Update the header text
+  var container = list.parentNode;
+  var header = container ? container.querySelector('div[style*="font-size:12px;color:var(--text-muted)"]') : null;
+  if (header) header.textContent = '发现 ' + total + ' 个工具 · 已选 ' + selected;
+  // Update confirm button text
+  var confirmBtn = container ? container.querySelector('.btn-primary') : null;
+  if (confirmBtn) confirmBtn.innerHTML = '确认选择（'+selected+'）';
+}
+
+function confirmToolSelection(prefix) {
+  var list = document.getElementById(prefix + 'ToolList');
+  if (!list) return;
+  var total = 0, selected = 0;
+  var rows = list.querySelectorAll('.disc-tool-row');
+  rows.forEach(function(row){
+    total++;
+    var cb = row.querySelector('input[type="checkbox"]');
+    if (cb && cb.checked) selected++;
+  });
+  showToast('选择已确认','已选择 '+selected+'/'+total+' 个工具','s');
+  // Update the header to reflect confirmed state
+  var container = list.parentNode;
+  var header = container ? container.querySelector('div[style*="font-size:12px;color:var(--text-muted)"]') : null;
+  if (header) {
+    header.innerHTML = '发现 ' + total + ' 个工具 · 已选 ' + selected + ' <span style="color:var(--success);font-weight:500">✓ 已确认</span>';
+  }
 }
 
 // ===== CN-TYPE BTN CSS =====
