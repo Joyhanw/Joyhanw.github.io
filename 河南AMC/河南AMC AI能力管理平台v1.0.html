@@ -121,7 +121,7 @@ table tr:hover td{background:#f9fafb}
 .modal-close:hover{background:#f3f4f6;color:var(--text)}
 .modal-bd{padding:16px 20px;overflow-y:auto;flex:1}
 .modal-ft{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--border-light);flex-shrink:0}
-.drawer{position:fixed;top:0;right:-420px;width:420px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,0.08);z-index:1001;transition:right .25s ease;display:flex;flex-direction:column}
+.drawer{position:fixed;top:0;right:-420px;width:420px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,0.08);z-index:1001;transition:right .25s ease;display:flex;flex-direction:column}.drawer.wide{width:48%;right:-48%}
 .drawer.open{right:0}
 .drawer-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border-light);flex-shrink:0}
 .drawer-hd h3{font-size:15px;font-weight:600}
@@ -619,7 +619,7 @@ function showToast(t,m,type) {
 }
 function openModal(t,b,f) { document.getElementById('modalTitle').textContent=t; document.getElementById('modalBody').innerHTML=b; document.getElementById('modalFooter').innerHTML=f||''; document.getElementById('modalOverlay').classList.add('show'); }
 function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
-function openDrawer(t,b) { document.getElementById('drawerTitle').textContent=t; document.getElementById('drawerBody').innerHTML=b; document.getElementById('drawer').classList.add('open'); }
+function openDrawer(t,b) { var dr=document.getElementById('drawer'); if(dr){dr.classList.remove('wide');dr.classList.add('open');} document.getElementById('drawerTitle').textContent=t; document.getElementById('drawerBody').innerHTML=b; }
 function closeDrawer() { document.getElementById('drawer').classList.remove('open'); }
 function toggle(el) { el.classList.toggle('on'); }
 function toggleUserMenu() { document.getElementById('userDropdown').classList.toggle('show'); }
@@ -1019,7 +1019,7 @@ function renderSkills() {
     var rows=pd.map(function(sk){
       var sc=sk.status==='启用'?'tag-green':'tag-gray',tFn=sk.status==='启用'?'disableSkill':'enableSkill',tIc=sk.status==='启用'?'fa-pause':'fa-play',tL=sk.status==='启用'?'停用':'启用';
       return '<tr><td><i class="fas '+sk.icon+'" style="color:'+sk.color+';margin-right:6px"></i>'+sk.name+'</td><td>'+sk.cat+'</td><td><span class="tag '+sc+'">'+sk.status+'</span></td><td>'+sk.calls.toLocaleString()+'</td><td>'+sk.dls+'</td><td>'+sk.ctime+'</td><td class="cell-actions">'+
-        '<button class="btn btn-text btn-xs" onclick="viewMarketSkill(\''+sk.id+'\')"><i class="fas fa-eye"></i> 查看</button>'+
+        '<button class="btn btn-text btn-xs" onclick="viewManageSkill(\''+sk.id+'\')"><i class="fas fa-eye"></i> 查看</button>'+
         '<button class="btn btn-text btn-xs" onclick="editSkill(\''+sk.id+'\')"><i class="fas fa-pen"></i> 编辑</button>'+
         '<button class="btn btn-text btn-xs" onclick="'+tFn+'(\''+sk.id+'\')"><i class="fas '+tIc+'"></i> '+tL+'</button>'+
         '<button class="btn btn-text btn-xs" onclick="quickInstall(\''+sk.id+'\')"><i class="fas fa-download"></i> 安装</button></td></tr>';
@@ -1220,24 +1220,81 @@ function viewSkill(id) {
   openDrawer('Skill详情','<div style="margin-bottom:14px"><div style="font-size:16px;font-weight:600">'+s.name+'</div><div style="display:flex;gap:6px;margin-top:4px"><span class="tag '+(s.status==='启用'?'tag-green':'tag-gray')+'">'+s.status+'</span><span class="tag tag-blue">'+s.cat+'</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;padding:14px;background:#f9fafb;border-radius:8px"><div><div style="font-size:11px;color:var(--text-muted)">创建时间</div><div>'+s.ctime+'</div></div><div><div style="font-size:11px;color:var(--text-muted)">调用次数</div><div>'+s.calls.toLocaleString()+'</div></div><div><div style="font-size:11px;color:var(--text-muted)">下载次数</div><div>'+s.dls+'</div></div></div><div style="margin-bottom:14px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">关联需求</div><p style="font-size:13px;color:var(--text-secondary)">'+reqs+'</p></div><div><div style="font-size:13px;font-weight:600;margin-bottom:6px">描述</div><div style="font-size:13px;color:var(--text-secondary);line-height:1.7;padding:12px;background:#f9fafb;border-radius:6px;min-height:100px">'+s.desc+'</div></div>');
 }
 
+function viewManageSkill(id) {
+  var s=D.skills.find(function(x){return x.id===id;});if(!s)return;
+  window._smSkillId = id;
+  var stTag = s.status==='启用'?'tag-green':'tag-gray';
+  // 关联需求 list (需求名称|状态|查看)
+  var reqHtml = '';
+  var reqIds = s.reqs ? s.reqs.split(',').map(function(x){return x.trim();}).filter(function(x){return x;}) : [];
+  if (reqIds.length === 0) {
+    reqHtml = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">暂无关联需求</div>';
+  } else {
+    reqHtml = reqIds.map(function(rid){
+      var r = D.requirements.find(function(x){return x.id===rid;});
+      var name = r ? r.name : rid;
+      var st = r ? r.status : '—';
+      var stCls = st==='已转Skill'?'tag-green':st==='开发中'?'tag-yellow':st==='待分析'?'tag-blue':'tag-gray';
+      return '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#f9fafb;border-radius:6px;margin-bottom:6px">' +
+        '<div style="flex:1;min-width:0;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+name+'</div>' +
+        '<span class="tag '+stCls+'" style="font-size:10px;flex-shrink:0">'+st+'</span>' +
+        '<button class="btn btn-text btn-xs" onclick="viewReqDetail(\''+(r?r.id:'')+'\')" style="flex-shrink:0"><i class="fas fa-eye"></i> 查看</button></div>';
+    }).join('');
+  }
+  // 技能包 info
+  var pkgHtml = '';
+  if (s.pkg) {
+    pkgHtml = '<div style="padding:12px 14px;background:#f9fafb;border-radius:6px;font-size:13px">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text-muted);font-size:11px">技能包名称</span><span style="font-weight:500">'+s.pkg.folderName+'</span></div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text-muted);font-size:11px">文件数量</span><span>'+s.pkg.fileCount+'个文件</span></div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text-muted);font-size:11px">上传时间</span><span>'+(s.pkg.uploadTime||'—')+'</span></div>' +
+      '<div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted);font-size:11px">校验结果</span><span class="tag tag-green" style="font-size:10px">'+(s.pkg.validated?'校验通过':'未校验')+'</span></div></div>';
+  } else {
+    pkgHtml = '<div style="font-size:12px;color:var(--text-muted);padding:10px 0">暂无技能包</div>';
+  }
+  var tL = s.status==='启用'?'停用':'启用';
+  var tIc = s.status==='启用'?'fa-pause':'fa-play';
+  var drawer = document.getElementById('drawer');
+  if (drawer) drawer.classList.add('wide');
+  openDrawer('Skill详情',
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><i class="fas '+s.icon+'" style="color:'+s.color+';font-size:18px"></i><span style="font-size:16px;font-weight:600">'+s.name+'</span><span class="tag tag-blue" style="font-size:10px">'+s.cat+'</span><span class="tag '+stTag+'" style="font-size:10px">'+s.status+'</span></div>' +
+    // 基础信息 two-col
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;padding:14px;background:#f9fafb;border-radius:8px">' +
+    '<div><div style="font-size:11px;color:var(--text-muted)">Skill名称</div><div style="font-size:13px;font-weight:500">'+s.name+'</div></div>' +
+    '<div><div style="font-size:11px;color:var(--text-muted)">分类</div><div style="font-size:13px">'+s.cat+'</div></div>' +
+    
+    '<div><div style="font-size:11px;color:var(--text-muted)">创建时间</div><div style="font-size:13px">'+s.ctime+'</div></div>' +
+    '<div><div style="font-size:11px;color:var(--text-muted)">调用次数</div><div style="font-size:13px;font-weight:500">'+s.calls.toLocaleString()+'</div></div>' +
+    '<div><div style="font-size:11px;color:var(--text-muted)">下载次数</div><div style="font-size:13px;font-weight:500">'+s.dls+'</div></div></div>' +
+    // Skill描述
+    '<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">Skill描述</div><div style="font-size:13px;color:var(--text-secondary);line-height:1.7;padding:12px;background:#f9fafb;border-radius:6px">'+s.desc+'</div></div>' +
+    // 关联需求
+    '<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">关联需求</div>'+reqHtml+'</div>' +
+    // 技能包
+    '<div><div style="font-size:13px;font-weight:600;margin-bottom:6px">技能包信息</div>'+pkgHtml+'</div>'
+  );
+}
+
+function toggleSkillInDrawer(id) {
+  var s=D.skills.find(function(x){return x.id===id;});if(!s)return;
+  var target = s.status==='启用'?'停用':'启用';
+  openModal('确认操作','<p style="font-size:14px;color:var(--text-secondary)">确认'+target+'Skill「<strong>'+s.name+'</strong>」吗？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmToggleSkillInDrawer(\''+id+'\')">确认'+target+'</button>');
+}
+function confirmToggleSkillInDrawer(id) {
+  var s=D.skills.find(function(x){return x.id===id;});if(!s)return;
+  s.status = s.status==='启用'?'停用':'启用';
+  closeModal();
+  viewManageSkill(id);
+  showToast(s.status==='启用'?'已启用':'已停用','','s');
+}
+
 function viewMarketSkill(id) {
   var s=D.skills.find(function(x){return x.id===id;});if(!s)return;
   s._v='text';
   window._smSkillId = id;
   window._smTab = 'intro';
-  // Build 关联需求 line from actual linked requirements
-  var reqHtml = '';
-  if (s.reqs) {
-    var reqNames = s.reqs.split(',').map(function(rid){
-      var r = D.requirements.find(function(x){return x.id===rid.trim();});
-      return r ? r.name : rid.trim();
-    }).filter(function(n){return n;}).join('、');
-    if (reqNames) {
-      reqHtml = '<div style="font-size:13px;color:var(--text-secondary);margin-top:2px">关联需求：'+reqNames+'</div>';
-    }
-  }
   document.getElementById('pageContent').innerHTML='<div class="page-hd"><div class="page-hd-title"><a href="#" onclick="navigate(\'skill-market\');return false" style="font-size:12px;color:var(--text-muted)"><i class="fas fa-chevron-left" style="margin-right:6px"></i>Skill市场</a><span style="margin:0 8px;color:var(--text-muted)">/</span>'+s.name+'</div><div class="page-hd-actions"><button class="btn btn-primary" onclick="quickInstall(\''+s.id+'\')"><i class="fas fa-download"></i> 安装</button></div></div>'+
-    '<div class="card"><div style="display:flex;align-items:center;gap:12px"><div class="sc-icon" style="width:44px;height:44px;background:'+s.color+'15;color:'+s.color+';border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px"><i class="fas '+s.icon+'"></i></div><div><div style="font-size:18px;font-weight:600">'+s.name+'</div><div style="margin-top:4px;display:flex;gap:6px"><span class="tag tag-blue">'+s.cat+'</span><span style="font-size:13px;color:var(--text-muted)">调用:'+s.calls.toLocaleString()+'次</span><span style="font-size:13px;color:var(--text-muted)">下载:'+s.dls+'次</span></div>'+reqHtml+'</div></div></div>'+
+    '<div class="card"><div style="display:flex;align-items:center;gap:12px"><div class="sc-icon" style="width:44px;height:44px;background:'+s.color+'15;color:'+s.color+';border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px"><i class="fas '+s.icon+'"></i></div><div><div style="font-size:18px;font-weight:600">'+s.name+'</div><div style="margin-top:4px;display:flex;gap:6px"><span class="tag tag-blue">'+s.cat+'</span><span style="font-size:13px;color:var(--text-muted)">调用:'+s.calls.toLocaleString()+'次</span><span style="font-size:13px;color:var(--text-muted)">下载:'+s.dls+'次</span></div></div></div></div>'+
     '<div class="card" style="margin-bottom:0">' +
     '<div class="filter-tabs" style="margin-bottom:12px"><button class="ftab active" id="smTabIntro" onclick="smTab(\'intro\')">Skill介绍</button><button class="ftab" id="smTabFeedback" onclick="smTab(\'feedback\')">反馈记录</button></div>' +
     '<div id="smIntro">' +
