@@ -351,21 +351,21 @@ table th{color:#7b8190;font-size:11px;font-weight:650;background:#f8f9fb}
     <div class="sidebar-logo"><div class="sl-icon"><i class="fas fa-robot"></i></div><div class="sl-text">AI能力管理平台<small>河南资产</small></div><button class="sidebar-toggle" type="button" onclick="toggleSidebar()" title="收缩/展开导航" aria-label="收缩或展开侧边栏"><i class="fas fa-chevron-left"></i></button></div>
     <nav class="sidebar-nav" id="sidebarNav">
       <div class="nav-group">
-        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> 运营驾驶舱</div>
+        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▼</span> 运营驾驶舱</div>
         <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')" data-label="企业AI大屏"><i class="fas fa-chart-pie"></i>企业AI大屏</div>
         </div>
       <div class="nav-group">
-        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> 需求管理</div>
+        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▼</span> 需求管理</div>
         <div class="nav-item" data-page="requirements" onclick="navigate('requirements')" data-label="需求池"><i class="fas fa-clipboard-list"></i>需求池</div>
       </div>
       <div class="nav-group">
-        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> Skill管理</div>
+        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▼</span> Skill管理</div>
         <div class="nav-item" data-page="skills" onclick="navigate('skills')" data-label="Skill管理"><i class="fas fa-cubes"></i>Skill管理</div>
         <div class="nav-item" data-page="skill-market" onclick="navigate('skill-market')" data-label="Skill市场"><i class="fas fa-store"></i>Skill市场</div>
         <div class="nav-item" data-page="skill-calls" onclick="navigate('skill-calls')" data-label="调用记录"><i class="fas fa-phone"></i>调用记录</div>
       </div>
       <div class="nav-group">
-        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> AI能力接入</div>
+        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▼</span> AI能力接入</div>
         <div class="nav-item" data-page="gateway" onclick="navigate('gateway')" data-label="接入与运行概览"><i class="fas fa-shield-halved"></i>接入与运行概览</div>
         <div class="nav-item" data-page="connectors" onclick="navigate('connectors')" data-label="连接器管理"><i class="fas fa-plug"></i>连接器管理</div>
         <div class="nav-item" data-page="mcp-market" onclick="navigate('mcp-market')" data-label="公共能力市场"><i class="fas fa-cloud"></i>公共能力市场</div>
@@ -374,7 +374,7 @@ table th{color:#7b8190;font-size:11px;font-weight:650;background:#f8f9fb}
         <div class="nav-item" data-page="gateway-calls" onclick="navigate('gateway-calls')" data-label="调用日志"><i class="fas fa-list"></i>调用日志</div>
       </div>
       <div class="nav-group">
-        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▶</span> 系统与权限</div>
+        <div class="nav-group-hd" onclick="toggleNavGroup(this)"><span class="ng-arrow">▼</span> 系统与权限</div>
         <div class="nav-item" data-page="users" onclick="navigate('users')" data-label="用户管理"><i class="fas fa-users"></i>用户管理</div>
         <div class="nav-item" data-page="roles" onclick="navigate('roles')" data-label="角色管理"><i class="fas fa-user-tag"></i>角色管理</div>
         <div class="nav-item" data-page="permissions" onclick="navigate('permissions')" data-label="权限管理"><i class="fas fa-lock"></i>权限管理</div>
@@ -650,7 +650,7 @@ function copyText(t) { var ta=document.createElement('textarea'); ta.value=t; do
 function showProfile() {
   document.getElementById('userDropdown').classList.remove('show');
   openModal('个人中心','<div style="text-align:center;padding:12px 0 20px;border-bottom:1px solid var(--border-light);margin-bottom:20px"><div class="avatar" style="width:56px;height:56px;font-size:22px;margin:0 auto 10px">唯</div><div style="font-size:16px;font-weight:600">唯安</div><div style="font-size:12px;color:var(--text-muted);margin-top:4px">平台管理员 · 信息技术部</div></div>'+
-    '<div class="detail-grid"><div class="dg-item"><div class="dg-label">姓名</div><div class="dg-value">唯安</div></div><div class="dg-item"><div class="dg-label">部门</div><div class="dg-value">信息技术部</div></div><div class="dg-item"><div class="dg-label">手机</div><div class="dg-value">138****1234</div></div><div class="dg-item"><div class="dg-label">邮箱</div><div class="dg-value">weian@henan-amc.com</div></div><div class="dg-item"><div class="dg-label">账号</div><div class="dg-value">admin</div></div></div>'+
+    '<div class="detail-grid"><div class="dg-item"><div class="dg-label">姓名</div><div class="dg-value">唯安</div></div><div class="dg-item"><div class="dg-label">手机</div><div class="dg-value">138****1234</div></div><div class="dg-item"><div class="dg-label">邮箱</div><div class="dg-value">weian@henan-amc.com</div></div></div>'+
     '<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-light)"><button class="btn btn-outline" style="width:100%" onclick="showChangePassword()"><i class="fas fa-key"></i> 修改密码</button></div>',
     '<button class="btn btn-primary" onclick="closeModal()">完成</button>');
 }
