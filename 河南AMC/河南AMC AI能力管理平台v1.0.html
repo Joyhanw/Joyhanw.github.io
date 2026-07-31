@@ -550,22 +550,36 @@ var DB_POLICIES = [
     ]}
 ];
 var DEMO_TOOLS = [
-  {name:'getPetById', method:'GET', path:'/pet/{petId}', desc:'Find pet by ID', fields:['id','name','category','photoUrls','tags','status']},
-  {name:'updatePet', method:'PUT', path:'/pet', desc:'Update an existing pet', fields:['id','name','category','photoUrls','tags','status']},
-  {name:'addPet', method:'POST', path:'/pet', desc:'Add a new pet to the store', fields:['id','name','category','photoUrls','tags','status']},
-  {name:'deletePet', method:'DELETE', path:'/pet/{petId}', desc:'Deletes a pet', fields:['api_key']},
-  {name:'findPetsByStatus', method:'GET', path:'/pet/findByStatus', desc:'Finds Pets by status', fields:['status']},
-  {name:'findPetsByTags', method:'GET', path:'/pet/findByTags', desc:'Finds Pets by tags', fields:['tags']},
-  {name:'getInventory', method:'GET', path:'/store/inventory', desc:'Returns pet inventories by status', fields:['id','name','status','count']},
-  {name:'placeOrder', method:'POST', path:'/store/order', desc:'Place an order for a pet', fields:['id','petId','quantity','shipDate','status','complete']},
-  {name:'getOrderById', method:'GET', path:'/store/order/{orderId}', desc:'Find purchase order by ID', fields:['id','petId','quantity','shipDate','status','complete']},
-  {name:'deleteOrder', method:'DELETE', path:'/store/order/{orderId}', desc:'Delete purchase order by ID', fields:['orderId']},
-  {name:'createUser', method:'POST', path:'/user', desc:'Create user', fields:['id','username','firstName','lastName','email','password','phone','userStatus']},
-  {name:'getUserByName', method:'GET', path:'/user/{username}', desc:'Get user by user name', fields:['id','username','firstName','lastName','email','password','phone','userStatus']},
-  {name:'loginUser', method:'GET', path:'/user/login', desc:'Logs user into the system', fields:['username','password']},
-  {name:'getCustomerInfo', method:'GET', path:'/customers/{customerId}', desc:'查询客户基本信息', fields:['customerId','name','type','phone','email','address','creditLevel']},
-  {name:'searchContracts', method:'GET', path:'/contracts', desc:'按条件查询合同列表', fields:['contractNo','customerName','status','amount','startDate','endDate','page','pageSize']},
-  {name:'createApproval', method:'POST', path:'/approvals', desc:'提交审批申请', fields:['approvalType','title','content','attachments','applicantId','approverId']},
+  {name:'getPetById', method:'GET', path:'/pet/{petId}', desc:'Find pet by ID', params:[{name:'petId',loc:'Path'},{name:'includeHistory',loc:'Query'},{name:'language',loc:'Header'}]},
+  {name:'updatePet', method:'PUT', path:'/pet', desc:'Update an existing pet', params:[{name:'pet',loc:'Body'},{name:'apiKey',loc:'Header'}]},
+  {name:'addPet', method:'POST', path:'/pet', desc:'Add a new pet to the store', params:[{name:'pet',loc:'Body'},{name:'apiKey',loc:'Header'}]},
+  {name:'deletePet', method:'DELETE', path:'/pet/{petId}', desc:'Deletes a pet', params:[{name:'petId',loc:'Path'},{name:'apiKey',loc:'Header'}]},
+  {name:'findPetsByStatus', method:'GET', path:'/pet/findByStatus', desc:'Finds Pets by status', params:[{name:'status',loc:'Query'}]},
+  {name:'findPetsByTags', method:'GET', path:'/pet/findByTags', desc:'Finds Pets by tags', params:[{name:'tags',loc:'Query'}]},
+  {name:'getInventory', method:'GET', path:'/store/inventory', desc:'Returns pet inventories by status', params:[{name:'apiKey',loc:'Header'}]},
+  {name:'placeOrder', method:'POST', path:'/store/order', desc:'Place an order for a pet', params:[{name:'order',loc:'Body'},{name:'apiKey',loc:'Header'}]},
+  {name:'getOrderById', method:'GET', path:'/store/order/{orderId}', desc:'Find purchase order by ID', params:[{name:'orderId',loc:'Path'}]},
+  {name:'deleteOrder', method:'DELETE', path:'/store/order/{orderId}', desc:'Delete purchase order by ID', params:[{name:'orderId',loc:'Path'},{name:'apiKey',loc:'Header'}]},
+  {name:'createUser', method:'POST', path:'/user', desc:'Create user', params:[{name:'user',loc:'Body'}]},
+  {name:'getUserByName', method:'GET', path:'/user/{username}', desc:'Get user by user name', params:[{name:'username',loc:'Path'}]},
+  {name:'loginUser', method:'GET', path:'/user/login', desc:'Logs user into the system', params:[{name:'username',loc:'Query'},{name:'password',loc:'Query'}]},
+  {name:'getCustomerInfo', method:'GET', path:'/customers/{customerId}', desc:'查询客户基本信息', params:[{name:'customerId',loc:'Path'},{name:'includeHistory',loc:'Query'}]},
+  {name:'searchContracts', method:'GET', path:'/contracts', desc:'按条件查询合同列表', params:[{name:'contractNo',loc:'Query'},{name:'status',loc:'Query'},{name:'page',loc:'Query'},{name:'pageSize',loc:'Query'}]},
+  {name:'createApproval', method:'POST', path:'/approvals', desc:'提交审批申请', params:[{name:'approval',loc:'Body'},{name:'applicantId',loc:'Query'}]},
+];
+
+var SKILL_FEEDBACKS = [
+  {skillId:'SK-001', time:'2026-07-28 14:32', user:'张明', dept:'信息技术部', result:'已解决', content:'文档格式整理准确，结果符合预期。'},
+  {skillId:'SK-001', time:'2026-07-27 16:20', user:'王芳', dept:'业务管理部', result:'已解决', content:'季度报告整理速度很快，格式统一，可直接使用。'},
+  {skillId:'SK-001', time:'2026-07-26 11:05', user:'赵岩', dept:'风险管理部', result:'部分解决', content:'表格标题存在遗漏，仍需人工调整。'},
+  {skillId:'SK-001', time:'2026-07-25 09:40', user:'刘丽', dept:'法律合规部', result:'未解决', content:'PDF文件未能成功解析。'},
+  {skillId:'SK-002', time:'2026-07-28 13:58', user:'王刚', dept:'风险管理部', result:'未解决', content:'OCR识别服务超时，PDF文件过大无法处理。'},
+  {skillId:'SK-002', time:'2026-07-27 15:30', user:'张明', dept:'信息技术部', result:'已解决', content:'批量档案分析结果准确，检索速度快。'},
+  {skillId:'SK-002', time:'2026-07-26 10:12', user:'李丽', dept:'业务管理部', result:'部分解决', content:'部分扫描件识别准确率偏低，需要复核。'},
+  {skillId:'SK-003', time:'2026-07-28 14:15', user:'李丽', dept:'业务管理部', result:'部分解决', content:'出差申请已创建，但酒店信息不完整需补充。'},
+  {skillId:'SK-003', time:'2026-07-27 17:45', user:'王芳', dept:'业务管理部', result:'已解决', content:'出差申请填写方便，自动校验出差标准。'},
+  {skillId:'SK-005', time:'2026-07-28 09:30', user:'赵岩', dept:'风险管理部', result:'已解决', content:'报表生成速度快，数据准确。'},
+  {skillId:'SK-005', time:'2026-07-26 14:50', user:'刘丽', dept:'法律合规部', result:'部分解决', content:'图表样式需要微调，部分字段对齐有问题。'}
 ];
 
 var currentPage = 'dashboard';
@@ -646,8 +660,61 @@ function showChangePassword() { closeModal(); setTimeout(function(){openModal('�
 function renderDashboard() {
   var d = D, ps = d.popularSkills, dr = d.deptRank, ct = d.callTrend, cd = d.callDays;
   var maxCt = Math.max.apply(null, ct), maxCalls = ps[0].calls;
-  var maxDept = dr.reduce(function(m, dt){ return Math.max(m, dt.calls); }, 0);
-  
+  // Business tool ranking - Top5 number list
+  var toolRanks = [
+    {name:'查询出差申请', calls:386},
+    {name:'查询客户信息', calls:312},
+    {name:'创建出差申请', calls:245},
+    {name:'创建交流记录', calls:189},
+    {name:'预订酒店', calls:134}
+  ];
+  var toolList = toolRanks.map(function(t,i){
+    var rankCls=['#f59e0b','#9ca3af','#b45309','#6b7280','#6b7280'][i];
+    return '<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;margin-bottom:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px">' +
+      '<span style="width:22px;height:22px;border-radius:4px;background:'+rankCls+'15;color:'+rankCls+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0">'+(i+1)+'</span>' +
+      '<span style="flex:1;font-size:12px;font-weight:500;color:#e2e4f0">'+t.name+'</span>' +
+      '<span style="font-size:13px;font-weight:600;color:#e2e4f0">'+t.calls.toLocaleString()+'</span><span style="font-size:10px;color:#6b7280">次</span></div>';
+  }).join('');
+  // Business systems - access cards
+  var sysList = [
+    {name:'核心业务系统', tools:18, status:'正常运行', ok:true},
+    {name:'CRM客户管理', tools:12, status:'正常运行', ok:true},
+    {name:'数据分析平台', tools:9, status:'正常运行', ok:true},
+    {name:'出差申请系统', tools:8, status:'正常运行', ok:true},
+    {name:'合同管理系统', tools:6, status:'配置中', ok:false}
+  ];
+  // Business systems - hub topology (SVG)
+  var sysPos = [
+    {x:120, y:22,  anchor:'middle',  dy:'0.9em', align:'center',  textX:0},
+    {x:238, y:74,  anchor:'end',     dy:'0.9em', align:'right',   textX:-12},
+    {x:238, y:178, anchor:'end',     dy:'0.9em', align:'right',   textX:-12},
+    {x:120, y:230, anchor:'middle',  dy:'-0.2em',align:'center',  textX:0},
+    {x:2,   y:178, anchor:'start',   dy:'0.9em', align:'left',    textX:12},
+    {x:2,   y:74,  anchor:'start',   dy:'0.9em', align:'left',    textX:12}
+  ];
+  var hubCx = 120, hubCy = 126;
+  var sysHtml = '';
+  sysList.forEach(function(s, i){
+    var p = sysPos[i];
+    var color = s.ok ? '#22c55e' : '#f59e0b';
+    sysHtml += '<line x1="'+hubCx+'" y1="'+hubCy+'" x2="'+p.x+'" y2="'+p.y+'" stroke="'+(s.ok?'rgba(79,110,247,0.28)':'rgba(245,158,11,0.35)')+'" stroke-width="1" stroke-dasharray="3 3"/>';
+    sysHtml += '<circle cx="'+p.x+'" cy="'+p.y+'" r="3.5" fill="'+color+'"/>';
+    var ty = i === 3 ? p.y - 6 : p.y + 10;
+    sysHtml += '<text x="'+(p.x+p.textX)+'" y="'+ty+'" text-anchor="'+p.anchor+'" font-size="10" fill="#e2e4f0" font-weight="500">'+s.name+'</text>';
+    var subY = ty + 12;
+    sysHtml += '<text x="'+(p.x+p.textX)+'" y="'+subY+'" text-anchor="'+p.anchor+'" font-size="9" fill="'+(s.ok?'#7dd3a8':'#fbbf24')+'">'+s.tools+'项能力</text>';
+  });
+  var sysCards = '<div style="display:flex;align-items:center;justify-content:center;padding:6px 0">' +
+    '<svg width="250" height="252" viewBox="0 0 250 252" style="display:block">' +
+    // center hub glow
+    '<circle cx="'+hubCx+'" cy="'+hubCy+'" r="34" fill="rgba(79,110,247,0.10)"/>' +
+    '<circle cx="'+hubCx+'" cy="'+hubCy+'" r="26" fill="rgba(79,110,247,0.16)"/>' +
+    '<circle cx="'+hubCx+'" cy="'+hubCy+'" r="19" fill="url(#hubGrad)"/>' +
+    '<defs><linearGradient id="hubGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4f6ef7"/><stop offset="100%" stop-color="#6c5ce7"/></linearGradient></defs>' +
+    sysHtml +
+    '<text x="'+hubCx+'" y="'+ (hubCy-6) +'" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">AI</text>' +
+    '<text x="'+hubCx+'" y="'+ (hubCy+8) +'" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.75)">能力中枢</text>' +
+    '</svg></div>';
   // Trend bars
   var trendBars = ct.map(function(v,i){
     return '<div class="dt-bar" style="height:'+Math.max(6,v/maxCt*120)+'px;background:linear-gradient(to top,rgba(79,110,247,0.3),rgba(79,110,247,0.9))"><span class="dt-val">'+v+'</span><span class="dt-lbl">'+cd[i]+'</span></div>';
@@ -656,25 +723,30 @@ function renderDashboard() {
     return '<div class="dt-bar" style="height:'+Math.max(6,v/368*120)+'px;background:linear-gradient(to top,rgba(34,197,94,0.3),rgba(34,197,94,0.9))"><span class="dt-val">'+v+'</span><span class="dt-lbl">'+cd[i]+'</span></div>';
   }).join('');
   
-  // Popular skills with users + solved rate
+  // Popular skills - keep horizontal bars
   var popularBars = ps.map(function(sk,i){
     var pct=sk.calls/maxCalls*100;
     var cols=['#4f6ef7','#8b5cf6','#22c55e','#f59e0b','#3b82f6'];
     return '<div style="margin-bottom:10px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px"><span style="font-size:12px;font-weight:500;color:#e2e4f0">'+sk.name+'</span><span style="font-size:11px;color:#6b7280">'+(sk.solvedRate||0)+'% 解决率</span></div>' +
-      '<div class="db-item" style="margin-bottom:2px"><div class="db-track" style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden"><div class="db-fill" style="width:'+pct+'%;height:100%;border-radius:4px;background:'+cols[i]+'"><span class="db-val" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:#fff">'+sk.calls+'</span></div></div></div>' +
+      '<div class="db-item" style="margin-bottom:2px"><div class="db-track" style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden"><div class="db-fill" style="width:'+pct+'%;height:100%;border-radius:4px;background:'+cols[i]+'"><span class="db-val" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:#fff">'+sk.calls.toLocaleString()+'</span></div></div></div>' +
       '<div style="display:flex;gap:12px;font-size:10px;color:#6b7280"><span>'+sk.users+'人使用</span><span>覆盖'+(sk.depts||0)+'个部门</span></div></div>';
   }).join('');
   
-  // Dept ranking sorted by active rate, showing rate + calls
+  // Dept coverage - ring progress (sorted by active rate)
   var drSorted = dr.slice().sort(function(a,b){ return b.rate - a.rate; });
-  var deptBars = drSorted.map(function(dt,i){
-    var pct=dt.calls/maxDept*100;
-    return '<div style="margin-bottom:8px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px"><span style="font-size:12px;font-weight:500;color:#e2e4f0">'+dt.name+'</span><span style="font-size:11px;color:'+(dt.rate>=80?'#22c55e':'#f59e0b')+'">活跃率 '+dt.rate+'%</span></div>' +
-      '<div class="db-item"><div class="db-track" style="flex:1;height:18px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden"><div class="db-fill" style="width:'+pct+'%;height:100%;border-radius:4px;background:'+(i===0?'#4f6ef7':'rgba(79,110,247,0.5)')+'"><span class="db-val" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:#fff">'+dt.calls+'次</span></div></div></div>' +
-      '<div style="display:flex;gap:10px;font-size:10px;color:#6b7280"><span>活跃 '+dt.active+'人</span><span>使用 '+(dt.skills||0)+'个Skill</span></div></div>';
+  var deptColors = ['#4f6ef7','#22c55e','#8b5cf6','#f59e0b','#3b82f6','#ec4899'];
+  var deptCards = drSorted.map(function(dt, i){
+    var ringColor = deptColors[i % deptColors.length];
+    var pct = Math.min(dt.rate, 100);
+    return '<div style="text-align:center;padding:12px 6px">' +
+      '<div style="width:92px;height:92px;border-radius:50%;margin:0 auto 8px;position:relative;background:conic-gradient('+ringColor+' '+pct+'%, rgba(255,255,255,0.06) 0);display:flex;align-items:center;justify-content:center">' +
+      '<div style="width:66px;height:66px;border-radius:50%;background:#12182b;display:flex;flex-direction:column;align-items:center;justify-content:center">' +
+      '<span style="font-size:17px;font-weight:700;color:#f0f2f5;line-height:1.1">'+dt.rate+'%</span>' +
+      '<span style="font-size:9px;color:#6b7280">活跃率</span></div></div>' +
+      '<div style="font-size:12px;font-weight:600;color:#e2e4f0;margin-bottom:3px">'+dt.name+'</div>' +
+      '<div style="font-size:10px;color:#6b7280">'+dt.active+'人活跃 · '+(dt.skills||0)+'个Skill</div></div>';
   }).join('');
-  
-  // Hot requirements Top5 (all non-closed, sorted by freq desc)
+  // Hot requirements Top5
   var hotReqs = D.requirements.filter(function(r){return r.status!=='已关闭';}).sort(function(a,b){return b.freq-a.freq;}).slice(0,5).map(function(r){
     var pCls=r.pri==='高'?'tag-red':r.pri==='中'?'tag-yellow':'tag-gray';
     return '<tr><td style="color:#e2e4f0;font-size:12px">'+r.name+'</td><td style="font-size:11px">'+r.freq+'次</td><td style="font-size:11px">'+r.people+'人</td><td style="font-size:11px">'+r.depts+'个</td><td><span class="tag '+pCls+'" style="font-size:10px">'+r.pri+'</span></td><td><span class="tag '+(r.status==='已转Skill'?'tag-green':r.status==='开发中'?'tag-yellow':'tag-blue')+'" style="font-size:10px">'+r.status+'</span></td></tr>';
@@ -682,13 +754,19 @@ function renderDashboard() {
   
   document.getElementById('pageContent').innerHTML = '<div class="dash-wrap">' +
     '<div class="dash-hd"><div class="dash-hd-left"><div class="dh-icon"><i class="fas fa-chart-pie"></i></div><div><h1>AI能力运营驾驶舱</h1></div></div><div class="dash-hd-right"><span class="dh-time"><i class="far fa-clock"></i> '+new Date().toLocaleString()+'</span><span style="display:flex;align-items:center;gap:4px"><span class="status-dot green" style="width:6px;height:6px;display:inline-block;border-radius:50%;background:#22c55e"></span>系统运行正常</span></div></div>' +
-    // Top KPI row
+    // Top KPI row - AI使用成效
     '<div class="dash-kpi">' +
     '<div class="kpi-card kpi-blue"><div class="kpi-top"><div><div class="kpi-val">'+(d.monthlyCalls||28650).toLocaleString()+'</div><div class="kpi-label">本月调用次数</div></div><div class="kpi-icon" style="color:var(--primary)"><i class="fas fa-phone"></i></div></div><div class="kpi-footer up"><i class="fas fa-arrow-up"></i>较上月增长'+(d.monthlyGrowth||12)+'%<span class="kpi-sub"> 今日'+d.todayCalls.toLocaleString()+'次</span></div></div>' +
     '<div class="kpi-card kpi-green"><div class="kpi-top"><div><div class="kpi-val">'+d.activeUsers+'</div><div class="kpi-label">本月活跃用户</div></div><div class="kpi-icon" style="color:var(--success)"><i class="fas fa-users"></i></div></div><div class="kpi-footer up"><i class="fas fa-arrow-up"></i>覆盖'+d.depts+'个部门<span class="kpi-sub"> 覆盖率'+(Math.round(d.activeUsers/(d.companyTotalUsers||490)*100))+'%</span></div></div>' +
     '<div class="kpi-card kpi-orange"><div class="kpi-top"><div><div class="kpi-val">'+d.skillsCount+'</div><div class="kpi-label">已启用Skill</div></div><div class="kpi-icon" style="color:var(--warning)"><i class="fas fa-cubes"></i></div></div><div class="kpi-footer up"><i class="fas fa-arrow-up"></i>本月新增'+(d.newSkillsThisMonth||5)+'个<span class="kpi-sub"> 关联'+(d.relatedReqs||28)+'项需求</span></div></div>' +
     '<div class="kpi-card kpi-purple"><div class="kpi-top"><div><div class="kpi-val">'+(d.solvedRate||82.6)+'%</div><div class="kpi-label">问题解决率</div></div><div class="kpi-icon" style="color:#8b5cf6"><i class="fas fa-circle-check"></i></div></div><div class="kpi-footer up"><i class="fas fa-check" style="font-size:10px"></i>已反馈'+(d.skillCallTotal||1286).toLocaleString()+'次<span class="kpi-sub"> 已解决'+(d.solvedCount||1062).toLocaleString()+'次</span></div></div></div>' +
-    // Second row: Trend + Funnel (both visual/compact, pair well together)
+    // AI能力接入 KPI row
+    '<div class="dash-kpi" style="margin-bottom:12px">' +
+    '<div class="kpi-card kpi-blue"><div class="kpi-top"><div><div class="kpi-val">8个</div><div class="kpi-label">已接入业务系统</div></div><div class="kpi-icon" style="color:var(--primary)"><i class="fas fa-building"></i></div></div><div class="kpi-footer"><span class="kpi-sub">通过12个连接器提供AI能力</span></div></div>' +
+    '<div class="kpi-card kpi-green"><div class="kpi-top"><div><div class="kpi-val">12个</div><div class="kpi-label">已发布连接器</div></div><div class="kpi-icon" style="color:var(--success)"><i class="fas fa-plug"></i></div></div><div class="kpi-footer"><span class="kpi-sub">&nbsp;</span></div></div>' +
+    '<div class="kpi-card kpi-orange"><div class="kpi-top"><div><div class="kpi-val">68个</div><div class="kpi-label">已开放AI工具</div></div><div class="kpi-icon" style="color:var(--warning)"><i class="fas fa-toolbox"></i></div></div><div class="kpi-footer up"><i class="fas fa-arrow-up"></i>本月新增8个</div></div>' +
+    '<div class="kpi-card kpi-purple"><div class="kpi-top"><div><div class="kpi-val">97.8%</div><div class="kpi-label">业务能力调用成功率</div></div><div class="kpi-icon" style="color:#8b5cf6"><i class="fas fa-circle-check"></i></div></div><div class="kpi-footer"><span class="kpi-sub">异常率2.2%</span></div></div></div>' +
+    // Trend + Funnel
     '<div class="dash-grid">' +
     '<div class="dash-card"><div class="dc-hd"><span class="dc-title">AI使用趋势</span><span class="dc-more"><span style="color:var(--primary)">调用次数</span> · <span style="color:var(--success)">活跃用户</span></span></div><div style="display:flex;gap:16px"><div style="flex:1"><div class="dash-trend" style="height:120px;padding:12px 0">'+trendBars+'</div></div><div style="width:1px;background:rgba(255,255,255,0.06)"></div><div style="flex:1"><div class="dash-trend" style="height:120px;padding:12px 0">'+activeBars+'</div></div></div></div>' +
     '<div class="dash-card"><div class="dc-hd"><span class="dc-title">需求转化漏斗</span></div><div class="dash-funnel" style="padding:20px 0">' +
@@ -700,13 +778,15 @@ function renderDashboard() {
     '<div class="df-arrow"><i class="fas fa-chevron-right"></i></div>' +
     '<div class="df-step" style="background:#16a34a"><div class="df-num">24</div><div class="df-lbl">Skill启用</div></div></div>' +
     '<div style="text-align:center;font-size:11px;color:#6b7280;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06)">Skill转化率 <strong style="color:#22c55e">87.5%</strong> · 已转Skill <strong>28个</strong> · 覆盖部门 <strong>12个</strong></div></div></div>' +
-    // Third row: Hot skills + Dept coverage (both list-style, tall)
+    // 热门Skill(条形) + 热门业务能力(数字榜单)
     '<div class="dash-grid"><div class="dash-card"><div class="dc-hd"><span class="dc-title">热门Skill及使用效果</span></div><div class="dash-bar">'+popularBars+'</div></div>' +
-    '<div class="dash-card"><div class="dc-hd"><span class="dc-title">部门AI使用覆盖</span></div><div class="dash-bar">'+deptBars+'</div></div></div>' +
-    // Fourth row: Hot requirements
+    '<div class="dash-card"><div class="dc-hd"><span class="dc-title">热门业务能力</span></div><div>'+toolList+'</div></div></div>' +
+    // 部门覆盖(矩阵卡片) + 业务系统接入(系统卡片)
+    '<div class="dash-grid"><div class="dash-card"><div class="dc-hd"><span class="dc-title">部门AI使用覆盖</span></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">'+deptCards+'</div></div>' +
+    '<div class="dash-card"><div class="dc-hd"><span class="dc-title">业务系统接入情况</span></div>'+sysCards+'</div></div>' +
+    // 热门需求Top5
     '<div class="dash-card" style="margin-bottom:0"><div class="dc-hd"><span class="dc-title">热门需求Top5</span></div><table class="dash-table"><thead><tr><th>需求名称</th><th>频次</th><th>人数</th><th>部门</th><th>优先级</th><th>状态</th></tr></thead><tbody>'+hotReqs+'</tbody></table></div></div>';
 }
-
 // ===== OVERVIEW =====
 function renderOverview() {
   var d = D;
@@ -725,6 +805,27 @@ function setReqFilter(f) { reqFilter = f; renderRequirements(); }
 function filterReqs(q) { renderRequirements(); }
 
 
+function buildReqMoreMenu(id, status) {
+  var it = function(icon, label, fn, color) {
+    return '<div class="dropdown-item" onclick="'+fn+'" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas '+icon+'" style="color:'+(color||'var(--text-muted)')+';width:14px"></i>'+label+'</div>';
+  };
+  var sep = '<div style="height:1px;background:var(--border-light);margin:4px 0"></div>';
+  var h = '';
+  if (status === '待分析') {
+    h += it('fa-code-branch', '转为开发', "startDev('"+id+"')", 'var(--primary)');
+    h += it('fa-link', '关联Skill', "linkSkill('"+id+"')", 'var(--primary)');
+    h += it('fa-ban', '关闭需求', "closeReq('"+id+"')");
+  } else if (status === '开发中' || status === '已转Skill') {
+    h += it('fa-link', '关联Skill', "linkSkill('"+id+"')", 'var(--primary)');
+    h += it('fa-ban', '关闭需求', "closeReq('"+id+"')");
+  } else {
+    h += it('fa-rotate-left', '重新打开', "reopenReq('"+id+"')", 'var(--primary)');
+  }
+  h += sep;
+  h += it('fa-trash-can', '删除', "deleteReq('"+id+"')", 'var(--danger)');
+  return h;
+}
+
 function renderRequirements() {
   var pageSize = 10;
   var src = reqFilter === 'all' ? D.requirements : D.requirements.filter(function(r){ return reqFilter === 'pending' ? r.status === '待分析' : reqFilter === 'developing' ? r.status === '开发中' : reqFilter === 'done' ? r.status === '已转Skill' : r.status === '已关闭'; });
@@ -737,20 +838,11 @@ function renderRequirements() {
       var sCls = r.status === '已转Skill' ? 'tag-green' : r.status === '开发中' ? 'tag-yellow' : r.status === '待分析' ? 'tag-blue' : 'tag-gray';
       var srcIcon = r.src === '自动发现' ? '<i class="fas fa-robot" style="color:var(--primary);margin-right:4px"></i>' : '<i class="fas fa-user-pen" style="color:var(--warning);margin-right:4px"></i>';
       var lt = r.lastTime || r.time || '—';
-      var btns = '<button class="btn btn-text btn-sm" onclick="viewReqDetail(\''+r.id+'\')"><i class="fas fa-eye"></i> 查看</button>';
-      if (r.status === '待分析') {
-        btns += '<button class="btn btn-primary btn-sm" onclick="startDev(\''+r.id+'\')"><i class="fas fa-code-branch"></i> 转为开发</button><button class="btn btn-outline btn-sm" onclick="linkSkill(\''+r.id+'\')"><i class="fas fa-link"></i> 关联Skill</button>';
-        btns += '<div class="dropdown" style="position:relative;display:inline-block"><button class="btn btn-ghost btn-sm" onclick="togDD(this)"><i class="fas fa-ellipsis-vertical"></i></button><div class="dropdown-menu" style="display:none;position:absolute;right:0;top:100%;z-index:50;min-width:100px;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:4px 0"><div class="dropdown-item" onclick="editReq(\''+r.id+'\')" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-pen" style="color:var(--text-muted);width:14px"></i>编辑</div><div class="dropdown-item" onclick="closeReq(\''+r.id+'\')" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-ban" style="color:var(--text-muted);width:14px"></i>关闭</div><div class="dropdown-item" onclick="deleteReq(\''+r.id+'\')" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-trash-can" style="color:var(--danger);width:14px"></i>删除</div></div></div>';
-      } else if (r.status === '开发中') {
-        btns += '<button class="btn btn-outline btn-sm" onclick="linkSkill(\''+r.id+'\')"><i class="fas fa-link"></i> 关联Skill</button>';
-        btns += '<div class="dropdown" style="position:relative;display:inline-block"><button class="btn btn-ghost btn-sm" onclick="togDD(this)"><i class="fas fa-ellipsis-vertical"></i></button><div class="dropdown-menu" style="display:none;position:absolute;right:0;top:100%;z-index:50;min-width:100px;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:4px 0"><div class="dropdown-item" onclick="editReq(\''+r.id+'\')" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-pen" style="color:var(--text-muted);width:14px"></i>编辑</div><div class="dropdown-item" onclick="closeReq(\''+r.id+'\')" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-ban" style="color:var(--text-muted);width:14px"></i>关闭</div></div></div>';
-      } else if (r.status === '已转Skill') {
-        btns += '<button class="btn btn-outline btn-sm" onclick="linkSkill(\''+r.id+'\')"><i class="fas fa-link"></i> 关联Skill</button>';
-        btns += '<div class="dropdown" style="position:relative;display:inline-block"><button class="btn btn-ghost btn-sm" onclick="togDD(this)"><i class="fas fa-ellipsis-vertical"></i></button><div class="dropdown-menu" style="display:none;position:absolute;right:0;top:100%;z-index:50;min-width:100px;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:4px 0"><div class="dropdown-item" onclick="editReq(\''+r.id+'\')" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-pen" style="color:var(--text-muted);width:14px"></i>编辑</div><div class="dropdown-item" onclick="closeReq(\''+r.id+'\')" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-ban" style="color:var(--text-muted);width:14px"></i>关闭</div></div></div>';
-      } else {
-        btns += '<div class="dropdown" style="position:relative;display:inline-block"><button class="btn btn-ghost btn-sm" onclick="togDD(this)"><i class="fas fa-ellipsis-vertical"></i></button><div class="dropdown-menu" style="display:none;position:absolute;right:0;top:100%;z-index:50;min-width:100px;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:4px 0"><div class="dropdown-item" onclick="reopenReq(\''+r.id+'\')" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-rotate-left" style="color:var(--text-muted);width:14px"></i>重新打开</div></div></div>';
-      }
-      return '<tr><td>'+r.name+'</td><td>'+srcIcon+r.src+'</td><td>'+r.freq+'次</td><td>'+r.people+'人</td><td style="font-size:12px">'+lt+'</td><td><span class="tag '+pCls+'">'+r.pri+'</span></td><td><span class="tag '+sCls+'">'+r.status+'</span></td><td><div class="cell-actions">'+btns+'</div></td></tr>';
+      var btns = '<button class="btn btn-text btn-sm" onclick="viewReqDetail(\''+r.id+'\')"><i class="fas fa-eye"></i> 查看</button>' +
+        '<button class="btn btn-text btn-sm" onclick="editReq(\''+r.id+'\')"><i class="fas fa-pen"></i> 编辑</button>' +
+        '<div class="dropdown" style="position:relative;display:inline-block"><button class="btn btn-ghost btn-sm" onclick="togDD(this)">更多 <i class="fas fa-chevron-down" style="font-size:9px"></i></button>' +
+        '<div class="dropdown-menu" style="display:none;position:absolute;right:0;top:100%;z-index:50;min-width:120px;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:4px 0">'+buildReqMoreMenu(r.id,r.status)+'</div></div>';
+      return '<tr><td>'+r.name+'</td><td>'+srcIcon+r.src+'</td><td style="font-size:12px">'+r.freq+'次 · '+r.people+'人</td><td style="font-size:12px">'+lt+'</td><td><span class="tag '+pCls+'">'+r.pri+'</span></td><td><span class="tag '+sCls+'">'+r.status+'</span></td><td><div class="cell-actions">'+btns+'</div></td></tr>';
     }).join('');
     var pg = '';
     if (totalPages > 1) {
@@ -758,14 +850,12 @@ function renderRequirements() {
       for (var i=Math.max(1,page-2); i<=Math.min(totalPages,page+2); i++) { pg+='<button class="pg-btn '+(i===page?'active':'')+'" onclick="window.rrP('+i+')">'+i+'</button>'; }
       pg+='<button class="pg-btn '+(page>=totalPages?'disabled':'')+'" onclick="window.rrP('+(page+1)+')"><i class="fas fa-chevron-right"></i></button></div></div>';
     }
-    document.getElementById('rTC').innerHTML = '<div class="table-wrap"><table><thead><tr><th>需求名称</th><th>来源</th><th>出现次数</th><th>涉及人数</th><th>最近出现时间</th><th>优先级</th><th>状态</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="8"><div class="empty-state"><i class="fas fa-inbox"></i><p>暂无需求</p></div></td></tr>')+'</tbody></table></div>'+pg;
+    document.getElementById('rTC').innerHTML = '<div class="table-wrap"><table><thead><tr><th>需求名称</th><th>来源</th><th>热度</th><th>最近出现时间</th><th>优先级</th><th>状态</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="7"><div class="empty-state"><i class="fas fa-inbox"></i><p>暂无需求</p></div></td></tr>')+'</tbody></table></div>'+pg;
   }
   document.getElementById('pageContent').innerHTML = '<div class="page-hd"><div class="page-hd-title">需求池</div><div class="page-hd-actions"><button class="btn btn-primary" onclick="newRequirement()"><i class="fas fa-plus"></i> 新增需求</button></div></div><div class="card" style="margin-bottom:0"><div class="filter-row" style="margin-bottom:0"><div class="filter-row-left"><div class="search-box"><i class="fas fa-search"></i><input placeholder="搜索需求..." oninput="filterReqs(this.value)"></div><select class="filter-select"><option value="">来源</option><option>自动发现</option><option>手动新增</option></select><select class="filter-select" id="reqPriF"><option value="">优先级</option><option>高</option><option>中</option><option>低</option></select></div></div><div class="filter-tabs" style="margin-bottom:12px"><button class="ftab '+(reqFilter==='all'?'active':'')+'" onclick="setReqFilter(\'all\')">全部</button><button class="ftab '+(reqFilter==='pending'?'active':'')+'" onclick="setReqFilter(\'pending\')">待分析</button><button class="ftab '+(reqFilter==='developing'?'active':'')+'" onclick="setReqFilter(\'developing\')">开发中</button><button class="ftab '+(reqFilter==='done'?'active':'')+'" onclick="setReqFilter(\'done\')">已转Skill</button><button class="ftab '+(reqFilter==='closed'?'active':'')+'" onclick="setReqFilter(\'closed\')">已关闭</button></div><div id="rTC"></div></div>';
   window.rrP = renderPage;
   renderPage(1);
 }
-
-
 function togDD(el) {
   var menu = el.nextElementSibling;
   if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
@@ -806,23 +896,43 @@ function linkSkill(id) {
   openModal('关联Skill','<p style="font-size:13px">为需求「<strong>'+r.name+'</strong>」关联Skill（可多选）</p><div class="search-box" style="width:auto;margin-bottom:8px"><i class="fas fa-search"></i><input placeholder="搜索..." oninput="filL(this.value)"></div><div id="lL">',
     '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="cLK(\''+id+'\')">确认关联</button>');
   var h='';
-  D.skills.forEach(function(sk){ var li=r.skills&&r.skills.indexOf(sk.name)>=0; h+='<label style="display:flex;align-items:center;gap:8px;padding:8px 10px;font-size:13px;background:'+(li?'#eef1ff':'')+'"><input type="checkbox" class="lcb" value="'+sk.id+'"'+(li?' checked':'')+'> <span><strong>'+sk.name+'</strong></span><span style="margin-left:auto;font-size:11px;color:var(--text-muted)">'+(li?'已关联':'')+'</span></label>'; });
+  D.skills.forEach(function(sk){ var li=r.skills&&r.skills.indexOf(sk.name)>=0; h+='<label style="display:flex;align-items:center;gap:8px;padding:8px 10px;font-size:13px;background:'+(li?'#eef1ff':'')+'"><input type="checkbox" class="lcb" value="'+sk.id+'"'+(li?' checked disabled':'')+'> <span><strong>'+sk.name+'</strong></span><span style="margin-left:auto;font-size:11px;color:var(--text-muted)">'+(li?'已关联':'')+'</span></label>'; });
   document.getElementById('lL').innerHTML = h;
 }
 function filL(q) { document.querySelectorAll('#lL label').forEach(function(l){l.style.display=l.textContent.indexOf(q)>=0?'':'none';}); }
 function cLK(id) {
   var r=D.requirements.find(function(x){return x.id===id;});
-  var cb=document.querySelectorAll('.lcb:checked'); var ns=[];
-  cb.forEach(function(c){var sk=D.skills.find(function(s){return s.id===c.value;});if(sk){ns.push(sk.name);sk.reqs=sk.reqs?sk.reqs+','+id:id;}});
-  r.skills=ns; r.status=ns.length>0?'已转Skill':'待分析';
-  closeModal(); renderRequirements(); showToast('操作成功',ns.length>0?'已关联'+ns.length+'个Skill':'已解绑','s');
+  var cb=document.querySelectorAll('.lcb:checked');
+  var merged = (r.skills && r.skills.length) ? r.skills.slice() : [];
+  var added = [];
+  cb.forEach(function(c){
+    var sk=D.skills.find(function(s){return s.id===c.value;});
+    if(sk){
+      if(merged.indexOf(sk.name) < 0){ merged.push(sk.name); added.push(sk.name); }
+      if(!sk.reqs || sk.reqs.indexOf(id) < 0) sk.reqs = sk.reqs ? sk.reqs+','+id : id;
+    }
+  });
+  r.skills = merged;
+  if(added.length > 0 && r.status !== '已关闭') r.status = '已转Skill';
+  closeModal(); renderRequirements();
+  showToast('操作成功', added.length > 0 ? '已关联'+added.length+'个Skill' : '关联关系已更新','s');
 }
 
-function closeReq(id) { openModal('关闭需求','<p style="font-size:13px;color:var(--text-secondary)">关闭需求</p><div class="form-group"><label>关闭原因</label><select class="form-control" id="crR"><option>暂不开发</option><option>无共性价值</option><option>已通过其他方式解决</option><option>需求失效</option><option>其他</option></select></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-danger" onclick="confirmCloseReq(\''+id+'\')">确认关闭</button>'); }
+function closeReq(id) {
+  var r=D.requirements.find(function(x){return x.id===id;});
+  openModal('关闭需求','<p style="font-size:14px;color:var(--text-secondary)">确认关闭需求「<strong>'+r.name+'</strong>」吗？</p><p style="font-size:12px;color:var(--text-muted);margin-top:8px">关闭后，该需求将不再继续推进，后续可通过「重新打开」恢复。</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-danger" onclick="confirmCloseReq(\''+id+'\')">确认关闭</button>');
+}
 function confirmCloseReq(id) { D.requirements.find(function(r){return r.id===id;}).status='已关闭'; closeModal(); renderRequirements(); showToast('已关闭','','i'); }
-function deleteReq(id) { openModal('删除需求','<p style="font-size:14px;color:var(--text-secondary)">确认删除？<br><span style="color:var(--danger);font-size:12px">不可恢复</span></p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-danger" onclick="confirmDeleteReq(\''+id+'\')">确认删除</button>'); }
+function deleteReq(id) {
+  var r=D.requirements.find(function(x){return x.id===id;});
+  openModal('删除需求','<p style="font-size:14px;color:var(--text-secondary)">确认删除需求「<strong>'+r.name+'</strong>」吗？</p><p style="font-size:12px;color:var(--text-muted);margin-top:8px">删除后无法恢复。已关联的Skill不会被删除，但与该需求的关联关系将解除。</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-danger" onclick="confirmDeleteReq(\''+id+'\')">确认删除</button>');
+}
 function confirmDeleteReq(id) { D.requirements=D.requirements.filter(function(r){return r.id!==id;}); closeModal(); renderRequirements(); showToast('已删除','','i'); }
-function reopenReq(id) { D.requirements.find(function(r){return r.id===id;}).status='待分析'; renderRequirements(); showToast('已重新打开','','s'); }
+function reopenReq(id) {
+  var r=D.requirements.find(function(x){return x.id===id;});
+  openModal('重新打开需求','<p style="font-size:14px;color:var(--text-secondary)">确认重新打开需求「<strong>'+r.name+'</strong>」吗？</p><p style="font-size:12px;color:var(--text-muted);margin-top:8px">重新打开后，需求状态将恢复为「待分析」。</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmReopenReq(\''+id+'\')">确认</button>');
+}
+function confirmReopenReq(id) { D.requirements.find(function(r){return r.id===id;}).status='待分析'; closeModal(); renderRequirements(); showToast('已重新打开','','s'); }
 function manageSkill(id) {
   var r=D.requirements.find(function(x){return x.id===id;}); var h='<div style="margin-bottom:12px;font-size:13px">当前关联的Skill：</div>';
   if(!r.skills||r.skills.length===0){h+='<div class="empty-state" style="padding:12px 0"><p>暂无关联</p></div>';}
@@ -858,15 +968,24 @@ function cNR() { var n=document.getElementById('nRN').value.trim(); if(!n)return
 function viewReqDetail(id) {
   var r = D.requirements.find(function(x){return x.id===id;}); if(!r)return;
   var srcR='<tr><td>唯安</td><td>信息技术部</td><td>2026-07-20 14:32</td><td>能否自动生成季度业务报告？</td></tr>';
-  var linked=(r.skills&&r.skills.length>0)?r.skills:['文档智能整理','智能报表生成'];
+  var linked=(r.skills&&r.skills.length>0)?r.skills:[];
   var lh='';
-  linked.forEach(function(sk){var s=D.skills.find(function(x){return x.name===sk;});var st=s?s.status:'启用';lh+='<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f9fafb;border-radius:6px;margin-bottom:6px"><div style="flex:1"><div style="font-size:13px;font-weight:500">'+sk+'</div><span class="tag '+(st==='启用'?'tag-green':'tag-gray')+'" style="font-size:10px">'+st+'</span></div><button class="btn btn-text btn-xs" onclick="closeDrawer();viewMarketSkill(\''+(s?s.id:'SK-001')+'\')"><i class="fas fa-eye"></i></button><button class="btn btn-text btn-xs" onclick="unlinkSkill(\''+id+'\',\''+sk+'\');closeDrawer()" style="color:var(--danger)"><i class="fas fa-unlink"></i></button></div>';});
+  if (linked.length === 0) {
+    lh = '<div class="empty-state" style="padding:16px 0"><p>暂无关联Skill</p></div>';
+  } else {
+    linked.forEach(function(sk){
+      var s=D.skills.find(function(x){return x.name===sk;});
+      var st=s?s.status:'启用';
+      lh+='<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f9fafb;border-radius:6px;margin-bottom:6px"><div style="flex:1"><div style="font-size:13px;font-weight:500">'+sk+'</div><span class="tag '+(st==='启用'?'tag-green':'tag-gray')+'" style="font-size:10px">'+st+'</span></div><button class="btn btn-text btn-xs" onclick="closeDrawer();viewMarketSkill(\''+(s?s.id:'SK-001')+'\')"><i class="fas fa-eye"></i> 查看</button></div>';
+    });
+  }
   var pCls=r.pri==='高'?'tag-red':r.pri==='中'?'tag-yellow':'tag-gray';
-  openDrawer('需求详情','<div style="margin-bottom:16px"><div style="font-size:16px;font-weight:600">'+r.name+'</div><div style="display:flex;gap:8px;margin-top:4px"><span class="tag '+(r.status==='已转Skill'?'tag-green':r.status==='开发中'?'tag-yellow':r.status==='待分析'?'tag-blue':'tag-gray')+'">'+r.status+'</span><span class="tag '+pCls+'">'+r.pri+'优先级</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;padding:14px;background:#f9fafb;border-radius:8px"><div><div style="font-size:11px;color:var(--text-muted)">来源</div><div>'+(r.src==='自动发现'?'<i class="fas fa-robot" style="color:var(--primary);margin-right:4px"></i>':'<i class="fas fa-user-pen" style="color:var(--warning);margin-right:4px"></i>')+r.src+'</div></div><div><div style="font-size:11px;color:var(--text-muted)">出现次数</div><div>'+r.freq+'次</div></div><div><div style="font-size:11px;color:var(--text-muted)">涉及人数</div><div>'+r.people+'人</div></div></div>'+
-    '<div style="margin-bottom:14px"><div style="font-size:14px;font-weight:600">来源记录</div><div style="max-height:140px;overflow-y:auto"><table><thead><tr><th>用户</th><th>部门</th><th>时间</th><th>问题摘要</th></tr></thead><tbody>'+srcR+'</tbody></table></div></div>'+
-    '<div><div style="font-size:14px;font-weight:600">关联Skill</div><div style="max-height:240px;overflow-y:auto">'+lh+'</div></div>');
+  var lt = r.lastTime || r.time || '—';
+  openDrawer('需求详情','<div style="margin-bottom:16px"><div style="font-size:16px;font-weight:600">'+r.name+'</div><div style="display:flex;gap:8px;margin-top:4px"><span class="tag '+(r.status==='已转Skill'?'tag-green':r.status==='开发中'?'tag-yellow':r.status==='待分析'?'tag-blue':'tag-gray')+'">'+r.status+'</span><span class="tag '+pCls+'">'+r.pri+'优先级</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;padding:14px;background:#f9fafb;border-radius:8px"><div><div style="font-size:11px;color:var(--text-muted)">来源</div><div>'+(r.src==='自动发现'?'<i class="fas fa-robot" style="color:var(--primary);margin-right:4px"></i>':'<i class="fas fa-user-pen" style="color:var(--warning);margin-right:4px"></i>')+r.src+'</div></div><div><div style="font-size:11px;color:var(--text-muted)">出现次数</div><div>'+r.freq+'次</div></div><div><div style="font-size:11px;color:var(--text-muted)">涉及人数</div><div>'+r.people+'人</div></div><div><div style="font-size:11px;color:var(--text-muted)">最近出现时间</div><div>'+lt+'</div></div></div>'+
+    '<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">需求描述</div><div style="font-size:13px;color:var(--text-secondary);line-height:1.7;padding:12px;background:#f9fafb;border-radius:6px;min-height:60px">'+(r.desc||'暂无描述')+'</div></div>'+
+    '<div style="margin-bottom:14px"><div style="font-size:14px;font-weight:600">来源记录</div><div style="max-height:140px;overflow-y:auto;margin-top:8px"><table><thead><tr><th>用户</th><th>部门</th><th>时间</th><th>问题摘要</th></tr></thead><tbody>'+srcR+'</tbody></table></div></div>'+
+    '<div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:14px;font-weight:600">关联Skill</span><button class="btn btn-text btn-xs" onclick="closeDrawer();linkSkill(\''+id+'\')"><i class="fas fa-plus"></i> 关联Skill</button></div><div style="max-height:240px;overflow-y:auto">'+lh+'</div></div>');
 }
-
 function editReq(id) {
   var r = D.requirements.find(function(x){ return x.id === id; });
   if (!r) return;
@@ -893,14 +1012,13 @@ function editReq(id) {
 // ===== SKILLS =====
 function renderSkills() {
   var pageSize=10;
-  var sf=document.getElementById&&document.getElementById('sSF')?document.getElementById('sSF').value:'';
-  var src=D.skills; if(sf)src=src.filter(function(s){return s.src===sf;});
+  var src=D.skills;
   var total=src.length,tp=Math.max(1,Math.ceil(total/pageSize));
   function rP(p){
     if(p<1||p>tp)return; var s=(p-1)*pageSize,e=Math.min(s+pageSize,total),pd=src.slice(s,e);
     var rows=pd.map(function(sk){
       var sc=sk.status==='启用'?'tag-green':'tag-gray',tFn=sk.status==='启用'?'disableSkill':'enableSkill',tIc=sk.status==='启用'?'fa-pause':'fa-play',tL=sk.status==='启用'?'停用':'启用';
-      return '<tr><td><i class="fas '+sk.icon+'" style="color:'+sk.color+';margin-right:6px"></i>'+sk.name+'</td><td>'+sk.cat+'</td><td>'+sk.src+'</td><td><span class="tag '+sc+'">'+sk.status+'</span></td><td>'+sk.calls.toLocaleString()+'</td><td>'+sk.dls+'</td><td>'+sk.ctime+'</td><td class="cell-actions">'+
+      return '<tr><td><i class="fas '+sk.icon+'" style="color:'+sk.color+';margin-right:6px"></i>'+sk.name+'</td><td>'+sk.cat+'</td><td><span class="tag '+sc+'">'+sk.status+'</span></td><td>'+sk.calls.toLocaleString()+'</td><td>'+sk.dls+'</td><td>'+sk.ctime+'</td><td class="cell-actions">'+
         '<button class="btn btn-text btn-xs" onclick="viewMarketSkill(\''+sk.id+'\')"><i class="fas fa-eye"></i> 查看</button>'+
         '<button class="btn btn-text btn-xs" onclick="editSkill(\''+sk.id+'\')"><i class="fas fa-pen"></i> 编辑</button>'+
         '<button class="btn btn-text btn-xs" onclick="'+tFn+'(\''+sk.id+'\')"><i class="fas '+tIc+'"></i> '+tL+'</button>'+
@@ -911,11 +1029,10 @@ function renderSkills() {
       for(var i=Math.max(1,p-2);i<=Math.min(tp,p+2);i++){pg+='<button class="pg-btn '+(i===p?'active':'')+'" onclick="window.skP('+i+')">'+i+'</button>';}
       pg+='<button class="pg-btn '+(p>=tp?'disabled':'')+'" onclick="window.skP('+(p+1)+')"><i class="fas fa-chevron-right"></i></button></div></div>';
     }
-    document.getElementById('sTC').innerHTML='<div class="table-wrap"><table><thead><tr><th>Skill名称</th><th>分类</th><th>来源</th><th>状态</th><th>调用次数</th><th>下载次数</th><th>创建时间</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="8"><div class="empty-state"><i class="fas fa-cubes"></i><p>暂无</p></div></td></tr>')+'</tbody></table></div>'+pg;
+    document.getElementById('sTC').innerHTML='<div class="table-wrap"><table><thead><tr><th>Skill名称</th><th>分类</th><th>状态</th><th>调用次数</th><th>下载次数</th><th>创建时间</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="7"><div class="empty-state"><i class="fas fa-cubes"></i><p>暂无</p></div></td></tr>')+'</tbody></table></div>'+pg;
   }
   document.getElementById('pageContent').innerHTML='<div class="page-hd"><div class="page-hd-title">Skill管理</div><div class="page-hd-actions"><button class="btn btn-outline" onclick="importSkill()"><i class="fas fa-upload"></i> 导入</button><button class="btn btn-primary" onclick="newSkill()"><i class="fas fa-plus"></i> 新增</button></div></div>'+
-    '<div class="card" style="margin-bottom:0"><div class="filter-row"><div class="filter-row-left"><div class="search-box"><i class="fas fa-search"></i><input placeholder="搜索Skill..."></div><select class="filter-select"><option>全部分类</option><option>文档处理</option><option>数据分析</option><option>流程自动化</option><option>法务</option></select>'+
-    '<select class="filter-select" id="sSF" onchange="renderSkills()"><option value="">全部来源</option><option value="需求转化">需求转化</option><option value="手动创建">手动创建</option><option value="外部导入">外部导入</option></select></div></div><div id="sTC"></div></div>';
+    '<div class="card" style="margin-bottom:0"><div class="filter-row"><div class="filter-row-left"><div class="search-box"><i class="fas fa-search"></i><input placeholder="搜索Skill..."></div><select class="filter-select"><option>全部分类</option><option>文档处理</option><option>数据分析</option><option>流程自动化</option><option>法务</option></select></div></div><div id="sTC"></div></div>';
   window.skP=rP; rP(1);
 }
 function enableSkill(id){D.skills.find(function(x){return x.id===id;}).status='启用';renderSkills();showToast('已启用','','s');}
@@ -1106,9 +1223,11 @@ function viewSkill(id) {
 function viewMarketSkill(id) {
   var s=D.skills.find(function(x){return x.id===id;});if(!s)return;
   s._v='text';
-  // Build 关联需求 line for 需求转化 source
+  window._smSkillId = id;
+  window._smTab = 'intro';
+  // Build 关联需求 line from actual linked requirements
   var reqHtml = '';
-  if (s.src === '需求转化' && s.reqs) {
+  if (s.reqs) {
     var reqNames = s.reqs.split(',').map(function(rid){
       var r = D.requirements.find(function(x){return x.id===rid.trim();});
       return r ? r.name : rid.trim();
@@ -1119,8 +1238,45 @@ function viewMarketSkill(id) {
   }
   document.getElementById('pageContent').innerHTML='<div class="page-hd"><div class="page-hd-title"><a href="#" onclick="navigate(\'skill-market\');return false" style="font-size:12px;color:var(--text-muted)"><i class="fas fa-chevron-left" style="margin-right:6px"></i>Skill市场</a><span style="margin:0 8px;color:var(--text-muted)">/</span>'+s.name+'</div><div class="page-hd-actions"><button class="btn btn-primary" onclick="quickInstall(\''+s.id+'\')"><i class="fas fa-download"></i> 安装</button></div></div>'+
     '<div class="card"><div style="display:flex;align-items:center;gap:12px"><div class="sc-icon" style="width:44px;height:44px;background:'+s.color+'15;color:'+s.color+';border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px"><i class="fas '+s.icon+'"></i></div><div><div style="font-size:18px;font-weight:600">'+s.name+'</div><div style="margin-top:4px;display:flex;gap:6px"><span class="tag tag-blue">'+s.cat+'</span><span style="font-size:13px;color:var(--text-muted)">调用:'+s.calls.toLocaleString()+'次</span><span style="font-size:13px;color:var(--text-muted)">下载:'+s.dls+'次</span></div>'+reqHtml+'</div></div></div>'+
-    '<div class="card" style="margin-bottom:0"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font-size:14px;font-weight:600"><i class="fas fa-align-left" style="color:var(--text-muted);margin-right:6px"></i>Skill介绍</span><div style="display:flex;gap:4px"><button class="btn btn-sm btn-primary" id="mEye" onclick="mTog('+id+')"><i class="fas fa-eye"></i></button><button class="btn btn-sm btn-outline" id="mCode" onclick="mTog('+id+')"><i class="fas fa-code"></i></button></div></div><div id="mDesc">'+s.desc+'</div></div>';
+    '<div class="card" style="margin-bottom:0">' +
+    '<div class="filter-tabs" style="margin-bottom:12px"><button class="ftab active" id="smTabIntro" onclick="smTab(\'intro\')">Skill介绍</button><button class="ftab" id="smTabFeedback" onclick="smTab(\'feedback\')">反馈记录</button></div>' +
+    '<div id="smIntro">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font-size:14px;font-weight:600"><i class="fas fa-align-left" style="color:var(--text-muted);margin-right:6px"></i>Skill介绍</span><div style="display:flex;gap:4px"><button class="btn btn-sm btn-primary" id="mEye" onclick="mTog('+id+')"><i class="fas fa-eye"></i></button><button class="btn btn-sm btn-outline" id="mCode" onclick="mTog('+id+')"><i class="fas fa-code"></i></button></div></div><div id="mDesc">'+s.desc+'</div>' +
+    '</div>' +
+    '<div id="smFeedback" style="display:none"></div>' +
+    '</div>';
 }
+
+function smTab(tab) {
+  window._smTab = tab;
+  var introBtn = document.getElementById('smTabIntro');
+  var fbBtn = document.getElementById('smTabFeedback');
+  if (introBtn) introBtn.classList.toggle('active', tab === 'intro');
+  if (fbBtn) fbBtn.classList.toggle('active', tab === 'feedback');
+  var intro = document.getElementById('smIntro');
+  var fb = document.getElementById('smFeedback');
+  if (intro) intro.style.display = tab === 'intro' ? '' : 'none';
+  if (fb) fb.style.display = tab === 'feedback' ? '' : 'none';
+  if (tab === 'feedback') renderSmFeedback();
+}
+
+function renderSmFeedback() {
+  var skillId = window._smSkillId;
+  var filter = document.getElementById('smFeedbackFilter') ? document.getElementById('smFeedbackFilter').value : 'all';
+  var src = SKILL_FEEDBACKS.filter(function(f){ return f.skillId === skillId && (filter === 'all' || f.result === filter); });
+  var rows = src.map(function(f){
+    var rCls = f.result === '已解决' ? 'tag-green' : f.result === '部分解决' ? 'tag-yellow' : 'tag-red';
+    return '<tr><td style="font-size:12px;white-space:nowrap">'+f.time+'</td>' +
+      '<td><div style="font-size:13px;font-weight:500">'+f.user+'</div><div style="font-size:11px;color:var(--text-muted)">'+f.dept+'</div></td>' +
+      '<td><span class="tag '+rCls+'" style="font-size:10px">'+f.result+'</span></td>' +
+      '<td style="font-size:12px;color:var(--text-secondary);max-width:280px" title="'+f.content+'"><div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5">'+f.content+'</div></td></tr>';
+  }).join('');
+  var empty = '<tr><td colspan="4"><div class="empty-state"><i class="fas fa-comment-dots" style="font-size:32px;opacity:.35;display:block;margin-bottom:8px"></i><p>暂无反馈记录</p><p style="font-size:11px;color:var(--text-muted);margin-top:2px">用户使用该Skill后提交的反馈将在此展示。</p></div></td></tr>';
+  document.getElementById('smFeedback').innerHTML =
+    '<div style="margin-bottom:12px"><select class="filter-select" id="smFeedbackFilter" onchange="renderSmFeedback()"><option value="all">全部反馈结果</option><option value="已解决">已解决</option><option value="部分解决">部分解决</option><option value="未解决">未解决</option></select></div>' +
+    '<div class="table-wrap"><table><thead><tr><th>反馈时间</th><th>反馈人</th><th>反馈结果</th><th>反馈内容</th></tr></thead><tbody>'+(rows||empty)+'</tbody></table></div>';
+}
+
 function mTog(id) {
   var s=D.skills.find(function(x){return x.id===id;});if(!s)return;
   var d=document.getElementById('mDesc');var e=document.getElementById('mEye');var c=document.getElementById('mCode');
@@ -1137,14 +1293,13 @@ function mTog(id) {
 // ===== SKILL CALLS =====
 function renderSkillCalls() {
   var ps=10,ad=D.skillCalls||[],total=ad.length,tp=Math.max(1,Math.ceil(total/ps));
-  var f={time:'all',user:'',skill:'',status:'all',feedback:'all'};
+  var f={time:'all',user:'',skill:'',status:'all'};
   function gf(){return ad.filter(function(i){
     if(f.time==='today'&&i.date.indexOf('2026-07-28')<0)return false;
     if(f.time==='week'&&i.date<'2026-07-22')return false;
     if(f.user&&i.user.indexOf(f.user)<0)return false;
     if(f.skill&&i.skill.indexOf(f.skill)<0)return false;
     if(f.status!=='all'&&i.status!==f.status)return false;
-    if(f.feedback!=='all'){if(f.feedback==='yes'&&i.feedback!=='已反馈')return false;if(f.feedback==='no'&&i.feedback!=='未反馈')return false;}
     return true;
   });}
   function rP(p){
@@ -1153,26 +1308,19 @@ function renderSkillCalls() {
     var s=(p-1)*ps,e=Math.min(s+ps,tfl),pd=fl.slice(s,e);
     var rows=pd.map(function(i){
       var sc=i.status==='成功'?'tag-green':'tag-red';
-      var st=i.status==='成功'?'成功':i.status==='失败'?'失败 ⚠':'异常 ⚠';
-      var se=(i.status==='失败'||i.status==='异常')?' style="cursor:pointer" onclick="showF(\''+i.id+'\')" title="查看原因"':'';
-      var fc=i.feedback==='已反馈'?'tag-blue':'tag-gray',rc=i.result==='已解决'?'tag-green':i.result==='部分解决'?'tag-yellow':i.result==='未解决'?'tag-red':'tag-gray';
-      return '<tr><td style="font-size:12px;white-space:nowrap">'+i.date+'</td><td>'+i.user+'</td><td>'+i.dept+'</td><td>'+i.skill+'</td><td><span class="tag '+sc+'"'+se+'>'+st+'</span></td><td style="font-size:12px;color:var(--text-secondary)">'+i.duration+'</td><td><span class="tag '+fc+'" style="font-size:10px">'+i.feedback+'</span></td><td><span class="tag '+rc+'" style="font-size:10px">'+(i.result||'—')+'</span></td><td><button class="btn btn-text btn-xs" onclick="viewSCD(\''+i.id+'\')"><i class="fas fa-eye"></i> 查看</button></td></tr>';
+      return '<tr><td style="font-size:12px;white-space:nowrap">'+i.date+'</td><td>'+i.user+'</td><td>'+i.dept+'</td><td>'+i.skill+'</td><td><span class="tag '+sc+'">'+i.status+'</span></td><td style="font-size:12px;color:var(--text-secondary)">'+i.duration+'</td></tr>';
     }).join('');
     var pg='';if(tfp>1){
       pg='<div class="pagination"><div class="pg-info">共'+tfl+'条，第'+p+'/'+tfp+'页</div><div class="pg-btns"><button class="pg-btn '+(p<=1?'disabled':'')+'" onclick="window.scP('+(p-1)+')"><i class="fas fa-chevron-left"></i></button>';
       for(var i=Math.max(1,p-2);i<=Math.min(tfp,p+2);i++){pg+='<button class="pg-btn '+(i===p?'active':'')+'" onclick="window.scP('+i+')">'+i+'</button>';}
       pg+='<button class="pg-btn '+(p>=tfp?'disabled':'')+'" onclick="window.scP('+(p+1)+')"><i class="fas fa-chevron-right"></i></button></div></div>';
     }
-    document.getElementById('sCC').innerHTML='<div class="table-wrap"><table><thead><tr><th>调用时间</th><th>用户</th><th>部门</th><th>Skill</th><th>状态</th><th>耗时</th><th>反馈</th><th>结果</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="9"><div class="empty-state"><p>暂无</p></div></td></tr>')+'</tbody></table></div>'+pg;
+    document.getElementById('sCC').innerHTML='<div class="table-wrap"><table><thead><tr><th>调用时间</th><th>用户</th><th>部门</th><th>Skill</th><th>状态</th><th>耗时</th></tr></thead><tbody>'+(rows||'<tr><td colspan="6"><div class="empty-state"><p>暂无</p></div></td></tr>')+'</tbody></table></div>'+pg;
   }
-  document.getElementById('pageContent').innerHTML='<div class="page-hd"><div class="page-hd-title">调用记录</div></div><div class="card" style="margin-bottom:0"><div class="filter-row"><div class="filter-row-left"><select class="filter-select" id="scT" onchange="apF()"><option value="all">全部时间</option><option value="today">今天</option><option value="week">近7天</option></select><div class="search-box" style="width:130px"><i class="fas fa-search"></i><input placeholder="用户..." id="scU" oninput="apF()"></div><div class="search-box" style="width:130px"><i class="fas fa-search"></i><input placeholder="Skill..." id="scSk" oninput="apF()"></div><select class="filter-select" id="scSt" onchange="apF()"><option value="all">全部状态</option><option value="成功">成功</option><option value="失败">失败</option><option value="异常">异常</option></select><select class="filter-select" id="scFb" onchange="apF()"><option value="all">全部反馈</option><option value="yes">已反馈</option><option value="no">未反馈</option></select></div></div><div id="sCC"></div></div>';
-  window.scP=rP; window.apF=function(){f.time=document.getElementById('scT').value;f.user=document.getElementById('scU').value;f.skill=document.getElementById('scSk').value;f.status=document.getElementById('scSt').value;f.feedback=document.getElementById('scFb').value;rP(1);};
+  document.getElementById('pageContent').innerHTML='<div class="page-hd"><div class="page-hd-title">调用记录</div></div><div class="card" style="margin-bottom:0"><div class="filter-row"><div class="filter-row-left"><select class="filter-select" id="scT" onchange="apF()"><option value="all">全部时间</option><option value="today">今天</option><option value="week">近7天</option></select><div class="search-box" style="width:130px"><i class="fas fa-search"></i><input placeholder="用户..." id="scU" oninput="apF()"></div><div class="search-box" style="width:130px"><i class="fas fa-search"></i><input placeholder="Skill..." id="scSk" oninput="apF()"></div><select class="filter-select" id="scSt" onchange="apF()"><option value="all">全部状态</option><option value="成功">成功</option><option value="失败">失败</option></select></div></div><div id="sCC"></div></div>';
+  window.scP=rP; window.apF=function(){f.time=document.getElementById('scT').value;f.user=document.getElementById('scU').value;f.skill=document.getElementById('scSk').value;f.status=document.getElementById('scSt').value;rP(1);};
   rP(1);
 }
-function showF(id){var i=D.skillCalls.find(function(x){return x.id===id;});if(i&&(i.status==='失败'||i.status==='异常'))showToast(i.status+'原因',i.reason,'w');}
-function viewSCD(id){var i=D.skillCalls.find(function(x){return x.id===id;});if(!i)return;var sc=i.status==='成功'?'tag-green':'tag-red';var fs='',rs='';if(i.status==='失败'||i.status==='异常')fs='<div style="margin-top:12px"><div style="font-size:14px;font-weight:600;color:var(--danger)">错误信息</div><div style="padding:10px 14px;background:var(--danger-bg);border-radius:6px;font-size:13px;color:var(--danger)">'+i.reason+'</div></div>';if(i.reply)rs='<div style="margin-top:12px"><div style="font-size:14px;font-weight:600">返回结果</div><div style="padding:10px 14px;background:#f9fafb;border-radius:6px;font-size:13px;line-height:1.7">'+i.reply+'</div></div>';openDrawer('调用详情','<div style="margin-bottom:16px"><div style="font-size:16px;font-weight:600">'+i.skill+'</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;padding:14px;background:#f9fafb;border-radius:8px"><div><div style="font-size:11px;color:var(--text-muted)">状态</div><span class="tag '+sc+'">'+i.status+'</span></div><div><div style="font-size:11px">用户</div><div>'+i.user+'</div></div><div><div style="font-size:11px">部门</div><div>'+i.dept+'</div></div><div><div style="font-size:11px">时间</div><div>'+i.date+'</div></div><div><div style="font-size:11px">耗时</div><div>'+i.duration+'</div></div></div><div style="margin-bottom:12px"><div style="font-size:14px;font-weight:600">提问原文</div><div style="padding:10px 14px;background:#f9fafb;border-radius:6px;font-size:13px;line-height:1.7;max-height:150px;overflow-y:auto">'+i.query+'</div></div>'+fs+rs);}
-
-
 // ===== GATEWAY =====
 function renderGateway() {
   var conns = D.connectors;
@@ -1300,7 +1448,8 @@ function showConnectorDetail(id) {
       return '<div class="tool-card"><div class="tc-top"><div class="tc-info">' +
         '<div class="tc-name"><span class="status-dot '+tDot+'" style="width:6px;height:6px;display:inline-block;border-radius:50%"></span>'+t.name+'</div>' +
         '<div class="tc-desc">'+t.desc+'</div>' +
-        '<div class="tc-meta"><span class="tag '+tTypeTag+'" style="font-size:10px">'+t.type+'</span><span>方法: '+t.method+'</span><span>路径: '+t.path+'</span>'+(t.allowedFields?'<span>允许字段: '+t.allowedFields.split(',').length+'个</span>':'<span>参数: '+(t.params||0)+'个</span>')+'</div></div>' +
+        '<div class="tc-meta"><span class="tag '+tTypeTag+'" style="font-size:10px">'+t.type+'</span><span>方法: '+t.method+'</span><span>路径: '+t.path+'</span>'+(t.paramPerms && t.paramPerms.length ? '<span>已配置'+t.paramPerms.length+'项参数限制</span>' : '<span>未配置参数限制</span>')+'</div></div>' +
+        (t.paramPerms && t.paramPerms.length ? '<div style="margin-top:6px;padding:6px 8px;background:#f8f9fb;border-radius:4px"><div style="font-size:10px;color:var(--text-muted);margin-bottom:2px">参数权限</div>'+t.paramPerms.map(function(pp){return '<div style="font-size:11px;color:var(--text-secondary);padding:1px 0"><span style="font-weight:500">'+pp.name+'</span><span style="color:var(--text-muted)">（'+pp.loc+'）</span>：'+pp.value+'</div>';}).join('')+'</div>' : '') +
         '<div class="tc-actions">' +
         '<button class="btn btn-text btn-xs" onclick="showToast(\'测试\',\'工具调用成功\',\'s\')"><i class="fas fa-play"></i></button>' +
         '<button class="btn btn-text btn-xs" onclick="editTool(\''+id+'\',\''+t.name+'\')"><i class="fas fa-pen"></i></button>' +
@@ -1367,10 +1516,10 @@ function newConnector() {
     '<div class="form-group"><label>自定义标头</label><div id="cnHeaders"><div class="header-row"><input class="form-control" placeholder="Header名称" style="flex:1;font-size:12px;padding:5px 8px"><input class="form-control" placeholder="Header值" style="flex:1;font-size:12px;padding:5px 8px;margin-left:4px"><button class="btn btn-ghost btn-xs" onclick="rmHeader(this)"><i class="fas fa-xmark" style="color:var(--text-muted)"></i></button></div></div>' +
     '<button class="btn btn-text btn-xs" onclick="addHeader()"><i class="fas fa-plus"></i> 添加标头</button>' +
     '<div style="font-size:11px;color:var(--text-muted);margin-top:4px">每次向此API发送请求时都会发送这些信息。</div>' +
-    // 接口与字段权限
+    // 接口与参数权限
     '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
-    '<div style="font-size:13px;font-weight:600;margin-bottom:4px">接口与字段权限</div>' +
-    '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">选择允许通过该连接器访问的接口及字段，未选择的接口或字段不会暴露给MCP服务。</div>' +
+    '<div style="font-size:13px;font-weight:600;margin-bottom:4px">接口与参数权限</div>' +
+    '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">选择允许通过该连接器访问的接口，并按需配置请求参数的允许值。未配置参数值时，不限制该参数的取值。</div>' +
     '<button class="btn btn-primary btn-sm" type="button" onclick="discoverToolsNew()" id="cnDiscoverBtn"><i class="fas fa-magnifying-glass"></i> 从 OpenAPI 自动发现工具</button>' +
     '<div id="cnToolListArea" style="display:none;margin-top:10px"></div>' +
     '<div id="cnEmptyTools" style="margin-top:10px;padding:16px;background:#f9fafb;border-radius:6px;font-size:12px;color:var(--text-muted);text-align:center">尚未发现工具。请先填写 Base URL 或 OpenAPI/Swagger 规范地址，然后点击"从 OpenAPI 自动发现工具"。</div></div>' +
@@ -1472,13 +1621,17 @@ function confirmNewConnector(mode) {
       var cb = document.getElementById('cn_tk_' + idx);
       var selected = cb ? cb.checked : false;
       if (selected) {
-        var fieldsEl = document.getElementById('cn_tf_' + idx);
-        var allowedFields = fieldsEl ? fieldsEl.value.trim() : '';
+        toolParamsState('cn', idx);
+        var paramPerms = [];
+        (tool.params || []).forEach(function(p){
+          if (tool._removed && tool._removed.indexOf(p.name) >= 0) return;
+          if (tool._pv[p.name]) paramPerms.push({name:p.name, loc:p.loc||'Query', value:tool._pv[p.name]});
+        });
         mcpTools.push({
           name: tool.name, desc: tool.desc, type: 'API调用',
           method: tool.method, path: tool.path, status: '启用',
-          params: tool.fields ? tool.fields.length : 0,
-          allowedFields: allowedFields
+          paramCount: tool.params ? tool.params.length : 0,
+          paramPerms: paramPerms
         });
       }
     });
@@ -1515,7 +1668,19 @@ function confirmNewConnector(mode) {
     var hasTools = c.mcpTools && c.mcpTools.length > 0;
     // Build discovered tools from existing mcpTools for editing
     if (hasTools) {
-      window._editDiscoveredTools = c.mcpTools.map(function(t){ return {name:t.name, method:t.method, path:t.path, desc:t.desc, fields:[], selected:true, allowedFields:t.allowedFields||''}; });
+      window._editDiscoveredTools = c.mcpTools.map(function(t){
+      var params = [];
+      if (t.paramPerms && t.paramPerms.length) {
+        params = t.paramPerms.map(function(pp){ return {name:pp.name, loc:pp.loc||'Query'}; });
+      } else if (t.paramCount) {
+        for (var k=0;k<t.paramCount;k++){ params.push({name:'param_'+(k+1), loc:'Query'}); }
+      }
+      var tool = {name:t.name, method:t.method, path:t.path, desc:t.desc, params:params, selected:true};
+      tool._pv = {};
+      (t.paramPerms || []).forEach(function(pp){ tool._pv[pp.name] = pp.value; });
+      tool._removed = [];
+      return tool;
+    });
       editToolHtml = buildEditToolListHtml('edit', window._editDiscoveredTools);
     } else {
       window._editDiscoveredTools = null;
@@ -1540,10 +1705,10 @@ function confirmNewConnector(mode) {
       '<option value="Basic Auth" '+(c.config.authType==='Basic Auth'?'selected':'')+'>Basic Auth</option></select></div>' +
       '<div class="form-group"><label>自定义标头</label><div id="enHeaders">'+hdrsHtml+'</div>' +
       '<button class="btn btn-text btn-xs" onclick="addHeaderE()"><i class="fas fa-plus"></i> 添加标头</button></div>' +
-      // 接口与字段权限
+      // 接口与参数权限
       '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
-      '<div style="font-size:13px;font-weight:600;margin-bottom:4px">接口与字段权限</div>' +
-      '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">选择允许通过该连接器访问的接口及字段，未选择的接口或字段不会暴露给MCP服务。</div>' +
+      '<div style="font-size:13px;font-weight:600;margin-bottom:4px">接口与参数权限</div>' +
+      '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">选择允许通过该连接器访问的接口，并按需配置请求参数的允许值。未配置参数值时，不限制该参数的取值。</div>' +
       '<button class="btn btn-primary btn-sm" type="button" onclick="discoverToolsEdit()" id="editDiscoverBtn"><i class="fas fa-magnifying-glass"></i> '+(hasTools?'重新发现工具':'从 OpenAPI 自动发现工具')+'</button>' +
       '<div id="editToolListArea" style="margin-top:10px">'+editToolHtml+'</div></div>' +
       '</div>' : '') +
@@ -1614,13 +1779,17 @@ function confirmEditConnector(id) {
         var cb = document.getElementById('edit_tk_' + idx);
         var selected = cb ? cb.checked : false;
         if (selected) {
-          var fieldsEl = document.getElementById('edit_tf_' + idx);
-          var allowedFields = fieldsEl ? fieldsEl.value.trim() : '';
+          toolParamsState('edit', idx);
+          var paramPerms = [];
+          (tool.params || []).forEach(function(p){
+            if (tool._removed && tool._removed.indexOf(p.name) >= 0) return;
+            if (tool._pv[p.name]) paramPerms.push({name:p.name, loc:p.loc||'Query', value:tool._pv[p.name]});
+          });
           newTools.push({
             name: tool.name, desc: tool.desc, type: 'API调用',
             method: tool.method, path: tool.path, status: '启用',
-            params: tool.fields ? tool.fields.length : 0,
-            allowedFields: allowedFields
+            paramCount: tool.params ? tool.params.length : 0,
+            paramPerms: paramPerms
           });
         }
       });
@@ -1654,7 +1823,7 @@ function publishConnector(id) {
   if (!c) return;
   if (c.status === '已发布') { showToast('已发布','该连接器已是发布状态','i'); return; }
   if (c.type === 'REST API' && (!c.mcpTools || c.mcpTools.length === 0)) {
-    showToast('请先完成接口配置','请先完成接口与字段权限配置，并至少选择一个工具。','w');
+    showToast('请先完成接口配置','请先完成接口与参数权限配置，并至少选择一个工具。','w');
     return;
   }
   if (!c.mcpTools || c.mcpTools.length === 0) {
@@ -2909,17 +3078,7 @@ function buildEditToolListHtml(prefix, tools) {
     '<div id="'+prefix+'ToolList" style="max-height:300px;overflow-y:auto;border:1px solid var(--border-light);border-radius:6px">';
   tools.forEach(function(tool, i){
     var checked = tool.selected !== false ? 'checked' : '';
-    var fieldsHtml = '';
-    if (tool.fields && tool.fields.length > 0) {
-      var fieldVal = tool.allowedFields || '';
-      fieldsHtml = '<div class="tool-fields" id="'+prefix+'_tf_area_'+i+'" style="display:none;padding:8px 12px 8px 36px;background:#f9fafb;border-top:1px solid var(--border-light)">' +
-        '<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">字段权限</div>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px">' +
-        tool.fields.map(function(f){ return '<span style="font-size:10px;padding:2px 6px;background:#eef1ff;color:var(--primary);border-radius:3px">'+f+'</span>'; }).join('') +
-        '</div>' +
-        '<input class="form-control" id="'+prefix+'_tf_'+i+'" value="'+fieldVal+'" placeholder="输入允许访问的字段名称，逗号分隔" style="font-size:12px;padding:5px 8px">' +
-        '<div style="font-size:10px;color:var(--text-muted);margin-top:2px">留空表示允许所有字段</div></div>';
-    }
+    var paramPermHtml = buildParamPermArea(prefix, tool, i);
     html += '<div class="disc-tool-row" id="'+prefix+'_tr_'+i+'" style="border-bottom:1px solid var(--border-light)">' +
       '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer" onclick="toggleToolExpand(\''+prefix+'\','+i+')">' +
       '<input type="checkbox" id="'+prefix+'_tk_'+i+'" '+checked+' onclick="event.stopPropagation();updateToolCount(\''+prefix+'\')" style="width:14px;height:14px;accent-color:var(--primary);cursor:pointer">' +
@@ -2929,7 +3088,7 @@ function buildEditToolListHtml(prefix, tools) {
       '<span style="font-size:11px;color:var(--text-secondary);flex:0 0 auto;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+tool.desc+'</span>' +
       '<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();showToast(\'测试\',\'工具调用成功\',\'s\')" style="padding:2px 6px;font-size:10px"><i class="fas fa-play"></i></button>' +
       '<span style="font-size:10px;color:var(--text-muted);width:12px;text-align:center" id="'+prefix+'_exp_'+i+'"><i class="fas fa-chevron-down"></i></span></div>' +
-      fieldsHtml + '</div>';
+      paramPermHtml + '</div>';
   });
   html += '</div>';
   return html;
@@ -2946,16 +3105,7 @@ function buildNewToolListHtml(prefix, tools) {
     '<button class="btn btn-sm btn-ghost" onclick="collapseAllTools(\''+prefix+'\')" style="font-size:11px;padding:4px 8px">收起</button></div>' +
     '<div id="'+prefix+'ToolList" style="max-height:300px;overflow-y:auto;border:1px solid var(--border-light);border-radius:6px">';
   tools.forEach(function(tool, i){
-    var fieldsHtml = '';
-    if (tool.fields && tool.fields.length > 0) {
-      fieldsHtml = '<div class="tool-fields" id="'+prefix+'_tf_area_'+i+'" style="display:none;padding:8px 12px 8px 36px;background:#f9fafb;border-top:1px solid var(--border-light)">' +
-        '<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">字段权限</div>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px">' +
-        tool.fields.map(function(f){ return '<span style="font-size:10px;padding:2px 6px;background:#eef1ff;color:var(--primary);border-radius:3px">'+f+'</span>'; }).join('') +
-        '</div>' +
-        '<input class="form-control" id="'+prefix+'_tf_'+i+'" placeholder="输入允许访问的字段名称，逗号分隔" style="font-size:12px;padding:5px 8px">' +
-        '<div style="font-size:10px;color:var(--text-muted);margin-top:2px">留空表示允许所有字段</div></div>';
-    }
+    var paramPermHtml = buildParamPermArea(prefix, tool, i);
     html += '<div class="disc-tool-row" id="'+prefix+'_tr_'+i+'" style="border-bottom:1px solid var(--border-light)">' +
       '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer" onclick="toggleToolExpand(\''+prefix+'\','+i+')">' +
       '<input type="checkbox" id="'+prefix+'_tk_'+i+'" checked onclick="event.stopPropagation();updateToolCount(\''+prefix+'\')" style="width:14px;height:14px;accent-color:var(--primary);cursor:pointer">' +
@@ -2965,7 +3115,7 @@ function buildNewToolListHtml(prefix, tools) {
       '<span style="font-size:11px;color:var(--text-secondary);flex:0 0 auto;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+tool.desc+'</span>' +
       '<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();showToast(\'测试\',\'工具调用成功\',\'s\')" style="padding:2px 6px;font-size:10px"><i class="fas fa-play"></i></button>' +
       '<span style="font-size:10px;color:var(--text-muted);width:12px;text-align:center" id="'+prefix+'_exp_'+i+'"><i class="fas fa-chevron-down"></i></span></div>' +
-      fieldsHtml + '</div>';
+      paramPermHtml + '</div>';
   });
   html += '</div>';
   return html;
@@ -2994,17 +3144,20 @@ function discoverToolsEdit() {
   var btn = document.getElementById('editDiscoverBtn');
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在解析...'; }
   setTimeout(function(){
-    // Preserve existing selections from current checkboxes
+    // Preserve existing selections and param configs
     var oldSelections = {};
     if (window._editDiscoveredTools) {
       window._editDiscoveredTools.forEach(function(t, i){
         var cb = document.getElementById('edit_tk_' + i);
-        if (cb) oldSelections[t.name] = {selected: cb.checked, allowedFields: document.getElementById('edit_tf_' + i) ? document.getElementById('edit_tf_' + i).value : ''};
+        oldSelections[t.name] = {selected: cb ? cb.checked : t.selected, pv: t._pv || {}, removed: t._removed || []};
       });
     }
     window._editDiscoveredTools = DEMO_TOOLS.slice().map(function(t){
       var old = oldSelections[t.name];
-      return {name:t.name, method:t.method, path:t.path, desc:t.desc, fields:t.fields, selected: old ? old.selected : true, allowedFields: old ? old.allowedFields : ''};
+      var tool = {name:t.name, method:t.method, path:t.path, desc:t.desc, params:t.params, selected: old ? old.selected : true};
+      tool._pv = old ? (old.pv || {}) : {};
+      tool._removed = old ? (old.removed || []) : [];
+      return tool;
     });
     var html = buildEditToolListHtml('edit', window._editDiscoveredTools);
     var area = document.getElementById('editToolListArea');
@@ -3031,7 +3184,7 @@ function showEditReDiscoverHint() {
 }
 
 function toggleToolExpand(prefix, idx) {
-  var area = document.getElementById(prefix + '_tf_area_' + idx);
+  var area = document.getElementById(prefix + '_pp_' + idx);
   var arrow = document.getElementById(prefix + '_exp_' + idx);
   if (area) {
     var isOpen = area.style.display !== 'none';
@@ -3074,7 +3227,7 @@ function deselectAllTools(prefix) {
 function collapseAllTools(prefix) {
   var list = document.getElementById(prefix + 'ToolList');
   if (!list) return;
-  var allAreas = list.querySelectorAll('[id^="'+prefix+'_tf_area_"]');
+  var allAreas = list.querySelectorAll('[id^="'+prefix+'_pp_"]');
   allAreas.forEach(function(area){ area.style.display = 'none'; });
   var allArrows = list.querySelectorAll('[id^="'+prefix+'_exp_"]');
   allArrows.forEach(function(a){ a.innerHTML = '<i class="fas fa-chevron-down"></i>'; });
@@ -3116,6 +3269,87 @@ function confirmToolSelection(prefix) {
   if (header) {
     header.innerHTML = '发现 ' + total + ' 个工具 · 已选 ' + selected + ' <span style="color:var(--success);font-weight:500">✓ 已确认</span>';
   }
+}
+
+// ===== REST API PARAM PERMISSIONS =====
+function toolParamsState(prefix, toolIdx) {
+  var tools = prefix === 'cn' ? window._cnDiscoveredTools : window._editDiscoveredTools;
+  var tool = tools[toolIdx];
+  if (!tool._pv) tool._pv = {};
+  if (!tool._removed) tool._removed = [];
+  return tool;
+}
+
+function buildParamPermArea(prefix, tool, toolIdx) {
+  toolParamsState(prefix, toolIdx);
+  var html = '<div class="param-perm-area" id="'+prefix+'_pp_'+toolIdx+'" style="display:none;padding:8px 12px 8px 36px;background:#f9fafb;border-top:1px solid var(--border-light)">' +
+    '<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">参数权限</div>' +
+    '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;line-height:1.4">配置该工具调用时允许使用的参数值。未配置参数值时，不限制该参数的取值。</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1.5fr 28px;gap:6px;padding:0 2px;font-size:10px;color:var(--text-muted);margin-bottom:4px"><div>参数名</div><div>参数值</div><div></div></div>' +
+    '<div id="'+prefix+'_prlist_'+toolIdx+'">';
+  (tool.params || []).forEach(function(p){
+    if (tool._removed.indexOf(p.name) >= 0) return;
+    html += buildParamRow(prefix, tool, toolIdx, p);
+  });
+  html += '</div>' +
+    '<div style="margin-top:2px"><button class="btn btn-text btn-xs" onclick="addParamRow(\''+prefix+'\','+toolIdx+')"><i class="fas fa-plus"></i> 添加参数</button></div></div>';
+  return html;
+}
+
+function buildParamRow(prefix, tool, toolIdx, p) {
+  var used = [];
+  (tool.params || []).forEach(function(pp){ if (pp.name !== p.name && tool._removed.indexOf(pp.name) < 0) used.push(pp.name); });
+  var opts = '<option value="">请选择参数...</option>' + (tool.params||[]).map(function(pp){
+    var sel = pp.name === p.name ? ' selected' : '';
+    var dis = used.indexOf(pp.name) >= 0 ? ' disabled' : '';
+    return '<option value="'+pp.name+'"'+sel+dis+'>'+pp.name+'</option>';
+  }).join('');
+  var val = tool._pv[p.name] || '';
+  return '<div class="param-row" style="display:grid;grid-template-columns:1fr 1.5fr 28px;gap:6px;margin-bottom:4px;align-items:center">' +
+    '<select class="form-control" style="font-size:11px;padding:3px 5px;width:100%" onchange="onParamSel(\''+prefix+'\','+toolIdx+',\''+p.name+'\',this.value)">'+opts+'</select>' +
+    '<input class="form-control" value="'+val+'" placeholder="请输入" style="font-size:11px;padding:3px 5px;font-family:monospace;width:100%" onchange="onParamVal(\''+prefix+'\','+toolIdx+',\''+p.name+'\',this.value)">' +
+    '<button class="btn btn-ghost btn-xs" onclick="removeParamRow(\''+prefix+'\','+toolIdx+',\''+p.name+'\')" style="padding:2px 4px"><i class="fas fa-xmark" style="font-size:12px;color:var(--text-muted)"></i></button></div>';
+}
+
+function onParamSel(prefix, toolIdx, oldName, newName) {
+  var tool = toolParamsState(prefix, toolIdx);
+  if (!newName) return;
+  if (newName === oldName) return;
+  var val = tool._pv[oldName] || '';
+  delete tool._pv[oldName];
+  tool._pv[newName] = val;
+  rerenderParams(prefix, toolIdx);
+}
+
+function onParamVal(prefix, toolIdx, pname, val) {
+  var tool = toolParamsState(prefix, toolIdx);
+  tool._pv[pname] = val;
+}
+
+function addParamRow(prefix, toolIdx) {
+  var tool = toolParamsState(prefix, toolIdx);
+  var removed = (tool.params||[]).filter(function(p){ return tool._removed.indexOf(p.name) >= 0; });
+  if (removed.length === 0) { showToast('当前接口的参数已全部添加','','i'); return; }
+  tool._removed = tool._removed.filter(function(n){ return n !== removed[0].name; });
+  rerenderParams(prefix, toolIdx);
+}
+
+function removeParamRow(prefix, toolIdx, pname) {
+  var tool = toolParamsState(prefix, toolIdx);
+  if (tool._removed.indexOf(pname) < 0) tool._removed.push(pname);
+  delete tool._pv[pname];
+  rerenderParams(prefix, toolIdx);
+}
+
+function rerenderParams(prefix, toolIdx) {
+  var tools = prefix === 'cn' ? window._cnDiscoveredTools : window._editDiscoveredTools;
+  if (!tools || !tools[toolIdx]) return;
+  var tool = tools[toolIdx];
+  var area = document.getElementById(prefix + '_pp_' + toolIdx);
+  if (!area) return;
+  var holder = document.createElement('div');
+  holder.innerHTML = buildParamPermArea(prefix, tool, toolIdx);
+  area.parentNode.replaceChild(holder.firstChild, area);
 }
 
 // ===== CN-TYPE BTN CSS =====
