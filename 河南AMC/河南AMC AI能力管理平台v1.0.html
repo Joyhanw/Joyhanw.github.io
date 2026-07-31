@@ -2293,9 +2293,7 @@ function showPublicConnectorDetail(id) {
 }
 
 function isConnectorInDefaultMcp(cnId) {
-  var mcp = D.mcpSvcs.find(function(s){ return s.isDefault; });
-  if (!mcp || !mcp.assignedConnectors) return false;
-  return mcp.assignedConnectors.indexOf(cnId) >= 0;
+  return D.mcpSvcs.some(function(s){ return s.assignedConnectors && s.assignedConnectors.indexOf(cnId) >= 0; });
 }
 
 function renderMcpMarket() {
@@ -2321,6 +2319,68 @@ function renderMcpMarket() {
 // ===== MCP ACCESS =====
 var currentMcpServiceId = null;
 
+function buildMcpMoreMenu(s) {
+  var it = function(icon, label, fn, color) {
+    return '<div class="dropdown-item" onclick="'+fn+'" style="padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas '+icon+'" style="color:'+(color||'var(--text-muted)')+';width:14px"></i>'+label+'</div>';
+  };
+  var sep = '<div style="height:1px;background:var(--border-light);margin:4px 0"></div>';
+  var h = '';
+  if (!s.isDefault) {
+    h += it('fa-star', '设为默认', "setDefaultMcp('"+s.id+"')", 'var(--warning)');
+  }
+  h += it('fa-ban', s.status==='已启用'?'停用':'启用', "toggleMcpStatus('"+s.id+"')");
+  h += sep;
+  if (s.isDefault) {
+    h += it('fa-trash-can', '删除', "deleteMcpService('"+s.id+"')", 'var(--danger)');
+  } else {
+    h += it('fa-trash-can', '删除', "deleteMcpService('"+s.id+"')", 'var(--danger)');
+  }
+  return h;
+}
+
+function newMcpService() {
+  openModal('新增MCP服务',
+    '<div class="form-group"><label>MCP服务名称 <span class="required">*</span></label><input class="form-control" id="nmcName" placeholder="请输入MCP服务名称"></div>' +
+    '<div class="form-group"><label>描述</label><textarea class="form-control" id="nmcDesc" placeholder="请输入该MCP服务的用途或说明" style="min-height:80px"></textarea></div>' +
+    '<div style="font-size:11px;color:var(--text-muted)">创建后将自动生成服务地址与基础配置。首个服务将自动设为默认并启用，后续服务默认停用。</div>',
+    '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmNewMcpService()">创建</button>');
+}
+
+function confirmNewMcpService() {
+  var name = document.getElementById('nmcName').value.trim();
+  if (!name) { showToast('请输入MCP服务名称','','w'); return; }
+  var dup = D.mcpSvcs.some(function(s){ return s.name === name; });
+  if (dup) { showToast('MCP服务名称已存在','','w'); return; }
+  var desc = document.getElementById('nmcDesc').value.trim();
+  var slug = name.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g,'-').replace(/^-|-$/g,'') || ('mcp'+String(D.mcpSvcs.length+1));
+  var isFirst = D.mcpSvcs.length === 0;
+  var newId = 'mcp-' + String(D.mcpSvcs.length + 1).padStart(3,'0');
+  D.mcpSvcs.push({
+    id:newId, name:name, slug:slug, desc:desc, instructions:'',
+    baseUrl:'https://mcp.henan-amc.com/'+slug,
+    status: isFirst ? '已启用' : '已停用',
+    isDefault: isFirst,
+    conn:'—', tools:[], assignedConnectors:[], apiKeys:[]
+  });
+  closeModal();
+  renderMcpAccess();
+  showToast('创建成功','MCP服务「'+name+'」已创建'+(isFirst?'，并设为默认服务':'，默认停用'),'s');
+}
+
+function setDefaultMcp(id) {
+  var s = D.mcpSvcs.find(function(x){return x.id===id;}); if(!s)return;
+  if (s.isDefault) { showToast('已是默认服务','','i'); return; }
+  if (s.status !== '已启用') { showToast('请先启用服务','仅已启用的服务可以设为默认','w'); return; }
+  openModal('设为默认MCP服务','<p style="font-size:14px;color:var(--text-secondary)">确认将「<strong>'+s.name+'</strong>」设为默认MCP服务吗？</p><div style="font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.7">设置后：<br>1. 原默认服务将自动取消默认标识；<br>2. 公共能力市场添加连接器时，将默认选择该服务；<br>3. 已有连接器、API密钥和接入配置不受影响。</div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmSetDefaultMcp(\''+id+'\')">确认</button>');
+}
+function confirmSetDefaultMcp(id) {
+  D.mcpSvcs.forEach(function(s){ s.isDefault = false; });
+  var s = D.mcpSvcs.find(function(x){return x.id===id;});
+  if (s) s.isDefault = true;
+  closeModal(); renderMcpAccess();
+  showToast('已设为默认','','s');
+}
+
 function renderMcpAccess() {
   var q = '', statusFilter = 'all';
   function getFiltered() {
@@ -2341,13 +2401,15 @@ function renderMcpAccess() {
         '<div class="sc-top"><div class="sc-icon" style="background:var(--success-bg);color:var(--success)"><i class="fas fa-link"></i></div>' +
         '<div class="sc-info"><div class="sc-name">'+s.name+defaultTag+' <span class="tag '+statusTag+'" style="font-size:10px;margin-left:6px">'+s.status+'</span></div>' +
         '<div class="sc-desc" style="font-family:monospace;font-size:11px;color:var(--text-muted);margin-top:2px">'+s.baseUrl+'</div></div>' +
-        '<div style="flex-shrink:0"><button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();copyText(\''+s.baseUrl+'\');showToast(\'已复制\',\'\',\'s\')" title="复制地址"><i class="fas fa-copy"></i></button></div></div>' +
+        '<div style="flex-shrink:0;display:flex;align-items:center;gap:2px"><button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();copyText(\''+s.baseUrl+'\');showToast(\'已复制\',\'\',\'s\')" title="复制地址"><i class="fas fa-copy"></i></button>' +
+        '<div class="dropdown" style="position:relative;display:inline-block"><button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();togDD(this)"><i class="fas fa-ellipsis-vertical"></i></button>' +
+        '<div class="dropdown-menu" style="display:none;position:absolute;right:0;top:100%;z-index:50;min-width:110px;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:4px 0">'+buildMcpMoreMenu(s)+'</div></div></div></div>' +
         '<div class="sc-meta"><span>'+connCount+'个连接器</span><span>'+keyCount+'个API密钥</span><span>0个客户端已连接</span></div></div>';
     }).join('');
     document.getElementById('mcpAccessList').innerHTML = cards || '<div class="empty-state"><i class="fas fa-link"></i><p>暂无MCP服务</p></div>';
   }
   document.getElementById('pageContent').innerHTML =
-    '<div class="page-hd"><div class="page-hd-title">我的MCP接入</div></div>' +
+    '<div class="page-hd"><div class="page-hd-title">我的MCP接入</div><div class="page-hd-actions"><button class="btn btn-primary" onclick="newMcpService()"><i class="fas fa-plus"></i> 新增MCP服务</button></div></div>' +
     '<div class="filter-row"><div class="filter-row-left">' +
     '<div class="search-box" style="width:280px"><i class="fas fa-search"></i><input placeholder="搜索MCP服务名称或地址..." oninput="window.mcpQ(this.value)"></div>' +
     '<select class="filter-select" id="mcpStatusF" onchange="window.mcpSF(this.value)">' +
@@ -2357,7 +2419,6 @@ function renderMcpAccess() {
   window.mcpSF = function(v){ statusFilter=v; render(); };
   render();
 }
-
 function showMcpServiceDetail(id) {
   currentMcpServiceId = id;
   var s = D.mcpSvcs.find(function(x){return x.id===id;});
@@ -2372,13 +2433,13 @@ function showMcpServiceDetail(id) {
     // Top bar
     '<div class="detail-top-bar"><div class="dtb-left"><div class="dtb-icon" style="background:var(--success-bg);color:var(--success)"><i class="fas fa-link"></i></div><div class="dtb-info"><div class="dtb-name"><span>'+s.name+'</span><span class="tag '+statusTag+'" style="font-size:10px;margin-left:4px">'+s.status+'</span>'+(s.isDefault?'<span class="tag tag-blue" style="font-size:10px">默认</span>':'')+'</div><div class="dtb-meta" style="font-family:monospace">'+s.baseUrl+'</div></div></div>' +
     '<div class="dtb-actions">' +
+    (!s.isDefault ? '<button class="btn btn-outline btn-sm" onclick="setDefaultMcp(\''+s.id+'\')"><i class="fas fa-star"></i> 设为默认</button>' : '') +
     '<button class="btn btn-outline btn-sm" onclick="toggleMcpStatus(\''+s.id+'\')"><i class="fas '+toggleIcon+'"></i> '+toggleLabel+'</button>' +
     (s.isDefault ? '' : '<button class="btn btn-danger btn-sm" onclick="deleteMcpService(\''+s.id+'\')"><i class="fas fa-trash-can"></i> 删除</button>') +
     '</div></div>' +
     // Server Settings
     '<div class="card" id="mcpServerSettings"><div class="card-title" style="margin-bottom:12px">服务器设置</div>' +
-    '<div class="form-row"><div class="form-group"><label>名称</label><input class="form-control" id="msName" value="'+s.name+'"></div>' +
-    '<div class="form-group"><label>标识</label><input class="form-control" id="msSlug" value="'+s.slug+'" disabled style="background:#f3f4f6;color:var(--text-secondary)"></div></div>' +
+    '<div class="form-group"><label>名称</label><input class="form-control" id="msName" value="'+s.name+'"></div>' +
     '<div class="form-group"><label>描述</label><input class="form-control" id="msDesc" value="'+(s.desc||'')+'" placeholder="MCP服务的用途"></div>' +
     '<div class="form-group"><label>指示</label><textarea class="form-control" id="msInstructions" style="min-height:60px" placeholder="当AI客户端连接到此MCP服务时，系统会向其发送自定义指令。">'+(s.instructions||'')+'</textarea>' +
     '<div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">这些指令会与连接器级别的指令一起发送给客户端。</div>' +
@@ -2555,6 +2616,7 @@ function saveMcpSettings(id) {
 function toggleMcpStatus(id) {
   var s = D.mcpSvcs.find(function(x){return x.id===id;});
   if (!s) return;
+  if (s.isDefault && s.status === '已启用') { showToast('默认服务暂不能停用','请先将其他已启用服务设为默认','w'); return; }
   s.status = s.status === '已启用' ? '已停用' : '已启用';
   showMcpServiceDetail(id);
   showToast(s.status === '已启用' ? '已启用' : '已停用','','s');
@@ -2563,7 +2625,8 @@ function toggleMcpStatus(id) {
 function deleteMcpService(id) {
   var s = D.mcpSvcs.find(function(x){return x.id===id;});
   if (!s) return;
-  if (s.isDefault) { showToast('默认MCP服务不允许删除','只允许停用','w'); return; }
+  if (D.mcpSvcs.length <= 1) { showToast('无法删除','至少保留一个MCP服务','w'); return; }
+  if (s.isDefault) { showToast('暂不能删除','当前服务为默认MCP服务，请先将其他已启用服务设为默认，再删除当前服务。','w'); return; }
   openModal('删除MCP服务',
     '<div style="text-align:center;padding:12px 0"><i class="fas fa-triangle-exclamation" style="font-size:36px;color:var(--danger);margin-bottom:10px;display:block"></i>' +
     '<p style="font-size:14px;margin-bottom:8px">确认删除「<strong>'+s.name+'</strong>」吗？</p>' +
@@ -3071,9 +3134,6 @@ function viewDbPolicy(id) {
   });
   var stTag = p.status === '\u542F\u7528' ? 'tag-green' : 'tag-gray';
   openDrawer('\u6743\u9650\u7B56\u7565\u8BE6\u60C5 - ' + p.name,
-    '<div style="margin-bottom:16px;padding:14px;background:#f9fafb;border-radius:8px">' +
-    '<div style="font-size:16px;font-weight:600">' + p.name + '</div>' +
-    '<div style="display:flex;gap:6px;margin-top:6px"><span class="tag '+stTag+'">'+p.status+'</span></div></div>' +
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;padding:14px;background:#f9fafb;border-radius:8px">' +
     '<div><div style="font-size:11px;color:var(--text-muted)">\u7B56\u7565\u540D\u79F0</div><div style="font-size:13px;font-weight:500">'+p.name+'</div></div>' +
     '<div><div style="font-size:11px;color:var(--text-muted)">\u6570\u636E\u5E93\u8FDE\u63A5\u5668</div><div style="font-size:13px">'+p.connectorName+'</div></div>' +
