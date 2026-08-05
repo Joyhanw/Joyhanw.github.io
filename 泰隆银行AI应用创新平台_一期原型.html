@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>泰隆银行 AI 应用创新平台 · 一期原型</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0f2b46;--navy-light:#1a3f63;--navy-lighter:#2a5580;
+  --gold:#c8963e;--gold-light:#d4a85a;--gold-pale:#fdf6ed;
+  --white:#fff;--bg:#f0f2f5;--card:#fff;
+  --text:#1e2a36;--text2:#5a6b7d;--text3:#8a99ab;
+  --border:#e2e8f0;--shadow:0 1px 6px rgba(0,0,0,.05);
+  --shadow-md:0 3px 14px rgba(0,0,0,.08);
+  --radius:6px;--radius-lg:8px;--radius-xl:12px;
+  --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  --topbar-h:50px;--sidebar-w:210px;
+  --blue:#3b82f6;--green:#10b981;--red:#ef4444;--orange:#f59e0b;
+}
+html,body{height:100%;overflow:hidden;font-family:var(--font);font-size:13px;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+#app{height:100vh;display:flex;flex-direction:column}
+#topbar{height:var(--topbar-h);background:var(--navy);display:flex;align-items:center;padding:0 16px;z-index:100;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.tb-logo{color:var(--white);font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;margin-right:32px;white-space:nowrap}
+.tb-logo .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.tb-center{flex:1;display:flex;align-items:center;justify-content:center}
+.rs-bar{display:flex;gap:3px;background:rgba(255,255,255,.08);border-radius:8px;padding:2px}
+.rs-btn{padding:6px 14px;border:none;border-radius:7px;cursor:pointer;font-size:12px;color:rgba(255,255,255,.65);background:transparent;transition:all .15s;white-space:nowrap;font-family:var(--font)}
+.rs-btn:hover{color:var(--white);background:rgba(255,255,255,.08)}
+.rs-btn.on{background:var(--gold);color:var(--navy);font-weight:700}
+.tb-bell{position:relative;margin-left:auto;color:rgba(255,255,255,.7);cursor:pointer;font-size:19px;padding:4px 8px}
+.tb-bell .bell-dot{position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--red);display:none}
+.tb-bell .bell-dot.show{display:block}
+#main{flex:1;display:flex;overflow:hidden}
+#sidebar{width:var(--sidebar-w);background:var(--navy-light);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.sb-section{padding:12px 0 4px}
+.sb-label{padding:4px 18px;font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.sb-item{padding:9px 18px;cursor:pointer;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px;transition:all .15s;border-left:3px solid transparent;position:relative}
+.sb-item:hover{background:rgba(255,255,255,.06);color:var(--white)}
+.sb-item.on{background:rgba(255,255,255,.1);color:var(--white);border-left-color:var(--gold);font-weight:600}
+.sb-role{font-size:11px;color:rgba(255,255,255,.35);padding:14px 18px 2px;font-weight:600}
+.sb-badge{background:var(--red);color:var(--white);font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;margin-left:auto}
+#content{flex:1;overflow-y:auto;padding:20px 24px;position:relative}
+.pg-title{font-size:19px;font-weight:700;color:var(--navy);margin-bottom:14px}
+.fab-ai{position:fixed;right:28px;bottom:28px;z-index:85;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(15,43,70,.35);transition:all .2s;animation:fabPulse 2.5s infinite}
+.fab-ai:hover{transform:scale(1.08);box-shadow:0 6px 22px rgba(15,43,70,.45)}
+.fab-ai .fab-tip{position:absolute;right:62px;background:var(--navy);color:var(--white);padding:5px 12px;border-radius:6px;font-size:11px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s}
+.fab-ai:hover .fab-tip{opacity:1}
+@keyframes fabPulse{0%,100%{box-shadow:0 4px 16px rgba(15,43,70,.35)}50%{box-shadow:0 4px 24px rgba(59,130,246,.4)}}
+#ai-panel{position:fixed;top:var(--topbar-h);right:-410px;width:390px;height:calc(100vh - var(--topbar-h));background:var(--white);z-index:90;box-shadow:-3px 0 18px rgba(0,0,0,.1);transition:right .28s ease;display:flex;flex-direction:column}
+#ai-panel.open{right:0}
+.ai-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.ai-hd strong{font-size:14px;color:var(--navy)}
+.ai-body{flex:1;overflow-y:auto;padding:14px}
+.ai-inp{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:7px;flex-shrink:0}
+.ai-inp input{flex:1;border:1px solid var(--border);border-radius:18px;padding:7px 12px;font-size:12px;outline:none;font-family:var(--font)}
+.ai-inp button{background:var(--navy);color:var(--white);border:none;border-radius:18px;padding:7px 16px;cursor:pointer;font-size:12px;font-family:var(--font);transition:all .15s}
+.ai-inp button:hover{background:var(--navy-lighter)}
+.ai-msg{margin-bottom:10px;display:flex;gap:7px;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ai-msg.user{flex-direction:row-reverse}
+.ai-msg .bub{max-width:78%;padding:9px 12px;border-radius:12px;font-size:12px;line-height:1.6}
+.ai-msg.ai .bub{background:#f0f4f8;border-bottom-left-radius:3px}
+.ai-msg.user .bub{background:var(--navy);color:var(--white);border-bottom-right-radius:3px}
+.ai-msg .av{width:26px;height:26px;border-radius:50%;background:var(--navy-light);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.ai-msg.user .av{background:var(--gold);color:var(--navy)}
+.ai-typing{display:inline-flex;gap:4px;padding:9px 12px;background:#f0f4f8;border-radius:12px}
+.ai-typing span{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:bounce 1.3s infinite}
+.ai-typing span:nth-child(2){animation-delay:.2s}.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 18px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-family:var(--font);font-weight:500;transition:all .15s;line-height:1.4}
+.btn-pri{background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--white);box-shadow:0 1px 3px rgba(15,43,70,.2)}
+.btn-pri:hover{background:linear-gradient(135deg,var(--navy-light),var(--navy-lighter));transform:translateY(-1px);box-shadow:0 3px 10px rgba(15,43,70,.25)}
+.btn-sec{background:var(--white);color:var(--text2);border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.btn-sec:hover{border-color:var(--navy);color:var(--navy);transform:translateY(-1px)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--white);box-shadow:0 1px 3px rgba(200,150,62,.25)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(200,150,62,.3)}
+.btn-sm{padding:5px 12px;font-size:11px;border-radius:5px}
+.btn-xs{padding:3px 9px;font-size:10px;border-radius:4px}
+.btn-ghost{padding:4px 10px;font-size:11px;border:none;background:transparent;color:var(--navy);cursor:pointer;font-weight:500;transition:all .15s}
+.btn-ghost:hover{background:#e8f0fe;border-radius:4px}
+
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.stat-card{flex:1;min-width:140px;background:var(--card);border-radius:var(--radius-lg);padding:16px 18px;box-shadow:var(--shadow)}
+.stat-card .sv{font-size:22px;font-weight:800;color:var(--navy)}
+.stat-card .sl{font-size:11px;color:var(--text3);margin-top:2px}
+.act-card{background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow);cursor:pointer;transition:all .18s;border:1px solid transparent}
+.act-card:hover{border-color:var(--blue);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.act-card h4{font-size:14px;color:var(--navy);margin-bottom:3px}
+.act-card p{font-size:11px;color:var(--text2)}
+.tag{display:inline-block;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:600}
+.tag-blue{background:#e8f0fe;color:var(--navy-light)}.tag-gold{background:var(--gold-pale);color:var(--gold)}
+.tag-green{background:#e8f5e9;color:#2e7d32}.tag-red{background:#fdecea;color:#c0392b}
+.tag-gray{background:#f0f0f0;color:var(--text3)}.tag-purple{background:#f3e8ff;color:#7c3aed}
+
+.dt{width:100%;border-collapse:collapse;font-size:12px}
+.dt th{background:#f8fafb;padding:9px 10px;text-align:left;font-weight:600;color:var(--text2);border-bottom:2px solid var(--border);font-size:11px}
+.dt td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text)}
+.dt tr:hover td{background:#fafbfc}
+.dt .link{color:var(--navy);cursor:pointer;text-decoration:none;font-weight:600;transition:color .15s}
+.dt .link:hover{color:var(--blue)}
+
+.req-card{background:var(--card);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow);border:2px solid var(--gold);max-width:680px}
+.req-card h3{font-size:16px;color:var(--navy);margin-bottom:14px}
+.rf{display:flex;margin-bottom:8px;font-size:12px}
+.rf .rfl{width:90px;flex-shrink:0;color:var(--text3);font-weight:500}
+.rf .rfv{color:var(--text);font-weight:500}
+.rg{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:12px;font-weight:700;font-size:12px}
+.rg.l1{background:#e8f5e9;color:#2e7d32}
+
+.ps{display:flex;flex-direction:column;gap:10px}
+.ps-item{display:flex;gap:12px;align-items:flex-start;padding:12px;background:#f9fafb;border-radius:var(--radius)}
+.ps-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--white);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.ps-tl{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:1px}
+.ps-ds{font-size:11px;color:var(--text2)}
+
+.gen-bar{height:6px;background:var(--border);border-radius:3px;margin:16px 0;overflow:hidden}
+.gen-bar-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:3px;transition:width .5s ease}
+.gen-log{font-size:11px;color:var(--text2);line-height:2.2}
+.gen-log .ok{color:var(--green)}.gen-log .act{color:var(--navy);font-weight:600}
+
+/* Phone frame */
+.phone-frame{width:340px;background:#f5f5f7;border-radius:36px;box-shadow:0 20px 50px rgba(0,0,0,.25),0 0 0 4px #1a1a1a,0 0 0 6px #333;overflow:hidden;margin:0 auto;position:relative}
+.phone-notch{background:#1a1a1a;height:28px;display:flex;align-items:center;justify-content:center;position:relative}
+.phone-notch::after{content:'';width:80px;height:5px;background:#333;border-radius:3px;position:absolute;bottom:6px}
+.phone-status-bar{background:#1a1a1a;padding:4px 20px 8px;font-size:10px;color:#999;display:flex;justify-content:space-between}
+.phone-title-bar{background:#fff;color:#1a1a1a;padding:12px 16px;font-size:14px;font-weight:700;text-align:center;border-bottom:1px solid #e5e5ea;display:flex;align-items:center;justify-content:center;gap:6px}
+.phone-title-bar .back-arrow{position:absolute;left:14px;font-size:16px;cursor:pointer}
+.phone-body{padding:12px;min-height:300px;max-height:400px;overflow-y:auto;background:#f2f2f7;font-size:11px}
+.phone-tabs{display:flex;background:#fff;border-bottom:1px solid #e5e5ea}
+.phone-tab{flex:1;padding:10px 0;font-size:11px;text-align:center;cursor:pointer;color:#8e8e93;border-bottom:2px solid transparent;transition:all .15s}
+.phone-tab.on{color:#007aff;font-weight:600;border-bottom-color:#007aff}
+.phone-bottom-bar{background:#fff;padding:6px 0 20px;display:flex;justify-content:space-around;border-top:1px solid #e5e5ea;font-size:10px;color:#8e8e93}
+.phone-home-bar{width:120px;height:4px;background:#ccc;border-radius:2px;margin:6px auto 0}
+.sb-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:14px}
+.sb-tab{padding:7px 16px;cursor:pointer;font-size:12px;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.sb-tab:hover{color:var(--navy)}.sb-tab.on{color:var(--navy);font-weight:600;border-bottom-color:var(--navy)}
+
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-ov.open{opacity:1;pointer-events:auto}
+.modal-box{background:var(--white);border-radius:var(--radius-lg);padding:24px 28px;width:520px;max-width:92vw;box-shadow:0 12px 40px rgba(0,0,0,.2);max-height:80vh;overflow-y:auto}
+.modal-box h3{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.fg{margin-bottom:12px}.fl{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:3px;display:block}
+.fi{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:5px;font-size:12px;outline:none;font-family:var(--font);transition:border .15s}
+.fi:focus{border-color:var(--navy);box-shadow:0 0 0 2px rgba(15,43,70,.06)}
+.fta{min-height:70px;resize:vertical}
+select.fi{appearance:none;background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238a99ab' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;padding-right:26px}
+
+.toast-ct{position:fixed;top:14px;right:14px;z-index:300}
+.toast{padding:10px 18px;border-radius:6px;font-size:12px;box-shadow:0 6px 20px rgba(0,0,0,.15);animation:slideInT .28s;margin-bottom:8px;display:flex;align-items:center;gap:8px;background:var(--navy);color:var(--white)}
+.toast.ok{background:var(--green)}.toast.warn{background:var(--orange);color:var(--white)}
+.toast .tc{background:none;border:none;color:var(--white);cursor:pointer;font-size:15px;margin-left:6px;opacity:.7}
+@keyframes slideInT{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+.notice-bar{background:#fff3e0;border:1px solid var(--gold-light);border-radius:var(--radius);padding:9px 14px;font-size:11px;color:#b8860b;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.col2{display:flex;gap:16px;flex-wrap:wrap}.col2>*{flex:1;min-width:260px}
+
+.app-preview-tabs{display:flex;gap:0;background:#f8fafb;border-bottom:1px solid var(--border);padding:0 10px}
+.app-preview-tab{padding:7px 14px;font-size:11px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.app-preview-tab:hover,.app-preview-tab.on{color:var(--navy);font-weight:600;border-bottom-color:var(--navy)}
+.detail-back{cursor:pointer;color:var(--text2);font-size:12px;display:inline-flex;align-items:center;gap:4px;margin-bottom:14px;transition:color .15s}
+.detail-back:hover{color:var(--navy)}
+
+.test-section{margin-bottom:18px}
+.test-section h4{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.test-item{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;background:#f9fafb;border-radius:var(--radius);margin-bottom:4px;font-size:12px}
+.test-item.pass{border-left:3px solid var(--green)}
+.acc-item{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:4px;cursor:pointer;border-radius:var(--radius);border:1px solid var(--border);font-size:12px;transition:all .15s}
+.acc-item:hover{border-color:var(--navy)}.acc-item.checked{background:#f0fdf4;border-color:var(--green)}
+.cb-box{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:2px solid var(--text3);border-radius:3px;flex-shrink:0;font-size:12px;transition:all .15s}
+.cb-box.on{background:var(--green);border-color:var(--green);color:var(--white)}
+
+.review-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px}
+.review-tab{padding:8px 20px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;display:flex;align-items:center;gap:6px}
+.review-tab:hover{color:var(--navy)}.review-tab.on{color:var(--navy);font-weight:600;border-bottom-color:var(--navy)}
+.review-tab .tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:18px;border-radius:9px;font-size:10px;padding:0 6px;font-weight:700}
+.review-tab .tab-count.red{background:#fdecea;color:var(--red)}.review-tab .tab-count.green{background:#e8f5e9;color:#2e7d32}.review-tab .tab-count.gray{background:#f0f0f0;color:var(--text3)}
+.gap-source{font-size:10px;background:#f3e8ff;color:#7c3aed;padding:1px 6px;border-radius:6px;margin-left:4px}
+
+/* Manager dashboard styles - DARK THEME */
+.mg-dash-wrap{background:linear-gradient(135deg,#0a1628 0%,#0f2b46 30%,#132d4a 60%,#0a1628 100%);border-radius:0;margin:-20px -24px;padding:24px;min-height:calc(100vh - 50px)}
+.mg-dash-wrap .pg-title{color:rgba(255,255,255,.9)!important}
+.mg-hero{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.mg-hero .mg-stat{flex:1;min-width:200px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden;backdrop-filter:blur(10px)}
+.mg-stat::after{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(200,150,62,.15) 0%,transparent 70%)}
+.mg-stat .mg-stat-icon{font-size:30px;margin-bottom:8px}
+.mg-stat .mg-stat-val{font-size:34px;font-weight:800;color:#fff;line-height:1}
+.mg-stat .mg-stat-lbl{font-size:12px;color:rgba(255,255,255,.7);margin-top:4px}
+.mg-stat .mg-stat-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.mg-stat.accent{border:1px solid rgba(200,150,62,.3);background:linear-gradient(135deg,rgba(200,150,62,.12),rgba(200,150,62,.03))}
+.mg-stat.accent .mg-stat-val{color:var(--gold-light)}
+
+.dark-chart-container{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px 20px;margin-bottom:14px;backdrop-filter:blur(10px)}
+.dark-chart-container h4{font-size:13px;font-weight:600;color:rgba(255,255,255,.85);margin-bottom:12px}
+.dark-bar-label{color:rgba(255,255,255,.5)!important}
+.dark-bar-val{color:rgba(255,255,255,.8)!important}
+.dark-dt{color:rgba(255,255,255,.8)}
+.dark-dt th{background:rgba(255,255,255,.05)!important;color:rgba(255,255,255,.5)!important;border-bottom-color:rgba(255,255,255,.1)!important}
+.dark-dt td{color:rgba(255,255,255,.8);border-bottom-color:rgba(255,255,255,.06)}
+.dark-dt tr:hover td{background:rgba(255,255,255,.04)}
+.dark-donut-legend{color:rgba(255,255,255,.6)!important}
+.dark-tag{display:inline-block;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:600}
+.dark-tag.green{background:rgba(16,185,129,.2);color:#34d399}
+.dark-north-star{background:linear-gradient(135deg,rgba(200,150,62,.15),rgba(200,150,62,.05));border:1px solid rgba(200,150,62,.2);border-radius:14px;padding:22px 28px;margin-bottom:16px;text-align:center}
+.dark-north-star .ns-label{font-size:12px;color:rgba(255,255,255,.5)}
+.dark-north-star .ns-title{font-size:18px;font-weight:700;color:rgba(255,255,255,.9);margin:6px 0}
+.dark-north-star .ns-val{font-size:48px;font-weight:800;background:linear-gradient(180deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.dark-gate-tag{background:rgba(16,185,129,.1);color:#34d399;padding:4px 12px;border-radius:10px;font-size:10px;border:1px solid rgba(16,185,129,.2)}
+/* View switcher */
+.mg-vw-bar{display:flex;gap:0;background:rgba(255,255,255,.06);border-radius:10px;padding:2px;display:inline-flex;margin-bottom:20px}
+.mg-vw-btn{padding:7px 18px;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:rgba(255,255,255,.5);background:transparent;transition:all .15s;font-family:var(--font)}
+.mg-vw-btn:hover{color:rgba(255,255,255,.8)}
+.mg-vw-btn.on{background:var(--gold);color:var(--navy);font-weight:700}
+.mg-br-sel{margin-left:auto;padding:7px 12px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.7);font-size:11px;outline:none;font-family:var(--font);cursor:pointer}
+.mg-br-sel:focus{border-color:var(--gold)}
+.mg-table-wrap{overflow-x:auto}
+.mg-br-table{width:100%;border-collapse:collapse;font-size:11px}
+.mg-br-table th{background:rgba(255,255,255,.05);padding:8px 10px;text-align:left;font-weight:600;color:rgba(255,255,255,.5);border-bottom:1px solid rgba(255,255,255,.08);font-size:10px}
+.mg-br-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.75)}
+.mg-br-table tr:hover td{background:rgba(255,255,255,.03)}
+/* Bar chart */
+.bar-chart{display:flex;align-items:flex-end;gap:16px;height:140px;padding:0 4px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.bar-fill{width:100%;max-width:40px;border-radius:4px 4px 0 0;transition:height .5s ease}
+.bar-fill.gold{background:linear-gradient(180deg,var(--gold-light),var(--gold))}
+.bar-fill.navy{background:linear-gradient(180deg,var(--navy-lighter),var(--navy))}
+.bar-label{font-size:10px;color:var(--text3);text-align:center;line-height:1.3}
+.bar-val{font-size:11px;font-weight:700;color:var(--navy)}
+/* Donut */
+.donut-wrap{display:flex;align-items:center;gap:24px;justify-content:center}
+.donut{width:100px;height:100px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.donut-inner{width:60px;height:60px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--navy)}
+.donut-legend{font-size:11px;color:var(--text2);line-height:2}
+
+@media(max-width:900px){#sidebar{display:none}#ai-panel{width:100%;right:-100%}.rs-btn{padding:5px 8px;font-size:10px}.rs-bar{gap:1px}.fab-ai{right:14px;bottom:14px}.phone-frame{width:100%}.mg-hero .mg-stat{min-width:140px}}
+</style>
+</head>
+<body>
+
+<div id="app">
+<div id="topbar">
+  <div class="tb-logo"><span class="dot"></span>泰隆银行 AI 应用创新平台</div>
+  <div class="tb-center"><div class="rs-bar" id="rsBar"></div></div>
+  <div class="tb-bell" id="bellIcon" onclick="togBell()">🔔<span class="bell-dot" id="bellDot"></span></div>
+</div>
+<div id="main">
+  <div id="sidebar"></div>
+  <div id="content"></div>
+  <div id="ai-panel">
+    <div class="ai-hd"><strong>AI 需求助手</strong><button class="btn-sec btn-sm" onclick="closeAi()">✕</button></div>
+    <div class="ai-body" id="aiChatBody"></div>
+    <div class="ai-inp" id="aiChatInput"><input type="text" id="aiInput" placeholder="用大白话描述你想解决的问题…" onkeydown="event.key==='Enter'&&sendAi()"><button onclick="sendAi()">发送</button></div>
+  </div>
+</div>
+<div class="fab-ai" id="fabAi" onclick="openAiFromFab()"><span class="fab-tip">AI 需求助手</span>💬</div>
+<div class="modal-ov" id="modalOv" onclick="closeModal()"><div class="modal-box" id="modalBox" onclick="event.stopPropagation()"></div></div>
+<div class="toast-ct" id="toastCt"></div>
+</div>
+
+<script>
+// ===== STATE =====
+var S={
+  role:'xiaobai', view:'home', prevView:'home',
+  aiOpen:false, aiStep:0, genPct:0, genTxt:'', sbTab:'list', sbFilter:'',
+  gapResolved:false, notifXiaobai:0, notifLaowang:1, notifZhang:0,
+  appStatus:'planning', reviewTab:'pending',
+  mgView:'hq', mgSelectedBranch:'chengdong',
+  detailAppId:null, templateMarked:false
+};
+
+function hasAcceptItems(){return S.acceptItems&&S.acceptItems.item1&&S.acceptItems.item2&&S.acceptItems.item3&&S.acceptItems.item4}
+
+// ===== DATA =====
+var visits=[
+  {id:1,name:'浙江恒达贸易有限公司',ind:'商贸',date:'2026-08-03',method:'上门',content:'沟通供应链融资方案。',followup:'2026-08-10'},
+  {id:2,name:'杭州鑫茂农业合作社',ind:'农业',date:'2026-08-02',method:'电话',content:'确认贷款申请进度。',followup:'2026-08-09'},
+  {id:3,name:'温州创新科技有限公司',ind:'服务业',date:'2026-08-01',method:'微信',content:'发送结算产品资料。',followup:'2026-08-06'},
+  {id:4,name:'宁波丰源机械有限公司',ind:'制造业',date:'2026-07-30',method:'上门',content:'考察新厂房建设进度。',followup:'2026-08-15'},
+  {id:5,name:'台州海润水产有限公司',ind:'商贸',date:'2026-07-29',method:'会议',content:'季度经营分析会。',followup:'2026-08-20'}
+];
+var apps=[
+  {id:1,name:'客户经理拜访管理',type:'自建',status:'已发布',visits:86,users:15,date:'2026-08-01',owner:'陈小白',desc:'替代Excel手工记录客户拜访信息，支持录入、筛选和月度统计看板。',scope:'城东支行客户经理岗',deps:'UI组件库、数据存储',preview:['拜访列表','新增拜访','统计看板']},
+  {id:2,name:'支行活动报名统计',type:'模板创建',status:'已发布',visits:34,users:8,date:'2026-07-20',owner:'王运营',desc:'活动报名信息收集与统计，支持名单导出。',scope:'城北支行全岗位',deps:'UI组件库、数据存储、消息通知',preview:['报名列表','新增报名','数据汇总']},
+  {id:3,name:'对公客户信息台账',type:'部门应用',status:'试运行',visits:12,users:3,date:'2026-07-15',owner:'张经理',desc:'对公客户信息集中管理和快速查询。',scope:'总行公司业务部',deps:'UI组件库、数据存储、组织人员查询',preview:['客户列表','客户详情','筛选查询']}
+];
+var templates=[];
+var myDemands=[
+  {id:1,name:'客户经理拜访管理',status:'已确认',date:'2026-08-01',content:'替代Excel手工记录客户拜访信息，自动汇总台账和统计'}
+];
+var caps=[
+  {id:1,name:'UI组件库（表单/表格/图表）',type:'组件',owner:'科技部-前端组',status:'已上线',apps:12,calls:2340},
+  {id:2,name:'数据存储服务',type:'技术组件',owner:'科技部-数据组',status:'已上线',apps:15,calls:8900},
+  {id:3,name:'消息通知服务',type:'API',owner:'科技部-中间件组',status:'已上线',apps:8,calls:1200},
+  {id:4,name:'组织人员查询',type:'API',owner:'科技部-HR系统',status:'已上线',apps:6,calls:450},
+  {id:5,name:'审批流程组件',type:'业务组件',owner:'科技部-流程组',status:'已上线',apps:4,calls:320},
+  {id:6,name:'文件上传服务',type:'技术组件',owner:'科技部-存储组',status:'已上线',apps:10,calls:2100},
+  {id:7,name:'客户档案查询',type:'API',owner:'——',status:'缺口',apps:0,calls:0}
+];
+var gapTickets=[
+  {id:1,cap:'客户档案查询',source:'需求自动发现',req:'陈小白-城东支行',app:'客户经理拜访管理',freq:'高',reason:'拜访登记时自动带出客户基本信息',date:'2026-08-03',status:'待处理'},
+  {id:2,cap:'组织人员查询（支行级）',source:'需求自动发现',req:'王运营-城北支行',app:'支行活动报名统计',freq:'中',reason:'需要按支行筛选人员名单',date:'2026-08-02',status:'待处理'},
+  {id:3,cap:'文件导出服务',source:'运营场景评估',req:'阿芳-平台运营',app:'——',freq:'中',reason:'多个场景需要Excel/PDF导出功能',date:'2026-08-01',status:'已处理'},
+  {id:4,cap:'外部地图服务',source:'需求自动发现',req:'李强-分行营业部',app:'——',freq:'低',reason:'拜访路线规划需要地图能力，非刚需暂不处理',date:'2026-07-28',status:'暂不处理'}
+];
+var auditQueue=[
+  {id:1,type:'需求审核',app:'客户经理拜访管理',applicant:'陈小白',dept:'城东支行',date:'2026-08-04',status:'待审核',scope:'城东支行客户经理岗',grade:'L1',info:'不涉及客户敏感信息，独立轻应用'}
+];
+var auditHistory=[
+  {id:101,type:'需求审核',app:'支行活动报名统计',applicant:'王运营',dept:'城北支行',date:'2026-08-01',result:'通过',reviewer:'张行长'},
+  {id:100,type:'需求审核',app:'对公客户信息台账',applicant:'张经理',dept:'总行公司部',date:'2026-07-18',result:'通过',reviewer:'张行长'}
+];
+var mockRules=[
+  {id:1,name:'禁止未授权API调用',type:'硬规则',scope:'全平台',status:'已生效',desc:'模型不得凭名称猜测内部接口、字段或权限。'},
+  {id:2,name:'敏感字段脱敏',type:'硬规则',scope:'日志/测试/上下文',status:'已生效',desc:'手机号、身份证、账户号等敏感字段自动脱敏。'},
+  {id:3,name:'禁止硬编码密钥',type:'硬规则',scope:'代码生成',status:'已生效',desc:'生成的代码中不得包含硬编码密钥、Token或密码。'},
+  {id:4,name:'依赖白名单',type:'硬规则',scope:'构建/发布',status:'已生效',desc:'仅允许审批过的依赖包版本。'},
+  {id:5,name:'数据库危险操作拦截',type:'硬规则',scope:'运行时',status:'已生效',desc:'DROP TABLE、TRUNCATE等危险操作由策略引擎硬拦截。'},
+  {id:6,name:'L1应用数据隔离',type:'策略',scope:'L1应用',status:'已生效',desc:'L1应用自动分配独立Schema和最小权限账户。'}
+];
+var mockEnvs=[
+  {id:1,name:'开发环境',domain:'dev.ai.tlbank.com',apps:8,cpu:'32%',mem:'45%',desc:'应用创建和初步调试'},
+  {id:2,name:'测试环境',domain:'test.ai.tlbank.com',apps:5,cpu:'28%',mem:'38%',desc:'自动测试和安全扫描'},
+  {id:3,name:'灰度环境',domain:'gray.ai.tlbank.com',apps:2,cpu:'15%',mem:'22%',desc:'小范围发布验证'},
+  {id:4,name:'生产环境',domain:'app.tlbank.com',apps:3,cpu:'42%',mem:'58%',desc:'正式运行环境，全量用户'}
+];
+var scenes=[
+  {id:1,name:'客户经理拜访管理',from:'陈小白-城东支行',score:'★★★★★',status:'已上线',date:'2026-08-01'},
+  {id:2,name:'支行活动报名统计',from:'城北支行',score:'★★★★',status:'孵化中',date:'2026-07-22'},
+  {id:3,name:'对公客户信息台账',from:'张经理-总行',score:'★★★',status:'试运行',date:'2026-07-15'},
+  {id:4,name:'贷款审批材料清单',from:'李经理-分行',score:'★★★★',status:'评估中',date:'2026-08-02'},
+  {id:5,name:'员工培训签到统计',from:'人力资源部',score:'★★★',status:'评估中',date:'2026-07-28'}
+];
+var seedUsers=[
+  {id:1,name:'陈小白',dept:'城东支行',role:'客户经理',trained:true,certified:true,apps:1,firstDate:'2026-08-01'},
+  {id:2,name:'张敏',dept:'城北支行',role:'客户经理',trained:true,certified:false,apps:0,firstDate:'2026-07-25'},
+  {id:3,name:'李强',dept:'分行营业部',role:'业务骨干',trained:true,certified:true,apps:2,firstDate:'2026-07-20'},
+  {id:4,name:'王红',dept:'城东支行',role:'综合岗',trained:false,certified:false,apps:0,firstDate:''},
+  {id:5,name:'赵刚',dept:'总行公司部',role:'产品经理',trained:true,certified:false,apps:1,firstDate:'2026-07-18'}
+];
+
+// Branch-level dashboard data
+var branchData=[
+  {id:'chengdong',name:'城东支行',scenes:5,agents:3,calls:6.8,users:180,health:100,rank:1,depts:[{n:'客户经理组',apps:3,mau:8,uses:52,active:1},{n:'综合业务组',apps:1,mau:3,uses:18,active:2},{n:'风控管理组',apps:1,mau:2,uses:10,active:3}]},
+  {id:'chengbei',name:'城北支行',scenes:3,agents:2,calls:4.2,users:120,health:96,rank:2,depts:[{n:'客户经理组',apps:2,mau:6,uses:28,active:1},{n:'运营组',apps:1,mau:2,uses:6,active:2}]},
+  {id:'fhsq',name:'分行营业部',scenes:2,agents:2,calls:2.5,users:80,health:92,rank:3,depts:[{n:'业务组',apps:1,mau:3,uses:9,active:1},{n:'综合组',apps:1,mau:2,uses:3,active:3}]},
+  {id:'zonghanggs',name:'总行公司业务部',scenes:4,agents:4,calls:5.1,users:200,health:98,rank:'',depts:[{n:'公司一部',apps:2,mau:10,uses:30,active:1},{n:'公司二部',apps:1,mau:4,uses:14,active:1},{n:'综合管理组',apps:1,mau:3,uses:7,active:2}]},
+  {id:'zonghangls',name:'总行零售业务部',scenes:3,agents:3,calls:3.8,users:150,health:94,rank:'',depts:[{n:'零售一组',apps:2,mau:7,uses:22,active:1},{n:'零售二组',apps:1,mau:3,uses:11,active:2}]},
+];
+var branchRank=[{n:'城东支行',v:5,pct:100,c:'#d4a85a'},{n:'总行公司部',v:4,pct:80,c:'#60a5fa'},{n:'总行零售部',v:3,pct:60,c:'#818cf8'},{n:'城北支行',v:3,pct:60,c:'#34d399'},{n:'分行营业部',v:2,pct:40,c:'#f472b6'}];
+
+var navData={
+  xiaobai:[{sec:'工作台',items:[{id:'home',label:'首页工作台',icon:'🏠'},{id:'mydemands',label:'我的需求',icon:'📝'},{id:'market',label:'应用市场',icon:'🛒'},{id:'myapps',label:'我的应用',icon:'📱'}]}],
+  zhang:[{sec:'审核管理',items:[{id:'review',label:'审核管理',icon:'📋',badge:auditQueue.filter(function(r){return r.status==='待审核'}).length||null}]}],
+  laowang:[{sec:'能力与治理',items:[{id:'cap-center',label:'能力中心',icon:'🧩'},{id:'gap-tickets',label:'缺口工单',icon:'📋',badge:gapTickets.filter(function(g){return g.status==='待处理'}).length||null},{id:'sys-rules',label:'规则配置',icon:'⚙️'},{id:'sys-env',label:'环境管理',icon:'🖥'}]}],
+  yunying:[{sec:'运营管理',items:[{id:'op-dashboard',label:'运营驾驶舱',icon:'📊'},{id:'op-scene',label:'场景池',icon:'🎯'},{id:'op-users',label:'用户与培训',icon:'👥'}]}],
+  manager:[{sec:'管理视图',items:[{id:'mg-dashboard',label:'管理驾驶舱',icon:'📈'}]}]
+};
+var navDef={xiaobai:'home',zhang:'review',laowang:'cap-center',yunying:'op-dashboard',manager:'mg-dashboard'};
+var roleLabels={xiaobai:'👤 客户经理',zhang:'✅ 业务Owner',laowang:'🔧 总行科技',yunying:'📊 平台运营',manager:'📈 管理者'};
+var roleOptions=[
+  {id:'xiaobai',label:'👤 陈小白 · 客户经理'},
+  {id:'zhang',label:'✅ 张行长 · 业务Owner'},
+  {id:'laowang',label:'🔧 王科技 · 总行科技'},
+  {id:'yunying',label:'📊 阿芳 · 平台运营'},
+  {id:'manager',label:'📈 李行长 · 管理者'}
+];
+
+// ===== INIT =====
+function init(){buildRS();S.view=navDef[S.role];renderAll()}
+function buildRS(){
+  var h='';
+  for(var i=0;i<roleOptions.length;i++){
+    var r=roleOptions[i];var cls=(S.role===r.id)?' on':'';
+    h+='<button class="rs-btn'+cls+'" onclick="switchRole(\''+r.id+'\')">'+r.label+'</button>';
+  }
+  document.getElementById('rsBar').innerHTML=h;updateBell();
+}
+function updateBell(){
+  var t=S.notifXiaobai+S.notifLaowang+S.notifZhang;
+  var d=document.getElementById('bellDot');if(t>0)d.classList.add('show');else d.classList.remove('show');
+  document.getElementById('fabAi').style.display=(S.role==='xiaobai')?'flex':'none';
+}
+function renderAll(){renderSB();renderC();renderAI()}
+function renderSB(){
+  var nav=navData[S.role]||[];var h='<div class="sb-role">'+(roleLabels[S.role]||'')+'</div>';
+  for(var s=0;s<nav.length;s++){
+    var sec=nav[s];h+='<div class="sb-section"><div class="sb-label">'+sec.sec+'</div>';
+    for(var i=0;i<sec.items.length;i++){
+      var item=sec.items[i];
+      var badge=item.badge?'<span class="sb-badge">'+item.badge+'</span>':'';
+      var cls=(S.view===item.id)?' on':'';
+      h+='<div class="sb-item'+cls+'" onclick="switchView(\''+item.id+'\')">'+item.icon+' '+item.label+badge+'</div>';
+    }
+    h+='</div>';
+  }
+  document.getElementById('sidebar').innerHTML=h;
+}
+function renderC(){
+  var c=document.getElementById('content');
+  if(S.view==='app-detail'){pgAppDetail(c);return}
+  if(S.view==='demand-detail'){pgDemandDetail(c);return}
+  var fn={xiaobai:rXb,zhang:rZhang,laowang:rLw,yunying:rYy,manager:rMg}[S.role];
+  if(fn)fn(c);
+}
+function renderAI(){if(!S.aiOpen)document.getElementById('ai-panel').classList.remove('open')}
+function switchRole(r){S.role=r;S.view=navDef[r];S.prevView=navDef[r];S.detailAppId=null;S.reviewTab='pending';closeAi();buildRS();document.getElementById('aiChatInput').style.display='flex';renderAll()}
+function switchView(v){if(S.view!=='app-detail'&&S.view!=='demand-detail')S.prevView=S.view;S.view=v;renderAll()}
+
+// ==========================
+// XIAOBAI
+// ==========================
+function rXb(c){
+  var m={home:pgHome,mydemands:pgMyDemands,market:pgMarket,myapps:pgMyApps,confirm:pgConfirm,plan:pgPlan,generate:pgGen,testverify:testVerifyPage,sandbox:pgSandbox};
+  (m[S.view]||pgHome)(c);
+}
+function pgHome(c){
+  var n='';
+  if(S.appStatus==='published'&&S.notifXiaobai>0)n='<div class="notice-bar" style="background:#f0fdf4;color:#2e7d32;border-color:#bbf7d0">✅ 「客户经理拜访管理」已通过审核并发布。</div>';
+  else if(S.appStatus==='planning'&&S.notifXiaobai>0)n='<div class="notice-bar" style="background:#f0fdf4;color:#2e7d32;border-color:#bbf7d0">✅ 需求审核已通过！可以进入方案规划。<a href="javascript:void(0)" onclick="S.notifXiaobai=0;updateBell();switchView(\'mydemands\')" style="color:var(--navy);font-weight:600;cursor:pointer">立即开始 →</a></div>';
+  var appCards='';
+  for(var i=0;i<apps.length;i++){
+    var a=apps[i];var click=(a.name.indexOf('拜访')>=0)?'switchView(\'sandbox\')':'showAppDetail('+a.id+')';
+    appCards+='<div class="act-card" style="flex:1;min-width:190px" onclick="'+click+'"><h4>📱 '+a.name+'</h4><p><span class="tag tag-'+(a.status==='已发布'?'green':'gold')+'">'+a.status+'</span> · '+a.visits+'次 · '+a.users+'人</p></div>';
+  }
+  c.innerHTML='<div class="pg-title">首页工作台</div>'+n+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px">'+
+    '<div class="act-card" onclick="openAiFromFab()"><div style="font-size:24px;margin-bottom:4px">💬</div><h4>AI 创建新应用</h4><p>描述业务问题，AI 帮你把想法变成工具</p></div>'+
+    '<div class="act-card" onclick="switchView(\'market\')"><div style="font-size:24px;margin-bottom:4px">🔍</div><h4>应用市场</h4><p>搜索现有应用，直接使用或复制改造</p></div>'+
+    '<div class="act-card" onclick="switchView(\'myapps\')"><div style="font-size:24px;margin-bottom:4px">📱</div><h4>我的应用</h4><p>查看你创建或使用的应用</p></div>'+
+    '<div class="act-card" onclick="switchView(\'mydemands\')"><div style="font-size:24px;margin-bottom:4px">📝</div><h4>我的需求</h4><p>查看你提交过的需求及状态</p></div></div>'+
+    '<div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:10px">最近使用</div>'+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap">'+appCards+'</div>';
+}
+function pgMyDemands(c){
+  var rows='';
+  for(var i=0;i<myDemands.length;i++){
+    var d=myDemands[i];var tg='gray',st=d.status;
+    if(d.status==='已发布')tg='green';else if(d.status==='需求已通过')tg='green';else if(d.status==='审核中')tg='gold';else if(d.status==='已确认')tg='blue';
+    var btn='';
+    if(d.status==='已发布')btn='<button class="btn-sec btn-xs" onclick="switchView(\'sandbox\')">查看</button>';
+    else if(d.status==='需求已通过')btn='<button class="btn-pri btn-xs" onclick="switchView(\'plan\')">进入方案</button>';
+    else if(d.status==='审核中')btn='<button class="btn-ghost btn-xs" disabled>审核中…</button>';
+    else btn='<button class="btn-pri btn-xs" onclick="switchView(\'confirm\')">提交审核</button>';
+    rows+='<tr><td><span class="link" onclick="showDemandDetail('+d.id+')">'+d.name+'</span></td><td><span class="tag tag-'+tg+'">'+d.status+'</span></td><td>'+d.date+'</td><td style="font-size:11px;color:var(--text2)">'+d.content+'</td><td>'+btn+'</td></tr>';
+  }
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div class="pg-title" style="margin-bottom:0">我的需求</div><button class="btn-pri" onclick="openAiFromFab()">新建需求</button></div>'+
+    '<table class="dt"><thead><tr><th>需求名称</th><th>状态</th><th>创建日期</th><th>说明</th><th>操作</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+function showDemandDetail(id){S.prevView='mydemands';S.view='demand-detail';renderAll()}
+function pgDemandDetail(c){
+  var btn='';
+  if(S.appStatus==='published')btn='<button class="btn-pri btn-sm" onclick="switchView(\'sandbox\')">查看已发布应用</button>';
+  else if(S.appStatus==='reviewing')btn='<button class="btn-sec btn-sm" disabled>审核中，请等待审批</button>';
+  else if(S.appStatus==='planning')btn='<button class="btn-pri btn-sm" onclick="switchView(\'plan\')">进入方案规划 →</button>';
+  else if(S.appStatus==='generated')btn='<button class="btn-pri btn-sm" onclick="switchView(\'testverify\')">进入测试验证 →</button>';
+  else if(S.appStatus==='testing')btn='<button class="btn-pri btn-sm" onclick="switchView(\'testverify\')">继续测试验证</button>';
+  else btn='<button class="btn-pri btn-sm" onclick="openAiContinue()">继续对话修改</button>';
+  c.innerHTML='<div class="detail-back" onclick="switchView(\'mydemands\')">← 返回我的需求</div><div class="pg-title">客户经理拜访管理</div>'+
+    '<div style="max-width:680px"><div class="req-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3>客户经理拜访管理</h3><span class="rg l1">L1 · 部门内可自主开发</span></div>'+
+    '<div class="rf"><span class="rfl">业务目标</span><span class="rfv">替代 Excel 手工记录，自动汇总台账和统计</span></div>'+
+    '<div class="rf"><span class="rfl">目标用户</span><span class="rfv">城东支行 15 名客户经理</span></div>'+
+    '<div class="rf"><span class="rfl">核心功能</span><span class="rfv">① 拜访记录录入 ② 历史列表筛选 ③ 月度统计看板</span></div>'+
+    '<div class="rf"><span class="rfl">创建日期</span><span class="rfv">2026-08-01</span></div>'+
+    '<div style="margin-top:14px;display:flex;gap:8px">'+btn+'<button class="btn-sec btn-sm" onclick="openAiFromFab()">新建需求</button></div></div></div>';
+}
+function openAiContinue(){
+  S.aiOpen=true;S.aiStep=1;switchView('home');
+  var p=document.getElementById('ai-panel');p.classList.add('open');
+  document.getElementById('aiChatBody').innerHTML='';
+  document.getElementById('aiChatInput').style.display='flex';
+  document.getElementById('aiInput').placeholder='继续描述你需要的修改…';
+  addMsg('ai','欢迎回来！你的「客户经理拜访管理」需求卡已保存。可以继续补充需求细节，或直接确认进入下一步。');
+}
+function pgMarket(c){
+  var cards='';
+  for(var i=0;i<apps.length;i++){
+    var a=apps[i];var tt=(a.type.indexOf('模板')>=0)?'blue':(a.type==='部门应用'?'gold':'green');
+    var btnClk=(a.name.indexOf('拜访')>=0)?'switchView(\'sandbox\')':'toast(\'已申请使用权限\',\'ok\')';
+    cards+='<div class="act-card" onclick="showAppDetail('+a.id+')"><div style="display:flex;justify-content:space-between;align-items:start"><h4>'+a.name+'</h4><span class="tag tag-'+tt+'">'+a.type+'</span></div><p>'+a.owner+' · '+a.users+'人 · '+a.visits+'次 · '+a.date+'</p><p><span class="tag tag-green">'+a.status+'</span> · '+a.scope+'</p><div style="margin-top:6px;display:flex;gap:5px" onclick="event.stopPropagation()"><button class="btn-pri btn-sm" onclick="'+btnClk+'">直接使用</button><button class="btn-sec btn-sm" onclick="copyApp('+a.id+')">复制改造</button></div></div>';
+  }
+  for(var j=0;j<templates.length;j++){
+    var t=templates[j];
+    cards+='<div class="act-card" style="border:1px dashed var(--gold-light)" onclick="copyTemplate('+t.id+')"><div style="display:flex;justify-content:space-between;align-items:start"><h4>'+t.name+'</h4><span class="tag tag-purple">'+t.type+'</span></div><p>来源: '+t.owner+' · '+t.scope+'</p><p style="font-size:11px;color:var(--text2)">'+t.desc+'</p><div style="margin-top:6px" onclick="event.stopPropagation()"><button class="btn-pri btn-sm" onclick="copyTemplate('+t.id+')">使用模板创建</button></div></div>';
+  }
+  c.innerHTML='<div class="pg-title">应用市场</div><div style="display:flex;gap:8px;margin-bottom:14px"><input class="fi" style="flex:1;max-width:320px" placeholder="搜索应用…"><button class="btn-sec btn-sm">全部</button><button class="btn-sec btn-sm">已认证</button><button class="btn-sec btn-sm">模板可复用</button></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">'+cards+'</div>';
+}
+function copyTemplate(id){toast('已基于模板创建新应用，请在「我的需求」中查看','ok')}
+function copyApp(id){var a=apps.find(function(x){return x.id===id});toast('已创建副本「'+a.name+'（副本）」','ok')}
+function pgMyApps(c){
+  var rows='';
+  for(var i=0;i<apps.length;i++){var a=apps[i];rows+='<tr><td><span class="link" onclick="showAppDetail('+a.id+')">'+a.name+'</span></td><td><span class="tag tag-blue">'+a.type+'</span></td><td><span class="tag tag-'+(a.status==='已发布'?'green':'gold')+'">'+a.status+'</span></td><td>'+a.visits+'</td><td>'+a.users+'人</td><td>'+a.date+'</td><td><button class="btn-sec btn-xs" onclick="showAppDetail('+a.id+')">查看</button></td></tr>';}
+  c.innerHTML='<div class="pg-title">我的应用</div><table class="dt"><thead><tr><th>应用名称</th><th>类型</th><th>状态</th><th>使用次数</th><th>使用者</th><th>创建日期</th><th>操作</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+function showAppDetail(id){S.detailAppId=id;S.prevView=S.view;S.view='app-detail';renderAll()}
+function pgAppDetail(c){
+  var a=apps.find(function(x){return x.id===S.detailAppId});if(!a){switchView(S.prevView);return}
+  var btnClk=(a.name.indexOf('拜访')>=0)?'switchView(\'sandbox\')':'toast(\'已打开应用\',\'ok\')';
+  var previewTabs='';var tabs=(a.preview||['首页']);
+  for(var pi=0;pi<tabs.length;pi++){previewTabs+='<div class="app-preview-tab'+(pi===0?' on':'')+'">'+tabs[pi]+'</div>';}
+  c.innerHTML='<div class="detail-back" onclick="switchView(\''+S.prevView+'\')">← 返回</div><div class="pg-title">'+a.name+'</div>'+
+    '<div style="display:flex;gap:20px;flex-wrap:wrap"><div style="flex:1;min-width:280px"><div style="background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow);margin-bottom:14px">'+
+    '<div style="display:flex;gap:6px;margin-bottom:12px"><span class="tag tag-blue">'+a.type+'</span><span class="tag tag-green">'+a.status+'</span><span class="tag tag-gray">'+a.date+'</span></div>'+
+    '<div class="rf"><span class="rfl">Owner</span><span class="rfv">'+a.owner+'</span></div><div class="rf"><span class="rfl">使用范围</span><span class="rfv">'+a.scope+'</span></div><div class="rf"><span class="rfl">使用数据</span><span class="rfv">'+a.users+'人使用 · '+a.visits+'次</span></div><div class="rf"><span class="rfl">依赖能力</span><span class="rfv">'+a.deps+'</span></div>'+
+    '<div style="margin-top:12px;display:flex;gap:8px"><button class="btn-pri" onclick="'+btnClk+'">使用应用</button><button class="btn-sec" onclick="copyApp('+a.id+')">复制改造</button></div></div>'+
+    '<div style="flex:1;min-width:320px"><div style="background:var(--card);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow)"><div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:10px">📱 原型预览</div>'+
+    '<div style="border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">'+
+    '<div style="display:flex;gap:0;background:#f8fafb;border-bottom:1px solid var(--border);padding:0 6px">'+previewTabs+'</div>'+
+    '<div style="padding:12px;font-size:11px;background:#f9fafb;min-height:160px"><table style="width:100%;font-size:10px;border-collapse:collapse"><tr style="background:#f8fafb"><th style="padding:4px 6px;text-align:left">客户名称</th><th style="padding:4px 6px">行业</th><th style="padding:4px 6px">日期</th><th style="padding:4px 6px">方式</th></tr>'+
+    '<tr><td style="padding:4px 6px">浙江恒达贸易有限公司</td><td style="padding:4px 6px;text-align:center">商贸</td><td style="padding:4px 6px;text-align:center">08-03</td><td style="padding:4px 6px;text-align:center">上门</td></tr>'+
+    '<tr><td style="padding:4px 6px">杭州鑫茂农业合作社</td><td style="padding:4px 6px;text-align:center">农业</td><td style="padding:4px 6px;text-align:center">08-02</td><td style="padding:4px 6px;text-align:center">电话</td></tr></table>'+
+    '<div style="text-align:center;font-size:10px;color:var(--text3);margin-top:8px">← 上方标签切换预览页面 →</div></div></div></div></div></div>';
+}
+
+// ===== AI =====
+function openAiFromFab(){
+  S.aiOpen=true;S.aiStep=0;S.prevView=S.view;switchView('home');
+  var p=document.getElementById('ai-panel');p.classList.add('open');
+  document.getElementById('aiChatBody').innerHTML='';
+  document.getElementById('aiChatInput').style.display='flex';
+  document.getElementById('aiInput').value='';document.getElementById('aiInput').placeholder='用大白话描述你想解决的问题…';
+  addMsg('ai','你好！我是 AI 需求助手<br>请用大白话告诉我：你遇到了什么业务问题？想做一个什么样的工具？');
+}
+function closeAi(){document.getElementById('ai-panel').classList.remove('open');S.aiOpen=false}
+function addMsg(t,text){
+  var b=document.getElementById('aiChatBody');var d=document.createElement('div');d.className='ai-msg '+t;
+  d.innerHTML='<div class="av">'+(t==='ai'?'🤖':'👤')+'</div><div class="bub">'+text+'</div>';b.appendChild(d);b.scrollTop=b.scrollHeight;
+}
+function sendAi(){
+  var inp=document.getElementById('aiInput'),txt=inp.value.trim();if(!txt)return;
+  addMsg('user',txt);inp.value='';inp.disabled=true;
+  var b=document.getElementById('aiChatBody');var td=document.createElement('div');td.className='ai-msg ai';td.id='typing';
+  td.innerHTML='<div class="av">🤖</div><div class="bub"><div class="ai-typing"><span></span><span></span><span></span></div></div>';
+  b.appendChild(td);b.scrollTop=b.scrollHeight;
+  setTimeout(function(){var ty=document.getElementById('typing');if(ty)ty.remove();S.aiStep++;
+    if(S.aiStep===1){addMsg('ai','明白了。让我问几个问题：<br><br>❶ 需要记录哪些信息？客户名称、拜访日期、沟通内容？<br>❷ 是你个人用还是整个支行一起用？<br>❸ 还需要统计功能吗？');inp.placeholder='回答AI的问题…'}
+    else if(S.aiStep===2){document.getElementById('aiChatInput').style.display='none';addMsg('ai','很好，需求已清楚。已生成<b>结构化需求卡</b>。');
+      var dmd=myDemands.find(function(d){return d.name==='客户经理拜访管理'});
+      if(dmd)dmd.status='已确认';else myDemands.unshift({id:myDemands.length+1,name:'客户经理拜访管理',status:'已确认',date:new Date().toISOString().slice(0,10),content:'替代Excel手工记录客户拜访信息'});
+      S.appStatus='planning';setTimeout(function(){switchView('confirm')},500);}
+    inp.disabled=false;},1400);
+}
+function pgConfirm(c){
+  c.innerHTML='<div class="pg-title">需求卡确认</div>'+
+    '<div class="req-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3>客户经理拜访管理</h3><span class="rg l1">L1 · 部门内可自主开发</span></div>'+
+    '<div class="rf"><span class="rfl">业务目标</span><span class="rfv">替代 Excel 手工记录，自动汇总台账和统计</span></div><div class="rf"><span class="rfl">目标用户</span><span class="rfv">城东支行 15 名客户经理</span></div>'+
+    '<div class="rf"><span class="rfl">核心功能</span><span class="rfv">① 拜访记录录入 ② 历史列表筛选 ③ 月度统计看板</span></div>'+
+    '<div class="rf"><span class="rfl">所需能力</span><span class="rfv">UI组件库 ✓ | 数据存储 ✓ | <span style="color:var(--red)">客户档案查询 ✗（缺口工单已生成）</span></span></div>'+
+    '<div style="background:var(--gold-pale);padding:9px 12px;border-radius:var(--radius);font-size:11px;margin-top:10px;color:var(--navy);line-height:1.6">📌 需经业务Owner审核确认后进入方案规划和应用生成阶段。</div>'+
+    '<div style="margin-top:14px;display:flex;gap:8px"><button class="btn-pri" onclick="submitDemandAudit()">提交需求审核</button><button class="btn-sec" onclick="document.getElementById(\'aiChatInput\').style.display=\'flex\';S.aiStep=1;openAiContinue()">修改需求</button></div></div>';
+}
+function submitDemandAudit(){
+  S.appStatus='reviewing';S.notifZhang=1;
+  auditQueue.push({id:auditQueue.length+1,type:'需求审核',app:'客户经理拜访管理',applicant:'陈小白',dept:'城东支行',date:new Date().toISOString().slice(0,10),status:'待审核',scope:'城东支行客户经理岗',grade:'L1',info:'不涉及客户敏感信息，独立轻应用'});
+  var dmd=myDemands.find(function(d){return d.name==='客户经理拜访管理'});if(dmd)dmd.status='审核中';
+  toast('已提交需求审核，等待业务Owner审批','ok');updateBell();setTimeout(function(){switchView('mydemands')},1000);
+}
+function pgPlan(c){
+  c.innerHTML='<div class="pg-title">应用建设方案</div>'+
+    '<div style="display:flex;gap:20px;flex-wrap:wrap">'+
+    '<div style="flex:1;min-width:300px"><div class="ps"><div class="ps-item"><span class="ps-num">1</span><div><div class="ps-tl">页面结构</div><div class="ps-ds">3 个小程序页面：拜访列表 + 新增拜访 + 统计看板</div></div></div>'+
+    '<div class="ps-item"><span class="ps-num">2</span><div><div class="ps-tl">数据模型</div><div class="ps-ds">客户名称、行业、拜访日期、方式、沟通内容、下次跟进</div></div></div>'+
+    '<div class="ps-item"><span class="ps-num">3</span><div><div class="ps-tl">后端服务</div><div class="ps-ds">增删改查 + 统计分析，独立 Schema 隔离</div></div></div>'+
+    '<div class="ps-item"><span class="ps-num">4</span><div><div class="ps-tl">能力依赖</div><div class="ps-ds">UI组件库 ✓ | 数据存储 ✓ | 客户档案查询 ✗（缺口工单#1）</div></div></div>'+
+    '<div class="ps-item"><span class="ps-num">5</span><div><div class="ps-tl">验收标准</div><div class="ps-ds">录入拜访 ✓ | 列表可筛选 ✓ | 看板展示 ✓ | 数据隔离 ✓</div></div></div></div></div>'+
+    '<div style="flex:1;min-width:260px;background:var(--card);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow)"><div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:10px">📱 原型预览</div>'+
+    '<div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="background:#f8fafb;padding:7px 10px;font-size:11px;color:var(--text3);display:flex;gap:14px"><span style="font-weight:600;color:var(--navy)">拜访列表</span><span>新增拜访</span><span>统计看板</span></div>'+
+    '<div style="padding:10px;font-size:10px;color:var(--text2)"><table style="width:100%;font-size:10px;border-collapse:collapse"><tr style="background:#f8fafb"><th style="padding:3px 5px;text-align:left">客户</th><th style="padding:3px 5px">日期</th><th style="padding:3px 5px">方式</th></tr><tr><td style="padding:3px 5px">浙江恒达贸易</td><td style="padding:3px 5px;text-align:center">08-03</td><td style="padding:3px 5px;text-align:center">上门</td></tr></table><div style="text-align:center;font-size:10px;color:var(--text3);margin-top:8px">← 切换标签预览页面 →</div></div></div></div></div>'+
+    '<div style="margin-top:16px;display:flex;gap:10px"><button class="btn-pri" onclick="startGen()">确认方案，开始生成</button><button class="btn-sec" onclick="switchView(\'confirm\')">返回修改</button></div>';
+}
+function startGen(){
+  S.view='generate';S.genPct=0;renderAll();
+  var phases=[{pct:20,txt:'生成页面结构',d:500},{pct:40,txt:'创建数据模型',d:600},{pct:60,txt:'生成后端接口',d:600},{pct:78,txt:'注入 Mock 数据',d:500},{pct:90,txt:'执行自动测试',d:600},{pct:100,txt:'生成完成',d:400}];
+  var idx=0;
+  function tick(){
+    if(idx>=phases.length){S.appStatus='generated';S.genPct=100;S.genTxt='✅ 生成完成';renderAll();
+      setTimeout(function(){toast('应用生成完成！进入沙箱预览…','ok');setTimeout(function(){S.view='sandbox';renderAll()},800)},300);return;}
+    var p=phases[idx];S.genPct=p.pct;S.genTxt=p.txt;renderAll();idx++;
+    if(idx<=phases.length)setTimeout(tick,p.d);else tick();
+  }
+  tick();
+}
+function pgGen(c){
+  c.innerHTML='<div class="pg-title">应用生成中</div><div style="max-width:560px;margin:0 auto;background:var(--card);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow)">'+
+    '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2)"><span>生成进度</span><span>'+S.genPct+'%</span></div><div class="gen-bar"><div class="gen-bar-fill" style="width:'+S.genPct+'%"></div></div>'+
+    '<div class="gen-log">'+(S.genPct>=20?'<div class="ok">✅ 页面结构已生成</div>':'')+(S.genPct>=40?'<div class="ok">✅ 数据模型已创建</div>':'')+(S.genPct>=60?'<div class="ok">✅ 后端接口已生成</div>':'')+(S.genPct>=78?'<div class="ok">✅ Mock 数据已注入</div>':'')+(S.genPct>=90?'<div class="ok">✅ 自动测试全部通过</div>':'')+(S.genPct<100?'<div class="act">🔄 '+S.genTxt+'</div>':'')+(S.genPct>=100?'<div class="ok">✅ 应用已就绪</div>':'')+'</div></div>';
+}
+
+// ===== TEST VERIFY =====
+function testVerifyPage(c){
+  var items=['录入拜访记录正常','列表可按客户名搜索筛选','统计看板数据正确','数据隔离——不串人'];
+  var cbs='';
+  for(var i=0;i<items.length;i++){
+    var key='item'+(i+1);
+    var checked=S.acceptItems&&S.acceptItems[key];
+    cbs+='<div class="acc-item'+(checked?' checked':'')+'" onclick="S.acceptItems=S.acceptItems||{};S.acceptItems[\''+key+'\']=!S.acceptItems[\''+key+'\'];rXb(document.getElementById(\'content\'))"><div class="cb-box'+(checked?' on':'')+'">'+(checked?'✓':'')+'</div><span>'+items[i]+'</span></div>';
+  }
+  var ok=hasAcceptItems();
+  c.innerHTML='<div class="pg-title">测试验证</div><div style="max-width:720px">'+
+    '<div class="test-section"><h4>🔬 自动化测试报告</h4>'+
+    '<div class="test-item pass"><span>单元测试</span><span style="color:var(--green)">✅ 12/12 通过</span></div>'+
+    '<div class="test-item pass"><span>接口契约测试</span><span style="color:var(--green)">✅ CRUD + 统计接口通过</span></div>'+
+    '<div class="test-item pass"><span>安全扫描（SAST）</span><span style="color:var(--green)">✅ 无高危漏洞</span></div>'+
+    '<div class="test-item pass"><span>依赖漏扫（SCA）</span><span style="color:var(--green)">✅ 依赖无已知漏洞</span></div>'+
+    '<div class="test-item pass"><span>密钥检测</span><span style="color:var(--green)">✅ 无硬编码密钥</span></div>'+
+    '<div class="test-item pass"><span>数据隔离检查</span><span style="color:var(--green)">✅ L1 标准，独立 Schema</span></div></div>'+
+    '<div class="test-section"><h4>📋 业务验收清单 <span style="font-weight:400;font-size:11px;color:var(--text3)">（逐项勾选确认）</span></h4>'+cbs+'</div>'+
+    '<div style="background:var(--card);border-radius:var(--radius-lg);padding:14px 18px;box-shadow:var(--shadow);margin-bottom:16px"><div style="font-size:12px;color:var(--text2);line-height:1.8"><strong>发布信息：</strong><br>· 应用等级：L1 · 使用范围：城东支行客户经理岗 · 数据不涉及敏感信息 · 审批路径：业务Owner审核</div></div>'+
+    '<div style="display:flex;gap:8px"><button class="btn-pri" '+(ok?'':'disabled')+' onclick="submitForReview()" style="'+(ok?'':'opacity:.5;cursor:not-allowed')+'">提交审核</button><button class="btn-sec" onclick="switchView(\'sandbox\')">先预览沙箱</button></div>'+
+    (!ok?'<div style="font-size:11px;color:var(--text3);margin-top:8px">请先勾选全部验收项后再提交审核</div>':'')+'</div>';
+}
+function submitForReview(){
+  S.appStatus='reviewing';S.notifZhang=1;
+  auditQueue.push({id:auditQueue.length+1,type:'发布审核',app:'客户经理拜访管理',applicant:'陈小白',dept:'城东支行',date:new Date().toISOString().slice(0,10),status:'待审核',scope:'城东支行客户经理岗',grade:'L1',info:'自动测试+业务验收已通过'});
+  var dmd=myDemands.find(function(d){return d.name==='客户经理拜访管理'});if(dmd)dmd.status='审核中';
+  toast('已提交发布审核，等待业务Owner审批','ok');updateBell();setTimeout(function(){switchView('mydemands')},1000);
+}
+
+// ===== SANDBOX — PHONE FRAME (MINI PROGRAM) =====
+function pgSandbox(c){
+  var flt=visits;
+  if(S.sbFilter)flt=visits.filter(function(v){return v.name.indexOf(S.sbFilter)>=0||v.ind.indexOf(S.sbFilter)>=0});
+  var tab=S.sbTab;
+  var testBtn='';
+  if(S.appStatus==='generated')testBtn='<button class="btn-pri btn-sm" onclick="S.view=\'testverify\';renderAll()">提交测试验证</button>';
+  else if(S.appStatus==='reviewing')testBtn='<span class="tag tag-gold">审核中</span>';
+  else testBtn='<button class="btn-pri btn-sm" onclick="toast(\'应用已发布\')">已发布</button>';
+  var n='';
+  n+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="pg-title" style="margin-bottom:0">客户经理拜访管理 · 小程序预览</div><div style="display:flex;gap:6px;align-items:center"><span class="tag tag-gray">🟢 沙箱 v1.0</span>'+testBtn+'</div></div>';
+  if(!S.gapResolved)n+='<div class="notice-bar">⚠️ 「客户档案查询」能力暂未开通，请手动输入。缺口工单#1处理中。</div>';
+  n+='<div class="phone-frame">';
+  n+='<div class="phone-notch"></div>';
+  n+='<div class="phone-status-bar"><span>中国移动</span><span>9:41</span><span>100%</span></div>';
+  n+='<div class="phone-title-bar"><span style="position:absolute;left:14px;font-size:16px">‹</span>客户经理拜访管理</div>';
+  n+='<div class="phone-body">';
+  n+='<div class="phone-tabs"><div class="phone-tab'+(tab==='list'?' on':'')+'" onclick="S.sbTab=\'list\';rXb(document.getElementById(\'content\'))">拜访列表</div><div class="phone-tab'+(tab==='add'?' on':'')+'" onclick="S.sbTab=\'add\';rXb(document.getElementById(\'content\'))">新增拜访</div><div class="phone-tab'+(tab==='stats'?' on':'')+'" onclick="S.sbTab=\'stats\';rXb(document.getElementById(\'content\'))">统计看板</div></div>';
+  if(tab==='list'){
+    n+='<div style="display:flex;gap:6px;margin-bottom:8px">';
+    n+='<input class="fi" style="flex:1;padding:5px 8px;font-size:10px;border-radius:14px" placeholder="搜索客户名…" value="'+(S.sbFilter||'')+'" oninput="S.sbFilter=this.value;rXb(document.getElementById(\'content\'))">';
+    n+='<span style="font-size:10px;color:var(--text3);line-height:2.4">共 '+visits.length+' 条</span></div>';
+    for(var i=0;i<flt.length;i++){
+      var v=flt[i];
+      n+='<div style="background:var(--white);border-radius:8px;padding:10px;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,.04);cursor:pointer"><div style="display:flex;justify-content:space-between"><strong>'+v.name+'</strong><span class="tag tag-blue" style="font-size:9px">'+v.ind+'</span></div><div style="font-size:10px;color:var(--text3);margin-top:3px">'+v.date+' · '+v.method+'</div><div style="font-size:10px;color:var(--text2);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+v.content+'</div></div>';
+    }
+  }else if(tab==='add'){
+    n+='<div class="fg"><label class="fl">客户名称 *</label><input class="fi" id="addName" placeholder="输入客户名称" style="font-size:11px"></div>';
+    n+='<div class="fg"><label class="fl">客户行业</label><select class="fi" id="addInd" style="font-size:11px"><option>制造业</option><option>商贸</option><option selected>服务业</option><option>农业</option></select></div>';
+    n+='<div class="fg"><label class="fl">拜访日期 *</label><input class="fi" type="date" id="addDate" style="font-size:11px"></div>';
+    n+='<div class="fg"><label class="fl">拜访方式</label><select class="fi" id="addMtd" style="font-size:11px"><option>上门</option><option>电话</option><option>微信</option><option>会议</option></select></div>';
+    n+='<div class="fg"><label class="fl">沟通内容</label><textarea class="fi fta" id="addCont" placeholder="记录沟通要点…" style="font-size:11px"></textarea></div>';
+    n+='<div class="fg"><label class="fl">下次跟进时间</label><input class="fi" type="date" id="addFu" style="font-size:11px"></div>';
+    n+='<button class="btn-pri" onclick="addVisit()" style="width:100%">提交记录</button>';
+  }else{
+    var up=visits.filter(function(v){return v.method==='上门'}).length;
+    var ph=visits.filter(function(v){return v.method==='电话'}).length;
+    var ot=visits.filter(function(v){return v.method==='微信'||v.method==='会议'}).length;
+    n+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">';
+    n+='<div style="flex:1;min-width:60px;background:var(--white);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--navy)">'+visits.length+'</div><div style="font-size:9px;color:var(--text3)">总拜访</div></div>';
+    n+='<div style="flex:1;min-width:60px;background:var(--white);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--navy)">'+up+'</div><div style="font-size:9px;color:var(--text3)">上门</div></div>';
+    n+='<div style="flex:1;min-width:60px;background:var(--white);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--navy)">'+ph+'</div><div style="font-size:9px;color:var(--text3)">电话</div></div>';
+    n+='<div style="flex:1;min-width:60px;background:var(--white);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--navy)">'+ot+'</div><div style="font-size:9px;color:var(--text3)">其他</div></div></div>';
+    n+='<div style="font-size:10px;font-weight:600;color:var(--navy);margin-bottom:6px">按行业分布</div>';
+    var m={};for(var j=0;j<visits.length;j++){m[visits[j].ind]=(m[visits[j].ind]||0)+1}
+    for(var k in m){
+      n+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:10px"><span style="min-width:30px">'+k+'</span><div style="flex:1;height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden"><div style="height:100%;width:'+(m[k]/visits.length*100)+'%;background:var(--navy);border-radius:7px"></div></div><span>'+m[k]+'条</span></div>';
+    }
+  }
+  n+='</div><div class="phone-bottom-bar"><span>首页</span><span>搜索</span><span>应用</span><span>我的</span></div><div class="phone-home-bar"></div></div>';
+  c.innerHTML=n;
+}
+function addVisit(){
+  var n=document.getElementById('addName').value.trim(),d=document.getElementById('addDate').value;
+  if(!n||!d){toast('请填写客户名称和拜访日期','warn');return}
+  visits.unshift({id:visits.length+1,name:n,ind:document.getElementById('addInd').value,date:d,method:document.getElementById('addMtd').value,content:document.getElementById('addCont').value||'(待补充)',followup:document.getElementById('addFu').value||'——'});
+  toast('拜访记录已保存','ok');S.sbTab='list';rXb(document.getElementById('content'));
+}
+function pgPublish(c){c.innerHTML='<div class="pg-title">发布状态</div><div style="max-width:560px">'+(S.appStatus==='published'?'<div class="notice-bar" style="background:#f0fdf4;color:#2e7d32;border-color:#bbf7d0">✅ 应用已通过审核并发布。</div>':S.appStatus==='reviewing'?'<div class="notice-bar">⏳ 审核中，请等待业务Owner审批。</div>':'')+'<button class="btn-sec" onclick="switchView(\'sandbox\')">返回沙箱</button></div>';}
+
+// ===== ZHANG =====
+function rZhang(c){pgReviewPage(c)}
+function pgReviewPage(c){
+  var pending=auditQueue.filter(function(r){return r.status==='待审核'});
+  var approved=auditHistory.filter(function(r){return r.result==='通过'});
+  var rejected=auditHistory.filter(function(r){return r.result==='驳回'});
+  var tab=S.reviewTab||'pending';
+  var items=tab==='pending'?pending:tab==='approved'?approved:rejected;
+  var h='<div class="pg-title">审核管理</div>';
+  h+='<div class="review-tabs">';
+  h+='<div class="review-tab'+(tab==='pending'?' on':'')+'" onclick="S.reviewTab=\'pending\';rZhang(document.getElementById(\'content\'))">📋 待审核<span class="tab-count'+(pending.length?' red':' gray')+'">'+pending.length+'</span></div>';
+  h+='<div class="review-tab'+(tab==='approved'?' on':'')+'" onclick="S.reviewTab=\'approved\';rZhang(document.getElementById(\'content\'))">✅ 已通过<span class="tab-count green">'+approved.length+'</span></div>';
+  h+='<div class="review-tab'+(tab==='rejected'?' on':'')+'" onclick="S.reviewTab=\'rejected\';rZhang(document.getElementById(\'content\'))">↩ 已驳回<span class="tab-count gray">'+rejected.length+'</span></div></div>';
+  if(tab==='pending'){
+    if(pending.length===0)h+='<div style="text-align:center;padding:40px;color:var(--text3)">暂无待审核应用</div>';
+    else for(var i=0;i<pending.length;i++){var r=pending[i];
+      h+='<div style="background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow);border:1px solid var(--gold-light);margin-bottom:14px">'+
+        '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px"><div><div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px">'+r.app+'<span class="gap-source" style="margin-left:6px">'+r.type+'</span></div><div style="font-size:11px;color:var(--text3)">申请人：'+r.applicant+' · '+r.dept+' · '+r.date+'</div></div><span class="tag tag-gold">'+r.status+'</span></div>'+
+        '<div style="background:#f9fafb;border-radius:var(--radius);padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;color:var(--text2);line-height:1.8"><strong>使用范围：</strong>'+r.scope+'<br><strong>等级：</strong>'+r.grade+' · '+r.info+'</div></div>'+
+        '<div style="display:flex;gap:8px"><button class="btn-pri" onclick="approveAudit('+r.id+')">通过审核</button><button class="btn-sec" onclick="rejectAudit('+r.id+')">驳回</button><button class="btn-ghost btn-sm" onclick="openRequirementCard()">查看需求卡</button></div></div>';
+    }
+  }else{
+    if(items.length===0)h+='<div style="text-align:center;padding:40px;color:var(--text3)">暂无记录</div>';
+    else for(var j=0;j<items.length;j++){var it=items[j];
+      h+='<div style="background:var(--card);border-radius:var(--radius-lg);padding:14px 18px;box-shadow:var(--shadow);margin-bottom:10px">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:600;color:var(--navy)">'+it.app+'<span class="gap-source" style="margin-left:6px">'+(it.type||'需求审核')+'</span></div><div style="font-size:10px;color:var(--text3)">'+(it.applicant||it.reviewer)+' · '+it.date+' · 审核人：'+it.reviewer+'</div></div><span class="tag tag-'+(it.result==='通过'?'green':'red')+'">'+it.result+'</span></div></div>';
+    }
+  }
+  c.innerHTML=h;
+}
+function openRequirementCard(){
+  document.getElementById('modalBox').innerHTML='<h3>需求卡详情</h3>'+
+    '<div class="req-card" style="border:none;padding:0;box-shadow:none;max-width:none">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3>客户经理拜访管理</h3><span class="rg l1">L1 · 部门内可自主开发</span></div>'+
+    '<div class="rf"><span class="rfl">业务目标</span><span class="rfv">替代 Excel 手工记录，自动汇总台账和统计</span></div>'+
+    '<div class="rf"><span class="rfl">目标用户</span><span class="rfv">城东支行 15 名客户经理</span></div>'+
+    '<div class="rf"><span class="rfl">核心功能</span><span class="rfv">① 拜访记录录入 ② 历史列表筛选 ③ 月度统计看板</span></div>'+
+    '<div class="rf"><span class="rfl">数据字段</span><span class="rfv">客户名称、行业、拜访日期、方式、沟通内容、下次跟进</span></div>'+
+    '<div class="rf"><span class="rfl">所需能力</span><span class="rfv">UI组件库 ✓ | 数据存储 ✓ | <span style="color:var(--red)">客户档案查询 ✗</span></span></div>'+
+    '</div><div class="modal-actions"><button class="btn-sec" onclick="closeModal()">关闭</button></div>';
+  openModal();
+}
+function approveAudit(id){
+  var r=auditQueue.find(function(x){return x.id===id});if(!r)return;
+  r.status='已通过';var td=new Date().toISOString().slice(0,10);
+  auditHistory.unshift({id:auditHistory.length+1,type:r.type,app:r.app,applicant:r.applicant,dept:r.dept,date:td,result:'通过',reviewer:'张行长'});
+  if(r.type==='需求审核'){S.appStatus='planning';var dmd=myDemands.find(function(d){return d.name==='客户经理拜访管理'});if(dmd)dmd.status='需求已通过';toast('需求审核已通过，已通知陈小白','ok');}
+  else{S.appStatus='published';var dmd2=myDemands.find(function(d){return d.name==='客户经理拜访管理'});if(dmd2)dmd2.status='已发布';toast('发布审核已通过，应用已发布','ok');}
+  S.notifZhang=Math.max(0,auditQueue.filter(function(x){return x.status==='待审核'}).length);S.notifXiaobai=1;
+  updateBell();rZhang(document.getElementById('content'));
+}
+function rejectAudit(id){
+  var r=auditQueue.find(function(x){return x.id===id});if(!r)return;
+  r.status='已驳回';var td=new Date().toISOString().slice(0,10);
+  auditHistory.unshift({id:auditHistory.length+1,type:r.type,app:r.app,applicant:r.applicant,dept:r.dept,date:td,result:'驳回',reviewer:'张行长'});
+  if(r.type==='需求审核'){S.appStatus='draft';var dmd=myDemands.find(function(d){return d.name==='客户经理拜访管理'});if(dmd)dmd.status='已确认';}
+  else{S.appStatus='testing';var dmd2=myDemands.find(function(d){return d.name==='客户经理拜访管理'});if(dmd2)dmd2.status='审核中';}
+  S.notifZhang=Math.max(0,auditQueue.filter(function(x){return x.status==='待审核'}).length);
+  toast('已驳回，请申请人修改后重新提交','warn');updateBell();rZhang(document.getElementById('content'));
+}
+
+// ===== LAOWANG =====
+function rLw(c){var m={'cap-center':pgCap,'gap-tickets':pgGap,'sys-rules':pgRules,'sys-env':pgEnv};(m[S.view]||pgCap)(c);}
+function pgCap(c){
+  var n=gapTickets.filter(function(g){return g.status==='待处理'}).length;
+  var notice=n>0?'<div class="notice-bar">'+n+' 个能力缺口待处理 | <a style="color:var(--navy);cursor:pointer;font-weight:600" onclick="switchView(\'gap-tickets\')">查看全部</a></div>':'<div class="notice-bar" style="background:#f0fdf4;color:#2e7d32;border-color:#bbf7d0">✅ 所有能力缺口已处理</div>';
+  var rows='';
+  for(var i=0;i<caps.length;i++){var cr=caps[i];rows+='<tr style="'+(cr.status==='缺口'?'background:#fff8e1':'')+'"><td><strong>'+cr.name+'</strong></td><td><span class="tag tag-'+(cr.type==='组件'||cr.type==='技术组件'?'green':'blue')+'">'+cr.type+'</span></td><td>'+cr.owner+'</td><td><span class="tag tag-'+(cr.status==='已上线'?'green':cr.status==='缺口'?'red':'gold')+'">'+cr.status+'</span></td><td>'+cr.apps+'个</td><td>'+cr.calls+'次</td></tr>';}
+  for(var j=0;j<templates.length;j++){var t=templates[j];rows+='<tr style="background:#f5f3ff"><td><strong>'+t.name+'</strong></td><td><span class="tag tag-purple">'+t.type+'</span></td><td>'+t.owner+'</td><td><span class="tag tag-green">已上线</span></td><td>0个</td><td>0次</td></tr>';}
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div class="pg-title" style="margin-bottom:0">企业能力中心</div><button class="btn-pri" onclick="showCapReg()">注册新能力</button></div>'+notice+'<div style="display:flex;gap:8px;margin-bottom:12px"><input class="fi" style="flex:1;max-width:280px" placeholder="搜索能力…"><button class="btn-sec btn-sm">全部</button><button class="btn-sec btn-sm">组件</button><button class="btn-sec btn-sm">API</button><button class="btn-sec btn-sm">模板</button></div><table class="dt"><thead><tr><th>名称</th><th>类型</th><th>Owner</th><th>状态</th><th>引用</th><th>调用量</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+function showCapReg(){document.getElementById('modalBox').innerHTML='<h3>注册新能力</h3><div class="fg"><label class="fl">能力名称</label><input class="fi" id="capName"></div><div class="fg"><label class="fl">类型</label><select class="fi" id="capType"><option>API</option><option>组件</option><option>数据服务</option><option>技术组件</option><option>Skill</option></select></div><div class="fg"><label class="fl">Owner</label><input class="fi" id="capOwner"></div><div class="fg"><label class="fl">数据等级</label><select class="fi" id="capDL"><option>公开</option><option selected>内部</option><option>敏感</option><option>高敏感</option></select></div><div class="fg"><label class="fl">说明</label><textarea class="fi fta" id="capDesc"></textarea></div><div class="modal-actions"><button class="btn-sec" onclick="closeModal()">取消</button><button class="btn-pri" onclick="doCapReg()">提交</button></div>';openModal()}
+function doCapReg(){var n=document.getElementById('capName').value.trim();if(!n){toast('请输入能力名称','warn');return}caps.push({id:caps.length+1,name:n,type:document.getElementById('capType').value,owner:document.getElementById('capOwner').value||'科技部',status:'已上线',apps:0,calls:0});toast('能力已注册','ok');closeModal();rLw(document.getElementById('content'))}
+function pgGap(c){
+  var h='<div class="pg-title">能力缺口工单</div><div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn-pri btn-sm">全部</button><button class="btn-sec btn-sm">待处理</button><button class="btn-sec btn-sm">已处理</button><button class="btn-sec btn-sm">暂不处理</button></div>';
+  for(var i=0;i<gapTickets.length;i++){var t=gapTickets[i];
+    var cl='var(--text3)';if(t.status==='待处理')cl='var(--orange)';else if(t.status==='已处理')cl='var(--green)';
+    var st=t.status;var stTag=(st==='待处理'?'red':st==='已处理'?'green':'gray');
+    h+='<div style="background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border-left:3px solid '+cl+';margin-bottom:10px">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:start"><div><div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:3px">缺口#'+t.id+'：'+t.cap+'<span class="gap-source">'+t.source+'</span></div><div style="font-size:10px;color:var(--text3)">需求方：'+t.req+' · '+(t.app||'——')+' · '+t.date+'</div></div><span class="tag tag-'+stTag+'">'+st+'</span></div>';
+    h+='<div style="font-size:11px;color:var(--text2);margin-top:6px;line-height:1.6"><strong>原因：</strong>'+t.reason+'<br><strong>影响：</strong>约 '+(t.freq==='高'?'200+':t.freq==='中'?'50-100':'20-50')+' 名用户 · 优先级：'+(t.freq==='高'?'高':t.freq==='中'?'中':'低')+'</div>';
+    if(t.status==='待处理')h+='<div style="margin-top:8px;display:flex;gap:6px"><button class="btn-pri btn-sm" onclick="processGap('+t.id+')">开始处理</button><button class="btn-sec btn-sm" onclick="skipGap('+t.id+')">暂不处理</button></div>';
+    else if(t.status==='暂不处理')h+='<div style="margin-top:6px;font-size:11px;color:var(--text3)">排期资源不足，暂不处理。</div>';
+    else h+='<div style="margin-top:6px;font-size:11px;color:var(--green)">✅ 已封装并上架</div>';
+    h+='</div>';
+  }
+  c.innerHTML=h;
+}
+function processGap(id){var t=gapTickets.find(function(x){return x.id===id});if(!t)return;t.status='已处理';if(t.cap==='客户档案查询'){S.gapResolved=true;var cr=caps.find(function(c){return c.name==='客户档案查询'});cr.status='已上线';cr.owner='科技部-客户系统组'}S.notifLaowang=Math.max(0,gapTickets.filter(function(g){return g.status==='待处理'}).length);toast('已处理','ok');updateBell();rLw(document.getElementById('content'))}
+function skipGap(id){var t=gapTickets.find(function(x){return x.id===id});if(!t)return;t.status='暂不处理';toast('已标记为暂不处理','warn');rLw(document.getElementById('content'))}
+function pgRules(c){
+  var rows='';for(var i=0;i<mockRules.length;i++){var r=mockRules[i];rows+='<tr><td><strong>'+r.name+'</strong></td><td><span class="tag tag-'+(r.type==='硬规则'?'red':'gold')+'">'+r.type+'</span></td><td>'+r.scope+'</td><td><span class="tag tag-green">'+r.status+'</span></td><td style="font-size:11px;color:var(--text2)">'+r.desc+'</td></tr>';}
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div class="pg-title" style="margin-bottom:0">规则配置</div><button class="btn-pri" onclick="showRuleForm()">新增规则</button></div><div style="display:flex;gap:6px;margin-bottom:12px"><button class="btn-pri btn-sm">全部</button><button class="btn-sec btn-sm">硬规则</button><button class="btn-sec btn-sm">策略</button></div><table class="dt"><thead><tr><th>规则名称</th><th>类型</th><th>适用范围</th><th>状态</th><th>说明</th></tr></thead><tbody>'+rows+'</tbody></table><div style="margin-top:10px;font-size:11px;color:var(--text3)">硬规则由策略引擎和扫描工具确定性执行。</div>';
+}
+function showRuleForm(){document.getElementById('modalBox').innerHTML='<h3>新增规则</h3><div class="fg"><label class="fl">规则名称</label><input class="fi" id="ruleName"></div><div class="fg"><label class="fl">类型</label><select class="fi" id="ruleType"><option>硬规则</option><option>策略</option></select></div><div class="fg"><label class="fl">适用范围</label><input class="fi" id="ruleScope"></div><div class="fg"><label class="fl">说明</label><textarea class="fi fta" id="ruleDesc"></textarea></div><div class="modal-actions"><button class="btn-sec" onclick="closeModal()">取消</button><button class="btn-pri" onclick="doAddRule()">提交</button></div>';openModal()}
+function doAddRule(){var n=document.getElementById('ruleName').value.trim();if(!n){toast('请输入规则名称','warn');return}mockRules.push({id:mockRules.length+1,name:n,type:document.getElementById('ruleType').value,scope:document.getElementById('ruleScope').value||'全平台',status:'已生效',desc:document.getElementById('ruleDesc').value||''});toast('规则已添加','ok');closeModal();rLw(document.getElementById('content'))}
+function pgEnv(c){
+  var rows='';for(var i=0;i<mockEnvs.length;i++){var e=mockEnvs[i];rows+='<tr><td><strong>'+e.name+'</strong></td><td>'+e.domain+'</td><td>'+e.apps+'</td><td>'+e.cpu+'</td><td>'+e.mem+'</td><td style="font-size:11px;color:var(--text2)">'+e.desc+'</td></tr>';}
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div class="pg-title" style="margin-bottom:0">环境管理</div><button class="btn-pri" onclick="showEnvForm()">配置管理</button></div><div class="stat-row"><div class="stat-card"><div class="sv">'+mockEnvs.length+'</div><div class="sl">运行环境</div></div><div class="stat-card"><div class="sv">'+caps.filter(function(c){return c.status==='已上线'}).length+'</div><div class="sl">已上线能力</div></div><div class="stat-card"><div class="sv">15</div><div class="sl">活跃应用</div></div><div class="stat-card"><div class="sv">99.2%</div><div class="sl">30天可用率</div></div></div><table class="dt"><thead><tr><th>环境</th><th>域名</th><th>应用数</th><th>CPU</th><th>内存</th><th>说明</th></tr></thead><tbody>'+rows+'</tbody></table><div style="margin-top:10px;font-size:11px;color:var(--text3)">开发、测试、灰度、生产严格隔离。默认无外网，最小权限。</div>';
+}
+function showEnvForm(){document.getElementById('modalBox').innerHTML='<h3>环境配置</h3><div class="fg"><label class="fl">环境名称</label><input class="fi" id="envName"></div><div class="fg"><label class="fl">域名</label><input class="fi" id="envDomain"></div><div class="fg"><label class="fl">CPU</label><input class="fi" id="envCpu"></div><div class="fg"><label class="fl">内存</label><input class="fi" id="envMem"></div><div class="fg"><label class="fl">说明</label><textarea class="fi fta" id="envDesc"></textarea></div><div class="modal-actions"><button class="btn-sec" onclick="closeModal()">取消</button><button class="btn-pri" onclick="doAddEnv()">保存</button></div>';openModal()}
+function doAddEnv(){var n=document.getElementById('envName').value.trim();if(!n){toast('请输入环境名称','warn');return}mockEnvs.push({id:mockEnvs.length+1,name:n,domain:document.getElementById('envDomain').value||'new.ai.tlbank.com',apps:0,cpu:document.getElementById('envCpu').value||'——',mem:document.getElementById('envMem').value||'——',desc:document.getElementById('envDesc').value||'',status:'正常'});toast('环境已添加','ok');closeModal();rLw(document.getElementById('content'))}
+
+// ===== YUNYING =====
+function rYy(c){var m={'op-dashboard':pgOpDash,'op-scene':pgOpScene,'op-users':pgOpUsers};(m[S.view]||pgOpDash)(c);}
+function pgOpDash(c){
+  var totalVisits=0;for(var i=0;i<apps.length;i++)totalVisits+=apps[i].visits;
+  var health='';for(var j=0;j<apps.length;j++){var a=apps[j];health+='<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:1px solid var(--border)"><span>'+a.name+'</span><span class="tag tag-'+(a.status==='已发布'?'green':'gold')+'">'+a.status+'</span></div>';}
+  c.innerHTML='<div class="pg-title">运营驾驶舱</div><div class="stat-row"><div class="stat-card"><div class="sv">'+apps.filter(function(a){return a.status==='已发布'}).length+'</div><div class="sl">活跃生产应用</div></div><div class="stat-card"><div class="sv">23</div><div class="sl">月活用户</div></div><div class="stat-card"><div class="sv">'+totalVisits+'</div><div class="sl">月度使用次数</div></div><div class="stat-card"><div class="sv">96%</div><div class="sl">应用健康率</div></div></div>'+
+    '<div class="col2"><div style="background:var(--card);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow)"><div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:10px">应用健康度</div>'+health+'</div>'+
+    '<div style="background:var(--card);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow)"><div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:10px">场景孵化漏斗</div><div style="font-size:12px;line-height:2.4">征集 '+scenes.length+' → 评估 '+scenes.filter(function(s){return s.status==='评估中'}).length+' → 孵化 '+scenes.filter(function(s){return s.status==='孵化中'}).length+' → 上线 '+scenes.filter(function(s){return s.status==='已上线'}).length+'</div><div style="font-size:10px;color:var(--text3);margin-top:4px">转化率 9% · 平均交付周期 3 周</div></div>'+
+    '<div style="background:var(--card);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow)"><div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:10px">Top 应用（本月）</div><div style="font-size:12px;color:var(--text2);line-height:2.4">1️⃣ 客户经理拜访管理 · '+apps[0].visits+'次 · '+apps[0].users+'人<br>2️⃣ 支行活动报名统计 · '+apps[1].visits+'次 · '+apps[1].users+'人<br>3️⃣ 对公客户信息台账 · '+apps[2].visits+'次 · '+apps[2].users+'人</div></div></div>';
+}
+function pgOpScene(c){
+  var rows='';for(var i=0;i<scenes.length;i++){var s=scenes[i];
+    var btn='<span style="font-size:11px;color:var(--text3)">——</span>';
+    if(s.status==='已上线'&&!S.templateMarked)btn='<button class="btn-gold btn-xs" onclick="markTemplate('+s.id+')">标记为模板</button>';
+    else if(s.status==='已上线'&&S.templateMarked)btn='<span class="tag tag-purple">已沉淀</span>';
+    else if(s.status==='评估中')btn='<button class="btn-sec btn-xs" onclick="evalScene('+s.id+')">评估</button>';
+    else if(s.status==='孵化中')btn='<button class="btn-ghost btn-xs" onclick="toast(\'孵化中\')">查看进度</button>';
+    rows+='<tr><td><strong>'+s.name+'</strong></td><td>'+s.from+'</td><td>'+s.score+'</td><td><span class="tag tag-'+(s.status==='已上线'?'green':s.status==='孵化中'||s.status==='试运行'?'gold':'blue')+'">'+s.status+'</span></td><td>'+s.date+'</td><td>'+btn+'</td></tr>';
+  }
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div class="pg-title" style="margin-bottom:0">场景池</div><button class="btn-pri btn-sm" onclick="showSceneForm()">征集场景</button></div><table class="dt"><thead><tr><th>场景名称</th><th>来源</th><th>价值评分</th><th>状态</th><th>提交日期</th><th>操作</th></tr></thead><tbody>'+rows+'</tbody></table><div style="margin-top:10px;font-size:11px;color:var(--text3)">场景孵化漏斗数据详见运营驾驶舱。</div>';
+}
+var _evalWithGap=false;
+function evalScene(id){
+  var s=scenes.find(function(x){return x.id===id});
+  document.getElementById('modalBox').innerHTML='<h3>场景评估</h3><div class="fg"><label class="fl">场景</label><div class="fi" style="background:#f9fafb;cursor:default">'+s.name+'</div></div><div class="fg"><label class="fl">结论</label><select class="fi" id="evalResult"><option>通过——进入孵化</option><option>暂缓</option><option>不通过</option></select></div><div class="fg"><label class="fl">Owner</label><input class="fi" id="evalOwner"></div><div class="fg"><label class="fl">意见</label><textarea class="fi fta" id="evalNote"></textarea></div><div style="background:#fff8e1;border-radius:var(--radius);padding:10px 12px;font-size:11px;margin:10px 0;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="toggleGapFlag()"><div class="cb-box" id="evalGapCB" style="width:16px;height:16px;font-size:10px"></div><span>标记能力缺口（推送至总行科技）</span></div><div class="modal-actions"><button class="btn-sec" onclick="closeModal()">取消</button><button class="btn-pri" onclick="doEvalScene('+id+')">确认</button></div>';openModal();
+}
+function toggleGapFlag(){_evalWithGap=!_evalWithGap;var cb=document.getElementById('evalGapCB');if(cb){cb.classList.toggle('on',_evalWithGap);cb.textContent=_evalWithGap?'✓':''}}
+function doEvalScene(id){
+  var r=document.getElementById('evalResult').value;var s=scenes.find(function(x){return x.id===id});
+  if(r.indexOf('通过')>=0)s.status='孵化中';else if(r.indexOf('暂缓')>=0)s.status='评估中';else s.status='评估中';
+  if(_evalWithGap){gapTickets.push({id:gapTickets.length+1,cap:document.getElementById('evalNote').value.slice(0,20)||'待补充能力',source:'运营场景评估',req:'阿芳-平台运营',app:s.name,freq:'中',reason:document.getElementById('evalNote').value||'场景评估发现能力缺口',date:new Date().toISOString().slice(0,10),status:'待处理'});_evalWithGap=false;toast('能力缺口已推送至总行科技','ok')}
+  toast('场景评估已完成','ok');closeModal();rYy(document.getElementById('content'));
+}
+function markTemplate(id){
+  S.templateMarked=true;var sc=scenes.find(function(s){return s.id===id});if(sc)sc.status='已上线';
+  templates.push({id:201,name:'客户经理拜访管理',type:'模板',owner:'陈小白',fromApp:1,date:new Date().toISOString().slice(0,10),desc:'拜访记录、列表筛选、统计看板的完整模板',scope:'全行客户经理岗',deps:'UI组件库、数据存储',preview:['拜访列表','新增拜访','统计看板']});
+  toast('已标记为模板','ok');rYy(document.getElementById('content'));
+}
+function showSceneForm(){document.getElementById('modalBox').innerHTML='<h3>征集场景</h3><div class="fg"><label class="fl">场景名称</label><input class="fi" id="scName"></div><div class="fg"><label class="fl">来源</label><input class="fi" id="scFrom"></div><div class="fg"><label class="fl">描述</label><textarea class="fi fta" id="scDesc"></textarea></div><div class="modal-actions"><button class="btn-sec" onclick="closeModal()">取消</button><button class="btn-pri" onclick="doAddScene()">提交</button></div>';openModal()}
+function doAddScene(){var n=document.getElementById('scName').value.trim();if(!n){toast('请输入场景名称','warn');return}scenes.push({id:scenes.length+1,name:n,from:document.getElementById('scFrom').value||'未指定',score:'★★★',status:'评估中',date:new Date().toISOString().slice(0,10)});toast('场景已提交','ok');closeModal();rYy(document.getElementById('content'))}
+function pgOpUsers(c){
+  var rows='';for(var i=0;i<seedUsers.length;i++){var u=seedUsers[i];
+    var btn='<span style="font-size:11px;color:var(--text3)">——</span>';
+    if(!u.trained)btn='<button class="btn-sec btn-xs" onclick="trainUser('+u.id+')">发起培训</button>';
+    else if(!u.certified)btn='<button class="btn-ghost btn-xs" onclick="certUser('+u.id+')">认证</button>';
+    rows+='<tr><td><strong>'+u.name+'</strong></td><td>'+u.dept+'</td><td>'+u.role+'</td><td><span class="tag tag-'+(u.trained?'green':'gray')+'">'+(u.trained?'已完成':'未开始')+'</span></td><td><span class="tag tag-'+(u.certified?'green':'gray')+'">'+(u.certified?'已认证':'未认证')+'</span></td><td>'+u.apps+'个</td><td>'+(u.firstDate||'——')+'</td><td>'+btn+'</td></tr>';
+  }
+  c.innerHTML='<div class="pg-title">用户与培训</div><div class="stat-row"><div class="stat-card"><div class="sv">'+seedUsers.length+'</div><div class="sl">种子用户</div></div><div class="stat-card"><div class="sv">'+seedUsers.filter(function(u){return u.certified}).length+'</div><div class="sl">已认证创作者</div></div><div class="stat-card"><div class="sv">'+seedUsers.filter(function(u){return u.trained}).length+'</div><div class="sl">已完成基础培训</div></div><div class="stat-card"><div class="sv">85%</div><div class="sl">自助解决率</div></div></div><table class="dt"><thead><tr><th>姓名</th><th>部门</th><th>岗位</th><th>基础培训</th><th>创作者认证</th><th>创建应用</th><th>首次成功时间</th><th>操作</th></tr></thead><tbody>'+rows+'</tbody></table><div style="margin-top:10px;font-size:11px;color:var(--text3)">一期培训采用集中培训+一对一陪跑。分层课程体系和社区运营为二期建设内容。</div>';
+}
+function trainUser(id){var u=seedUsers.find(function(x){return x.id===id});if(!u)return;u.trained=true;u.firstDate=new Date().toISOString().slice(0,10);toast('已安排入门培训','ok');rYy(document.getElementById('content'))}
+function certUser(id){var u=seedUsers.find(function(x){return x.id===id});if(!u)return;u.certified=true;toast('已通过创作者认证','ok');rYy(document.getElementById('content'))}
+
+// ===== MANAGER (DASHBOARD) =====
+function rMg(c){
+  var isHQ=(S.mgView==='hq');
+  var br=branchData.find(function(x){return x.id===S.mgSelectedBranch})||branchData[0];
+
+  // View switcher + branch selector
+  var vwBar='<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">';
+  vwBar+='<div class="mg-vw-bar">';
+  vwBar+='<button class="mg-vw-btn'+(isHQ?' on':'')+'" onclick="S.mgView=\'hq\';renderAll()">🏢 总行视角</button>';
+  vwBar+='<button class="mg-vw-btn'+(!isHQ?' on':'')+'" onclick="S.mgView=\'branch\';renderAll()">🏬 分行视角</button>';
+  vwBar+='</div>';
+  if(!isHQ){
+    var brOpts='';
+    for(var bi=0;bi<branchData.length;bi++){var bd=branchData[bi];var sel=(bd.id===S.mgSelectedBranch)?' selected':'';brOpts+='<option value="'+bd.id+'"'+sel+'>'+bd.name+'</option>';}
+    vwBar+='<select class="mg-br-sel" onchange="S.mgSelectedBranch=this.value;renderAll()">'+brOpts+'</select>';
+  }
+  vwBar+='</div>';
+
+  // ---- HERO KPIs ----
+  var kScenes=isHQ?'38':br.scenes;
+  var kAgents=isHQ?'30':br.agents;
+  var kCalls=isHQ?'31.2<span style="font-size:16px">万</span>':(br.calls+'<span style="font-size:16px">万</span>');
+  var kUsers=isHQ?'1,200<span style="font-size:16px">+</span>':br.users;
+  var kScenesSub=isHQ?'累计落地 · 信贷/营销/运营/风控':(br.name+' AI应用');
+  var kAgentsSub=isHQ?'授信 · 回访 · 客服等领域':(br.name+' 智能体');
+  var kCallsSub=isHQ?'全行AI能力原始积累':(br.name+' 累计调用');
+  var kUsersSub=isHQ?'从单点试用向基础工具转型':('覆盖 '+br.name+' 员工');
+
+  var hero='';
+  hero+='<div class="mg-stat"><div class="mg-stat-icon">🤖</div><div class="mg-stat-val">'+kScenes+'</div><div class="mg-stat-lbl">标准化AI应用场景</div><div class="mg-stat-sub">'+kScenesSub+'</div></div>';
+  hero+='<div class="mg-stat"><div class="mg-stat-icon">🧠</div><div class="mg-stat-val">'+kAgents+'</div><div class="mg-stat-lbl">专业化垂直智能体</div><div class="mg-stat-sub">'+kAgentsSub+'</div></div>';
+  hero+='<div class="mg-stat"><div class="mg-stat-icon">⚡</div><div class="mg-stat-val">'+kCalls+'</div><div class="mg-stat-lbl">AI服务累计调用</div><div class="mg-stat-sub">'+kCallsSub+'</div></div>';
+  hero+='<div class="mg-stat"><div class="mg-stat-icon">👥</div><div class="mg-stat-val">'+kUsers+'</div><div class="mg-stat-lbl">覆盖员工</div><div class="mg-stat-sub">'+kUsersSub+'</div></div>';
+
+  // ---- TREND CHART (HQ only) ----
+  var bar='';
+  var months=['1月','2月','3月','4月','5月','6月','7月','8月'];
+  var vals=[12,16,20,24,28,32,35,38];
+  for(var i=0;i<months.length;i++){
+    bar+='<div class="bar-col"><div class="bar-val dark-bar-val" style="font-size:10px">'+vals[i]+'</div><div class="bar-fill gold" style="height:'+(vals[i]/38*110)+'px"></div><div class="bar-label dark-bar-label">'+months[i]+'</div></div>';
+  }
+
+  // ---- RANKING ----
+  var rankHTML='';
+  if(isHQ){
+    // Branch ranking for HQ view
+    for(var bj=0;bj<branchRank.length;bj++){var bp=branchRank[bj];
+      rankHTML+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;width:100%"><span style="font-weight:700;width:20px;flex-shrink:0;color:rgba(255,255,255,.6)">'+(bj+1)+'</span><span style="width:80px;flex-shrink:0;color:rgba(255,255,255,.8);font-size:12px">'+bp.n+'</span><div style="flex:1;height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden"><div style="height:100%;width:'+bp.pct+'%;background:'+bp.c+';border-radius:5px"></div></div><span style="width:36px;flex-shrink:0;text-align:right;color:rgba(255,255,255,.6);font-size:11px">'+bp.v+'个</span></div>';
+    }
+  }else{
+    // Department ranking within selected branch
+    for(var di=0;di<br.depts.length;di++){var dp=br.depts[di];var maxUses=br.depts[0].uses||1;
+      var actTxt='';var actCol='';var actBg='';
+      if(dp.active===1){actTxt='活跃';actCol='#34d399';actBg='rgba(16,185,129,.15)';}
+      else if(dp.active===2){actTxt='一般';actCol='#f59e0b';actBg='rgba(245,158,11,.15)';}
+      else{actTxt='待激活';actCol='#ef4444';actBg='rgba(239,68,68,.12)';}
+      rankHTML+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;width:100%"><span style="font-weight:700;width:20px;flex-shrink:0;color:rgba(255,255,255,.6)">'+(di+1)+'</span><span style="width:80px;flex-shrink:0;color:rgba(255,255,255,.8);font-size:12px">'+dp.n+'</span><div style="flex:1;height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden"><div style="height:100%;width:'+(dp.uses/maxUses*100)+'%;background:#60a5fa;border-radius:5px"></div></div><span style="width:36px;flex-shrink:0;text-align:right;color:rgba(255,255,255,.6);font-size:11px">'+dp.uses+'次</span><span style="padding:1px 7px;border-radius:6px;font-size:9px;color:'+actCol+';background:'+actBg+';flex-shrink:0">'+actTxt+'</span></div>';
+    }
+  }
+
+  // ---- BRANCH TABLE (HQ view only) ----
+  var brTable='';
+  if(isHQ){
+    brTable='<div class="dark-chart-container"><h4>📊 分行/部门关键指标对比</h4><div class="mg-table-wrap"><table class="mg-br-table"><thead><tr><th>分行/部门</th><th>AI应用数</th><th>月活用户</th><th>月度使用</th><th>覆盖人数</th><th>健康率</th></tr></thead><tbody>';
+    for(var bt=0;bt<branchData.length;bt++){
+      var bx=branchData[bt];var healthColor=bx.health>=95?'#34d399':bx.health>=90?'#f59e0b':'#ef4444';
+      brTable+='<tr><td><strong>'+bx.name+'</strong></td><td>'+bx.scenes+'</td><td>'+bx.depts.reduce(function(s,d){return s+d.mau},0)+'人</td><td>'+bx.depts.reduce(function(s,d){return s+d.uses},0)+'次</td><td>'+bx.users+'人</td><td style="color:'+healthColor+'">'+bx.health+'%</td></tr>';
+    }
+    brTable+='</tbody></table></div></div>';
+  }
+  // Branch view: department usage table
+  if(!isHQ){
+    brTable='<div class="dark-chart-container"><h4>📊 '+br.name+' 部门使用明细</h4><div class="mg-table-wrap"><table class="mg-br-table"><thead><tr><th>部门</th><th>使用应用数</th><th>月活</th><th>使用次数</th><th>活跃状态</th></tr></thead><tbody>';
+    for(var bq=0;bq<br.depts.length;bq++){
+      var dx=br.depts[bq];var actTxt='';var actCol='';var actBg='';
+      if(dx.active===1){actTxt='✅ 活跃';actCol='#34d399';actBg='rgba(16,185,129,.15)';}
+      else if(dx.active===2){actTxt='⚠️ 一般';actCol='#f59e0b';actBg='rgba(245,158,11,.15)';}
+      else{actTxt='❌ 待激活';actCol='#ef4444';actBg='rgba(239,68,68,.12)';}
+      brTable+='<tr><td><strong>'+dx.n+'</strong></td><td>'+dx.apps+'</td><td>'+dx.mau+'人</td><td>'+dx.uses+'次</td><td><span style="padding:2px 8px;border-radius:6px;font-size:10px;color:'+actCol+';background:'+actBg+'">'+actTxt+'</span></td></tr>';
+    }
+    brTable+='</tbody></table></div></div>';
+  }
+
+  // ---- APP TABLE ----
+  var appRows='';
+  for(var k=0;k<apps.length;k++){var a=apps[k];appRows+='<tr><td style="color:rgba(255,255,255,.85)"><strong>'+a.name+'</strong></td><td style="color:rgba(255,255,255,.6)">'+a.owner+'</td><td><span class="dark-tag green">'+a.status+'</span></td><td style="color:rgba(255,255,255,.6)">'+a.users+'人</td><td style="color:rgba(255,255,255,.6)">节省约 '+a.visits*8+' 分钟</td></tr>';}
+
+  var rankTitle=isHQ?'🏆 分行 AI 应用建设排行':'🏆 '+br.name+' 部门排行';
+  var html='<div class="mg-dash-wrap">'+
+    '<div class="pg-title" style="color:rgba(255,255,255,.9);font-size:22px;margin-bottom:4px">📈 管理驾驶舱</div>'+vwBar+
+    '<div class="mg-hero">'+hero+'</div>';
+
+  if(isHQ){
+    html+='<div class="col2">'+
+      '<div class="dark-chart-container"><h4>📈 AI 场景月度落地趋势（2026）</h4><div class="bar-chart">'+bar+'</div></div>'+
+      '<div class="dark-chart-container"><h4>📊 应用类型分布</h4>'+
+      '<div class="donut-wrap"><div class="donut" style="background:conic-gradient(#d4a85a 0deg 168deg, #60a5fa 168deg 276deg, #818cf8 276deg 324deg, #34d399 324deg 360deg)"><div class="donut-inner" style="background:#0f2b46;color:#fff">38</div></div>'+
+      '<div class="donut-legend dark-donut-legend"><div>● 轻量应用 18个</div><div>● 数据看板 12个</div><div>● 流程协同 5个</div><div>● 智能查询 3个</div></div></div></div></div>';
+  }
+
+  html+='<div class="dark-chart-container"><h4>'+rankTitle+'</h4><div style="font-size:11px;line-height:2.4">'+rankHTML+'</div></div>';
+  html+=brTable;
+  html+='<div class="col2">'+
+    '<div class="dark-chart-container"><h4>📱 应用组合</h4><table class="dt dark-dt"><thead><tr><th>应用名称</th><th>Owner</th><th>状态</th><th>月活</th><th>价值</th></tr></thead><tbody>'+appRows+'</tbody></table></div>'+
+    '<div class="dark-chart-container"><h4>🛡 风险概览 & 审计</h4>'+
+    '<div style="font-size:11px;color:rgba(255,255,255,.5);line-height:2.2">安全事件：<span style="color:#34d399">0</span> · 越权访问：<span style="color:#34d399">0</span> · 审计覆盖率：<span style="color:#34d399">100%</span></div>'+
+    '<div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:8px;line-height:2">08-04 张行长 审核通过<br>08-04 陈小白 提交业务验收<br>08-04 系统 自动测试通过<br>08-03 陈小白 创建需求</div>'+
+    '<div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;font-size:10px">'+
+    '<span class="dark-gate-tag">📊 价值达标</span><span class="dark-gate-tag">✅ 质量达标</span><span class="dark-gate-tag">🛡 安全达标</span><span class="dark-gate-tag">👥 运营就绪</span><span class="dark-gate-tag">🧩 能力就绪</span></div></div></div></div>';
+  c.innerHTML=html;
+}
+
+// ===== UTILS =====
+function togBell(){
+  if(S.role==='xiaobai'&&S.notifXiaobai>0){S.notifXiaobai=0;updateBell();renderAll()}
+  else if(S.role==='laowang'){switchView('gap-tickets')}
+  else if(S.role==='zhang'&&S.notifZhang>0){S.view='review';S.reviewTab='pending';renderAll()}
+}
+function openModal(){document.getElementById('modalOv').classList.add('open')}
+function closeModal(){_evalWithGap=false;document.getElementById('modalOv').classList.remove('open')}
+function toast(m,t){
+  var ct=document.getElementById('toastCt');var e=document.createElement('div');
+  e.className='toast'+(t==='ok'?' ok':t==='warn'?' warn':'');
+  e.innerHTML=m+'<button class="tc" onclick="this.parentElement.remove()">✕</button>';
+  ct.appendChild(e);setTimeout(function(){e.remove()},3200);
+}
+
+init();
+</script>
+</body>
+</html>
