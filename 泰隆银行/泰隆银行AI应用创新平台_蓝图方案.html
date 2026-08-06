@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -285,50 +286,42 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
     <div class="sub">一套完整的解决方案：为什么做 → 怎么做 → 谁来做 → 怎么跑起来</div>
   </div>
 
-  <!-- ===== SECTION 1: WHY ===== -->
+  <!-- ===== SECTION 0: PROBLEM CONTRADICTIONS ===== -->
   <div class="pano-section">
     <div class="pano-sec-label">一、银行当前面临的问题</div>
-    <div class="pain-flow">
-      <div class="pain-flow-card">
-        <div class="pf-num">①</div>
-        <div class="pf-who">🏪 支行 · 客户经理</div>
-        <div class="pf-pain">客户拜访记录靠 Excel，台账每周手工汇总，客户信息查询要翻多个系统</div>
-        <div class="pf-want">"有没有工具帮我自动整理客户跟进情况？"</div>
+    <div style="background:#fff;border-radius:14px;padding:14px 20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.05);border:1px solid #f0f0f0;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px">
+      <span style="background:#fdecea;color:#c0392b;padding:8px 18px;border-radius:20px;font-size:15px;font-weight:600">一线提需求</span>
+      <span style="color:#bbb;font-size:18px">→</span>
+      <span style="background:#fef9e7;color:#d4a017;padding:8px 18px;border-radius:20px;font-size:15px;font-weight:600">总行排期积压</span>
+      <span style="color:#bbb;font-size:18px">→</span>
+      <span style="background:#fef9e7;color:#d4a017;padding:8px 18px;border-radius:20px;font-size:15px;font-weight:600">员工自寻出路</span>
+      <span style="color:#bbb;font-size:18px">→</span>
+      <span style="background:#fdecea;color:#c0392b;padding:8px 18px;border-radius:20px;font-size:15px;font-weight:600">Excel / 外部AI</span>
+      <span style="color:#bbb;font-size:18px">→</span>
+      <span style="background:#fdecea;color:#c0392b;padding:8px 18px;border-radius:20px;font-size:15px;font-weight:600">数据外泄 · 影子IT · 无人维护</span>
+      <span style="color:#bbb;font-size:18px">→</span>
+      <span style="background:#fdecea;color:#c0392b;padding:8px 18px;border-radius:20px;font-size:15px;font-weight:600">总行更不敢放开</span>
+    </div>
+    <div class="pain-cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px">
+      <div style="background:#fff;border-radius:12px;padding:20px 16px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #e8edf2">
+        <div style="font-size:22px;font-weight:700;color:var(--navy);margin-bottom:8px">矛盾一</div>
+        <div style="font-size:15px;color:var(--text-secondary);line-height:1.6">小需求价值真实，但排期成本高于开发成本</div>
       </div>
-      <div class="pain-flow-arrow">→</div>
-      <div class="pain-flow-card gold">
-        <div class="pf-num">②</div>
-        <div class="pf-who">🏬 分行 · 运营人员</div>
-        <div class="pf-pain">活动报名、材料收集全靠微信群 + 人工统计，数据汇总反复出错</div>
-        <div class="pf-want">"能不能快速生成信息收集和统计工具？"</div>
+      <div style="background:#fff;border-radius:12px;padding:20px 16px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #e8edf2">
+        <div style="font-size:22px;font-weight:700;color:var(--navy);margin-bottom:8px">矛盾二</div>
+        <div style="font-size:15px;color:var(--text-secondary);line-height:1.6">长尾需求数量大，科技产能注定覆盖不完</div>
       </div>
-      <div class="pain-flow-arrow">→</div>
-      <div class="pain-flow-card">
-        <div class="pf-num">③</div>
-        <div class="pf-who">🏛 总行 · 业务部门</div>
-        <div class="pf-pain">跨部门数据分析需求频繁，每次走完整排期流程，三个月等不起</div>
-        <div class="pf-want">"小需求能不能不要排三个月？我想快速验证。"</div>
+      <div style="background:#fff;border-radius:12px;padding:20px 16px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #e8edf2">
+        <div style="font-size:22px;font-weight:700;color:var(--navy);margin-bottom:8px">矛盾三</div>
+        <div style="font-size:15px;color:var(--text-secondary);line-height:1.6">多部门重复建设，同一类需求各自做一遍</div>
       </div>
     </div>
-
-    <div class="death-loop" style="margin-bottom:12px">
-      <span class="dl-red">一线提需求</span><span style="color:var(--text-muted)">→</span>
-      <span class="dl-orange">总行排期积压</span><span style="color:var(--text-muted)">→</span>
-      <span class="dl-yellow">员工自寻出路</span><span style="color:var(--text-muted)">→</span>
-      <span class="dl-red">Excel / 外部AI</span><span style="color:var(--text-muted)">→</span>
-      <span class="dl-dark">数据外泄 · 影子IT · 无人维护</span><span style="color:var(--text-muted)">→</span>
-      <span class="dl-red">总行更不敢放开</span>
+    <div style="text-align:center;font-size:15px;color:var(--navy);font-weight:600;margin-bottom:14px">
+      问题不在需求太多，在<span style="color:var(--gold)">供给方式必须改变</span>——不是禁止创新，而是把创新纳入体系。
     </div>
-
-    <div class="contradiction-row">
-      <div class="contradiction-item"><strong>矛盾一</strong>小需求价值真实，但排期成本高于开发成本</div>
-      <div class="contradiction-item"><strong>矛盾二</strong>长尾需求数量大，科技产能注定覆盖不完</div>
-      <div class="contradiction-item"><strong>矛盾三</strong>多部门重复建设，同一类需求各自做一遍</div>
-    </div>
-    <div style="text-align:center;margin-top:10px;font-size:13px;color:var(--navy);font-weight:600">问题不在需求太多，在<strong style="color:var(--gold)">供给方式必须改变</strong>——不是禁止创新，而是把创新纳入体系。</div>
   </div>
 
-  <!-- ===== SECTION 2: ANSWER ===== -->
+  <!-- ===== SECTION 1: ANSWER ===== -->
   <div class="pano-section">
     <div class="pano-sec-label">二、解决方案总体蓝图 · 五中心 + 一底座 <span style="font-weight:400;font-size:11px;color:var(--text-muted);letter-spacing:0">（点击中心查看完整能力规划）</span></div>
     <div class="arch-pano">
@@ -341,7 +334,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
         <div class="arch-block c2" onclick="openArchDrillByKey('c2')">
           <div class="blk-icon">⚡</div><div class="blk-title">应用生产中心</div>
           <div class="blk-problem">解决：不会写代码、方案到应用断层</div>
-          <div class="blk-do">AI 生成页面/逻辑/数据<br>沙箱预览 · 版本回滚</div>
+          <div class="blk-do">AI 生成页面/逻辑/数据<br>预览调试 · 版本回滚</div>
         </div>
         <div class="arch-block c3" onclick="openArchDrillByKey('c3')">
           <div class="blk-icon">🧩</div><div class="blk-title">企业能力中心</div>
@@ -351,7 +344,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
         <div class="arch-block c4" onclick="openArchDrillByKey('c4')">
           <div class="blk-icon">📊</div><div class="blk-title">运营治理中心</div>
           <div class="blk-problem">解决：上线后没人管、价值不可见</div>
-          <div class="blk-do">有 Owner · 有监控 · 有退出<br>应用市场 · 可信标识 · 生命周期</div>
+          <div class="blk-do">运营驾驶舱 · 应用管理<br>推广配置 · 上下架管理</div>
         </div>
         <div class="arch-block" style="border-top:4px solid #e74c3c" onclick="openArchDrillByKey('data')">
           <div class="blk-icon">📈</div><div class="blk-title">数据管理中心</div>
@@ -361,26 +354,23 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
       </div>
       <div class="arch-connector">▼ 五中心运行在统一的技术基座之上 ▼</div>
       <div class="arch-base" onclick="openArchDrillByKey('base')">
-        <div class="blk-icon">🔧</div><div class="blk-title">AI 基础底座</div>
-        <div class="blk-do">模型安全 · 统一身份 · 数据安全 · 沙箱环境 · 全链路审计</div>
+        <div class="blk-icon">🔧</div><div class="blk-title">能力底座</div>
+        <div class="blk-do">模型安全 · 统一身份 · 数据安全 · 全链路审计</div>
       </div>
     </div>
   </div>
 
-  <!-- ===== SECTION 3: WHO + HOW ===== -->
+  <!-- ===== SECTION 2: WHO + HOW ===== -->
   <div class="pano-section">
     <div class="pano-sec-label">三、不同角色 · 各司其职 <span style="font-weight:400;font-size:11px;color:var(--text-muted);letter-spacing:0">（点击角色卡片查看详情）</span></div>
 
     <div style="margin-bottom:12px">
       <div class="role-center-label">▼ 需求侧：提需求 · 造应用 · 确认价值</div>
       <div class="role-map">
-        <div class="role-card under-blue" onclick="openRoleDrill('普通使用者','全行（支行/分行/总行）','客户经理 · 柜员 · 业务岗','在应用市场找工具使用、提需求想法、反馈问题','应用市场 · 我的应用','不创建、不审核')">
-          <div class="rc-icon">👤</div><div class="rc-name">普通使用者</div><div class="rc-dept">全行员工</div><div class="rc-do">找应用 · 提需求<br>反馈问题</div>
-        </div>
-        <div class="role-card under-blue" onclick="openRoleDrill('业务创新者','支行/分行/总行','种子用户 · 业务骨干 · 数字化联络人','用AI把业务想法变成轻应用、试用验证、沉淀模板带动其他人','AI需求助手 · 生成工作台 · 模板发布','应用能否解决业务问题、模板质量')">
+        <div class="role-card under-blue" onclick="openRoleDrill('业务创新者','支行/分行/总行','种子用户 · 业务骨干 · 数字化联络人','在AI对话首页用自然语言描述业务需求，AI生成应用后预览调试；在应用市场浏览/基于模板创建应用；在我的应用管理已创建应用，进入画布编辑器修改、发布','AI对话首页 · 应用市场 · 我的应用','应用能否解决业务问题、模板质量')">
           <div class="rc-icon">💡</div><div class="rc-name">业务创新者</div><div class="rc-dept">业务骨干·种子用户</div><div class="rc-do">描述需求 · 生成应用<br>沉淀模板</div>
         </div>
-        <div class="role-card under-blue" onclick="openRoleDrill('业务 Owner','总行/分行/支行','部门负责人 · 支行行长 · 指定责任人','确认需求范围与使用范围、验收上线、对应用价值与生命周期负责','需求卡确认 · 验收台 · 应用台账','应用出了问题第一责任人')">
+        <div class="role-card under-blue" onclick="openRoleDrill('业务 Owner','总行/分行/支行','部门负责人 · 支行行长 · 指定责任人','在审核列表查看待审核的需求/发布/下线申请，查看审核详情（抽屉），执行通过/驳回操作，预览已通过的应用','审核列表','应用出了问题第一责任人')">
           <div class="rc-icon">✅</div><div class="rc-name">业务 Owner</div><div class="rc-dept">部门/支行负责人</div><div class="rc-do">确认需求 · 验收<br>对应用负责</div>
         </div>
       </div>
@@ -389,16 +379,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
     <div style="margin-bottom:12px">
       <div class="role-center-label">▼ 供给侧：建能力 · 守红线 · 管运营</div>
       <div class="role-map">
-        <div class="role-card under-orange" onclick="openRoleDrill('总行科技','总行（全行统一）','总行科技部研发人员','① 封装企业能力（API/组件/数据服务）——组件优先，科技建能力、AI做编排<br>② 响应能力缺口工单：收到工单→评估→开发→上架→通知创新者<br>③ 设定技术规则（Rules硬约束）与开发Profile<br>④ 管理沙箱环境、模型路由、资源配额与运行底座','能力目录 · API契约注册 · 缺口工单看板 · 规则引擎 · 系统管理','能力的SLA和安全性、缺口闭环时效、平台运行稳定')">
+        <div class="role-card under-orange" onclick="openRoleDrill('总行科技','总行（全行统一）','总行科技部研发人员','① 在能力列表注册/编辑/停用启用企业能力（API/组件/数据服务），遵循组件优先原则——科技建能力、AI做编排<br>② 在缺口工单处理能力缺口：收到工单→评估→封装→上架→通知申请人<br>③ 在规则配置新增/启停安全与数据治理规则（禁止未授权API、敏感数据脱敏、禁止硬编码密钥等）<br>④ 在环境管理新增/编辑环境配置（开发/测试/灰度/生产）<br>【需要对接配合】与各业务系统Owner对接获取API文档与鉴权方式；缺口工单需与原系统Owner协调接口权限与联调；规则配置需与安全/合规部门确认；环境管理需与运维团队协调资源与隔离部署','能力列表 · 缺口工单 · 规则配置 · 环境管理','能力的SLA和安全性、缺口闭环时效、平台运行稳定、安全规则有效')">
           <div class="rc-icon">🔧</div><div class="rc-name">总行科技</div><div class="rc-dept">科技部研发</div><div class="rc-do">建能力 · 响应缺口<br>设规则 · 管环境</div>
         </div>
-        <div class="role-card under-green" onclick="openRoleDrill('安全合规','总行（全行统一）','信息安全 / 数据管理 / 合规部门','① 设定数据分级与安全红线、脱敏规则、审批红线<br>② 审核L2应用发布证据包（权限声明、数据依赖、安全扫描结果）<br>③ 全链路审计：需求→生成→审批→部署→数据调用全程留痕<br>④ 风险事件处置与一键停用','安全规则配置 · 发布审核队列 · 审计检索 · 一键停用','安全规则有效、审核不遗漏、风险及时处置；AI不能成为责任主体，创建者对需求真实性负责，Owner对应用生命周期负责')">
-          <div class="rc-icon">🛡</div><div class="rc-name">安全合规</div><div class="rc-dept">信息安全·合规</div><div class="rc-do">定红线 · 审发布<br>全链路审计 · 管风险</div>
+        <div class="role-card under-green" onclick="openRoleDrill('平台运营','总行（全行统一）','数字化运营 / 创新管理部门','① 在运营驾驶舱查看活跃应用数/月活用户/月度使用次数/应用健康率等运营数据，查看使用趋势、应用健康分布、TOP5应用排行<br>② 在应用管理查看已孵化应用列表，配置推广范围（全行/指定机构/指定部门），预览应用','运营驾驶舱 · 应用管理','平台有人用、应用不腐化')">
+          <div class="rc-icon">📊</div><div class="rc-name">平台运营</div><div class="rc-dept">数字化运营</div><div class="rc-do">看数据 · 管应用<br>配推广</div>
         </div>
-        <div class="role-card under-green" onclick="openRoleDrill('平台运营','总行（全行统一）','数字化运营 / 创新管理部门','① 场景运营：征集需求→筛选高价值场景→孵化陪跑<br>② 用户运营：管理种子用户，分层培训与认证（全员认知→创作者入门→业务进阶→Owner运营→贡献者课程→审核安全课）<br>③ 应用运营：应用市场管理、优质应用推广、可信标识授予、僵尸应用清理<br>④ 支持体系：四级服务台（AI自助→社区互助→运营支持→技术支持）<br>⑤ 数据分析：运营驾驶舱、月度报告','场景池 · 孵化漏斗 · 运营驾驶舱 · 培训中心 · 服务台 · 应用市场','平台有人用、场景有质量、应用不腐化；总行目前可能没有这个岗位，但平台必须要有这个岗位来运转')">
-          <div class="rc-icon">📊</div><div class="rc-name">平台运营</div><div class="rc-dept">数字化运营</div><div class="rc-do">找场景 · 培训用户<br>推应用 · 四级支持</div>
-        </div>
-        <div class="role-card under-navy" onclick="openRoleDrill('管理者','总行/分行/支行','分管行领导 · 运营委员会 · 分行/支行领导','看全局数据：应用组合健康度、业务价值总量、风险分布、能力投资方向；审批扩围决策、季度审议应用组合与公共能力投资','管理驾驶舱：北极星指标 · 五维仪表盘 · 扩围评审','方向决策、资源审批、扩围判断')">
+        <div class="role-card under-navy" onclick="openRoleDrill('管理者','总行/分行/支行','分管行领导 · 运营委员会 · 分行/支行领导','在管理驾驶舱查看总行/分行/支行三视角的KPI指标（场景数/智能体数/调用量/覆盖员工），查看趋势图表、分行排行、应用组合、风险概览','管理驾驶舱','方向决策、资源审批、扩围判断')">
           <div class="rc-icon">📈</div><div class="rc-name">管理者</div><div class="rc-dept">行领导·委员会</div><div class="rc-do">看全局 · 定方向<br>批资源 · 审扩围</div>
         </div>
       </div>
@@ -408,18 +395,18 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
     <div class="journey-strip">
       <div class="journey-node" onclick="openStepDrill(1,'需求提出','员工打开AI对话，用大白话描述：「我每次拜访完客户要手工登记，每周还要汇总台账，太麻烦了。」系统记录原始描述。','这一步走完：需求从脑子里说出来、被系统记录下来了。接下来AI会帮助澄清和完善。')"><div class="jn-step">STEP 1</div><div class="jn-label">需求提出</div></div>
       <div class="journey-arrow">→</div>
-      <div class="journey-node" onclick="openStepDrill(2,'AI 分析澄清','AI自动追问：「需要记录哪些信息？拜访日期、客户名称、沟通内容？」「这个工具是个人用还是团队用？」「需要统计什么数据？」员工一一回答。系统将对话整理成结构化需求卡：目标用户、功能范围、数据字段、使用权限、验收标准全部填好。','这一步走完：模糊想法变成了清晰的需求卡。员工和系统对「要做什么」达成了共识，双方可以确认。')"><div class="jn-step">STEP 2</div><div class="jn-label">AI 分析</div></div>
+      <div class="journey-node" onclick="openStepDrill(2,'AI 分析澄清','用户一句话描述业务需求（如「我要一个园区招商管理系统」），AI 即可直接生成应用初稿；过程中支持多轮对话提问、确认、生成：AI 主动追问关键细节（如目标用户、功能范围、数据字段、权限要求），用户回答后 AI 调整并继续生成；用户也可以反向提问或描述修改诉求，AI 据此迭代应用。生成过程中实时匹配企业能力中心，已满足能力打 ✓、缺失能力打 ✗，缺失项自动生成缺口工单推送到总行科技部。','一个可点击预览的应用初稿（含页面结构、数据字段、能力匹配清单），无需先出需求卡。用户可在画布中对话修改、确认后进入下一步生成与测试。')"><div class="jn-step">STEP 2</div><div class="jn-label">AI 分析</div></div>
       <div class="journey-arrow">→</div>
       <div class="journey-node" onclick="openStepDrill(3,'能力匹配','系统扫描需求卡，自动检索企业能力中心：页面组件有 ✓、数据存储有 ✓、消息通知有 ✓、「客户档案查询」缺失 ✗。生成可行性报告：7项能力满足，1项缺失。综合判定 L1（独立轻应用），可自主开发，无需转专业研发。缺失的「客户档案查询」自动生成能力缺口工单，通知总行科技团队。','这一步走完：能不能做、缺什么、谁来解决——三个问题都有了答案。需求没有被拒绝，缺的能力有明确的工单跟踪。')"><div class="jn-step">STEP 3</div><div class="jn-label">能力匹配</div></div>
       <div class="journey-arrow">→</div>
-      <div class="journey-node" onclick="openStepDrill(4,'应用生成','AI按照需求卡和可行性方案，依次生成：页面结构（拜访列表页 + 录入表单 + 统计看板）、数据模型（客户名、拜访日期、沟通内容、下次跟进时间）、后端接口（增删改查 + 统计分析）、Mock模拟数据。员工在沙箱中实时预览效果，不满意可以对话修改：「把拜访日期放到第一列」「加一个筛选按客户名搜索」。','这一步走完：一个可以在沙箱里真实点击操作的应用已经存在了。员工看到的不再是方案文档，而是能用的东西。')"><div class="jn-step">STEP 4</div><div class="jn-label">应用生成</div></div>
+      <div class="journey-node" onclick="openStepDrill(4,'应用生成','AI按照需求卡和可行性方案，依次生成：页面结构（拜访列表页 + 录入表单 + 统计看板）、数据模型（客户名、拜访日期、沟通内容、下次跟进时间）、后端接口（增删改查 + 统计分析）、Mock模拟数据。员工在小鱼泡泡中实时预览效果，不满意可以对话修改：「把拜访日期放到第一列」「加一个筛选按客户名搜索」。','这一步走完：一个可以真实点击操作的应用已经存在了。员工看到的不再是方案文档，而是能用的东西。')"><div class="jn-step">STEP 4</div><div class="jn-label">应用生成</div></div>
       <div class="journey-arrow">→</div>
       <div class="journey-node" onclick="openStepDrill(5,'测试验证','系统自动执行：单元测试通过、接口测试通过、安全扫描无高危漏洞、无硬编码密钥、依赖无已知漏洞、数据隔离正确。系统生成测试证据包。员工按需求卡逐项验收：录入拜访 ✓、列表筛选 ✓、看板统计 ✓、权限隔离 ✓。全部确认无误。','这一步走完：应用通过了机器的自动检查，也通过了人的业务验收。质量有了证据，可以放心进入下一步。')"><div class="jn-step">STEP 5</div><div class="jn-label">测试验证</div></div>
     </div>
     <div class="journey-strip" style="margin-top:8px">
-      <div class="journey-node" onclick="openStepDrill(6,'审核发布','应用等级为 L1，触发 Owner 自验审批。Owner（支行行长）确认：使用范围为本支行客户经理岗，数据不涉及客户敏感信息，功能验证通过。审批通过。应用自动部署至生产环境，发布到行内工作台/小程序平台。','这一步走完：应用从测试环境到了生产环境。指定范围的员工可以在工作台上看到并使用这个应用了。发布有记录、可追溯。')"><div class="jn-step">STEP 6</div><div class="jn-label">审核发布</div></div>
+      <div class="journey-node" onclick="openStepDrill(6,'审核发布','应用等级为 L1，触发 Owner 自验审批。Owner（支行行长）确认：使用范围为本支行客户经理岗，数据不涉及客户敏感信息，功能验证通过。审批通过。应用自动部署至生产环境，发布到行内小鱼泡泡/小程序平台。','这一步走完：应用从测试环境到了生产环境。指定范围的员工可以在小鱼泡泡上看到并使用这个应用了。发布有记录、可追溯。')"><div class="jn-step">STEP 6</div><div class="jn-label">审核发布</div></div>
       <div class="journey-arrow">→</div>
-      <div class="journey-node" onclick="openStepDrill(7,'上线使用','支行 15 名客户经理在工作台上看到「拜访管理」应用，开始日常使用：录入拜访记录、搜索历史、查看月度统计看板。系统后台持续监控：访问量、响应时间、错误率、用户活跃度。','这一步走完：应用开始产生真实使用数据，不再是一个Demo。谁在用、用得好不好、有没有问题——全部可见。')"><div class="jn-step">STEP 7</div><div class="jn-label">上线使用</div></div>
+      <div class="journey-node" onclick="openStepDrill(7,'上线使用','支行 15 名客户经理在小鱼泡泡上看到「拜访管理」应用，开始日常使用：录入拜访记录、搜索历史、查看月度统计看板。系统后台持续监控：访问量、响应时间、错误率、用户活跃度。','这一步走完：应用开始产生真实使用数据，不再是一个Demo。谁在用、用得好不好、有没有问题——全部可见。')"><div class="jn-step">STEP 7</div><div class="jn-label">上线使用</div></div>
       <div class="journey-arrow">→</div>
       <div class="journey-node" onclick="openStepDrill(8,'运营分析','运营人员查看本周数据：12 人使用，累计录入 86 条拜访记录，平均每人每天使用 3 次。与之前手工 Excel 对比，每次拜访登记节省约 8 分钟。无故障、无投诉。平台自动标记为「健康」。分行运营人员注意到这个应用，申请推广到其他支行。','这一步走完：应用的价值有了数据支撑。要不要推广、要不要优化、要不要沉淀为模板——有了决策依据，不再是拍脑袋。')"><div class="jn-step">STEP 8</div><div class="jn-label">运营分析</div></div>
       <div class="journey-arrow">→</div>
@@ -431,56 +418,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 </div>
 
 <!-- ================================================================ -->
-<!-- SLIDE 2: ROLE MATRIX -->
+<!-- SLIDE 2: THREE PHASES -->
 <!-- ================================================================ -->
 <div class="slide" data-index="2">
-<div class="slide-content" style="max-width:1300px">
-  <div class="section-title">角色矩阵：谁进来 · 做什么 · 担什么责</div>
-  <div class="section-subtitle">不同层级、不同角色，各有入口、各有职责。<span class="highlight">点击格子查看详情</span>。</div>
-  <div class="matrix-wrap">
-    <table class="matrix-table">
-      <thead>
-        <tr>
-          <th class="org">组织层级</th>
-          <th>👤 普通使用者</th><th>💡 业务创新者</th><th>✅ 业务 Owner</th>
-          <th>🔧 总行科技</th><th>🛡 安全合规</th><th>📊 平台运营</th><th>📈 管理者</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="org" style="font-weight:700;background:#e8f0fe;color:var(--navy)">🏛 总行</td>
-          <td class="clickable" onclick="openRoleDrill('普通使用者','总行','总行业务部门员工','在应用市场搜索使用公共应用、提交使用反馈','应用市场 · 我的应用','不创建、不审核')">业务部门<br>使用应用</td>
-          <td class="clickable" onclick="openRoleDrill('业务创新者','总行','总行业务骨干','梳理跨部门场景、创建部门级应用、将成功应用沉淀为模板','AI需求助手 · 生成工作台 · 模板发布','应用能否解决业务问题、模板质量')">业务骨干<br>创建应用</td>
-          <td class="clickable" onclick="openRoleDrill('业务Owner','总行','部门负责人 / 指定责任人','确认跨部门应用的需求范围、验收上线、决定迭代还是下线','需求卡确认 · 验收台 · 应用台账','应用出了问题第一责任人')">部门负责人<br>验收负责</td>
-          <td class="clickable" rowspan="3" style="background:#f0f4f8" onclick="openRoleDrill('总行科技','总行（全行统一）','总行科技部研发人员','① 封装企业能力（API/组件/数据服务）② 响应能力缺口工单 ③ 设定技术规则（Rules）与开发Profile ④ 管理沙箱环境、模型路由与运行底座','能力目录 · API契约注册 · 缺口工单看板 · 规则引擎 · 系统管理','能力的SLA和安全性、缺口闭环时效、平台运行稳定')">能力建设<br>缺口响应<br>技术治理<br>环境运维</td>
-          <td class="clickable" rowspan="3" style="background:#fef9f0" onclick="openRoleDrill('安全合规','总行（全行统一）','信息安全 / 数据管理 / 合规部门','① 设定数据分级与安全红线 ② 审核L2应用发布 ③ 全链路审计：需求→生成→审批→部署→调用全程留痕 ④ 风险事件处置与一键停用','安全规则配置 · 发布审核队列 · 审计检索 · 一键停用','安全规则有效、审核不遗漏、风险及时处置')">定红线<br>审发布<br>全链路审计</td>
-          <td class="clickable" rowspan="3" style="background:#e8f5e9" onclick="openRoleDrill('平台运营','总行（全行统一）','数字化运营 / 创新管理部门','① 征集筛选场景 ② 分层培训（全员认知→创作者→业务进阶→Owner→贡献者→审核安全）与认证 ③ 推广优质应用、管理可信标识 ④ 四级服务台（AI自助→社区互助→运营支持→技术支持）⑤ 清理僵尸应用、看数据','场景池 · 孵化漏斗 · 培训中心 · 运营驾驶舱 · 服务台 · 应用市场','平台有人用、场景有质量、应用不腐化')">场景运营<br>分层培训<br>四级支持</td>
-          <td class="clickable" onclick="openRoleDrill('管理者','总行','分管行领导 / 运营委员会','看全局数据：应用组合健康度、业务价值总量、风险分布、能力投资方向','管理驾驶舱 · 北极星指标 · 扩围评审','方向决策、资源审批、扩围判断')">行领导<br>运营委员会</td>
-        </tr>
-        <tr>
-          <td class="org" style="font-weight:700;background:#f0f4f8;color:var(--navy)">🏬 分行</td>
-          <td class="clickable" onclick="openRoleDrill('普通使用者','分行','分行业务岗','使用本分行范围内的应用、提需求想法','应用市场 · 想法提交','不创建')">业务岗<br>使用应用</td>
-          <td class="clickable" onclick="openRoleDrill('业务创新者','分行','分行数字化联络人 / 业务骨干','发现分行高频需求、创建分行级应用、协助支行推广使用','AI需求助手 · 生成工作台 · 场景池','场景真实、应用有人用')">数字化联络人<br>创建分行应用</td>
-          <td class="clickable" onclick="openRoleDrill('业务Owner','分行','分行业务负责人','确认分行级应用的必要性和使用范围','需求卡确认 · 验收台','应用使用范围不出分行')">业务负责人<br>确认范围</td>
-          <td class="clickable" onclick="openRoleDrill('管理者','分行','分行领导','查看本分行应用数量、活跃情况、节省工时','分行看板','分行推广决策')">分行领导<br>看分行数据</td>
-        </tr>
-        <tr>
-          <td class="org" style="font-weight:700;background:var(--gold-pale);color:var(--gold)">🏪 支行</td>
-          <td class="clickable" onclick="openRoleDrill('普通使用者','支行','客户经理 · 柜员 · 综合岗','使用应用（拜访管理、台账、材料收集）、反馈问题','应用市场 · 我的应用','不创建不审核')">客户经理<br>柜员<br>日常使用</td>
-          <td class="clickable" onclick="openRoleDrill('业务创新者','支行','种子用户 · 综合岗骨干','把日常重复劳动变成小工具、试用验证、带动其他人用','AI需求助手 · 生成工作台','从自己用到带动别人用')">种子用户<br>变重复劳动为工具</td>
-          <td class="clickable" onclick="openRoleDrill('业务Owner','支行','支行行长 / 指定负责人','确认支行级应用、组织员工试用、确认应用价值','需求卡确认 · 验收台','支行应用不出问题')">支行行长<br>组织试用</td>
-          <td class="clickable" onclick="openRoleDrill('管理者','支行','支行行长','查看本支行使用情况、效率提升效果','支行看板','支行使用推广')">支行行长<br>看使用效果</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-</div>
-
-<!-- ================================================================ -->
-<!-- SLIDE 3: THREE PHASES -->
-<!-- ================================================================ -->
-<div class="slide" data-index="3">
 <div class="slide-content">
   <div class="section-title">分三阶段建设</div>
   <div class="section-subtitle">一期不是缩小版的"全功能平台"，而是必须跑通的<span class="highlight">一条受控生产链</span>。二、三期只在一期证明价值后才启动。</div>
@@ -488,12 +428,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
     <div class="timeline-item p1">
       <div class="phase-num">第一阶段</div>
       <div class="phase-title">AI 应用创新闭环</div>
-      <div class="phase-time">2 — 6 个月</div>
       <div class="phase-goal"><strong>目标：</strong>员工可以 提需求 → AI生成 → 发布使用</div>
       <ul class="phase-list">
-        <li>用户入口：统一登录、个人工作台、应用市场（基础版）</li>
+        <li>用户入口：统一登录、个人小鱼泡泡、应用市场（基础版）</li>
         <li>需求分析：自然语言需求、AI澄清、需求卡、L0-L3分级</li>
-        <li>应用生成：页面/数据/后端生成、沙箱预览、版本管理</li>
+        <li>应用生成：页面/数据/后端生成、预览调试、版本管理</li>
         <li>基础治理：用户权限、五道质量门禁、分级发布审核</li>
         <li>基础能力中心：模板、组件、API目录、能力缺口工单</li>
         <li>应用管理：应用台账、Owner、全生命周期状态</li>
@@ -506,11 +445,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
     <div class="timeline-item">
       <div class="phase-num">第二阶段</div>
       <div class="phase-title">企业能力复用体系</div>
-      <div class="phase-time">6 — 12 个月</div>
       <div class="phase-goal"><strong>目标：</strong>能力资产化，不重复造轮子</div>
       <ul class="phase-list">
-        <li>API / 数据服务 / MCP 统一治理与细粒度授权</li>
-        <li>Skill 注册、测试、版本、灰度发布</li>
+        <li>API / 数据服务统一治理与细粒度授权</li>
         <li>业务化能力地图与能力缺口池（聚合排序驱动投资）</li>
         <li>岗位开发 Profile：不同角色不同能力边界</li>
         <li>模板市场：部门场景包、智能推荐</li>
@@ -524,7 +461,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
     <div class="timeline-item">
       <div class="phase-num">第三阶段</div>
       <div class="phase-title">规模化运营治理</div>
-      <div class="phase-time">12 — 24 个月</div>
       <div class="phase-goal"><strong>目标：</strong>平台长期运行、持续产生价值</div>
       <ul class="phase-list">
         <li>智能运营：需求趋势自动发现、应用组合分析</li>
@@ -541,19 +477,19 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 </div>
 
 <!-- ================================================================ -->
-<!-- SLIDE 4: PHASE 1 PLAN + METRICS + KEY LOOPS -->
+<!-- SLIDE 3: PHASE 1 PLAN + METRICS + KEY LOOPS -->
 <!-- ================================================================ -->
-<div class="slide" data-index="4">
+<div class="slide" data-index="3">
 <div class="slide-content">
-  <div class="section-title">一期目标：跑通受控闭环</div>
-  <div class="section-subtitle">先试点、再扩围。<span class="highlight">做出来不算成功，用起来才算</span>。两个关键闭环确保平台长期健康运行。</div>
+  <div class="section-title">一期计划</div>
+  <div class="section-subtitle"><span class="highlight">做出来不算成功，用起来才算</span>。两个关键闭环确保平台长期健康运行。</div>
 
   <div class="phase1-grid">
     <div class="p1-card">
-      <h4>📦 一期交付内容</h4>
+      <h4>📦 一期完成内容</h4>
       <ul>
         <li><strong>产品闭环：</strong>需求→分级→Plan→生成→测试→发布→运行→退出全链路可用</li>
-        <li><strong>工程底座：</strong>受控页面/逻辑/数据/后端生成，沙箱、版本、灰度、回滚</li>
+        <li><strong>工程底座：</strong>受控页面/逻辑/数据/后端生成，版本、灰度、回滚</li>
         <li><strong>银行集成：</strong>SSO对接、小程序平台发布、首批高复用能力接入</li>
         <li><strong>安全治理：</strong>身份、权限、数据、代码、发布门禁 + 全链路审计</li>
         <li><strong>真实应用：</strong>3-5个生产场景上线持续使用，≥1个可复用模板</li>
@@ -561,10 +497,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
       </ul>
     </div>
     <div class="p1-card">
-      <h4>🚀 一期运营策略</h4>
+      <h4>🚀 一期运营建议</h4>
       <ul>
         <li><strong>冷启动：</strong>选 2-3 个试点部门，招募 20-50 名种子用户，筛选 3-5 个真实场景</li>
-        <li><strong>陪跑机制：</strong>集中培训 + 一对一陪跑 + 每周需求评审和问题复盘 + 统一服务台</li>
         <li><strong>数据决定扩围：</strong>五条门槛同时达标才向更多部门开放，不按时间表扩围</li>
       </ul>
     </div>
@@ -572,11 +507,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
     <!-- North star + metrics -->
     <div class="p1-card full" style="background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--white)">
       <h4 style="color:var(--white)">🎯 北极星指标：月度产生可验证业务价值的活跃生产应用数</h4>
-      <div style="font-size:12px;opacity:.75">"有效应用" = 当月有真实用户完成有效任务 + 有明确Owner + 无严重质量安全问题 + 未被认定为重复或废弃</div>
+      <div style="font-size:12px;opacity:.75">"有效应用" = 当月有真实用户完成有效任务 + 无严重质量安全问题 + 未被认定为重复或废弃</div>
     </div>
 
     <div class="p1-card full">
-      <h4>📐 一期五维上线标准</h4>
+      <h4>📐 一期完成里程碑</h4>
       <div class="metric-inline">
         <div class="mi"><div class="val">3-5</div><div class="lbl">真实场景上线<br>并持续使用</div></div>
         <div class="mi"><div class="val">全链路</div><div class="lbl">需求→发布→运行<br>→退出闭环完整</div></div>
@@ -633,8 +568,70 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
     </div>
   </div>
 
-  <div style="text-align:center;margin-top:14px;padding:10px;background:var(--gold-pale);border-radius:8px;font-size:13px;color:var(--navy)">
-    💡 一期原型将以「客户经理拜访管理」为主场景，演示从 AI 需求对话 → 方案确认 → 应用生成 → 沙箱试用 → 发布上线的完整流程。<br><span style="color:var(--text-muted)">（原型独立交付，详见配套原型演示页面）</span>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- SLIDE 4: ROLE MATRIX -->
+<!-- ================================================================ -->
+<div class="slide" data-index="4">
+<div class="slide-content" style="max-width:1300px">
+  <div class="section-title">角色矩阵：谁进来 · 做什么 · 担什么责</div>
+  <div class="section-subtitle">不同层级、不同角色，各有入口、各有职责。<span class="highlight">点击格子查看详情</span>。</div>
+  <div class="matrix-wrap">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th class="org">组织层级</th>
+          <th>💡 业务创新者</th><th>✅ 业务 Owner</th>
+          <th>🔧 总行科技</th><th>📊 平台运营</th><th>📈 管理者</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="org" style="font-weight:700;background:#e8f0fe;color:var(--navy)">🏛 总行</td>
+          <td class="clickable" onclick="openRoleDrill('业务创新者','总行','总行业务骨干','在AI对话首页用自然语言描述跨部门场景的业务痛点与期望产出，AI澄清后生成应用初稿；在应用市场浏览/基于模板创建应用；在我的应用管理已创建应用，进入画布编辑器修改、发布，主动收集使用反馈推动迭代','AI对话首页 · 应用市场 · 我的应用','应用能否解决业务问题、带动他人使用')">
+            业务骨干<br>创建应用
+          </td>
+          <td class="clickable" onclick="openRoleDrill('业务 Owner','总行','部门负责人 / 指定责任人','在审核列表查看待审核的需求/发布/下线申请，查看审核详情（抽屉），执行通过/驳回操作，预览已通过的应用','审核列表','应用出了问题第一责任人')">
+            部门负责人<br>验收负责
+          </td>
+          <td class="clickable" rowspan="3" style="background:#f0f4f8" onclick="openRoleDrill('总行科技','总行（全行统一）','总行科技部研发人员','【能力建设】在能力列表注册/编辑/停用启用企业能力（API/组件/数据服务），遵循组件优先原则——科技建能力、AI做编排，禁止AI猜测接口；一期完成首批高复用能力接入（如客户档案查询、审批、消息、组织、文件等）。<br>【缺口响应】在缺口工单处理能力缺口：收到工单→评估→封装→上架→通知申请人；一期建立工单闭环机制。<br>【技术治理】在规则配置新增/启停安全与数据治理规则（禁止未授权API、敏感数据脱敏、禁止硬编码密钥等）。<br>【环境管理】在环境管理新增/编辑环境配置（开发/测试/灰度/生产），多环境隔离。<br>【需要对接配合】<br>· 能力建设：与各业务系统 Owner 对接获取 API 接口文档与鉴权方式，封装客户档案查询、审批、消息、组织、文件等高复用能力；能力上架需提供文档 URL、调用示例、SLA 承诺。<br>· 缺口响应：收到业务方缺口工单后，与原系统 Owner 协调接口权限与联调，封装完成后通知申请人并上架到能力列表。<br>· 规则配置：与安全 / 合规部门确认安全规则与数据脱敏规则，规则生效后影响全应用生成，需提前通知业务方。<br>· 环境管理：与运维 / 基础设施团队协调环境资源（CPU、内存、域名），多环境隔离（命名空间 / 独立集群）需运维配合部署。','能力列表 · 缺口工单 · 规则配置 · 环境管理','能力的SLA和安全性、缺口闭环时效、平台运行稳定、安全规则有效')">
+            能力建设<br>缺口响应<br>技术治理<br>环境管理
+          </td>
+          <td class="clickable" rowspan="3" style="background:#e8f5e9" onclick="openRoleDrill('平台运营','总行（全行统一）','数字化运营 / 创新管理部门','【运营驾驶舱】查看活跃应用数/月活用户/月度使用次数/应用健康率等运营数据，查看使用趋势、应用健康分布、TOP5应用排行，监测活跃度、故障率、用户反馈。<br>【应用管理】查看已孵化应用列表，配置推广范围（全行/指定机构/指定部门），预览应用。','运营驾驶舱 · 应用管理','平台有人用、应用不腐化')">
+            运营驾驶舱<br>应用管理
+          </td>
+          <td class="clickable" onclick="openRoleDrill('管理者','总行','分管行领导 / 运营委员会','在管理驾驶舱查看总行视角的KPI指标（场景数/智能体数/调用量/覆盖员工），查看趋势图表、分行排行、应用组合、风险概览','管理驾驶舱','方向决策、资源审批、扩围判断')">
+            行领导<br>运营委员会
+          </td>
+        </tr>
+        <tr>
+          <td class="org" style="font-weight:700;background:#f0f4f8;color:var(--navy)">🏬 分行</td>
+          <td class="clickable" onclick="openRoleDrill('业务创新者','分行','分行数字化联络人 / 业务骨干','发现分行高频需求，在AI对话首页描述需求；AI生成应用初稿后在画布编辑器调试验证；在我的应用管理已创建应用，协助支行推广使用，收集反馈推动迭代','AI对话首页 · 应用市场 · 我的应用','场景真实、应用有人用')">
+            数字化联络人<br>创建分行应用
+          </td>
+          <td class="clickable" onclick="openRoleDrill('业务 Owner','分行','分行业务负责人','在审核列表查看待审核的分行级应用申请，执行通过/驳回操作','审核列表','应用使用范围不出分行')">
+            业务负责人<br>确认范围
+          </td>
+          <td class="clickable" onclick="openRoleDrill('管理者','分行','分行领导','在管理驾驶舱切换分行视角，查看本分行KPI指标、部门排行、部门使用明细','管理驾驶舱','分行推广决策')">
+            分行领导<br>看分行数据
+          </td>
+        </tr>
+        <tr>
+          <td class="org" style="font-weight:700;background:var(--gold-pale);color:var(--gold)">🏪 支行</td>
+          <td class="clickable" onclick="openRoleDrill('业务创新者','支行','种子用户 · 综合岗骨干','把日常重复劳动（拜访登记、台账汇总、材料收集等）在AI对话首页描述成需求；AI生成应用后预览验证；在我的应用管理已创建应用，从自己用到带动同事用','AI对话首页 · 应用市场 · 我的应用','从自己用到带动别人用')">
+            种子用户<br>变重复劳动为工具
+          </td>
+          <td class="clickable" onclick="openRoleDrill('业务 Owner','支行','支行行长 / 指定负责人','在审核列表查看待审核的支行级应用申请，执行通过/驳回操作','审核列表','支行应用不出问题')">
+            支行行长<br>组织试用
+          </td>
+          <td class="clickable" onclick="openRoleDrill('管理者','支行','支行行长','在管理驾驶舱切换支行视角，查看本支行KPI指标和使用情况','管理驾驶舱','支行使用推广')">
+            支行行长<br>看使用效果
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 </div>
@@ -646,13 +643,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 
 <script>
 const TOTAL = 5;
-const sideLabels = ['封面','全景蓝图','角色矩阵','分期路线','一期目标'];
+const sideLabels = ['封面','全景蓝图','分期路线','一期计划','角色矩阵'];
 const notes = [
   '30分钟讲四件事：痛点看懂了。完整体系。三步走。第一步做出来什么样，待会看原型。',
   '全场总纲。从上往下讲：痛点（1分钟）→ 四中心架构（2分钟）→ 角色分工 + 9步流程（2分钟）。讲完这页客户就能理解整件事的全貌。',
-  '全景页看到角色挂在哪，这一页下钻每个格子的完整职责。重点讲业务创新者、总行科技、平台运营三个核心角色。',
   '不是一次建完。一期跑通受控生产链。二、三期只在一期证明价值后才启动。二期重点：能力资产化+培训社区+运营制度化。三期：智能化+生态化。',
-  '一期做什么 + 怎么算成功 + 两个关键闭环。交付内容→运营策略→北极星→五维验收→扩围门槛→闭环收尾→引出原型。'
+  '一期做什么 + 怎么算成功 + 两个关键闭环。完成内容→运营建议→北极星→完成里程碑→扩围门槛→闭环收尾→引出原型。',
+  '全景页看到角色挂在哪，这一页下钻每个格子的完整职责。重点讲业务创新者、总行科技、平台运营三个核心角色。'
 ];
 
 let current = 0;
@@ -729,7 +726,7 @@ const DRILL = {
       "Mock 数据实时预览 —— 按数据契约生成模拟数据，先确认流程再联调",
       "轻量数据模型与后端生成 —— 数据表、接口、业务逻辑自动创建",
       "自动测试与安全扫描 —— SAST / SCA / Secret 检测 / SBOM 物料清单",
-      "沙箱隔离预览 —— 应用在安全隔间运行，不影响正式环境",
+      "预览调试环境 —— 应用在独立环境运行调试，不影响正式环境",
       "版本管理与一键回滚 —— 每次修改保存物理版本，出问题一键恢复",
       "专业研发接管包 —— 复杂应用一键导出完整工程文档交研发接手"
     ]
@@ -738,12 +735,6 @@ const DRILL = {
     title: "企业能力中心", icon: "🧩",
     problem: "解决：重复造轮子、AI瞎猜接口和数据、能力无法沉淀",
     caps: [
-      "统一能力目录 —— 模板、组件、API、数据服务、MCP、Skill、Rules 全部登记在册",
-      "能力语义与契约管理 —— 每项能力有业务说明、Owner、权限、SLA、调用示例",
-      "<strong>组件优先原则</strong> —— 科技团队封装行内能力（会议、审批、消息、组织、文件等），AI 只负责发现和编排，不猜测接口",
-      "API 网关安全接入 —— 鉴权、限流、审计，数据标签标注用途与敏感等级",
-      "MCP 工具粒度授权 —— 按工具、参数、用户和环境分别授权，生产环境禁止未知动态接入",
-      "Skill 注册测试与灰度 —— 高频任务方法版本化、可测试、可回滚",
       "能力缺口工单闭环 —— 缺能力 → 自动生成工单 → 科技评估建设 → 上线 → 通知需求方",
       "能力缺口池聚合排序 —— 按频次、覆盖人数、业务价值、建设成本驱动投资",
       "能力健康度与影响分析 —— 跟踪引用数、调用量、故障率、变更影响范围"
@@ -753,20 +744,18 @@ const DRILL = {
     title: "运营治理中心", icon: "📊",
     problem: "解决：上线后没人管、不知道有没有价值、僵尸应用堆积",
     caps: [
-      "应用市场与场景专区 —— 检索优先：直接使用 → 申请权限 → 复制改造 → 新建",
-      "应用台账与 Owner 管理 —— 每个正式应用必须有负责人，Owner 离岗自动提醒移交",
-      "全生命周期状态管理 —— 想法→评估→孵化→试运行→正式→推广→整改→休眠→下线→归档",
-      "场景池与孵化漏斗 —— 征集 → 筛选 → 孵化 → 上线 → 沉淀，每阶段有准入标准",
-      "发布审批与质量门禁 —— 需求门 / 生成门 / 测试门 / 发布门 / 运行门，五道关不通过不进入",
-      "分层培训认证体系 —— 全员认知 → 创作者入门 → 业务进阶 → Owner运营 → 贡献者课程 → 审核安全课",
-      "四级服务台 —— AI 自助 → 社区互助 → 运营支持 → 技术支持，逐级升级",
-      "运营驾驶舱与北极星指标 —— 供给/使用/价值/质量/风险/成本六维数据一目了然",
-      "可信标识 —— 个人实验 / 部门认证 / 官方推荐 / 公共应用 / 整改中，由质量和使用数据决定",
-      "应用健康评分与重复识别 —— 自动发现功能重叠应用，建议复用或合并"
+      "运营指标概览 —— 活跃应用数、月活用户、月度使用次数、应用健康率四项核心指标实时展示",
+      "使用趋势分析 —— 按月度展示使用次数趋势，支持本月/本季度/本年切换",
+      "应用健康分布 —— 健康率展示，区分健康应用与关注应用",
+      "TOP5 应用排行 —— 按月活用户排序，展示应用名称、作者、月活、调用次数、评分",
+      "应用台账管理 —— 已孵化应用列表，含创建人、创建日期、发布日期、推广状态、上下架状态、可见范围",
+      "推广范围配置 —— 支持全行可见 / 指定机构 / 指定部门三种推广范围，按需配置",
+      "应用上下架管理 —— 上架 / 下架状态管理，下架后应用市场不再展示",
+      "应用详情与预览 —— 抽屉式详情，含应用基本信息、推广状态、可见范围，支持预览应用"
     ]
   }, base: {
-    title: "AI 基础底座", icon: "🔧",
-    problem: "解决：身份/权限/安全/环境/审计各自为政",
+    title: "能力底座", icon: "🔧",
+    problem: "解决：身份/权限/安全/审计各自为政",
     caps: [
       "模型白名单与安全路由 —— 可用模型经过审批，调用链路可追溯",
       "SSO 统一身份接入 —— 对接行内组织、用户、岗位体系，身份信息一键同步",
@@ -776,7 +765,6 @@ const DRILL = {
       "提示注入防护与内容合规 —— 恶意指令识别、越权工具调用阻断",
       "全链路审计 —— 需求→生成→审批→部署→数据调用，全程留痕可追溯",
       "日志/指标/链路可观测 —— 访问量、错误率、性能、模型调用成本统一采集",
-      "多环境隔离 —— 开发、测试、灰度、生产严格分离，默认无外网",
       "一键停用应急 —— 高风险应用秒级撤入口、停服务，操作需授权留痕"
     ]
   },
@@ -839,7 +827,6 @@ function openRoleDrill(role,level,who,tasks,entry,responsibility){
     <button class="drill-close" onclick="closeDrill()">✕</button>
     <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">${level}</div>
     <div class="drill-title">${role}</div>
-    <div class="drill-subtitle">具体岗位：${who}</div>
     <div class="drill-section"><h4>在平台做什么</h4><div class="content">${tasks}</div></div>
     <div class="drill-section"><h4>平台入口 / 看到什么</h4><div class="content">${entry}</div></div>
     <div class="drill-section"><h4>关键责任</h4><div class="content" style="color:var(--navy);font-weight:600">${responsibility}</div></div>
