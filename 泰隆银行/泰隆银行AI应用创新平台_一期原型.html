@@ -104,9 +104,19 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .notif-foot:hover{color:var(--primary)}
 .icon-btn{color:rgba(255,255,255,.7);font-size:16px;padding:4px;border-radius:4px;transition:.2s;cursor:pointer}
 .icon-btn:hover{color:#fff;background:rgba(255,255,255,.1)}
-.sidebar{width:var(--sidebar-w);background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar{width:var(--sidebar-w);background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;overflow-x:visible;transition:width .2s;position:relative}
 .sidebar::-webkit-scrollbar{width:4px}
 .sidebar::-webkit-scrollbar-thumb{background:#E5E6EB;border-radius:2px}
+.sidebar.collapsed{width:56px}
+.sidebar.collapsed .menu-group-title,.sidebar.collapsed .menu-item span:not(.mi-icon):not(.mi-badge),.sidebar.collapsed .sidebar-brand-text{display:none}
+.sidebar.collapsed .menu-item{justify-content:center;padding:9px 0}
+.sidebar.collapsed .mi-badge{display:none}
+.sidebar.collapsed .sidebar-brand{padding:14px 0;justify-content:center;gap:0}
+.sidebar.collapsed .sidebar-toggle{position:absolute;right:4px;top:14px;width:20px;height:20px;background:#fff;border:1px solid var(--border-light);box-shadow:0 2px 6px rgba(0,0,0,.08);z-index:10;margin-left:0}
+.sidebar-toggle{margin-left:auto;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-3);font-size:14px;transition:.15s;user-select:none;border-radius:6px;flex-shrink:0}
+.sidebar-toggle:hover{color:var(--primary);background:var(--primary-light)}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border-light);font-weight:700;font-size:15px;color:var(--text-1)}
+.sidebar-brand-icon{width:28px;height:28px;border-radius:8px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .menu-group{padding:8px 0;border-bottom:1px solid var(--border-light)}
 .menu-group-title{font-size:11px;color:var(--text-3);padding:8px 16px 4px;letter-spacing:1px;text-transform:uppercase}
 .menu-item{display:flex;align-items:center;gap:10px;padding:9px 16px;color:var(--text-2);font-size:13px;cursor:pointer;transition:.15s;border-left:2px solid transparent}
@@ -195,6 +205,255 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .app-card .ac-ver{font-size:11px;color:var(--text-3)}
 .app-card .ac-desc{font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;height:36px;overflow:hidden}
 .app-card .ac-foot{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-3)}
+
+/* ===== AI助手 - 全新布局 ===== */
+.ai-layout{display:flex;height:100%;background:var(--bg-page);position:relative}
+/* 左侧导航栏 */
+.ai-nav{width:200px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width .25s ease;flex-shrink:0;z-index:10}
+.ai-nav.collapsed{width:56px}
+.ai-nav-toggle{position:absolute;top:12px;right:-12px;width:24px;height:24px;background:#fff;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--text-3);z-index:11;box-shadow:var(--shadow-sm);transition:.2s}
+.ai-nav-toggle:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ai-nav-new{padding:12px}
+.ai-nav-new-btn{width:100%;padding:10px 14px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.15s;white-space:nowrap;overflow:hidden}
+.ai-nav-new-btn:hover{background:var(--primary-dark)}
+.ai-nav.collapsed .ai-nav-new-btn{padding:10px;justify-content:center}
+.ai-nav.collapsed .ai-nav-new-btn span{display:none}
+.ai-nav-menu{flex:1;padding:4px 8px;overflow-y:auto}
+.ai-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text-2);transition:.1s;white-space:nowrap;overflow:hidden;margin-bottom:2px;position:relative}
+.ai-nav-item:hover{background:var(--primary-light);color:var(--primary)}
+.ai-nav-item.active{background:var(--primary-light);color:var(--primary);font-weight:500}
+.ai-nav-item-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.ai-nav.collapsed .ai-nav-item{justify-content:center;padding:10px}
+.ai-nav.collapsed .ai-nav-item span.label{display:none}
+.ai-nav-item-badge{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:#F2F3F5;color:var(--text-3);font-size:10px;padding:1px 6px;border-radius:999px;min-width:18px;text-align:center}
+.ai-nav.collapsed .ai-nav-item-badge{display:none}
+.ai-nav-item-setting{border-top:1px solid var(--border-light);margin-top:8px;padding-top:8px}
+/* 首页中间区域 */
+.ai-home-main{flex:1;display:flex;flex-direction:column;align-items:center;overflow:hidden;padding:80px 48px 24px;height:100%}
+.ai-title{font-size:36px;font-weight:700;color:var(--text-1);text-align:center;margin-bottom:10px;letter-spacing:-1px;line-height:1.35}
+.ai-title .highlight{color:var(--primary)}
+.ai-subtitle{font-size:15px;color:var(--text-3);text-align:center;margin-bottom:28px;line-height:1.6}
+/* 大输入框 - 参考截图增大 */
+.ai-input-area{width:100%;max-width:760px;margin-bottom:24px}
+.ai-input-big{width:100%;min-height:180px;border:1.5px solid var(--border);border-radius:24px;padding:28px 32px 72px;font-size:17px;font-family:inherit;resize:none;line-height:1.9;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.04);transition:.2s;color:var(--text-1)}
+.ai-input-big:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.ai-input-big::placeholder{color:var(--text-4)}
+.ai-input-tools{display:flex;align-items:center;justify-content:space-between;padding:0 12px;margin-top:-54px;position:relative;margin-bottom:0}
+.ai-input-tools-left{display:flex;align-items:center;gap:4px}
+.ai-tool-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;font-size:13px;color:var(--text-2);cursor:pointer;border:none;background:none;transition:.1s;font-family:inherit}
+.ai-tool-btn:hover{background:var(--primary-light);color:var(--primary)}
+.ai-input-tools-right{display:flex;align-items:center;gap:8px}
+.ai-model-select{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;font-size:12px;color:var(--text-2);cursor:pointer;border:1px solid var(--border);background:#fff;transition:.1s;font-family:inherit}
+.ai-model-select:hover{border-color:var(--primary);color:var(--primary)}
+.ai-generate-btn{display:flex;align-items:center;gap:6px;padding:10px 24px;border-radius:12px;background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:14px;font-weight:600;transition:.15s;font-family:inherit;box-shadow:0 2px 8px rgba(26,102,255,.3)}
+.ai-generate-btn:hover{background:var(--primary-dark);transform:scale(1.02)}
+.ai-generate-btn:disabled{background:var(--text-4);color:#fff;cursor:not-allowed;transform:none;box-shadow:none}
+/* 推荐提示词卡片 - 参考截图 */
+.ai-quick-start{width:100%;max-width:680px;margin-bottom:28px}
+.ai-quick-start-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ai-qs-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:.2s;text-align:left}
+.ai-qs-card:hover{border-color:var(--primary);box-shadow:0 4px 16px rgba(26,102,255,.1);transform:translateY(-2px)}
+.ai-qs-card-icon{font-size:24px;margin-bottom:8px}
+.ai-qs-card-name{font-size:13px;font-weight:600;color:var(--text-1);margin-bottom:3px}
+.ai-qs-card-desc{font-size:11px;color:var(--text-3);line-height:1.4}
+/* Tab区域 */
+.ai-tabs-section{width:100%;max-width:1100px;flex:1;display:flex;flex-direction:column;min-height:0}
+.ai-tabs-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.ai-tabs{display:flex;gap:0;border-bottom:1px solid var(--border)}
+.ai-tab{padding:10px 20px;font-size:15px;font-weight:500;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;display:flex;align-items:center;gap:6px}
+.ai-tab:hover{color:var(--text-1)}
+.ai-tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.ai-tab-count{font-size:12px;color:var(--text-4);font-weight:400}
+.ai-tab.active .ai-tab-count{color:var(--text-3)}
+.ai-tabs-actions{display:flex;align-items:center;gap:10px}
+.ai-search-box{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text-3);background:#fff;cursor:pointer}
+.ai-search-box:hover{border-color:var(--primary)}
+.ai-view-all{font-size:13px;color:var(--text-3);cursor:pointer;padding:7px 0}
+.ai-view-all:hover{color:var(--text-1)}
+/* 分类标签 */
+.ai-cat-filters{display:flex;gap:8px;flex-wrap:wrap}
+.ai-filter-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.ai-filter-bar .ai-cat-filters{margin-bottom:0}
+.ai-cat-filter{padding:6px 16px;border-radius:999px;font-size:13px;color:var(--text-2);cursor:pointer;border:1px solid var(--border);background:#fff;transition:.1s;font-family:inherit}
+.ai-cat-filter:hover{border-color:var(--primary);color:var(--primary)}
+.ai-cat-filter.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+/* 应用大卡片网格 */
+.ai-big-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.ai-tabs-content{flex:1;overflow-y:auto;padding-bottom:20px}
+.ai-big-card{border-radius:16px;overflow:hidden;cursor:pointer;transition:.2s;position:relative;border:1px solid var(--border);background:#fff}
+.ai-big-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(26,102,255,.12);border-color:var(--primary)}
+.ai-big-card-cover{height:120px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.ai-big-card-cover .hot-tag{position:absolute;top:10px;left:10px;padding:3px 8px;background:rgba(0,0,0,.6);color:#fff;border-radius:6px;font-size:10px;font-weight:600;backdrop-filter:blur(4px)}
+.ai-big-card-body{padding:12px 14px;background:#fff}
+.ai-big-card-name{font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-big-card-meta{font-size:11px;color:var(--text-3)}
+/* 我的应用简洁卡片 */
+.ai-my-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.ai-my-card{border-radius:16px;overflow:hidden;cursor:pointer;transition:.2s;position:relative;border:1px solid var(--border);background:#fff}
+.ai-my-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(26,102,255,.12);border-color:var(--primary)}
+.ai-my-card-cover{height:120px;display:flex;align-items:center;justify-content:center;font-size:48px}
+.ai-my-card-body{padding:12px 14px;background:#fff}
+.ai-my-card-name{font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-my-card-meta{font-size:11px;color:var(--text-3);display:flex;gap:8px}
+/* ===== 画布详情页 ===== */
+.ai-canvas-layout{display:flex;height:100%;background:var(--bg-page);position:relative}
+.ai-canvas-layout .ai-nav{width:56px}
+.ai-canvas-layout .ai-nav .ai-nav-new-btn span,.ai-canvas-layout .ai-nav .ai-nav-item span.label{display:none}
+.ai-canvas-layout .ai-nav .ai-nav-item{justify-content:center;padding:10px}
+.ai-canvas-layout .ai-nav .ai-nav-new-btn{padding:10px;justify-content:center}
+.ai-canvas-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.ai-canvas-topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0}
+.ai-canvas-topbar-left{display:flex;align-items:center;gap:12px}
+.ai-canvas-back{display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;font-size:13px;color:var(--text-2);cursor:pointer;border:1px solid var(--border);background:#fff;transition:.1s;font-family:inherit}
+.ai-canvas-back:hover{border-color:var(--primary);color:var(--primary)}
+.ai-canvas-topbar-title{font-size:15px;font-weight:600;color:var(--text-1);display:flex;align-items:center;gap:8px}
+.ai-canvas-topbar-title .ver{font-size:12px;color:var(--text-3);font-weight:400}
+.ai-canvas-topbar-right{display:flex;gap:8px;align-items:center}
+.ai-canvas-topbar-btn{padding:7px 16px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text-2);transition:.15s;display:inline-flex;align-items:center;gap:4px;font-family:inherit}
+.ai-canvas-topbar-btn:hover{border-color:var(--primary);color:var(--primary)}
+.ai-canvas-topbar-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ai-canvas-device-tabs{display:flex;align-items:center;background:var(--bg-page);border-radius:8px;padding:3px;margin-right:8px}
+.ai-canvas-device{font-size:12px;color:var(--text-3);padding:5px 12px;border-radius:6px;cursor:pointer;transition:.15s;user-select:none}
+.ai-canvas-device:hover{color:var(--text-1)}
+.ai-canvas-device.active{background:#fff;color:var(--primary);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.ai-canvas-topbar-btn.primary:hover{background:var(--primary-dark)}
+.ai-canvas-topbar-btn.danger{color:var(--danger);border-color:#FECACA}
+.ai-canvas-topbar-btn.danger:hover{background:#FEF2F2}
+/* 画布区域 */
+.ai-canvas-area{flex:1;overflow-x:auto;overflow-y:auto;padding:32px;display:flex;flex-direction:column;align-items:center}
+.ai-canvas-frame{width:100%;min-width:max-content;min-height:500px;border-radius:20px;background:#fff;position:relative;transition:.3s}
+.ai-canvas-frame.loading{border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(90deg,var(--primary),#7DB4FF,var(--primary),#7DB4FF) border-box;background-size:300% 100%;animation:borderFlow 2s linear infinite}
+@keyframes borderFlow{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+.ai-canvas-frame.done{border:1px solid var(--border);box-shadow:0 4px 24px rgba(26,102,255,.08)}
+.ai-canvas-frame.editing{border:1px dashed var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.ai-canvas-loading-center{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;gap:24px}
+.ai-canvas-loading-spinner{width:64px;height:64px;border:4px solid var(--border-light);border-top-color:var(--primary);border-radius:50%;animation:aiSpin .8s linear infinite}
+@keyframes aiSpin{to{transform:rotate(360deg)}}
+.ai-canvas-loading-text{font-size:18px;font-weight:600;color:var(--text-1)}
+.ai-canvas-loading-step{font-size:13px;color:var(--text-3)}
+/* 缺口弹窗 */
+.ai-gap-modal .modal-body{padding:0}
+.ai-gap-content{padding:28px 32px;text-align:center}
+.ai-gap-icon{font-size:48px;margin-bottom:12px}
+.ai-gap-title{font-size:20px;font-weight:600;color:var(--text-1);margin-bottom:8px}
+.ai-gap-desc{font-size:14px;color:var(--text-3);margin-bottom:20px;line-height:1.6}
+.ai-gap-list{background:#FFF6E5;border:1px solid #FDE68A;border-radius:12px;padding:14px 18px;text-align:left;margin-bottom:20px}
+.ai-gap-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;color:#92400E}
+.ai-gap-item::before{content:'⚠️';font-size:12px}
+.ai-gap-actions{display:flex;gap:10px;justify-content:center}
+/* 预览区 */
+.ai-preview-header{text-align:center;margin-bottom:24px}
+.ai-preview-header-name{font-size:20px;font-weight:700;color:var(--text-1);margin-bottom:4px}
+.ai-preview-header-desc{font-size:13px;color:var(--text-3)}
+.ai-preview-caps{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.ai-preview-caps span{font-size:11px;padding:4px 10px;border-radius:6px;background:#F3F3F0;color:var(--text-2)}
+.ai-preview-caps span.ok{background:#F0FDF4;color:#166534}
+.ai-preview-caps span.warn{background:#FFF6E5;color:#92400E}
+.ai-preview-level{margin-top:10px;font-size:12px;padding:5px 14px;border-radius:8px;display:inline-block}
+.ai-preview-level.l1{background:#F0FDF4;color:#166534}
+.ai-preview-level.l2{background:#FFF6E5;color:#92400E}
+/* 预览页平铺不换行 */
+.ai-preview-pages{display:flex;gap:20px;flex-wrap:nowrap;justify-content:center;padding-bottom:8px}
+/* 小程序预览页 - 通用 */
+.ai-mini-page{width:280px;flex-shrink:0;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 32px rgba(26,102,255,.1);border:1px solid var(--border)}
+.ai-mp-statusbar{display:flex;justify-content:space-between;padding:8px 16px 4px;font-size:11px;color:var(--text-1)}
+.ai-mp-header{padding:10px 16px;font-size:15px;font-weight:600;color:var(--text-1);text-align:center;border-bottom:1px solid var(--border-light)}
+.ai-mp-body{padding:12px;min-height:340px;background:#FAFAF7}
+.ai-mp-tabbar{display:flex;justify-content:space-around;padding:8px 0;background:#fff;border-top:1px solid var(--border-light);font-size:11px;color:var(--text-3)}
+.ai-mp-tabbar .tab-active{color:var(--primary);font-weight:600}
+.ai-mp-search{background:#F3F3F0;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--text-3);margin-bottom:10px}
+.ai-mp-list-item{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.03);cursor:pointer;transition:.15s}
+.ai-mp-list-item:hover{border:1px solid var(--primary);box-shadow:0 2px 8px rgba(26,102,255,.1)}
+.ai-mp-item-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
+.ai-mp-item-name{font-size:13px;font-weight:500;color:var(--text-1)}
+.ai-mp-item-sub{font-size:11px;color:var(--text-3);margin-top:2px}
+.ai-mp-form-group{margin-bottom:10px}
+.ai-mp-form-label{font-size:12px;color:var(--text-2);margin-bottom:4px;display:block;padding-left:2px}
+.ai-mp-form-input{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text-1);background:#fff}
+.ai-mp-form-select{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text-1);background:#fff}
+.ai-mp-form-textarea{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text-1);background:#fff;min-height:60px;resize:none}
+.ai-mp-submit{width:100%;padding:12px;border-radius:12px;background:var(--primary);color:#fff;border:none;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px}
+.ai-mp-stats{display:flex;gap:8px;margin-bottom:10px}
+.ai-mp-stat{flex:1;background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.03)}
+.ai-mp-stat-val{font-size:22px;font-weight:700;color:var(--text-1)}
+.ai-mp-stat-lbl{font-size:11px;color:var(--text-3);margin-top:2px}
+.ai-mp-chart-block{background:#fff;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.03);margin-bottom:8px;font-size:12px;color:var(--text-3);min-height:60px;display:flex;align-items:center;justify-content:center}
+.ai-mp-profile{text-align:center;padding:16px 0}
+.ai-mp-avatar{width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 8px;font-weight:600}
+.ai-mp-profile-name{font-size:15px;font-weight:600;color:var(--text-1)}
+.ai-mp-profile-role{font-size:12px;color:var(--text-3);margin-top:2px}
+.ai-mp-qrcode{text-align:center;padding:30px 0}
+.ai-mp-qrcode-box{width:120px;height:120px;background:#F3F3F0;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:48px;margin:0 auto 12px}
+/* 可编辑元素高亮 */
+.ai-editable{cursor:pointer;transition:.15s;position:relative;border-radius:8px;padding:4px;margin:-4px}
+.ai-editable:hover{background:var(--primary-light);box-shadow:0 0 0 2px var(--primary)}
+.ai-editable.selected{background:var(--primary-light);box-shadow:0 0 0 2px var(--primary)}
+/* 右下角AI标识 */
+.ai-canvas-fab{position:absolute;right:28px;bottom:28px;width:56px;height:56px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;box-shadow:0 8px 32px rgba(26,102,255,.4);z-index:100;transition:.2s;border:none}
+.ai-canvas-fab:hover{transform:scale(1.08);box-shadow:0 12px 40px rgba(26,102,255,.5)}
+.ai-canvas-chat{position:absolute;right:28px;bottom:96px;width:460px;max-height:80vh;background:#fff;border-radius:16px;box-shadow:0 16px 48px rgba(26,102,255,.18);border:1px solid var(--border);z-index:101;display:none;flex-direction:column;overflow:hidden}
+.ai-canvas-chat.open{display:flex}
+.ai-canvas-chat-head{padding:14px 16px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:space-between}
+.ai-canvas-chat-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px}
+.ai-canvas-chat-close{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;opacity:.85;padding:0}
+.ai-canvas-chat-close:hover{opacity:1}
+.ai-canvas-chat-msgs{padding:14px;height:560px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#FAFAF7}
+.ai-canvas-chat-msg{display:flex;max-width:88%}
+.ai-canvas-chat-msg.bot{align-self:flex-start}
+.ai-canvas-chat-msg.user{align-self:flex-end}
+.ai-canvas-chat-bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.6}
+.ai-canvas-chat-msg.bot .ai-canvas-chat-bubble{background:#fff;color:var(--text-1);border:1px solid var(--border);border-bottom-left-radius:4px}
+.ai-canvas-chat-msg.user .ai-canvas-chat-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+.ai-canvas-chat-think{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3);font-style:italic}
+.ai-canvas-chat-think-dot{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:thinkPulse 1.2s ease infinite}
+@keyframes thinkPulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.ai-canvas-chat-input{padding:10px 12px;border-top:1px solid var(--border-light);display:flex;gap:8px;background:#fff}
+.ai-canvas-chat-input textarea{flex:1;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;resize:none;min-height:50px;font-family:inherit;max-height:120px}
+.ai-canvas-chat-input textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)}
+.ai-canvas-chat-send{width:50px;height:50px;border-radius:10px;background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.ai-canvas-chat-send:hover{background:var(--primary-dark)}
+/* 模板详情弹窗 */
+.ai-tpl-body{display:grid;grid-template-columns:280px 1fr;min-height:300px}
+.ai-tpl-preview{background:linear-gradient(135deg,var(--primary-light),#EAF6EE);padding:24px;display:flex;align-items:center;justify-content:center}
+.ai-tpl-preview-card{width:200px;background:#fff;border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.ai-tpl-info{padding:24px 28px;display:flex;flex-direction:column;overflow-y:auto;max-height:60vh}
+.ai-tpl-info h2{font-size:22px;margin:0 0 8px;color:var(--text-1)}
+.ai-tpl-info p{color:var(--text-3);line-height:1.7;margin:0 0 16px;font-size:13px}
+.ai-tpl-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.ai-tpl-tag{padding:5px 10px;border-radius:999px;background:var(--primary-light);color:var(--primary);font-size:12px}
+.ai-tpl-features{font-size:13px;color:var(--text-2);line-height:2;margin-bottom:16px}
+/* 元素编辑弹窗 */
+.ai-edit-pop{position:absolute;z-index:200;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.15);padding:14px 16px;width:280px;display:none}
+.ai-edit-pop.open{display:block}
+.ai-edit-pop-head{font-size:13px;font-weight:600;color:var(--text-1);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.ai-edit-pop-close{cursor:pointer;color:var(--text-3);font-size:16px}
+.ai-edit-pop-close:hover{color:var(--text-1)}
+.ai-edit-pop-field{margin-bottom:10px}
+.ai-edit-pop-label{font-size:12px;color:var(--text-2);margin-bottom:4px;display:block}
+.ai-edit-pop-input{width:100%;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text-1);font-family:inherit;box-sizing:border-box}
+.ai-edit-pop-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)}
+.ai-edit-pop-tip{font-size:11px;color:var(--text-3);margin-top:6px;line-height:1.5}
+.ai-edit-pop-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+/* 应用预览弹窗 */
+.app-preview-modal .modal-body{padding:0;overflow-y:auto}
+.app-preview-wrap{display:flex;background:#F3F3F0;min-height:460px}
+.app-preview-phone{width:300px;background:#222;padding:20px 0;display:flex;justify-content:center;align-items:flex-start;flex-shrink:0}
+.app-preview-info{flex:1;padding:24px 28px;background:#fff;overflow-y:auto;min-width:0}
+.app-preview-info h3{font-size:18px;margin:0 0 8px;color:var(--text-1)}
+.app-preview-info .desc{font-size:13px;color:var(--text-3);margin-bottom:16px;line-height:1.6}
+.app-preview-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.app-preview-meta-item{background:#FAFAF7;border-radius:10px;padding:12px}
+.app-preview-meta-label{font-size:11px;color:var(--text-3);margin-bottom:4px}
+.app-preview-meta-value{font-size:14px;font-weight:600;color:var(--text-1)}
+/* 发布成功弹窗 */
+.ai-publish-body{text-align:center;padding:28px 32px}
+.ai-publish-icon{font-size:56px;margin-bottom:12px}
+.ai-publish-body h3{font-size:22px;margin:0 0 8px;color:var(--text-1)}
+.ai-publish-body p{font-size:14px;color:var(--text-3);margin:0 0 20px}
+.ai-publish-info{background:#FAFAF7;border-radius:12px;padding:16px;text-align:left;margin-bottom:20px}
+.ai-publish-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
+.ai-publish-row .label{color:var(--text-3)}
+.ai-publish-row .value{color:var(--text-1);font-weight:500;font-family:monospace;font-size:12px}
 
 /* AI助手 */
 .ai-fab{position:fixed;right:24px;bottom:96px;width:52px;height:52px;background:linear-gradient(135deg,#1A66FF,#722ED1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;cursor:pointer;box-shadow:0 8px 24px rgba(26,102,255,.4);z-index:1000;transition:.2s}
@@ -399,12 +658,12 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 /* 模态框 */
 .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:none;align-items:center;justify-content:center;animation:fade .2s}
 .modal-mask.open{display:flex}
-.modal{background:#fff;border-radius:var(--radius-lg);width:480px;max-width:90vw;max-height:85vh;display:flex;flex-direction:column;animation:modalIn .25s ease}
+.modal{background:#fff;border-radius:var(--radius-lg);width:560px;max-width:90vw;max-height:85vh;display:flex;flex-direction:column;animation:modalIn .25s ease}
 @keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
 .modal-head{padding:16px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between}
 .modal-title{font-size:15px;font-weight:600}
 .modal-close{font-size:20px;color:var(--text-3);cursor:pointer}
-.modal-body{padding:20px;overflow-y:auto;flex:1}
+.modal-body{padding:20px;overflow-y:auto;flex:1;word-break:break-word;overflow-wrap:break-word}
 .modal-foot{padding:12px 20px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:8px;background:#FAFBFC}
 .form-group{margin-bottom:14px}
 .form-label{display:block;font-size:12px;color:var(--text-2);margin-bottom:6px}
@@ -486,8 +745,8 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
     <div class="ai-quick-list" id="aiQuickList"></div>
   </div>
   <div class="ai-input">
-    <textarea id="aiInput" placeholder="描述你的业务痛点，AI帮你生成应用..." onkeydown="if(event.keyCode===13&&!event.shiftKey){event.preventDefault();aiSend()}"></textarea>
-    <div class="ai-send" onclick="aiSend()">➤</div>
+    <textarea id="aiInput" placeholder="描述你的业务痛点，AI帮你生成应用..." onkeydown="if(event.keyCode===13&&!event.shiftKey){event.preventDefault();aiPanelSend()}"></textarea>
+    <div class="ai-send" onclick="aiPanelSend()">➤</div>
   </div>
 </div>
 
@@ -540,18 +799,15 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 /* 泰隆银行AI应用创新平台 一期原型 - 基于功能清单_开发评估.xlsx */
 
 const ROLES = {
-  cm: {name:'陈小白', avatar:'陈', role:'客户经理 · 城东支行', menus:[
-    {group:'工作台', items:[{id:'home', icon:'🏠', name:'首页工作台'}]},
-    {group:'需求创新中心', items:[
-      {id:'my-req', icon:'📋', name:'我的需求', badge:3},
-    ]},
-    {group:'应用生产中心', items:[
-      {id:'my-app', icon:'📱', name:'我的应用'},
+  cm: {name:'陈小白', avatar:'陈', role:'业务创新者 · 城东支行', menus:[
+    {group:'工作台', items:[
+      {id:'home', icon:'🤖', name:'新建对话'},
       {id:'market', icon:'🛒', name:'应用市场'},
+      {id:'my-app', icon:'📱', name:'我的应用', badge:5},
     ]},
   ]},
-  owner: {name:'张明远', avatar:'张', role:'支行行长 · 城东支行', menus:[
-    {group:'应用生产中心', items:[
+  owner: {name:'张明远', avatar:'张', role:'业务Owner · 城东支行', menus:[
+    {group:'应用审核', items:[
       {id:'audit', icon:'✅', name:'审核列表', badge:5},
     ]},
   ]},
@@ -560,17 +816,14 @@ const ROLES = {
       {id:'cap-list', icon:'🔌', name:'能力列表'},
       {id:'gap-order', icon:'🎫', name:'缺口工单', badge:7},
       {id:'rule-cfg', icon:'⚙️', name:'规则配置'},
-      {id:'env-list', icon:'🖥️', name:'环境列表'},
+      {id:'env-list', icon:'🖥️', name:'环境管理'},
     ]},
-  ]},
-  ops: {name:'林芳', avatar:'林', role:'平台运营 · 运营中心', menus:[
     {group:'运营治理中心', items:[
       {id:'ops-dash', icon:'📊', name:'运营驾驶舱'},
-      {id:'scene-pool', icon:'🎯', name:'场景池'},
-      {id:'user-train', icon:'👥', name:'用户与培训'},
+      {id:'scene-pool', icon:'🎯', name:'应用管理'},
     ]},
   ]},
-  admin: {name:'李建国', avatar:'李', role:'管理员 · 总行', menus:[
+  admin: {name:'李建国', avatar:'李', role:'管理者 · 总行', menus:[
     {group:'数据管理中心', items:[{id:'admin-dash', icon:'📈', name:'管理驾驶舱'}]},
   ]}
 };
@@ -603,12 +856,18 @@ const DATA = {
     {id:'M-008', name:'员工培训管理', cat:'内部办公', author:'人力资源', users:340, rating:4.7, icon:'📚', desc:'培训计划签到考核', tags:['优质模板','热门'], templated:true, linkedScene:null, level:'L1'},
   ],
   audits:[
-    {id:'AUD-001', name:'客户拜访管理', type:'需求审核', applicant:'陈小白', level:'L2', date:'2024-08-02', status:'待审核'},
-    {id:'AUD-002', name:'信贷材料预审', type:'需求审核', applicant:'陈小白', level:'L3', date:'2024-08-03', status:'待审核'},
-    {id:'AUD-003', name:'理财到期提醒', type:'发布审核', applicant:'陈小白', level:'L1', date:'2024-08-04', status:'待审核'},
-    {id:'AUD-004', name:'客户满意度调查', type:'需求审核', applicant:'陈小白', level:'L2', date:'2024-08-05', status:'待审核'},
-    {id:'AUD-005', name:'活动报名小程序', type:'发布审核', applicant:'陈小白', level:'L1', date:'2024-08-05', status:'待审核'},
-    {id:'AUD-006', name:'客户回访提醒', type:'下线审核', applicant:'王芳', level:'L2', date:'2024-08-05', status:'待审核'},
+    {id:'AUD-001', name:'客户拜访管理', type:'需求审核', applicant:'陈小白', level:'L2', date:'2024-08-02', status:'已通过', auditLogs:[
+      {result:'通过', auditor:'张明远', time:'2024-08-03 10:25', note:'业务目标清晰，等级判定正确'}
+    ]},
+    {id:'AUD-002', name:'信贷材料预审', type:'需求审核', applicant:'陈小白', level:'L3', date:'2024-08-03', status:'已驳回', auditLogs:[
+      {result:'驳回', auditor:'张明远', time:'2024-08-04 14:30', note:'涉及敏感信息，需补充数据脱敏方案'}
+    ]},
+    {id:'AUD-003', name:'理财到期提醒', type:'发布审核', applicant:'陈小白', level:'L1', date:'2024-08-04', status:'待审核', auditLogs:[]},
+    {id:'AUD-004', name:'客户满意度调查', type:'需求审核', applicant:'陈小白', level:'L2', date:'2024-08-05', status:'待审核', auditLogs:[]},
+    {id:'AUD-005', name:'活动报名小程序', type:'发布审核', applicant:'陈小白', level:'L1', date:'2024-08-05', status:'已通过', auditLogs:[
+      {result:'通过', auditor:'李芸', time:'2024-08-06 09:15', note:'测试报告完整，功能验收通过'}
+    ]},
+    {id:'AUD-006', name:'客户回访提醒', type:'下线审核', applicant:'王芳', level:'L2', date:'2024-08-05', status:'待审核', auditLogs:[]},
   ],
   auditHistory:[
     {id:'AUD-H001', name:'活动报名小程序', type:'需求审核', applicant:'陈小白', date:'2024-07-20', result:'通过', auditor:'张明远', note:'业务目标清晰'},
@@ -628,10 +887,10 @@ const DATA = {
     {id:'CAP-010', name:'客户画像数据', type:'数据服务', owner:'数据部', status:'已上线', apps:15, calls:1230},
   ],
   gaps:[
-    {id:'GAP-001', cap:'OCR识别', source:'需求自动发现', from:'REQ-2024-003', priority:'高', status:'待处理', date:'2024-08-03'},
-    {id:'GAP-002', cap:'人脸比对', source:'需求自动发现', from:'REQ-2024-003', priority:'高', status:'待处理', date:'2024-08-03'},
-    {id:'GAP-003', cap:'数据分析引擎', source:'运营场景评估', from:'SCE-012', priority:'中', status:'处理中', date:'2024-08-01'},
-    {id:'GAP-004', cap:'语音转文字', source:'运营场景评估', from:'SCE-008', priority:'低', status:'暂不处理', date:'2024-07-28'},
+    {id:'GAP-001', cap:'OCR识别', source:'信贷材料预审', from:'REQ-2024-003', priority:'高', status:'待处理', date:'2024-08-03', applicant:'张明远'},
+    {id:'GAP-002', cap:'人脸比对', source:'信贷材料预审', from:'REQ-2024-003', priority:'高', status:'待处理', date:'2024-08-03', applicant:'张明远'},
+    {id:'GAP-003', cap:'数据分析引擎', source:'客户满意度调查', from:'REQ-2024-005', priority:'中', status:'处理中', date:'2024-08-01', applicant:'张明远'},
+    {id:'GAP-004', cap:'语音转文字', source:'活动报名小程序', from:'REQ-2024-002', priority:'低', status:'暂不处理', date:'2024-07-28', applicant:'陈小白'},
   ],
   rules:[
     {id:'R-001', name:'禁止未授权API调用', type:'安全', scope:'全应用', status:'已生效', desc:'AI生成的应用只能调用能力中心登记过的API，禁止直连外部接口'},
@@ -650,8 +909,8 @@ const DATA = {
   scenes:[
     {id:'SCE-001', name:'智能投顾助手', source:'运营征集', score:4.6, status:'评估中', date:'2024-08-04', templated:false, desc:'基于客户画像智能推荐理财产品', sourceType:'运营手动新建', assignee:null},
     {id:'SCE-002', name:'贷款预审自动化', source:'业务部门', score:4.8, status:'孵化中', date:'2024-07-28', templated:false, desc:'贷款材料AI预审与风险提示', sourceType:'需求方创建', assignee:'张明远', linkedReq:null},
-    {id:'SCE-003', name:'客户拜访管理', source:'业务部门', score:4.7, status:'已孵化', date:'2024-07-15', templated:true, desc:'客户拜访登记与报告生成', linkedApp:'APP-001', promoted:true, promoteScope:{type:'全行',targets:[]}, sourceType:'需求方创建', assignee:'陈小白'},
-    {id:'SCE-004', name:'活动报名签到', source:'运营征集', score:4.5, status:'已孵化', date:'2024-07-10', templated:true, desc:'活动在线报名与签到管理', linkedApp:'APP-002', promoted:false, promoteScope:null, sourceType:'需求方创建', assignee:'陈小白'},
+    {id:'SCE-003', name:'客户拜访管理', source:'业务部门', score:4.7, status:'已孵化', date:'2024-07-15', publishDate:'2024-07-20', templated:true, desc:'客户拜访登记与报告生成', linkedApp:'APP-001', promoted:true, promoteScope:{type:'全行',targets:[]}, sourceType:'需求方创建', assignee:'陈小白'},
+    {id:'SCE-004', name:'活动报名签到', source:'运营征集', score:4.5, status:'已孵化', date:'2024-07-10', publishDate:'2024-07-18', templated:true, desc:'活动在线报名与签到管理', linkedApp:'APP-002', promoted:false, promoteScope:null, sourceType:'需求方创建', assignee:'陈小白'},
     {id:'SCE-005', name:'反欺诈预警', source:'风控部', score:4.9, status:'评估中', date:'2024-08-03', templated:false, desc:'交易行为实时分析与欺诈预警', sourceType:'运营手动新建', assignee:null},
     {id:'SCE-006', name:'智能客服问答', source:'运营征集', score:4.2, status:'暂缓', date:'2024-07-22', templated:false, desc:'基于知识库的智能客服机器人', sourceType:'需求方创建', assignee:'王芳', suspendReason:'知识库建设未完成，暂缓推进'},
     {id:'SCE-007', name:'跨境支付助手', source:'业务部门', score:3.8, status:'已驳回', date:'2024-07-18', templated:false, desc:'跨境支付流程优化与汇率提醒', rejectReason:'业务价值不明确，暂不具备落地条件', sourceType:'需求方创建', assignee:'李芳'},
@@ -708,7 +967,11 @@ function getGreeting(){
 
 function renderSidebar(){
   const role=ROLES[currentRole];
-  let html='';
+  let html=`<div class="sidebar-brand">
+    <div class="sidebar-brand-icon">${role.avatar}</div>
+    <span class="sidebar-brand-text">AI创新平台</span>
+    <span class="sidebar-toggle" onclick="event.stopPropagation();toggleSidebar()" title="${sidebarCollapsed?'展开':'收起'}">${sidebarCollapsed?'›':'‹'}</span>
+  </div>`;
   role.menus.forEach(g=>{
     html+=`<div class="menu-group"><div class="menu-group-title">${g.group}</div>`;
     g.items.forEach(it=>{
@@ -720,14 +983,15 @@ function renderSidebar(){
     html+='</div>';
   });
   $('#sidebar').innerHTML=html;
+  $('#sidebar').classList.toggle('collapsed',sidebarCollapsed);
 }
 function renderHeader(){
   const r=ROLES[currentRole];
   $('#userAvatar').textContent=r.avatar;
   $('#userName').textContent=r.name;
   $('#userRole').textContent=r.role;
-  const colors={cm:'#FF7D00',owner:'#1A66FF',tech:'#00B42A',ops:'#722ED1',admin:'#F53F3F'};
-  const roleNames={cm:'客户经理',owner:'业务Owner',tech:'总行科技',ops:'平台运营',admin:'管理员'};
+  const colors={cm:'#FF7D00',owner:'#1A66FF',tech:'#00B42A',admin:'#F53F3F'};
+  const roleNames={cm:'业务创新者',owner:'业务Owner',tech:'总行科技',admin:'管理者'};
   $('#roleMenu').innerHTML=Object.keys(ROLES).map(k=>`
     <div class="role-menu-item ${currentRole===k?'active':''}" onclick="switchRole('${k}')">
       <div class="rmi-avatar" style="background:${colors[k]}">${ROLES[k].avatar}</div>
@@ -748,9 +1012,6 @@ const NOTIFICATIONS=[
   {icon:'✅',color:'#00B42A',title:'审核通过',desc:'客户拜访管理（REQ-2024-001）已通过张明远审核',time:'2分钟前',unread:true},
   {icon:'🎉',color:'#1A66FF',title:'发布成功',desc:'活动报名小程序（APP-002）已正式上线',time:'1小时前',unread:true},
   {icon:'🎫',color:'#FF7D00',title:'能力缺口工单',desc:'OCR识别能力缺口工单 GAP-001 待处理',time:'3小时前',unread:true},
-  {icon:'📋',color:'#722ED1',title:'需求状态更新',desc:'信贷材料预审已进入方案规划阶段',time:'昨天 18:30',unread:false},
-  {icon:'⚙️',color:'#86909C',title:'系统维护通知',desc:'平台将于 2024-08-06 02:00-04:00 进行例行维护',time:'昨天 10:00',unread:false},
-  {icon:'👥',color:'#00B42A',title:'培训完成',desc:'李芳已完成「应用创建认证」培训',time:'2024-08-03',unread:false},
 ];
 function toggleNotif(e){
   if(e) e.stopPropagation();
@@ -794,7 +1055,9 @@ function navigate(page){
 }
 function switchRole(role){
   currentRole=role;
-  currentPage = role==='admin' ? 'admin-dash' : role==='owner' ? 'audit' : role==='ops' || role==='tech' ? (ROLES[role].menus[0].items[0].id) : 'home';
+  currentPage = role==='admin' ? 'admin-dash' : role==='owner' ? 'audit' : role==='tech' ? (ROLES[role].menus[0].items[0].id) : 'home';
+  // 切换到业务创新者默认进入新建对话页面
+  if(role==='creator'){ aiState.activeTab='home'; aiState.view='home'; aiState.result=null; aiState.generating=false; }
   $('#roleMenu').classList.remove('open');
   renderHeader();
   renderSidebar();
@@ -810,54 +1073,625 @@ function renderPage(){
   };
   const fn=pages[currentPage]||pageHome;
   $('#main').innerHTML=fn();
+  // canvas/detail页面有内部ai-nav，隐藏外部sidebar；其他页面展示sidebar
+  const sysSidebar=$('#sidebar');
+  const isCanvasView=(currentPage==='home'&&(aiState.view==='canvas'||aiState.view==='detail'));
+  if(sysSidebar) sysSidebar.style.display=isCanvasView?'none':'';
+  // 画布/详情页已有独立的AI助手按钮(.ai-canvas-fab)，全局AI浮标始终隐藏，避免出现两个标识
+  const aiFab=$('#aiFab');
+  const aiPanel=$('#aiPanel');
+  if(aiFab)aiFab.style.display='none';
+  if(aiPanel){aiPanel.classList.remove('open');aiPanel.style.display='none';}
 }
 
-/* ============ 首页工作台 ============ */
+/* ============ AI助手首页 - 宽屏亮色系设计 ============ */
+let sidebarCollapsed=false;
+function toggleSidebar(){sidebarCollapsed=!sidebarCollapsed;const s=$('#sidebar');if(s)s.classList.toggle('collapsed',sidebarCollapsed);}
+let aiState={view:'home',generating:false,result:null,gapConfirmed:false,chatMsgs:[{role:'bot',text:'你好！我是AI助手，告诉我你想做什么，我帮你直接生成业务应用。'}],currentApp:null,activeTab:'home',navCollapsed:false,loadingStep:0,editing:false,chatOpen:false,thinking:''};
+const AI_SCENES={
+  visit:{name:'客户拜访管理',desc:'记录客户拜访信息，自动生成拜访报告',level:'L2',color:'#1A66FF',icon:'🏃',tabs:['拜访列表','拜访登记','数据统计','我的'],
+    pages:[
+      {type:'list',items:[{icon:'🏢',name:'台州泰隆机械厂',sub:'张总 · 今日上午 · 续贷沟通',color:'#DBEAFE'},{icon:'🏪',name:'临海小商品超市',sub:'李老板 · 昨日下午 · 新开卡',color:'#D1FAE5'},{icon:'🏬',name:'温州电器有限公司',sub:'王总 · 3天前 · 贷款申请',color:'#FEF3C7'},{icon:'🏭',name:'金华五金制品厂',sub:'陈总 · 1周前 · 回访维护',color:'#FCE7F3'}]},
+      {type:'form',fields:[{label:'客户名称',placeholder:'请选择客户'},{label:'拜访时间',type:'select',options:['今天','昨天','自定义时间']},{label:'拜访类型',type:'select',options:['新客拜访','存量回访','贷后检查','产品营销']},{label:'沟通内容',type:'textarea',placeholder:'记录本次拜访的主要沟通内容...'},{label:'影像资料',type:'upload',note:'OCR识别（能力缺口）'}]},
+      {type:'report',stats:[{label:'本月拜访',value:'28'},{label:'完成率',value:'92%'},{label:'新增客户',value:'6'}]},
+      {type:'profile',name:'陈小白',role:'客户经理 · 城东支行',stats:[{label:'累计拜访',value:'156'},{label:'本月拜访',value:'28'}]}
+    ]
+  },
+  event:{name:'活动报名小程序',desc:'线上活动报名与签到管理',level:'L1',color:'#00B42A',icon:'🎪',tabs:['首页','报名','签到','我的'],
+    pages:[
+      {type:'list',items:[{icon:'🎪',name:'金融知识进社区',sub:'8月10日 · 已报名32人',color:'#00B42A'},{icon:'🎪',name:'理财沙龙',sub:'8月15日 · 已报名18人',color:'#1A66FF'},{icon:'🎪',name:'客户答谢会',sub:'8月20日 · 已报名56人',color:'#FF7D00'}]},
+      {type:'form',fields:[{label:'姓名',placeholder:'请输入'},{label:'手机号',placeholder:'请输入'},{label:'活动场次',type:'select',options:['金融知识进社区','理财沙龙','客户答谢会']},{label:'备注',type:'textarea'}]},
+      {type:'qrcode'},
+      {type:'profile',name:'陈小白',role:'业务创新者 · 城东支行',stats:[{label:'已报名',value:'6'},{label:'已签到',value:'4'}]}
+    ]
+  },
+  finance:{name:'理财到期提醒',desc:'理财产品到期自动提醒与续期推荐',level:'L1',color:'#FF7D00',icon:'💰',tabs:['首页','提醒','推荐','我的'],
+    pages:[
+      {type:'list',items:[{icon:'💰',name:'稳健理财2024-001',sub:'8月15日到期 · ¥50万',color:'#FF7D00'},{icon:'💰',name:'安享系列',sub:'8月22日到期 · ¥30万',color:'#1A66FF'},{icon:'💰',name:'灵活宝',sub:'9月01日到期 · ¥20万',color:'#00B42A'}]},
+      {type:'report',stats:[{label:'本周到期',value:'8'},{label:'待提醒',value:'3'}]},
+      {type:'list',items:[{icon:'📈',name:'稳健理财2024-002',sub:'预期年化 4.2%',color:'#00B42A'},{icon:'📈',name:'安享系列Pro',sub:'预期年化 4.5%',color:'#1A66FF'}]},
+      {type:'profile',name:'陈小白',role:'业务创新者 · 城东支行',stats:[{label:'已提醒',value:'42'},{label:'续期成功',value:'18'}]}
+    ]
+  },
+  survey:{name:'客户满意度调查',desc:'线上满意度调查与智能分析',level:'L2',color:'#722ED1',icon:'📝',tabs:['首页','问卷','报告','我的'],
+    pages:[
+      {type:'list',items:[{icon:'📝',name:'2024Q3客户满意度',sub:'已收集 128 份',color:'#1A66FF'},{icon:'📝',name:'服务体验调查',sub:'已收集 56 份',color:'#00B42A'}]},
+      {type:'form',fields:[{label:'整体满意度',type:'select',options:['非常满意','满意','一般','不满意']},{label:'建议',type:'textarea'}]},
+      {type:'report',stats:[{label:'平均分',value:'4.6'},{label:'参与人数',value:'184'}]},
+      {type:'profile',name:'陈小白',role:'业务创新者 · 城东支行',stats:[{label:'已发起',value:'12'},{label:'已收集',value:'184'}]}
+    ]
+  },
+  default:{name:'业务助手',desc:'基于您的需求AI智能生成',level:'L2',color:'#1A66FF',icon:'🤖',tabs:['首页','功能','数据','我的'],
+    pages:[
+      {type:'list',items:[{icon:'📋',name:'功能模块一',sub:'核心业务功能',color:'#1A66FF'},{icon:'📊',name:'数据看板',sub:'实时数据展示',color:'#00B42A'}]},
+      {type:'form',fields:[{label:'名称',placeholder:'请输入'},{label:'类型',type:'select',options:['类型A','类型B','类型C']},{label:'描述',type:'textarea'}]},
+      {type:'report',stats:[{label:'总数',value:'128'},{label:'今日',value:'12'}]},
+      {type:'profile',name:'陈小白',role:'业务创新者 · 城东支行',stats:[{label:'总数',value:'56'},{label:'本月',value:'12'}]}
+    ]
+  }
+};
 function pageHome(){
-  const r=ROLES[currentRole];
-  const badge = currentRole==='owner'?5:currentRole==='tech'?7:3;
+  if(aiState.view==='canvas'||aiState.view==='detail'){
+    return renderCanvas();
+  }
+  const myApps=DATA.apps.filter(a=>a.status!=='生成中');
+  const visibleMarket=DATA.market.filter(m=>!m.offshelf);
+  const activeTab=aiState.activeTab||'home';
   return `
-  <div class="page">
-    <div class="welcome-bar">
-      <div>
-        <div class="wb-title">${getGreeting()}，唯安 👋</div>
-        <div class="wb-sub">${r.role} · 今天有 ${badge} 件事待您处理</div>
-      </div>
-    </div>
-    <div class="stat-grid">
-      <div class="stat-card"><div class="sc-icon" style="background:#E8F0FF;color:#1A66FF">📋</div><div class="sc-label">我的需求</div><div class="sc-value">${currentRole==='cm'?5:currentRole==='owner'?12:0}</div><div class="sc-trend trend-up">↑ 较上月 +2</div></div>
-      <div class="stat-card"><div class="sc-icon" style="background:#E8FFEA;color:#00B42A">📱</div><div class="sc-label">我的应用</div><div class="sc-value">${currentRole==='cm'?5:currentRole==='owner'?8:0}</div><div class="sc-trend trend-up">↑ 较上月 +1</div></div>
-      <div class="stat-card"><div class="sc-icon" style="background:#FFF7E8;color:#FF7D00">⚡</div><div class="sc-label">本月使用次数</div><div class="sc-value">${currentRole==='cm'?'1,247':'3,580'}</div><div class="sc-trend trend-up">↑ 环比 +18%</div></div>
-      <div class="stat-card"><div class="sc-icon" style="background:#F2EDFF;color:#722ED1">⏱️</div><div class="sc-label">本月节省工时</div><div class="sc-value">${currentRole==='cm'?'42.5':'128'}<span style="font-size:13px;color:var(--text-3)">h</span></div><div class="sc-trend trend-up">↑ 环比 +24%</div></div>
-    </div>
-    <div class="quick-entry">
-      <div class="qe-card" onclick="toggleAI()"><div class="qe-icon" style="background:linear-gradient(135deg,#1A66FF,#722ED1);color:#fff">🤖</div><div class="qe-text"><div class="qe-title">AI创建新应用</div><div class="qe-desc">一句话生成你的应用</div></div></div>
-      <div class="qe-card" onclick="navigate('my-req')"><div class="qe-icon" style="background:#E8F0FF;color:#1A66FF">📋</div><div class="qe-text"><div class="qe-title">我的需求</div><div class="qe-desc">查看需求进度</div></div></div>
-      <div class="qe-card" onclick="navigate('my-app')"><div class="qe-icon" style="background:#E8FFEA;color:#00B42A">📱</div><div class="qe-text"><div class="qe-title">我的应用</div><div class="qe-desc">管理已创建应用</div></div></div>
-      <div class="qe-card" onclick="navigate('market')"><div class="qe-icon" style="background:#FFF7E8;color:#FF7D00">🛒</div><div class="qe-text"><div class="qe-title">应用市场</div><div class="qe-desc">复用优质模板</div></div></div>
-    </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
-      <div class="card">
-        <div class="card-head"><div class="card-title">最近使用</div><button class="btn btn-sm btn-ghost" onclick="navigate('my-app')">全部 ›</button></div>
-        <div class="card-body">
-          <div class="app-grid" style="grid-template-columns:repeat(2,1fr)">
-            ${DATA.apps.slice(0,4).map(a=>`
-              <div class="app-card" onclick="openAppDetail('${a.id}')">
-                <div class="ac-head"><div class="ac-icon" style="background:${a.color}">${a.icon}</div><div><div class="ac-name">${a.name}</div><div class="ac-ver">${a.ver}</div></div></div>
-                <div class="ac-desc">${a.desc}</div>
-                <div class="ac-foot"><span>${getStatusTag(a.status)}</span><span>${a.users}用户 · ★${a.rating||'-'}</span></div>
-              </div>`).join('')}
+  <div class="ai-layout" style="display:flex;flex-direction:column;height:100%">
+    <main class="ai-home-main">
+      <h1 class="ai-title">你好，陈小白</h1>
+      <p class="ai-subtitle">描述你的业务需求，AI帮你快速生成专属应用</p>
+      <div class="ai-input-area">
+        <textarea class="ai-input-big" id="aiHomeInput" placeholder="我要一个园区招商管理系统,能登记入园企业、记录联系人、跟进意向客户,并统计每月新签合同。" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend()}">我要一个园区招商管理系统,能登记入园企业、记录联系人、跟进意向客户,并统计每月新签合同。</textarea>
+        <div class="ai-input-tools">
+          <div class="ai-input-tools-left">
+            <button class="ai-tool-btn" onclick="showToast('附件功能演示','info')">📎 附件</button>
+            <button class="ai-tool-btn" onclick="showToast('润色功能演示','info')">✨ 润色</button>
+            <button class="ai-tool-btn" onclick="showToast('语音输入演示','info')">🎤 语音</button>
+          </div>
+          <div class="ai-input-tools-right">
+            <button class="ai-model-select" onclick="showToast('切换模型演示','info')">
+              <span>🤖</span>
+              <span>泰隆GPT-4</span>
+              <span style="font-size:10px">▾</span>
+            </button>
+            <button class="ai-generate-btn" id="aiSendBtn" onclick="aiSend()">
+              <span>生成</span>
+              <span>➤</span>
+            </button>
           </div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-head"><div class="card-title">系统通知</div><span class="tag tag-danger">${DATA.notices.filter(n=>!n.read).length}未读</span></div>
-        <div class="card-body" style="padding:12px 18px">
-          ${DATA.notices.map(n=>`<div class="notice-item"><div class="notice-dot ${n.read?'read':''}"></div><div class="notice-content"><div class="notice-title">${n.title}</div><div class="notice-time">${n.time}</div></div></div>`).join('')}
+      <div class="ai-tabs-section">
+        <div class="ai-tabs-head">
+          <div class="ai-tabs">
+            <div class="ai-tab ${activeTab==='home'||activeTab==='market'?'active':''}" onclick="switchAiTab('market')">
+              <span>应用市场</span>
+              <span class="ai-tab-count">${visibleMarket.length}</span>
+            </div>
+            <div class="ai-tab ${activeTab==='my'?'active':''}" onclick="switchAiTab('my')">
+              <span>我的应用</span>
+              <span class="ai-tab-count">${myApps.length}</span>
+            </div>
+          </div>
         </div>
+        <div class="ai-filter-bar">
+          <div class="ai-cat-filters">
+            <button class="ai-cat-filter active">全部</button>
+            <button class="ai-cat-filter">客户管理</button>
+            <button class="ai-cat-filter">活动运营</button>
+            <button class="ai-cat-filter">信贷业务</button>
+            <button class="ai-cat-filter">财富管理</button>
+            <button class="ai-cat-filter">内部办公</button>
+          </div>
+        </div>
+        <div class="ai-tabs-content">
+          ${(activeTab==='home'||activeTab==='market')?`
+          <div class="ai-big-grid">
+            ${visibleMarket.map(m=>`
+              <div class="ai-big-card" onclick="aiOpenMarket('${m.id}')">
+                <div class="ai-big-card-cover" style="background:linear-gradient(135deg,${m.level==='L1'?'#E8F5E9,#C8E6C9':m.level==='L2'?'#FFF3E0,#FFE0B2':'#E3F2FD,#BBDEFB'})">
+                  ${m.tags.includes('热门')?'<span class="hot-tag">🔥 热门</span>':''}
+                  <span style="font-size:56px">${m.icon}</span>
+                </div>
+                <div class="ai-big-card-body">
+                  <div class="ai-big-card-name">${m.name}</div>
+                  <div class="ai-big-card-meta">${m.cat} · ${m.users}人使用 · ★${m.rating}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+          `:`
+          <div class="ai-my-grid">
+            ${myApps.map(a=>`
+              <div class="ai-my-card" onclick="aiOpenApp('${a.id}')">
+                <div class="ai-my-card-cover" style="background:linear-gradient(135deg,${a.color}22,${a.color}44)">
+                  <span style="font-size:56px">${a.icon}</span>
+                </div>
+                <div class="ai-my-card-body">
+                  <div class="ai-my-card-name">${a.name}</div>
+                  <div class="ai-my-card-meta">
+                    <span>${a.status}</span>
+                    <span>${a.users}用户</span>
+                  </div>
+                </div>
+              </div>`).join('')}
+          </div>
+          `}
+        </div>
+      </div>
+    </main>
+  </div>`;
+}
+function aiQuickFill(text){
+  const inp=$('#aiHomeInput');
+  if(inp){inp.value=text;inp.focus();}
+}
+/* ===== 画布详情页 ===== */
+function renderCanvas(){
+  const r=aiState.result;
+  const scene=r?AI_SCENES[r.scene]||AI_SCENES.default:null;
+  const isDetail=aiState.view==='detail';
+  const editing=aiState.editing;
+  // 渲染后自动滚动聊天到底部
+  setTimeout(()=>{const msgs=document.getElementById('aiChatMsgs');if(msgs)msgs.scrollTop=msgs.scrollHeight;},0);
+  return `
+  <div class="ai-canvas-layout">
+    <aside class="ai-nav collapsed" id="aiNav">
+      <button class="ai-nav-toggle" onclick="toggleAiNav()">›</button>
+      <div class="ai-nav-new">
+        <button class="ai-nav-new-btn" onclick="aiNewChat()">
+          <span style="font-size:16px">+</span>
+          <span>新建对话</span>
+        </button>
+      </div>
+      <div class="ai-nav-menu">
+        <div class="ai-nav-item" onclick="switchAiTab('my')">
+          <span class="ai-nav-item-icon">📱</span>
+          <span class="label">我的应用</span>
+        </div>
+        <div class="ai-nav-item" onclick="switchAiTab('market')">
+          <span class="ai-nav-item-icon">🛒</span>
+          <span class="label">应用市场</span>
+        </div>
+      </div>
+    </aside>
+    <main class="ai-canvas-main">
+      <div class="ai-canvas-topbar">
+        <div class="ai-canvas-topbar-left">
+          <button class="ai-canvas-back" onclick="aiBackHome()">← 返回首页</button>
+          <div class="ai-canvas-topbar-title">
+            ${isDetail?'📋':'✨'} ${scene?scene.name:'AI生成中'}
+            ${scene?`<span class="ver">${scene.level} · v1.0.0</span>`:''}
+          </div>
+        </div>
+        <div class="ai-canvas-topbar-right">
+          ${r&&!aiState.generating?`
+            <div class="ai-canvas-device-tabs">
+              <span class="ai-canvas-device active" title="小程序" onclick="switchCanvasDevice(this)">小程序</span>
+              <span class="ai-canvas-device" title="平板" onclick="switchCanvasDevice(this)">平板</span>
+              <span class="ai-canvas-device" title="Web" onclick="switchCanvasDevice(this)">Web</span>
+            </div>
+            <button class="ai-canvas-topbar-btn ${editing?'primary':''}" onclick="toggleEditMode()">${editing?'✓ 完成编辑':'✏ 编辑'}</button>
+            <button class="ai-canvas-topbar-btn" onclick="showToast('预览功能演示','info')">👁 预览</button>
+            <button class="ai-canvas-topbar-btn primary" onclick="aiPublish()">🚀 发布</button>
+          `:''}
+        </div>
+      </div>
+      <div class="ai-canvas-area" id="aiCanvasArea">
+        <div class="ai-canvas-frame ${aiState.generating?'loading':(editing?'editing':'done')}" id="aiCanvasFrame">
+          ${aiState.generating?renderCanvasLoading():r?renderCanvasPreview(r):''}
+        </div>
+      </div>
+    </main>
+    <button class="ai-canvas-fab" onclick="aiToggleChat()" title="AI助手">🤖</button>
+    <div class="ai-canvas-chat ${aiState.chatOpen?'open':''}" id="aiChatPopup">
+      <div class="ai-canvas-chat-head">
+        <div class="ai-canvas-chat-title">🤖 AI助手</div>
+        <button class="ai-canvas-chat-close" onclick="aiToggleChat()">×</button>
+      </div>
+      <div class="ai-canvas-chat-msgs" id="aiChatMsgs">
+        ${aiState.chatMsgs.map(m=>`<div class="ai-canvas-chat-msg ${m.role}"><div class="ai-canvas-chat-bubble">${m.text}</div></div>`).join('')}
+        ${aiState.thinking?`<div class="ai-canvas-chat-msg bot"><div class="ai-canvas-chat-bubble"><div class="ai-canvas-chat-think"><span class="ai-canvas-chat-think-dot"></span>${aiState.thinking}</div></div></div>`:''}
+      </div>
+      <div class="ai-canvas-chat-input">
+        <textarea id="aiChatInput" placeholder="描述修改需求，AI会帮你调整..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiChatSend()}"></textarea>
+        <button class="ai-canvas-chat-send" onclick="aiChatSend()">➤</button>
       </div>
     </div>
   </div>`;
+}
+function renderCanvasLoading(){
+  const steps=['理解需求中...','分析业务场景...','匹配平台能力...','发现能力缺口...','生成页面结构...','组装小程序...'];
+  const currentStep=aiState.loadingStep||0;
+  return `<div class="ai-canvas-loading-center">
+    <div class="ai-canvas-loading-spinner"></div>
+    <div class="ai-canvas-loading-text">AI正在生成你的应用</div>
+    <div class="ai-canvas-loading-step">${steps[currentStep]||steps[0]}</div>
+  </div>`;
+}
+function renderCanvasPreview(r){
+  const scene=AI_SCENES[r.scene]||AI_SCENES.default;
+  const isL1=scene.level==='L1';
+  const editing=aiState.editing;
+  // 编辑模式下，给元素包装可点击高亮层
+  const wrap=(label,html)=>editing?`<div class="ai-editable" onclick="event.stopPropagation();openEditPop(event,'${label}')">${html}</div>`:html;
+  return `
+    <div style="padding:32px">
+      <div class="ai-preview-pages">
+        ${scene.pages.map((p,i)=>renderMiniPage(p,scene,i,editing)).join('')}
+      </div>
+    </div>`;
+}
+function renderMiniPage(p,scene,idx,editing){
+  const wrap=(label,html)=>editing?`<div class="ai-editable" onclick="event.stopPropagation();openEditPop(event,'${label}')">${html}</div>`:html;
+  let body='';
+  if(p.type==='list'){
+    body=`${wrap('搜索框',`<div class="ai-mp-search">🔍 搜索客户</div>`)}${p.items.map(it=>wrap('列表项',`<div class="ai-mp-list-item"><div class="ai-mp-item-icon" style="background:${it.color}">${it.icon}</div><div><div class="ai-mp-item-name">${it.name}</div><div class="ai-mp-item-sub">${it.sub}</div></div></div>`)).join('')}`;
+  }else if(p.type==='form'){
+    body=p.fields.map(f=>{
+      let inner;
+      if(f.type==='select'){
+        inner=`<div class="ai-mp-form-group"><label class="ai-mp-form-label">${f.label}</label><select class="ai-mp-form-select">${f.options.map(o=>`<option>${o}</option>`).join('')}</select></div>`;
+      }else if(f.type==='textarea'){
+        inner=`<div class="ai-mp-form-group"><label class="ai-mp-form-label">${f.label}</label><textarea class="ai-mp-form-textarea" placeholder="${f.placeholder||'请输入'}"></textarea></div>`;
+      }else if(f.type==='upload'){
+        inner=`<div class="ai-mp-form-group"><label class="ai-mp-form-label">${f.label}</label><div class="ai-mp-upload-area" style="border:2px dashed #FCA5A5;border-radius:10px;padding:20px;text-align:center;background:#FEF2F2"><div style="font-size:28px">📷</div><div style="font-size:12px;color:#991B1B;margin-top:6px">${f.note}</div></div></div>`;
+      }else{
+        inner=`<div class="ai-mp-form-group"><label class="ai-mp-form-label">${f.label}</label><input class="ai-mp-form-input" placeholder="${f.placeholder||'请输入'}"></div>`;
+      }
+      return wrap('表单项:'+f.label,inner);
+    }).join('')+wrap('提交按钮','<button class="ai-mp-submit">提交拜访记录</button>');
+  }else if(p.type==='report'){
+    body=`<div class="ai-mp-stats">${p.stats.map(s=>wrap('统计项:'+s.label,`<div class="ai-mp-stat"><div class="ai-mp-stat-val">${s.value}</div><div class="ai-mp-stat-lbl">${s.label}</div></div>`)).join('')}</div>${wrap('图表','<div class="ai-mp-chart-block">📊 拜访趋势图表</div>')}${wrap('记录列表','<div class="ai-mp-chart-block">📋 拜访记录列表</div>')}`;
+  }else if(p.type==='qrcode'){
+    body=`<div class="ai-mp-qrcode">${wrap('二维码','<div class="ai-mp-qrcode-box">▦</div>')}<div style="font-size:14px;font-weight:500;color:var(--text-1)">扫码签到</div><div style="font-size:12px;color:var(--text-3);margin-top:6px">请使用微信扫一扫</div></div>`;
+  }else if(p.type==='profile'){
+    body=`<div class="ai-mp-profile">${wrap('头像','<div class="ai-mp-avatar">'+p.name[0]+'</div>')}<div class="ai-mp-profile-name">${p.name}</div><div class="ai-mp-profile-role">${p.role}</div></div><div class="ai-mp-stats">${p.stats.map(s=>wrap('统计项:'+s.label,`<div class="ai-mp-stat"><div class="ai-mp-stat-val">${s.value}</div><div class="ai-mp-stat-lbl">${s.label}</div></div>`)).join('')}</div>`;
+  }
+  return `<div class="ai-mini-page">
+    <div class="ai-mp-statusbar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="ai-mp-header">${wrap('页面标题',scene.tabs[idx])}</div>
+    <div class="ai-mp-body">${body}</div>
+    <div class="ai-mp-tabbar">${scene.tabs.map((t,i)=>`<span class="${i===idx?'tab-active':''}">${t}</span>`).join('')}</div>
+  </div>`;
+}
+/* ===== 首页发送 ===== */
+let aiGenTimer=null,aiStepTimer=null,aiResumeGen=null;
+function aiSend(){
+  const input=document.getElementById('aiHomeInput')||document.getElementById('aiInput');
+  if(!input) return;
+  const text=input.value.trim();
+  if(!text) return;
+  input.value='';
+  aiState.generating=true;
+  aiState.view='canvas';
+  aiState.navCollapsed=true;
+  aiState.loadingStep=0;
+  aiState.chatMsgs=[{role:'bot',text:'你好！我是AI助手，告诉我你想做什么，我帮你直接生成业务应用。'},{role:'user',text}];
+  renderPage();
+  let scene='default',caps=[],gaps=[];
+  if(text.includes('拜访')||text.includes('客户')){
+    scene='visit';caps=[{n:'客户信息查询',has:true},{n:'地图定位',has:true},{n:'OCR识别',has:false}];gaps=caps.filter(c=>!c.has).map(c=>c.n);
+  }else if(text.includes('活动')||text.includes('报名')||text.includes('签到')){
+    scene='event';caps=[{n:'短信通知',has:true},{n:'二维码生成',has:true}];
+  }else if(text.includes('理财')||text.includes('到期')||text.includes('提醒')){
+    scene='finance';caps=[{n:'短信通知',has:true},{n:'产品查询',has:true}];
+  }else if(text.includes('满意度')||text.includes('调查')||text.includes('问卷')){
+    scene='survey';caps=[{n:'问卷引擎',has:true},{n:'数据分析',has:false}];gaps=caps.filter(c=>!c.has).map(c=>c.n);
+  }else{caps=[{n:'数据表格',has:true},{n:'表单组件',has:true}];}
+  aiState.result={scene,caps,gaps,gapSent:false};
+  const steps=['理解需求中...','分析业务场景...','匹配平台能力...','发现能力缺口...','生成页面结构...','组装小程序...'];
+  let stepIdx=0;
+  function runStep(){
+    if(stepIdx<steps.length){
+      aiState.loadingStep=stepIdx;
+      const el=document.querySelector('.ai-canvas-loading-step');
+      if(el) el.textContent=steps[stepIdx];
+      if(stepIdx===3&&gaps.length>0&&!aiState.result.gapSent){
+        setTimeout(()=>{openGapModal(gaps);},300);
+        return;
+      }
+      stepIdx++;
+      aiStepTimer=setTimeout(runStep,600);
+    }else{
+      finishGen();
+    }
+  }
+  function finishGen(){
+    aiState.generating=false;
+    aiState.loadingStep=0;
+    renderPage();
+  }
+  aiResumeGen=function(){
+    stepIdx=4;
+    runStep();
+  };
+  runStep();
+}
+/* ===== 画布交互 ===== */
+function toggleAiNav(){
+  aiState.navCollapsed=!aiState.navCollapsed;
+  renderPage();
+}
+function switchAiTab(tab){
+  aiState.activeTab=tab;
+  if(aiState.view==='canvas'||aiState.view==='detail'){
+    aiState.view='home';
+    aiState.result=null;
+    aiState.generating=false;
+  }
+  renderPage();
+}
+function aiNewChat(){
+  aiState.view='home';
+  aiState.activeTab='home';
+  aiState.result=null;
+  aiState.generating=false;
+  aiState.navCollapsed=false;
+  aiState.editing=false;
+  aiState.chatOpen=false;
+  aiState.thinking='';
+  aiState.chatMsgs=[{role:'bot',text:'你好！我是AI助手，告诉我你想做什么，我帮你直接生成业务应用。'}];
+  renderPage();
+}
+function aiBackHome(){
+  aiState.view='home';
+  aiState.result=null;
+  aiState.generating=false;
+  aiState.navCollapsed=false;
+  aiState.editing=false;
+  aiState.chatOpen=false;
+  aiState.thinking='';
+  renderPage();
+}
+function aiToggleChat(){
+  aiState.chatOpen=!aiState.chatOpen;
+  renderPage();
+}
+function switchCanvasDevice(el){
+  document.querySelectorAll('.ai-canvas-device').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+  showToast('切换到'+el.textContent+'视图（演示）','info');
+}
+function toggleEditMode(){
+  aiState.editing=!aiState.editing;
+  if(aiState.editing){
+    aiState.chatOpen=true;
+    aiState.chatMsgs.push({role:'bot',text:'已进入编辑模式，你可以点击页面中的元素直接修改，或在对话框描述修改需求。'});
+  }
+  renderPage();
+}
+let aiEditPopEl=null;
+function openEditPop(e,label){
+  // 移除已存在弹窗
+  closeEditPop();
+  const pop=document.createElement('div');
+  pop.className='ai-edit-pop open';
+  pop.innerHTML=`
+    <div class="ai-edit-pop-head">
+      <span>修改${label}</span>
+      <span class="ai-edit-pop-close" onclick="closeEditPop()">×</span>
+    </div>
+    <div class="ai-edit-pop-field">
+      <label class="ai-edit-pop-label">补充/修改内容</label>
+      <input class="ai-edit-pop-input" id="aiEditInput" placeholder="输入新的内容..." value="">
+      <div class="ai-edit-pop-tip">💡 点击发送后，AI助手将理解需求并自动调整画布</div>
+    </div>
+    <div class="ai-edit-pop-actions">
+      <button class="btn btn-sm" onclick="closeEditPop()">取消</button>
+      <button class="btn btn-sm btn-primary" onclick="submitEditPop('${label}')">发送</button>
+    </div>`;
+  document.body.appendChild(pop);
+  // 定位
+  const rect=e.target.getBoundingClientRect();
+  pop.style.position='fixed';
+  pop.style.left=Math.min(rect.left,window.innerWidth-280)+'px';
+  pop.style.top=(rect.bottom+6)+'px';
+  aiEditPopEl=pop;
+  e.target.classList.add('selected');
+  setTimeout(()=>{const i=document.getElementById('aiEditInput');if(i)i.focus();},50);
+}
+function closeEditPop(){
+  if(aiEditPopEl){aiEditPopEl.remove();aiEditPopEl=null;}
+  document.querySelectorAll('.ai-editable.selected').forEach(el=>el.classList.remove('selected'));
+}
+function submitEditPop(label){
+  const input=document.getElementById('aiEditInput');
+  const val=input?input.value.trim():'';
+  closeEditPop();
+  if(!val) return;
+  // 将修改提交到AI对话，触发理解->调整->完成流程
+  aiState.chatMsgs.push({role:'user',text:`把「${label}」修改为：${val}`});
+  aiState.thinking='正在理解你的修改需求...';
+  aiState.generating=true;
+  renderPage();
+  setTimeout(()=>{
+    aiState.thinking='正在调整页面结构...';
+    renderPage();
+  },900);
+  setTimeout(()=>{
+    aiState.thinking='';
+    aiState.generating=false;
+    aiState.chatMsgs.push({role:'bot',text:`已将「${label}」修改为"${val}"，请查看更新后的页面。`});
+    renderPage();
+    const msgs=document.getElementById('aiChatMsgs');
+    if(msgs) msgs.scrollTop=msgs.scrollHeight;
+  },2200);
+}
+function aiChatSend(){
+  const input=document.getElementById('aiChatInput');
+  if(!input) return;
+  const text=input.value.trim();
+  if(!text) return;
+  input.value='';
+  aiState.chatMsgs.push({role:'user',text});
+  // 模拟理解过程 -> 画布loading -> 输出修改完成
+  aiState.thinking='正在理解你的修改需求...';
+  aiState.generating=true;
+  renderPage();
+  setTimeout(()=>{
+    aiState.thinking='正在调整页面结构...';
+    renderPage();
+  },900);
+  setTimeout(()=>{
+    aiState.thinking='';
+    aiState.generating=false;
+    aiState.chatMsgs.push({role:'bot',text:`已根据"${text}"调整完成，请查看更新后的页面。`});
+    renderPage();
+    // 滚动到底部
+    const msgs=document.getElementById('aiChatMsgs');
+    if(msgs) msgs.scrollTop=msgs.scrollHeight;
+  },2200);
+}
+function openGapModal(gaps){
+  const modal=document.querySelector('.modal');
+  const modalTitle=document.getElementById('modalTitle');
+  const modalBody=document.getElementById('modalBody');
+  const modalFoot=document.getElementById('modalFoot');
+  modal.classList.add('ai-gap-modal');
+  modalTitle.textContent='发现能力缺口';
+  modalBody.innerHTML=`
+    <div class="ai-gap-content">
+      <div class="ai-gap-icon">⚠️</div>
+      <div class="ai-gap-title">生成${gaps[0]||''}等缺口能力工单</div>
+      <div class="ai-gap-desc">生成应用过程中检测到以下能力暂未接入，是否发送至总行科技部补充建设？</div>
+      <div class="ai-gap-list">
+        ${gaps.map(g=>`<div class="ai-gap-item">${g}</div>`).join('')}
+      </div>
+      <div class="ai-gap-actions">
+        <button class="btn" onclick="closeGapModal(false)">暂不发送</button>
+        <button class="btn btn-primary" onclick="closeGapModal(true)">发送至总行科技部</button>
+      </div>
+    </div>`;
+  modalFoot.innerHTML='';
+  document.getElementById('modalMask').classList.add('open');
+}
+function closeGapModal(confirm){
+  if(confirm&&aiState.result){
+    aiState.result.gaps.forEach(g=>{
+      DATA.gaps.push({id:'GAP-'+String(DATA.gaps.length+1).padStart(3,'0'),cap:g,source:'需求自动发现',from:'AI助手',priority:'中',status:'待处理',date:'2024-08-06'});
+    });
+    aiState.result.gapSent=true;
+    showToast('缺口能力工单发送成功，已通知总行科技部','success');
+  }else if(aiState.result){
+    aiState.result.gapSent=true;
+  }
+  document.querySelector('.modal').classList.remove('ai-gap-modal');
+  closeModal();
+  if(aiResumeGen){
+    setTimeout(aiResumeGen,300);
+  }
+}
+function aiRollback(){
+  aiState.view='home';
+  aiState.result=null;
+  aiState.navCollapsed=false;
+  showToast('已回滚到首页','info');
+  renderPage();
+}
+function aiPublish(){
+  const r=aiState.result;
+  if(!r) return;
+  const scene=AI_SCENES[r.scene]||AI_SCENES.default;
+  const newApp={id:'APP-'+String(DATA.apps.length+1).padStart(3,'0'),name:scene.name,ver:'v1.0.0',status:'已上线',icon:scene.icon,color:scene.color,users:1,calls:0,rating:0,desc:scene.desc};
+  DATA.apps.unshift(newApp);
+  DATA.scenes.push({id:'SCE-'+String(DATA.scenes.length+1).padStart(3,'0'),name:scene.name,source:'业务部门',score:'-',status:'已孵化',date:'2024-08-06',templated:false,desc:scene.desc,linkedApp:newApp.id,promoted:false,promoteScope:null,sourceType:'需求方创建',assignee:ROLES[currentRole].name});
+  // 发布后触发审核流程
+  DATA.audits.unshift({id:'AUD-'+String(DATA.audits.length+1).padStart(3,'0'),name:scene.name,type:scene.level==='L2'?'需求审核':'发布审核',applicant:ROLES[currentRole].name,level:scene.level,date:'2024-08-06',status:'待审核'});
+  openModal('🎉 发布成功',`
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:48px;margin-bottom:12px">🎉</div>
+      <div style="font-size:20px;font-weight:600;color:var(--text-1);margin-bottom:8px">发布成功！</div>
+      <div style="font-size:14px;color:var(--text-3);margin-bottom:20px">${scene.name} 已发布，并已自动触发${scene.level}审核流程</div>
+      <div style="background:#FAFAF7;border-radius:10px;padding:14px;text-align:left;max-width:380px;margin:0 auto">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--text-3)">应用名称</span><strong>${scene.name}</strong></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--text-3)">访问等级</span><span>${scene.level}</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--text-3)">审核单号</span><span style="color:var(--text-1);font-family:monospace;font-size:12px">AUD-${String(DATA.audits.length).padStart(3,'0')}</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-3)">访问地址</span><span style="color:var(--text-1);font-family:monospace;font-size:12px">https://app.tilong.com/${newApp.id.toLowerCase()}</span></div>
+      </div>
+    </div>`,null,true);
+  $('#modalFoot').innerHTML=`<button class="btn" onclick="closeModal();aiBackHome()">关闭</button>`;
+}
+function aiSubmitAudit(){
+  const r=aiState.result;
+  if(!r) return;
+  const scene=AI_SCENES[r.scene]||AI_SCENES.default;
+  DATA.audits.unshift({id:'AUD-'+String(DATA.audits.length+1).padStart(3,'0'),name:scene.name,type:scene.level==='L2'?'需求审核':'发布审核',applicant:ROLES[currentRole].name,level:scene.level,date:'2024-08-06',status:'待审核'});
+  showToast(`已提交${scene.level}审核，等待业务Owner审批`,'success');
+  aiBackHome();
+}
+/* ===== 我的应用 - 打开详情 ===== */
+function aiOpenApp(id){
+  const a=DATA.apps.find(x=>x.id===id);
+  if(!a) return;
+  let sceneKey='default';
+  if(a.name.includes('拜访'))sceneKey='visit';
+  else if(a.name.includes('活动')||a.name.includes('报名'))sceneKey='event';
+  else if(a.name.includes('理财'))sceneKey='finance';
+  else if(a.name.includes('满意度')||a.name.includes('调查'))sceneKey='survey';
+  currentPage='home';
+  aiState.view='detail';
+  aiState.result={scene:sceneKey,caps:[],gaps:[],gapSent:true};
+  aiState.currentApp=a;
+  aiState.editing=false;
+  aiState.chatOpen=true;
+  aiState.chatMsgs=[{role:'bot',text:`正在打开「${a.name}」，你可以在画布中直接编辑元素，或在对话框描述修改需求。点击右上角"发布"可发布并触发审核。`}];
+  renderSidebar();
+  renderPage();
+}
+/* ===== 应用市场 - 模板详情弹窗 ===== */
+function aiOpenMarket(id){
+  const m=DATA.market.find(x=>x.id===id);
+  if(!m) return;
+  openModal('',`
+    <div class="ai-tpl-body">
+      <div class="ai-tpl-preview">
+        <div class="ai-tpl-preview-card">
+          <div style="height:12px;border-radius:999px;background:#ECECEA;margin-bottom:10px;width:60%"></div>
+          <div style="height:10px;border-radius:999px;background:#F3F3F0;margin-bottom:6px"></div>
+          <div style="height:10px;border-radius:999px;background:#F3F3F0;margin-bottom:14px;width:80%"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="height:50px;border-radius:10px;background:#F3F3F0"></div><div style="height:50px;border-radius:10px;background:#F3F3F0"></div></div>
+        </div>
+      </div>
+      <div class="ai-tpl-info">
+        <h2>${m.name}</h2>
+        <p>${m.desc}</p>
+        <div class="ai-tpl-tags">
+          <span class="ai-tpl-tag">${m.level}</span>
+          <span class="ai-tpl-tag">${m.cat}</span>
+          <span class="ai-tpl-tag">作者: ${m.author}</span>
+          ${m.tags.map(t=>`<span class="ai-tpl-tag">${t}</span>`).join('')}
+        </div>
+        <div style="font-size:13px;color:var(--text-2);line-height:1.8;margin-bottom:16px">
+          <div>✓ 业务首页与数据看板</div>
+          <div>✓ 列表、详情、表单等基础页面</div>
+          <div>✓ 示例数据与基础交互</div>
+          <div>✓ 可继续通过AI助手修改</div>
+        </div>
+        <div style="font-size:12px;color:var(--text-3);line-height:1.6">复制后可直接进入详情页，基于此模板继续修改和发布。</div>
+      </div>
+    </div>`,null,true);
+  $('#modalFoot').innerHTML=`<button class="btn" onclick="closeModal()">关闭</button><button class="btn btn-primary" onclick="aiCopyMarket('${m.id}')">📋 复制并编辑</button>`;
+  const modal=document.querySelector('.modal');
+  if(modal){modal.style.maxWidth='780px';modal.querySelector('.modal-body').style.padding='0';}
+}
+function aiCopyMarket(id){
+  const m=DATA.market.find(x=>x.id===id);
+  if(!m) return;
+  closeModal();
+  let sceneKey='default';
+  if(m.name.includes('拜访'))sceneKey='visit';
+  else if(m.name.includes('活动')||m.name.includes('报名'))sceneKey='event';
+  else if(m.name.includes('理财'))sceneKey='finance';
+  else if(m.name.includes('满意度')||m.name.includes('调查'))sceneKey='survey';
+  aiState.view='detail';
+  aiState.result={scene:sceneKey,caps:[],gaps:[],gapSent:true};
+  aiState.currentApp={id:'COPY-'+Date.now(),name:m.name+' (副本)',ver:'v1.0.0',status:'编辑中',icon:m.icon,color:m.level==='L1'?'#00B42A':m.level==='L2'?'#FF7D00':'#1A66FF',desc:m.desc};
+  aiState.editing=false;
+  aiState.chatOpen=true;
+  aiState.chatMsgs=[{role:'bot',text:`已从「${m.name}」复制，你可以在画布中继续修改，或点击右上角"发布"。`}];
+  renderPage();
 }
 
 /* ============ 我的需求 ============ */
@@ -908,45 +1742,46 @@ function pageMyReq(){
   </div>`;
 }
 
-/* ============ 我的应用 ============ */
-function pageMyApp(){
+/* ============ 应用中心（市场+我的应用统一tab页面） ============ */
+function renderAppCenter(activeTab){
+  const myApps=DATA.apps.filter(a=>a.status!=='生成中');
+  const visibleMarket=DATA.market.filter(m=>!m.offshelf);
+  const isMyTab=activeTab==='my';
   return `
   <div class="page">
-    <div class="page-head"><div><div class="page-title">${currentRole==='owner'?'负责应用':'我的应用'}</div><div class="page-sub">${currentRole==='owner'?'我作为Owner负责的应用':'我创建的全部应用'}</div></div><button class="btn btn-primary" onclick="toggleAI()">🤖 创建新应用</button></div>
-    <div class="stat-grid">
-      <div class="stat-card"><div class="sc-label">应用总数</div><div class="sc-value">${DATA.apps.length}</div></div>
-      <div class="stat-card"><div class="sc-label">已上线</div><div class="sc-value">${DATA.apps.filter(a=>a.status==='已上线').length}</div></div>
-      <div class="stat-card"><div class="sc-label">总用户数</div><div class="sc-value">${DATA.apps.reduce((s,a)=>s+a.users,0)}</div></div>
-      <div class="stat-card"><div class="sc-label">总调用次数</div><div class="sc-value">${DATA.apps.reduce((s,a)=>s+a.calls,0).toLocaleString()}</div></div>
+    <div class="page-head">
+      <div>
+        <div style="border-bottom:1px solid var(--border);display:flex;gap:0;margin-bottom:0">
+          <div style="padding:10px 24px;font-size:16px;font-weight:600;color:${isMyTab?'var(--text-3)':'var(--primary)'};border-bottom:2px solid ${isMyTab?'transparent':'var(--primary)'};margin-bottom:-1px;cursor:pointer" onclick="navigate('market')">应用市场</div>
+          <div style="padding:10px 24px;font-size:16px;font-weight:600;color:${isMyTab?'var(--primary)':'var(--text-3)'};border-bottom:2px solid ${isMyTab?'var(--primary)':'transparent'};margin-bottom:-1px;cursor:pointer" onclick="navigate('my-app')">我的应用</div>
+        </div>
+      </div>
     </div>
+    ${isMyTab?`
     <div class="card">
       <div class="card-body">
         <div class="toolbar">
           <input class="search-input" placeholder="搜索应用名称">
-          <select class="select"><option>全部状态</option><option>已上线</option><option>生成中</option><option>已下线</option></select>
+          <select class="select"><option>全部状态</option><option>已上线</option><option>已下线</option></select>
         </div>
-        <div class="app-grid">
-          ${DATA.apps.map(a=>`
-            <div class="app-card" onclick="openAppDetail('${a.id}')">
-              <div class="ac-head"><div class="ac-icon" style="background:${a.color}">${a.icon}</div><div><div class="ac-name">${a.name}</div><div class="ac-ver">${a.ver}</div></div></div>
-              <div class="ac-desc">${a.desc}</div>
-              <div class="ac-foot"><span>${getStatusTag(a.status)}</span><span>${a.users}用户 · ★${a.rating||'-'}</span></div>
-              <div style="display:flex;gap:6px;margin-top:10px" onclick="event.stopPropagation()">
-                ${a.status==='已上线'?`<button class="btn btn-sm btn-ghost" onclick="applyOffline('${a.id}','${a.name}')">申请下线</button>`:`<button class="btn btn-sm" disabled style="opacity:.4;cursor:not-allowed">申请下线</button>`}
-                <button class="btn btn-sm btn-ghost" onclick="openVersionHistory('${a.id}','${a.name}')">版本历史</button>
+        <div class="ai-my-grid">
+          ${myApps.map(a=>`
+            <div class="ai-my-card" onclick="aiOpenApp('${a.id}')">
+              <div class="ai-my-card-cover" style="background:linear-gradient(135deg,${a.color}22,${a.color}44)">
+                <span style="font-size:56px">${a.icon}</span>
+              </div>
+              <div class="ai-my-card-body">
+                <div class="ai-my-card-name">${a.name}</div>
+                <div class="ai-my-card-meta">
+                  <span>${a.status}</span>
+                  <span>${a.users}用户</span>
+                </div>
               </div>
             </div>`).join('')}
         </div>
       </div>
     </div>
-  </div>`;
-}
-
-/* ============ 应用市场 ============ */
-function pageMarket(){
-  return `
-  <div class="page">
-    <div class="page-head"><div><div class="page-title">应用市场</div><div class="page-sub">复用全行优质应用模板，一键创建</div></div></div>
+    `:`
     <div class="card">
       <div class="card-body">
         <div class="toolbar">
@@ -954,40 +1789,32 @@ function pageMarket(){
           <select class="select"><option>全部分类</option><option>客户管理</option><option>活动运营</option><option>信贷业务</option><option>财富管理</option><option>内部办公</option></select>
           <select class="select"><option>全部标签</option><option>优质模板</option><option>热门</option></select>
         </div>
-        <div class="app-grid">
-          ${DATA.market.map(m=>`
-            <div class="app-card" onclick="openMarketDetail('${m.id}')">
-              <div class="ac-head">
-                <div class="ac-icon" style="background:#1A66FF">${m.icon}</div>
-                <div>
-                  <div class="ac-name">${m.name}${m.templated?'<span class="tag tag-success" style="margin-left:6px;font-size:10px">📌 模板</span>':''}</div>
-                  <div class="ac-ver">${m.cat}</div>
-                </div>
+        <div class="ai-big-grid">
+          ${visibleMarket.map(m=>`
+            <div class="ai-big-card" onclick="aiOpenMarket('${m.id}')">
+              <div class="ai-big-card-cover" style="background:linear-gradient(135deg,${m.level==='L1'?'#E8F5E9,#C8E6C9':m.level==='L2'?'#FFF3E0,#FFE0B2':'#E3F2FD,#BBDEFB'})">
+                ${m.tags.includes('热门')?'<span class="hot-tag">🔥 热门</span>':''}
+                <span style="font-size:56px">${m.icon}</span>
               </div>
-              <div class="ac-desc">${m.desc}</div>
-              <div class="ac-foot">
-                <span>${m.tags.map(t=>`<span class="tag tag-primary" style="margin-right:4px">${t}</span>`).join('')||'<span class="tag tag-gray">-</span>'}</span>
-                <span>${m.users}用户 · ★${m.rating}</span>
+              <div class="ai-big-card-body">
+                <div class="ai-big-card-name">${m.name}</div>
+                <div class="ai-big-card-meta">${m.cat} · ${m.users}人使用 · ★${m.rating}</div>
               </div>
-              ${m.templated?`<button class="btn btn-sm btn-primary" style="width:100%;margin-top:10px" onclick="event.stopPropagation();createReqFromTemplate('${m.id}')">基于模板创建</button>`:''}
             </div>`).join('')}
         </div>
       </div>
     </div>
+    `}
   </div>`;
 }
+function pageMyApp(){ return renderAppCenter('my'); }
+function pageMarket(){ return renderAppCenter('market'); }
 
 /* ============ 审核管理 ============ */
 function pageAudit(){
   return `
   <div class="page">
     <div class="page-head"><div><div class="page-title">审核列表</div><div class="page-sub">待您审核的需求与发布申请</div></div></div>
-    <div class="stat-grid">
-      <div class="stat-card"><div class="sc-label">待审核</div><div class="sc-value">${DATA.audits.length}</div></div>
-      <div class="stat-card"><div class="sc-label">本月通过</div><div class="sc-value">${DATA.auditHistory.filter(a=>a.result==='通过').length}</div></div>
-      <div class="stat-card"><div class="sc-label">本月驳回</div><div class="sc-value">${DATA.auditHistory.filter(a=>a.result==='驳回').length}</div></div>
-      <div class="stat-card"><div class="sc-label">平均审核时长</div><div class="sc-value">2.5<span style="font-size:13px;color:var(--text-3)">h</span></div></div>
-    </div>
     <div class="card">
       <div class="card-body" style="padding:0">
         <div class="toolbar" style="padding:14px 18px 0">
@@ -996,17 +1823,16 @@ function pageAudit(){
           <select class="select"><option>全部等级</option><option>L1</option><option>L2</option><option>L3</option></select>
         </div>
         <table class="table" style="margin-top:14px">
-          <thead><tr><th>审核编号</th><th>名称</th><th>类型</th><th>申请人</th><th>等级</th><th>申请日期</th><th>状态</th><th>操作</th></tr></thead>
+          <thead><tr><th style="padding:12px">名称</th><th style="padding:12px">类型</th><th style="padding:12px">申请人</th><th style="padding:12px">等级</th><th style="padding:12px">申请日期</th><th style="padding:12px">状态</th><th style="padding:12px">操作</th></tr></thead>
           <tbody>
             ${DATA.audits.map(a=>`<tr>
-              <td style="font-family:monospace;color:var(--text-3)">${a.id}</td>
-              <td>${a.name}</td>
-              <td>${a.type}</td>
-              <td>${a.applicant}</td>
-              <td>${getStatusTag(a.level)}</td>
-              <td>${a.date}</td>
-              <td>${getStatusTag(a.status)}</td>
-              <td style="white-space:nowrap">
+              <td style="padding:16px 12px"><strong>${a.name}</strong></td>
+              <td style="padding:16px 12px">${a.type}</td>
+              <td style="padding:16px 12px">${a.applicant}</td>
+              <td style="padding:16px 12px">${getStatusTag(a.level)}</td>
+              <td style="padding:16px 12px">${a.date}</td>
+              <td style="padding:16px 12px">${getStatusTag(a.status)}</td>
+              <td style="padding:16px 12px;white-space:nowrap">
                 <button class="btn btn-sm btn-ghost" onclick="openAuditDetail('${a.id}')">详情</button>
                 ${a.status==='待审核'?`
                   <button class="btn btn-sm btn-success" onclick="auditQuickAction('${a.id}','通过')">通过</button>
@@ -1048,13 +1874,7 @@ function pageAuditHistory(){
 function pageCapList(){
   return `
   <div class="page">
-    <div class="page-head"><div><div class="page-title">能力列表</div><div class="page-sub">平台已注册的全部能力</div></div><button class="btn btn-primary" onclick="openModal('注册新能力',\`<div class='form-group'><label class='form-label'>能力名称<span class='req'>*</span></label><input class='form-input' placeholder='如：OCR识别'></div><div class='form-group'><label class='form-label'>类型<span class='req'>*</span></label><select class='form-select'><option>API</option><option>UI组件</option><option>数据服务</option></select></div><div class='form-group'><label class='form-label'>Owner</label><input class='form-input' placeholder='负责部门'></div><div class='form-group'><label class='form-label'>文档URL</label><input class='form-input' placeholder='https://...'></div><div class='form-group'><label class='form-label'>描述</label><textarea class='form-textarea' placeholder='能力说明'></textarea></div>\`,()=>showToast('能力注册成功，已上架','success'))">+ 注册能力</button></div>
-    <div class="stat-grid">
-      <div class="stat-card"><div class="sc-label">API能力</div><div class="sc-value">${DATA.capabilities.filter(c=>c.type==='API').length}</div></div>
-      <div class="stat-card"><div class="sc-label">UI组件</div><div class="sc-value">${DATA.capabilities.filter(c=>c.type==='UI组件').length}</div></div>
-      <div class="stat-card"><div class="sc-label">数据服务</div><div class="sc-value">${DATA.capabilities.filter(c=>c.type==='数据服务').length}</div></div>
-      <div class="stat-card"><div class="sc-label">能力缺口</div><div class="sc-value" style="color:var(--danger)">${DATA.capabilities.filter(c=>c.status==='缺口').length}</div></div>
-    </div>
+    <div class="page-head"><div><div class="page-title">能力列表</div></div><button class="btn btn-primary" onclick="openModal('注册新能力',\`<div class='form-group'><label class='form-label'>能力名称<span class='req'>*</span></label><input class='form-input' placeholder='如：OCR识别'></div><div class='form-group'><label class='form-label'>类型<span class='req'>*</span></label><select class='form-select'><option>API</option><option>UI组件</option><option>数据服务</option></select></div><div class='form-group'><label class='form-label'>Owner</label><input class='form-input' placeholder='负责部门'></div><div class='form-group'><label class='form-label'>文档URL</label><input class='form-input' placeholder='https://...'></div><div class='form-group'><label class='form-label'>描述</label><textarea class='form-textarea' placeholder='能力说明'></textarea></div>\`,()=>showToast('能力注册成功，已上架','success'))">+ 注册能力</button></div>
     <div class="card">
       <div class="card-body" style="padding:0">
         <div class="toolbar" style="padding:14px 18px 0">
@@ -1103,23 +1923,16 @@ function toggleCapability(id,action){
 function pageGapOrder(){
   return `
   <div class="page">
-    <div class="page-head"><div><div class="page-title">缺口工单</div><div class="page-sub">能力缺口工单处理</div></div></div>
-    <div class="stat-grid">
-      <div class="stat-card"><div class="sc-label">待处理</div><div class="sc-value" style="color:var(--warning)">${DATA.gaps.filter(g=>g.status==='待处理').length}</div></div>
-      <div class="stat-card"><div class="sc-label">处理中</div><div class="sc-value">${DATA.gaps.filter(g=>g.status==='处理中').length}</div></div>
-      <div class="stat-card"><div class="sc-label">已处理</div><div class="sc-value">${DATA.gaps.filter(g=>g.status==='暂不处理').length}</div></div>
-      <div class="stat-card"><div class="sc-label">平均闭环时长</div><div class="sc-value">3.2<span style="font-size:13px;color:var(--text-3)">天</span></div></div>
-    </div>
+    <div class="page-head"><div><div class="page-title">缺口工单</div></div></div>
     <div class="card">
       <div class="card-body" style="padding:0">
         <table class="table">
-          <thead><tr><th>工单号</th><th>能力名称</th><th>来源</th><th>来源单据</th><th>优先级</th><th>状态</th><th>日期</th><th>操作</th></tr></thead>
+          <thead><tr><th>工单号</th><th>能力名称</th><th>来源</th><th>申请人</th><th>状态</th><th>申请日期</th><th>操作</th></tr></thead>
           <tbody>
             ${DATA.gaps.map(g=>`<tr>
               <td style="font-family:monospace;color:var(--text-3)">${g.id}</td>
               <td>${g.cap}</td><td>${g.source}</td>
-              <td style="font-family:monospace;color:var(--primary)">${g.from}</td>
-              <td>${getStatusTag(g.priority==='高'?'L3':g.priority==='中'?'L2':'L1').replace(g.priority==='高'?'L3':g.priority==='中'?'L2':'L1',g.priority)}</td>
+              <td>${g.applicant||'-'}</td>
               <td>${getStatusTag(g.status)}</td><td>${g.date}</td>
               <td><button class="btn btn-sm btn-ghost" onclick="openGapHandle('${g.id}')">处理</button></td>
             </tr>`).join('')}
@@ -1136,10 +1949,10 @@ function openGapHandle(id){
     <div class="detail-section" style="margin:0">
       <div class="detail-row"><div class="detail-label">工单号</div><div class="detail-value" style="font-family:monospace">${g.id}</div></div>
       <div class="detail-row"><div class="detail-label">能力名称</div><div class="detail-value">${g.cap}</div></div>
-      <div class="detail-row"><div class="detail-label">来源</div><div class="detail-value">${g.source} · <span style="font-family:monospace;color:var(--primary)">${g.from}</span></div></div>
-      <div class="detail-row"><div class="detail-label">优先级</div><div class="detail-value">${getStatusTag(g.priority)}</div></div>
+      <div class="detail-row"><div class="detail-label">来源</div><div class="detail-value">${g.source}</div></div>
+      <div class="detail-row"><div class="detail-label">申请人</div><div class="detail-value">${g.applicant||'-'}</div></div>
       <div class="detail-row"><div class="detail-label">当前状态</div><div class="detail-value">${getStatusTag(g.status)}</div></div>
-      <div class="detail-row"><div class="detail-label">创建日期</div><div class="detail-value">${g.date}</div></div>
+      <div class="detail-row"><div class="detail-label">申请日期</div><div class="detail-value">${g.date}</div></div>
     </div>
     <div class="form-group"><label class="form-label">处理动作<span class="req">*</span></label>
       <select class="form-select" id="gapAction"><option value="处理中">开始处理</option><option value="已封装">完成封装（上线能力）</option><option value="暂不处理">暂不处理</option></select>
@@ -1206,7 +2019,7 @@ function toggleRule(id,action){
 function pageEnvList(){
   return `
   <div class="page">
-    <div class="page-head"><div><div class="page-title">环境列表</div><div class="page-sub">多环境隔离管理</div></div><button class="btn btn-primary" onclick="openEnvAdd()">+ 新增环境</button></div>
+    <div class="page-head"><div><div class="page-title">环境列表</div></div><button class="btn btn-primary" onclick="openEnvAdd()">+ 新增环境</button></div>
     <div class="card">
       <div class="card-body" style="padding:0">
         <table class="table">
@@ -1284,29 +2097,56 @@ function pageOpsDash(){
   </div>`;
 }
 function pageScenePool(){
-  const cols={'待审核':[],'评估中':[],'孵化中':[],'已孵化':[],'暂缓':[],'已驳回':[]};
-  DATA.scenes.forEach(s=>{if(cols[s.status])cols[s.status].push(s)});
+  const hatchedScenes=DATA.scenes.filter(s=>s.status==='已孵化');
   return `
   <div class="page">
-    <div class="page-head"><div><div class="page-title">场景池</div><div class="page-sub">业务场景征集、评估、孵化与模板沉淀</div></div><button class="btn btn-primary" onclick="openSceneCreate()">+ 新建场景</button></div>
-    <div class="kanban">
-      ${Object.keys(cols).map(k=>`
-        <div class="kanban-col">
-          <div class="kanban-col-head"><span class="kanban-col-title">${k}</span><span class="kanban-col-count">${cols[k].length}</span></div>
-          ${cols[k].map(s=>`
-            <div class="kanban-card" onclick="openSceneDetail('${s.id}')">
-              <div class="kc-title">${s.name}</div>
-              <div class="kc-meta"><span>${s.source}</span><span>★${s.score}</span></div>
-              <div class="kc-meta" style="margin-top:4px">
-                <span>${s.date}</span>
-                ${s.templated?'<span class="tag tag-success">已沉淀模板</span>':''}
-                ${s.status==='已孵化'?(s.promoted?'<span class="tag tag-primary">已推广</span>':'<span class="tag tag-gray">未推广</span>'):''}
-                ${s.sourceType==='运营手动新建'?'<span class="tag tag-info">运营新建</span>':''}
-              </div>
-            </div>`).join('')}
-        </div>`).join('')}
+    <div class="page-head"><div><div class="page-title">应用管理</div><div class="page-sub">已孵化应用的推广与下架管理</div></div></div>
+    <div class="card">
+      <div class="card-body" style="padding:0">
+        <div class="toolbar" style="padding:14px 18px 0">
+          <input class="search-input" placeholder="搜索应用名称">
+          <select class="select"><option>全部推广状态</option><option>已推广</option><option>未推广</option><option>已下架</option></select>
+        </div>
+        <table class="table" style="margin-top:14px">
+          <thead><tr><th>应用名称</th><th>创建人</th><th>创建日期</th><th>发布日期</th><th>推广状态</th><th>上下架状态</th><th>可见范围</th><th>操作</th></tr></thead>
+          <tbody>
+            ${hatchedScenes.map(s=>{
+              const promoteDesc=s.promoteScope?(
+                s.promoteScope.type==='全行'?'全行可见':
+                s.promoteScope.type==='指定机构'?'指定机构：'+(s.promoteScope.targets||[]).join('、'):
+                s.promoteScope.type==='指定部门'?'指定部门：'+(s.promoteScope.targets||[]).join('、'):'-'
+              ):'未配置';
+              const offshelf=s.offshelf;
+              return `<tr class="table-row">
+                <td><strong>${s.name}</strong></td>
+                <td>${s.assignee||'-'}</td>
+                <td>${s.date}</td>
+                <td>${s.publishDate||s.date}</td>
+                <td>${offshelf?'<span class="tag tag-gray">已下架</span>':(s.promoted?'<span class="tag tag-primary">已推广</span>':'<span class="tag tag-gray">未推广</span>')}</td>
+                <td>${offshelf?'<span class="tag tag-gray">下架</span>':'<span class="tag tag-success">上架</span>'}</td>
+                <td style="font-size:12px;color:var(--text-2)">${promoteDesc}</td>
+                <td style="white-space:nowrap">
+                  <button class="btn btn-sm btn-ghost" onclick="openSceneDetail('${s.id}')">详情</button>
+                  <button class="btn btn-sm ${s.promoted?'btn-ghost':'btn-primary'}" style="margin-left:6px" onclick="openPromoteConfig('${s.id}')">${s.promoted?'编辑推广':'配置推广'}</button>
+                </td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>`;
+}
+function offshelfScene(id){
+  const s=DATA.scenes.find(x=>x.id===id);
+  if(!s) return;
+  if(!confirm(`确认下架「${s.name}」？下架后将在应用市场不再展示。`)) return;
+  s.offshelf=true;
+  // 同步应用市场移除
+  const m=DATA.market.find(x=>x.name===s.name);
+  if(m){m.offshelf=true;}
+  showToast(`「${s.name}」已下架，应用市场不再展示`,'success');
+  renderPage();
 }
 function openSceneCreate(){
   openModal('新建场景',`
@@ -1343,31 +2183,24 @@ function openSceneDetail(id){
     s.promoteScope.type==='指定岗位'?'指定岗位：'+(s.promoteScope.targets||[]).join('、'):
     s.promoteScope.type==='指定用户'?'指定用户：'+(s.promoteScope.targets||[]).join('、'):'-'
   ):'未配置';
-  openModal('场景详情 · '+s.name,`
-    <div class="detail-section" style="margin:0">
-      <div class="detail-row"><div class="detail-label">场景编号</div><div class="detail-value" style="font-family:monospace">${s.id}</div></div>
-      <div class="detail-row"><div class="detail-label">场景名称</div><div class="detail-value"><strong>${s.name}</strong></div></div>
-      <div class="detail-row"><div class="detail-label">来源</div><div class="detail-value">${s.source}</div></div>
-      <div class="detail-row"><div class="detail-label">来源类型</div><div class="detail-value">${s.sourceType==='运营手动新建'?'<span class="tag tag-info">运营手动新建</span>':'<span class="tag tag-gray">需求方创建</span>'}</div></div>
-      <div class="detail-row"><div class="detail-label">当前状态</div><div class="detail-value">${getStatusTag(s.status)}</div></div>
-      <div class="detail-row"><div class="detail-label">评分</div><div class="detail-value">★ ${s.score}</div></div>
-      <div class="detail-row"><div class="detail-label">征集日期</div><div class="detail-value">${s.date}</div></div>
-      <div class="detail-row"><div class="detail-label">描述</div><div class="detail-value">${s.desc}</div></div>
-      ${isRejected?`<div class="detail-row"><div class="detail-label">驳回原因</div><div class="detail-value" style="color:var(--danger)">${s.rejectReason||'-'}</div></div>`:''}
-      ${isSuspended?`<div class="detail-row"><div class="detail-label">暂缓原因</div><div class="detail-value" style="color:var(--warning)">${s.suspendReason||'-'}</div></div>`:''}
-      ${s.assignee?`<div class="detail-row"><div class="detail-label">责任人</div><div class="detail-value"><span class="tag tag-info">${s.assignee}</span></div></div>`:''}
-      ${isHatched?`<div class="detail-row"><div class="detail-label">关联应用</div><div class="detail-value">${linkedApp?`<span class="tag tag-info">${linkedApp.id}</span> ${linkedApp.name} · ${linkedApp.ver||'v1.0.0'}`:'<span class="tag tag-gray">未关联</span>'}</div></div>
-      <div class="detail-row"><div class="detail-label">是否沉淀模板</div><div class="detail-value">${s.templated?'<span class="tag tag-success">已沉淀模板</span>':'<span class="tag tag-gray">未沉淀</span>'}</div></div>
-      <div class="detail-row"><div class="detail-label">推广状态</div><div class="detail-value">${s.promoted?'<span class="tag tag-primary">已推广</span>':'<span class="tag tag-gray">未推广</span>'}</div></div>
-      <div class="detail-row"><div class="detail-label">可见范围</div><div class="detail-value">${promoteDesc}</div></div>`:''}
+  $('#drawerTitle').textContent='应用详情 · '+s.name;
+  $('#drawerBody').innerHTML=`
+    <div class="detail-section">
+      <div class="detail-row"><div class="detail-label">应用名称</div><div class="detail-value"><strong>${s.name}</strong></div></div>
+      <div class="detail-row"><div class="detail-label">当前状态</div><div class="detail-value">${getStatusTag(s.offshelf?'已下架':s.status)}</div></div>
+      <div class="detail-row"><div class="detail-label">创建日期</div><div class="detail-value">${s.date}</div></div>
+      <div class="detail-row"><div class="detail-label">发布日期</div><div class="detail-value">${s.publishDate||s.date}</div></div>
+      <div class="detail-row"><div class="detail-label">创建人</div><div class="detail-value">${s.assignee||'-'}</div></div>
+      <div class="detail-row"><div class="detail-label">推广状态</div><div class="detail-value">${s.offshelf?'<span class="tag tag-gray">已下架</span>':(s.promoted?'<span class="tag tag-primary">已推广</span>':'<span class="tag tag-gray">未推广</span>')}</div></div>
+      <div class="detail-row"><div class="detail-label">上下架状态</div><div class="detail-value">${s.offshelf?'<span class="tag tag-gray">下架</span>':'<span class="tag tag-success">上架</span>'}</div></div>
+      <div class="detail-row"><div class="detail-label">可见范围</div><div class="detail-value">${promoteDesc}</div></div>
     </div>
-    <div style="display:flex;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border-light)">
-      ${isAssessing?`<button class="btn btn-primary" onclick="openAssignOwner('${s.id}')">${s.assignee?'重新分配责任人':'分配责任人'}</button>`:''}
-      ${isHatched?`
-        <button class="btn ${s.templated?'btn-ghost':'btn-primary'}" onclick="toggleSceneTemplate('${s.id}')">${s.templated?'取消沉淀模板':'沉淀为模板'}</button>
-        <button class="btn ${s.promoted?'btn-ghost':'btn-primary'}" onclick="openPromoteConfig('${s.id}')">${s.promoted?'编辑推广配置':'应用推广'}</button>
-      `:''}
-    </div>`,null,true);
+  `;
+  $('#drawerFoot').innerHTML=`
+    <button class="btn" onclick="closeDrawer()">关闭</button>
+    ${isHatched?`<button class="btn btn-primary" onclick="openAppPreview()">📱 预览应用</button>`:''}
+  `;
+  openDrawer();
 }
 /* 分配责任人：选择人员后在对应人员需求池新增需求澄清状态的需求 */
 function openAssignOwner(id){
@@ -1428,7 +2261,6 @@ function toggleSceneTemplate(id){
   const s=DATA.scenes.find(x=>x.id===id);
   if(!s) return;
   s.templated=!s.templated;
-  // 同步关联应用市场模板状态
   if(s.linkedApp){
     const m=DATA.market.find(x=>x.id===s.linkedApp);
     if(m) m.templated=s.templated;
@@ -1436,6 +2268,14 @@ function toggleSceneTemplate(id){
   showToast(s.templated?'已沉淀为模板，客户经理应用市场将展示模板标签与创建入口':'已取消沉淀模板','success');
   closeModal();
   setTimeout(()=>openSceneDetail(id),100);
+}
+function openAppPreview(){
+  const scene=AI_SCENES.visit;
+  openModal('应用预览',`
+    <div style="padding:16px 4px">
+      ${renderInteractivePreview(scene)}
+    </div>`,null,true);
+  $('#modalFoot').innerHTML=`<button class="btn" onclick="closeModal()">关闭</button>`;
 }
 /* ============ 应用推广配置（组织树选择） ============ */
 const PROMOTE_SCOPES=['全行','指定机构','指定部门','指定岗位','指定用户'];
@@ -1450,16 +2290,16 @@ function openPromoteConfig(id){
   if(!s) return;
   const cur=s.promoteScope||{type:'全行',targets:[]};
   openModal('应用推广 · '+s.name,`
-    <div style="background:#F7F8FA;padding:12px;border-radius:6px;margin-bottom:14px;font-size:12px;color:var(--text-2);line-height:1.8">
-      📢 配置推广后，关联应用将根据可见范围显示在对应角色的<strong>公共能力市场</strong>中，供其安装使用。
+    <div style="background:var(--primary-light);padding:12px;border-radius:6px;margin-bottom:14px;font-size:12px;color:var(--text-2);line-height:1.8">
+      📢 配置推广后，关联应用将根据可见范围显示在对应角色的<strong>应用市场</strong>中，供其安装使用。
     </div>
     <div class="form-group">
       <label class="form-label">可见范围类型<span class="req">*</span></label>
       <div style="display:flex;gap:8px;flex-wrap:wrap" id="promoteScopeTypes">
-        ${PROMOTE_SCOPES.map(t=>`<label style="display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text-2);padding:6px 12px;border:1px solid var(--border-light);border-radius:6px;cursor:pointer" class="promote-type ${cur.type===t?'active':''}" data-type="${t}"><input type="radio" name="promoteType" value="${t}" ${cur.type===t?'checked':''} style="display:none"> ${t}</label>`).join('')}
+        ${PROMOTE_SCOPES.map(t=>`<label style="display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--text-2);padding:6px 12px;border:1px solid var(--border-light);border-radius:6px;cursor:pointer;white-space:nowrap" class="promote-type ${cur.type===t?'active':''}" data-type="${t}"><input type="radio" name="promoteType" value="${t}" ${cur.type===t?'checked':''} style="display:none"> ${t}</label>`).join('')}
       </div>
     </div>
-    <div class="form-group" id="promoteTargetsWrap">
+    <div class="form-group" id="promoteTargetsWrap" style="min-height:0">
       ${renderPromoteTargets(cur.type,cur.targets||[])}
     </div>
     <div class="form-group">
@@ -1475,10 +2315,13 @@ function openPromoteConfig(id){
     s.promoted=true;
     s.promoteScope={type,targets};
     s.promoteNote=$('#promoteNote').value.trim();
-    showToast(`推广配置已保存，应用已发布到${type==='全行'?'全行':type+'的'}公共能力市场`,'success');
+    showToast(`推广配置已保存，应用已发布到${type==='全行'?'全行':type+'的'}应用市场`,'success');
     closeModal();
     setTimeout(()=>openSceneDetail(id),100);
   });
+  // 加宽弹窗，避免字段被截
+  const modal=document.querySelector('.modal');
+  if(modal){modal.style.maxWidth='680px';}
   // 类型切换交互
   setTimeout(()=>{
     document.querySelectorAll('.promote-type').forEach(label=>{
@@ -1499,18 +2342,18 @@ function openPromoteConfig(id){
 }
 function renderPromoteTargets(type,selected){
   if(type==='全行'){
-    return `<div style="background:#F0F9EB;padding:10px 12px;border-radius:6px;font-size:12px;color:var(--success)">✓ 全行所有角色均可在公共能力市场看到该应用</div>`;
+    return `<div style="background:#F0F9EB;padding:10px 12px;border-radius:6px;font-size:12px;color:var(--success)">✓ 全行所有角色均可在应用市场看到该应用</div>`;
   }
   const opts=ORG_TREE[type]||[];
   return `
     <label class="form-label">${type}<span class="req">*</span></label>
-    <div style="background:#F7F8FA;border-radius:6px;padding:12px;max-height:220px;overflow-y:auto">
+    <div style="background:var(--bg-page);border-radius:6px;padding:12px;max-height:240px;overflow-y:auto;display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px">
       ${opts.map(o=>`
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2);padding:5px 0;cursor:pointer">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2);padding:5px 0;cursor:pointer;white-space:nowrap">
           <input type="checkbox" class="org-check" value="${o}" ${selected.includes(o)?'checked':''}> ${o}
         </label>`).join('')}
     </div>
-    <div style="font-size:11px;color:var(--text-3);margin-top:6px">已选 ${selected.length} 项 · 勾选后对应角色将在公共能力市场看到该应用</div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:6px">已选 ${selected.length} 项 · 勾选后对应角色将在应用市场看到该应用</div>
   `;
 }
 function openSceneAssess(id){
@@ -2189,50 +3032,59 @@ function createReqFromTemplate(id){
 function openAuditDetail(id){
   const a=DATA.audits.find(x=>x.id===id);
   if(!a) return;
-  const req=DATA.requirements.find(r=>r.name===a.name)||DATA.requirements[0];
+  const isPending=a.status==='待审核';
+  const isPassed=a.status==='已通过';
+  const isRejected=a.status==='已驳回';
+  const canPreview=(a.type==='发布审核'||a.type==='下线审核'||a.type==='需求审核');
+  const logs=a.auditLogs||[];
   $('#drawerTitle').textContent='审核详情 · '+a.name;
   $('#drawerBody').innerHTML=`
     <div class="detail-section">
       <div class="detail-section-title">申请信息</div>
-      <div class="detail-row"><div class="detail-label">审核编号</div><div class="detail-value" style="font-family:monospace">${a.id}</div></div>
       <div class="detail-row"><div class="detail-label">名称</div><div class="detail-value">${a.name}</div></div>
       <div class="detail-row"><div class="detail-label">类型</div><div class="detail-value">${a.type}</div></div>
       <div class="detail-row"><div class="detail-label">申请人</div><div class="detail-value">${a.applicant}</div></div>
       <div class="detail-row"><div class="detail-label">等级</div><div class="detail-value">${getStatusTag(a.level)}</div></div>
       <div class="detail-row"><div class="detail-label">申请日期</div><div class="detail-value">${a.date}</div></div>
+      <div class="detail-row"><div class="detail-label">审核状态</div><div class="detail-value">${getStatusTag(a.status)}</div></div>
     </div>
-    ${req?`<div class="detail-section">
-      <div class="detail-section-title">需求卡摘要</div>
-      <div class="detail-row"><div class="detail-label">业务目标</div><div class="detail-value">${req.desc}</div></div>
-      <div class="detail-row"><div class="detail-label">目标用户</div><div class="detail-value">${req.user}</div></div>
-      <div class="detail-row"><div class="detail-label">功能范围</div><div class="detail-value">${req.scope.map(s=>`<span class="tag tag-primary" style="margin-right:4px">${s}</span>`).join('')}</div></div>
-      <div class="detail-row"><div class="detail-label">数据字段</div><div class="detail-value">${req.fields.map(f=>`<span class="tag tag-gray" style="margin-right:4px">${f}</span>`).join('')}</div></div>
-    </div>`:''}
-    ${a.type==='发布审核'?`<div class="detail-section">
-      <div class="detail-section-title">测试报告</div>
-      ${[['单元测试','通过'],['安全扫描','通过'],['依赖检查','通过'],['密钥检测','通过'],['数据隔离','通过']].map(t=>`<div class="detail-row"><div class="detail-label">${t[0]}</div><div class="detail-value"><span class="tag tag-success">${t[1]}</span></div></div>`).join('')}
-    </div>`:''}
-    <div class="detail-section">
-      <div class="detail-section-title">审核要点</div>
-      <div style="background:#FFF7E8;padding:12px;border-radius:6px;font-size:12px;line-height:1.8;color:var(--text-2)">
-        ${a.type==='需求审核'?'• 业务目标是否合理<br>• 使用范围是否适当<br>• 是否涉及敏感信息<br>• 等级判定是否正确':'• 测试报告是否完整<br>• 权限声明是否清晰<br>• 功能验收是否通过<br>• L1应用是否完成自验'}
-      </div>
-    </div>
-    <div class="detail-section">
+    ${isPending?`<div class="detail-section">
       <div class="detail-section-title">审核意见</div>
-      <textarea class="form-textarea" id="auditNote" placeholder="请输入审核意见（驳回/暂缓时必填）" style="width:100%"></textarea>
-    </div>`;
-  // 暂缓状态：可选择通过或驳回
-  const isSuspended=a.status==='已暂缓';
+      <textarea class="form-textarea" id="auditNote" placeholder="请输入审核意见（驳回时必填）" style="width:100%"></textarea>
+    </div>`:''}
+    ${(isPassed||isRejected)&&logs.length?`<div class="detail-section">
+      <div class="detail-section-title">审核记录</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        ${logs.map((log, idx)=>`
+          <div style="border:1px solid var(--border-light);border-radius:10px;padding:14px 16px;background:#FAFBFC">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="width:28px;height:28px;border-radius:50%;background:${log.result==='通过'?'#F0FDF4':'#FEF2F2'};display:flex;align-items:center;justify-content:center;font-size:14px">${log.result==='通过'?'✓':'✕'}</span>
+                <span style="font-weight:600;color:var(--text-1)">${log.result}</span>
+                <span class="tag ${log.result==='通过'?'tag-success':'tag-danger'}">${log.result}</span>
+              </div>
+              <span style="font-size:12px;color:var(--text-3)">第 ${idx+1} 次</span>
+            </div>
+            <div style="display:flex;gap:20px;font-size:12px;color:var(--text-2);margin-bottom:8px">
+              <div><span style="color:var(--text-3)">审核人：</span>${log.auditor}</div>
+              <div><span style="color:var(--text-3)">审核时间：</span>${log.time}</div>
+            </div>
+            ${log.note?`<div style="font-size:12px;color:var(--text-2);line-height:1.7;padding:8px 10px;background:#fff;border-radius:6px;border-left:3px solid ${log.result==='通过'?'#10B981':'#EF4444'}">${log.note}</div>`:''}
+          </div>
+        `).join('')}
+      </div>
+    </div>`:''}
+  `;
   $('#drawerFoot').innerHTML=`
-    <button class="btn" onclick="closeDrawer()">取消</button>
-    ${isSuspended?`
-      <button class="btn btn-danger" onclick="auditAction('${a.id}','驳回')">驳回</button>
+    ${isPending?`
       <button class="btn btn-success" onclick="auditAction('${a.id}','通过')">通过</button>
+      <button class="btn btn-danger" onclick="auditAction('${a.id}','驳回')">驳回</button>
+      <button class="btn" onclick="closeDrawer()">关闭</button>
+    `:isPassed?`
+      ${canPreview?`<button class="btn btn-ghost" onclick="previewAuditApp('${a.id}')">👁 预览应用</button>`:''}
+      <button class="btn" onclick="closeDrawer()">关闭</button>
     `:`
-      <button class="btn btn-warning" onclick="auditAction('${a.id}','暂缓')">暂缓</button>
-      <button class="btn btn-danger" onclick="auditAction('${a.id}','驳回')">驳回</button>
-      <button class="btn btn-success" onclick="auditAction('${a.id}','通过')">通过</button>
+      <button class="btn" onclick="closeDrawer()">关闭</button>
     `}
   `;
   openDrawer();
@@ -2240,17 +3092,21 @@ function openAuditDetail(id){
 function auditAction(id,result){
   const noteEl=$('#auditNote');
   const note=noteEl?noteEl.value:'';
-  if((result==='驳回'||result==='暂缓')&&!note){showToast(result+'时必须填写审核意见','error');return}
+  if(result==='驳回'&&!note){showToast('驳回时必须填写审核意见','error');return}
   const a=DATA.audits.find(x=>x.id===id);
   if(a){
-    if(result==='暂缓'){
-      a.status='已暂缓';
-      a.suspendReason=note;
-    }else{
-      a.status=result==='通过'?'已通过':'已驳回';
-      a.auditNote=note;
-    }
-    // 同步关联需求状态
+    a.status=result==='通过'?'已通过':'已驳回';
+    a.auditNote=note;
+    // 记录审核日志（支持多条）
+    if(!a.auditLogs) a.auditLogs=[];
+    const now=new Date();
+    const pad=n=>String(n).padStart(2,'0');
+    a.auditLogs.push({
+      result:result,
+      auditor:currentRole==='owner'?'张明远':'当前管理员',
+      time:`2024-08-0${6} ${pad(now.getHours())}:${pad(now.getMinutes())}`,
+      note:note||'审核通过'
+    });
     const req=DATA.requirements.find(r=>r.name===a.name);
     if(req){
       if(result==='通过'){
@@ -2276,14 +3132,124 @@ function auditAction(id,result){
         }
       }else if(result==='驳回'){
         rejectAudit(req.id,note);
-      }else if(result==='暂缓'){
-        suspendAudit(req.id,note);
       }
     }
   }
   closeDrawer();
-  showToast(`审核${result} · 已通知申请人`,result==='通过'?'success':result==='驳回'?'error':'warning');
+  showToast(`审核${result} · 已通知申请人`,result==='通过'?'success':'error');
   renderPage();
+}
+/* 发布/下线审核 - 预览小程序应用 */
+/* 可交互小程序预览（单页面，列表可点击进详情） */
+let iaPreviewItems=[];
+function iaGoDetail(i){
+  const it=iaPreviewItems[i];
+  if(!it) return;
+  const detailBody=document.getElementById('iaDetailBody');
+  if(!detailBody) return;
+  detailBody.innerHTML=
+    '<div style="background:#fff;border-radius:14px;padding:18px;margin-bottom:12px">'+
+      '<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">'+
+        '<div style="width:52px;height:52px;border-radius:14px;background:'+it.color+';display:flex;align-items:center;justify-content:center;font-size:26px">'+it.icon+'</div>'+
+        '<div>'+
+          '<div style="font-size:16px;font-weight:700;color:#1D2129">'+it.name+'</div>'+
+          '<div style="font-size:12px;color:#9CA3AF;margin-top:3px">'+it.sub+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:6px;margin-bottom:14px">'+
+        '<span style="font-size:11px;padding:3px 10px;border-radius:6px;background:#F0F5FF;color:#1A66FF">已拜访</span>'+
+        '<span style="font-size:11px;padding:3px 10px;border-radius:6px;background:#F0FDF4;color:#166534">续贷沟通</span>'+
+      '</div>'+
+    '</div>'+
+    '<div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:12px">'+
+      '<div style="font-size:13px;font-weight:600;color:#1D2129;margin-bottom:12px">拜访信息</div>'+
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F5F5;font-size:12px"><span style="color:#9CA3AF">拜访时间</span><span style="color:#1D2129">2024-08-06 10:30</span></div>'+
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F5F5;font-size:12px"><span style="color:#9CA3AF">拜访类型</span><span style="color:#1D2129">存量回访</span></div>'+
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F5F5;font-size:12px"><span style="color:#9CA3AF">联系人</span><span style="color:#1D2129">张总</span></div>'+
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:12px"><span style="color:#9CA3AF">联系电话</span><span style="color:#1A66FF">138****6688</span></div>'+
+    '</div>'+
+    '<div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:12px">'+
+      '<div style="font-size:13px;font-weight:600;color:#1D2129;margin-bottom:10px">沟通内容</div>'+
+      '<div style="font-size:12px;color:#6B7280;line-height:1.7">客户对续贷方案表示认可，预计下周提交贷款申请材料，需提前准备企业近两年财务报表和纳税证明。</div>'+
+    '</div>'+
+    '<div style="background:#fff;border-radius:14px;padding:16px">'+
+      '<div style="font-size:13px;font-weight:600;color:#1D2129;margin-bottom:12px">后续事项</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:#6B7280"><span style="color:#10B981">✓</span> 准备续贷申请材料</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:#6B7280"><span style="color:#10B981">✓</span> 下周回访确认</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:#6B7280"><span style="color:#D1D5DB">○</span> 跟进财务报表收集</div>'+
+    '</div>';
+  document.getElementById('iaListPage').style.display='none';
+  document.getElementById('iaDetailPage').style.display='flex';
+}
+function iaBackList(){
+  const dp=document.getElementById('iaDetailPage');
+  const lp=document.getElementById('iaListPage');
+  if(dp) dp.style.display='none';
+  if(lp) lp.style.display='flex';
+}
+function renderInteractivePreview(scene){
+  const listItems=scene.pages[0].items;
+  iaPreviewItems=listItems;
+  return `
+  <div style="display:flex;justify-content:center">
+    <div style="width:320px;height:600px;background:#1D2129;border-radius:36px;padding:10px;box-shadow:0 16px 48px rgba(0,0,0,.18);position:relative">
+      <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:100px;height:24px;background:#1D2129;border-radius:0 0 14px 14px;z-index:2"></div>
+      <div style="width:100%;height:100%;background:#F7F8FA;border-radius:26px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="padding:14px 20px 6px;display:flex;justify-content:space-between;font-size:12px;color:#333;font-weight:600">
+          <span>9:41</span><span>📶 🔋</span>
+        </div>
+        <div id="iaListPage" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+          <div style="padding:8px 16px 12px">
+            <div style="font-size:18px;font-weight:700;color:#1D2129">${scene.name}</div>
+            <div style="font-size:11px;color:#9CA3AF;margin-top:2px">共 ${listItems.length} 条记录</div>
+          </div>
+          <div style="margin:0 16px 12px;background:#fff;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF">
+            <span>🔍</span><span>搜索客户</span>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:0 16px 16px">
+            ${listItems.map((it,i)=>`
+              <div onclick="iaGoDetail(${i})" style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.15s;border:1px solid transparent" onmouseover="this.style.borderColor='#1A66FF'" onmouseout="this.style.borderColor='transparent'">
+                <div style="width:44px;height:44px;border-radius:12px;background:${it.color};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${it.icon}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:14px;font-weight:600;color:#1D2129;margin-bottom:3px">${it.name}</div>
+                  <div style="font-size:11px;color:#9CA3AF">${it.sub}</div>
+                </div>
+                <span style="color:#C9CDD4;font-size:14px">›</span>
+              </div>
+            `).join('')}
+          </div>
+          <div style="display:flex;border-top:1px solid #F0F0F0;background:#fff;padding:8px 0">
+            ${scene.tabs.map((t,i)=>`<div style="flex:1;text-align:center;padding:6px 0;font-size:11px;color:${i===0?'#1A66FF':'#9CA3AF'};font-weight:${i===0?'600':'400'}">
+              <div style="font-size:16px;margin-bottom:2px">${['📋','➕','📊','👤'][i]||'📄'}</div>${t}
+            </div>`).join('')}
+          </div>
+        </div>
+        <div id="iaDetailPage" style="flex:1;display:none;flex-direction:column;overflow:hidden">
+          <div style="padding:8px 16px 12px;display:flex;align-items:center;gap:12px">
+            <span onclick="iaBackList()" style="font-size:20px;color:#1A66FF;cursor:pointer">‹</span>
+            <div style="font-size:16px;font-weight:600;color:#1D2129">拜访详情</div>
+          </div>
+          <div id="iaDetailBody" style="flex:1;overflow-y:auto;padding:0 16px 16px"></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function previewAuditApp(id){
+  const a=DATA.audits.find(x=>x.id===id);
+  if(!a) return;
+  let sceneKey='default';
+  if(a.name.includes('拜访'))sceneKey='visit';
+  else if(a.name.includes('活动')||a.name.includes('报名'))sceneKey='event';
+  else if(a.name.includes('理财'))sceneKey='finance';
+  else if(a.name.includes('满意度')||a.name.includes('调查'))sceneKey='survey';
+  const scene=AI_SCENES[sceneKey]||AI_SCENES.default;
+  closeDrawer();
+  openModal('应用预览',`
+    <div style="padding:16px 4px">
+      ${renderInteractivePreview(scene)}
+    </div>`,null,true);
+  $('#modalFoot').innerHTML=`<button class="btn" onclick="closeModal()">关闭</button>`;
 }
 /* 列表页快捷通过/驳回（带确认） */
 function auditQuickAction(id,result){
@@ -2295,21 +3261,33 @@ function auditQuickAction(id,result){
     }
   }else{
     openModal('驳回审核 · '+a.name,`
-      <div class="detail-section" style="margin:0 0 14px">
-        <div class="detail-row"><div class="detail-label">审核编号</div><div class="detail-value" style="font-family:monospace">${a.id}</div></div>
+      <div class="detail-section" style="margin:0 0 18px">
         <div class="detail-row"><div class="detail-label">名称</div><div class="detail-value">${a.name}</div></div>
         <div class="detail-row"><div class="detail-label">类型</div><div class="detail-value">${a.type}</div></div>
+        <div class="detail-row"><div class="detail-label">申请人</div><div class="detail-value">${a.applicant}</div></div>
       </div>
-      <div style="background:#FFF7E8;padding:10px 12px;border-radius:6px;margin-bottom:14px;font-size:12px;color:var(--text-2)">⚠️ 驳回将通知申请人，请填写驳回原因</div>
-      <textarea class="form-textarea" id="quickRejectNote" placeholder="请输入驳回原因" style="width:100%"></textarea>
+      <div class="form-group">
+        <label class="form-label">驳回原因<span class="req">*</span></label>
+        <textarea class="form-textarea" id="quickRejectNote" placeholder="请输入驳回原因..." style="width:100%;min-height:90px"></textarea>
+      </div>
     `,()=>{
-      const note=$('#quickRejectNote').value;
+      const note=$('#quickRejectNote').value.trim();
       if(!note){showToast('请填写驳回原因','error');return false}
       // 直接调用 rejectAudit 的同步逻辑
       const req=DATA.requirements.find(r=>r.name===a.name);
       if(req) rejectAudit(req.id,note);
       a.status='已驳回';
       a.auditNote=note;
+      // 记录审核日志
+      if(!a.auditLogs) a.auditLogs=[];
+      const now=new Date();
+      const pad=n=>String(n).padStart(2,'0');
+      a.auditLogs.push({
+        result:'驳回',
+        auditor:currentRole==='owner'?'张明远':'当前管理员',
+        time:`2024-08-06 ${pad(now.getHours())}:${pad(now.getMinutes())}`,
+        note:note
+      });
       renderPage();
       showToast('审核驳回 · 已通知申请人','error');
     });
@@ -2328,6 +3306,9 @@ function openModal(title,body,confirmFn,hideFooter){
     $('#modalFoot').innerHTML=`<button class="btn" onclick="closeModal()">取消</button><button class="btn btn-primary" id="modalConfirmBtn">确定</button>`;
     $('#modalConfirmBtn').onclick=()=>{const res=confirmFn?confirmFn():null;if(res!==false)closeModal();};
   }
+  // 重置弹窗宽度和样式，避免上次设置的残留
+  const modal=document.querySelector('.modal');
+  if(modal){modal.style.maxWidth='';modal.style.width='';const mb=modal.querySelector('.modal-body');if(mb)mb.style.padding='';}
   $('#modalMask').classList.add('open');
 }
 function closeModal(){$('#modalMask').classList.remove('open')}
@@ -2347,11 +3328,21 @@ function toggleAI(){
   const p=$('#aiPanel');
   if(p.classList.contains('open')){
     p.classList.remove('open');
+    p.style.display='none';
     aiModifyApp=null; // 关闭时重置修改模式
     aiEditTargetReq=null; // 关闭时重置编辑模式
   }else{
+    p.style.display='flex';
     p.classList.add('open');
     if(!aiModifyApp && !aiEditTargetReq && !$('#aiBody').innerHTML) initAI();
+  }
+}
+function openAIAssistant(){
+  const p=$('#aiPanel');
+  if(p){
+    p.style.display='flex';
+    p.classList.add('open');
+    if(!$('#aiBody').innerHTML) initAI();
   }
 }
 function initAI(){
@@ -2367,7 +3358,7 @@ function quickAsk(q){
   sendAI();
 }
 /* AI发送路由：修改模式走修改流程，普通模式走创建流程 */
-function aiSend(){
+function aiPanelSend(){
   if(aiModifyApp){sendAIModify()}else{sendAI()}
 }
 function sendAI(){
