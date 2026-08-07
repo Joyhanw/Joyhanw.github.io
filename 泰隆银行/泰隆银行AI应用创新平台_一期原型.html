@@ -1367,44 +1367,27 @@ function renderCanvasLoading(){
     <div class="ai-canvas-loading-step">${steps[currentStep]||steps[0]}</div>
   </div>`;
 }
-const AI_CODE_LINES=[
-  ['<span class="cmt">// 解析用户需求...</span>',
-   '<span class="kw">const</span> <span class="var">intent</span> = <span class="fn">parseIntent</span>( userInput );',
-   '<span class="kw">const</span> <span class="var">modules</span> = <span class="fn">extractModules</span>( <span class="var">intent</span> );'],
-  ['<span class="cmt">// 分析业务场景...</span>',
-   '<span class="kw">const</span> <span class="var">scene</span> = <span class="fn">analyzeScene</span>( <span class="var">intent</span> );',
-   '<span class="kw">const</span> <span class="var">pages</span> = <span class="fn">planPages</span>( <span class="var">scene</span> );'],
-  ['<span class="cmt">// 匹配平台能力...</span>',
-   '<span class="kw">import</span> { <span class="fn">CustomerAPI</span> } <span class="kw">from</span> <span class="str">\'@tlplatform/caps\'</span>;',
-   '<span class="kw">import</span> { <span class="fn">MapService</span> } <span class="kw">from</span> <span class="str">\'@tlplatform/caps\'</span>;'],
-  [],
-  ['<span class="cmt">// 生成页面组件...</span>',
-   '<span class="kw">const</span> <span class="var">PageList</span> = <span class="fn">createPage</span>(<span class="str">"list"</span>, { api: <span class="fn">CustomerAPI</span> });',
-   '<span class="kw">const</span> <span class="var">PageForm</span> = <span class="fn">createPage</span>(<span class="str">"form"</span>, { fields: [...] });',
-   '<span class="kw">const</span> <span class="var">PageReport</span> = <span class="fn">createPage</span>(<span class="str">"report"</span>, {});'],
-  ['<span class="cmt">// 组装小程序...</span>',
-   '<span class="fn">App</span>.<span class="fn">register</span>(<span class="str">"page-list"</span>, <span class="var">PageList</span>);',
-   '<span class="fn">App</span>.<span class="fn">register</span>(<span class="str">"page-form"</span>, <span class="var">PageForm</span>);',
-   '<span class="fn">App</span>.<span class="fn">build</span>(); <span class="cmt ok">// ✓ 构建完成</span>'],
+const AI_GEN_STEPS=[
+  '解析用户需求...',
+  '分析业务场景...',
+  '匹配平台能力...',
+  '',  // step 3 由缺口逻辑处理
+  '生成页面组件...',
+  '组装小程序...',
 ];
 function appendCodeLines(step,gaps){
-  let lines;
+  let text;
   if(step===3){
     if(gaps&&gaps.length>0){
-      lines=[
-        '<span class="cmt warn">// ⚠️ 检测到能力缺口：'+gaps.join('、')+'</span>',
-        '<span class="kw">const</span> <span class="var">gapOrder</span> = <span class="fn">createGapOrder</span>(<span class="str">"'+gaps[0]+'"</span>);',
-        '<span class="cmt">// 生成缺口工单，待确认是否发送至科技部...</span>',
-      ];
+      text='检测到能力缺口：'+gaps.join('、')+'，正在生成缺口工单...';
     }else{
-      lines=['<span class="cmt ok">// ✓ 能力匹配完成，无缺口</span>'];
+      text='能力匹配完成，无缺口。';
     }
   }else{
-    lines=AI_CODE_LINES[step]||[];
+    text=AI_GEN_STEPS[step]||'';
   }
-  if(lines.length>0){
-    const html=lines.map(l=>`<div class="ai-code-line">${l}</div>`).join('');
-    aiState.chatMsgs.push({role:'bot',type:'code',text:html});
+  if(text){
+    aiState.chatMsgs.push({role:'bot',text:text});
   }
 }
 function scrollChatToBottom(){
@@ -1478,7 +1461,7 @@ function aiSend(){
   aiState.codeLines=[];
   aiState.gapNotify=null;
   aiState.gapSent=false;
-  aiState.chatMsgs=[{role:'bot',text:'你好！我是AI助手，告诉我你想做什么，我帮你直接生成业务应用。'},{role:'user',text},{role:'bot',text:'好的，正在为你生成应用，代码生成过程如下：'}];
+  aiState.chatMsgs=[{role:'bot',text:'你好！我是AI助手，告诉我你想做什么，我帮你直接生成业务应用。'},{role:'user',text},{role:'bot',text:'好的，正在为你生成应用：'}];
   renderPage();
   let scene='default',caps=[],gaps=[];
   if(text.includes('拜访')||text.includes('客户')){
@@ -1780,12 +1763,14 @@ function aiCopyMarket(id){
   else if(m.name.includes('活动')||m.name.includes('报名'))sceneKey='event';
   else if(m.name.includes('理财'))sceneKey='finance';
   else if(m.name.includes('满意度')||m.name.includes('调查'))sceneKey='survey';
+  currentPage='home';
   aiState.view='detail';
   aiState.result={scene:sceneKey,caps:[],gaps:[],gapSent:true};
   aiState.currentApp={id:'COPY-'+Date.now(),name:m.name+' (副本)',ver:'v1.0.0',status:'编辑中',icon:m.icon,color:m.level==='L1'?'#00B42A':m.level==='L2'?'#FF7D00':'#1A66FF',desc:m.desc};
   aiState.editing=false;
   aiState.chatOpen=true;
   aiState.chatMsgs=[{role:'bot',text:`已从「${m.name}」复制，你可以在画布中继续修改，或点击右上角"发布"。`}];
+  renderSidebar();
   renderPage();
 }
 
