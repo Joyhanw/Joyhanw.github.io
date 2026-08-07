@@ -1819,15 +1819,13 @@ function pageAudit(){
       <div class="card-body" style="padding:0">
         <div class="toolbar" style="padding:14px 18px 0">
           <input class="search-input" placeholder="搜索名称或申请人">
-          <select class="select"><option>全部类型</option><option>需求审核</option><option>发布审核</option><option>下线审核</option></select>
           <select class="select"><option>全部等级</option><option>L1</option><option>L2</option><option>L3</option></select>
         </div>
         <table class="table" style="margin-top:14px">
-          <thead><tr><th style="padding:12px">名称</th><th style="padding:12px">类型</th><th style="padding:12px">申请人</th><th style="padding:12px">等级</th><th style="padding:12px">申请日期</th><th style="padding:12px">状态</th><th style="padding:12px">操作</th></tr></thead>
+          <thead><tr><th style="padding:12px">名称</th><th style="padding:12px">申请人</th><th style="padding:12px">等级</th><th style="padding:12px">申请日期</th><th style="padding:12px">状态</th><th style="padding:12px">操作</th></tr></thead>
           <tbody>
             ${DATA.audits.map(a=>`<tr>
               <td style="padding:16px 12px"><strong>${a.name}</strong></td>
-              <td style="padding:16px 12px">${a.type}</td>
               <td style="padding:16px 12px">${a.applicant}</td>
               <td style="padding:16px 12px">${getStatusTag(a.level)}</td>
               <td style="padding:16px 12px">${a.date}</td>
@@ -2522,7 +2520,6 @@ function pageAdminDash(){
           <button class="${adminView==='支行'?'active':''}" onclick="switchAdminView('支行')">支行</button>
         </div>
         <select class="time-select"><option>本月</option><option>本季度</option><option>本年</option></select>
-        <button class="btn btn-sm" style="background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.1)" onclick="showToast('导出报告成功','success')">📥 导出报告</button>
       </div>
     </div>
 
@@ -3042,7 +3039,6 @@ function openAuditDetail(id){
     <div class="detail-section">
       <div class="detail-section-title">申请信息</div>
       <div class="detail-row"><div class="detail-label">名称</div><div class="detail-value">${a.name}</div></div>
-      <div class="detail-row"><div class="detail-label">类型</div><div class="detail-value">${a.type}</div></div>
       <div class="detail-row"><div class="detail-label">申请人</div><div class="detail-value">${a.applicant}</div></div>
       <div class="detail-row"><div class="detail-label">等级</div><div class="detail-value">${getStatusTag(a.level)}</div></div>
       <div class="detail-row"><div class="detail-label">申请日期</div><div class="detail-value">${a.date}</div></div>
@@ -3263,8 +3259,8 @@ function auditQuickAction(id,result){
     openModal('驳回审核 · '+a.name,`
       <div class="detail-section" style="margin:0 0 18px">
         <div class="detail-row"><div class="detail-label">名称</div><div class="detail-value">${a.name}</div></div>
-        <div class="detail-row"><div class="detail-label">类型</div><div class="detail-value">${a.type}</div></div>
         <div class="detail-row"><div class="detail-label">申请人</div><div class="detail-value">${a.applicant}</div></div>
+        <div class="detail-row"><div class="detail-label">申请日期</div><div class="detail-value">${a.date}</div></div>
       </div>
       <div class="form-group">
         <label class="form-label">驳回原因<span class="req">*</span></label>
