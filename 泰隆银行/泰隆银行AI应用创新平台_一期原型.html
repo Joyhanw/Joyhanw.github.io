@@ -331,16 +331,35 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 @keyframes aiSpin{to{transform:rotate(360deg)}}
 .ai-canvas-loading-text{font-size:18px;font-weight:600;color:var(--text-1)}
 .ai-canvas-loading-step{font-size:13px;color:var(--text-3)}
-/* 缺口弹窗 */
-.ai-gap-modal .modal-body{padding:0}
-.ai-gap-content{padding:28px 32px;text-align:center}
-.ai-gap-icon{font-size:48px;margin-bottom:12px}
-.ai-gap-title{font-size:20px;font-weight:600;color:var(--text-1);margin-bottom:8px}
-.ai-gap-desc{font-size:14px;color:var(--text-3);margin-bottom:20px;line-height:1.6}
-.ai-gap-list{background:#FFF6E5;border:1px solid #FDE68A;border-radius:12px;padding:14px 18px;text-align:left;margin-bottom:20px}
-.ai-gap-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;color:#92400E}
-.ai-gap-item::before{content:'⚠️';font-size:12px}
-.ai-gap-actions{display:flex;gap:10px;justify-content:center}
+/* 代码运行模拟终端（亮色系，嵌入AI对话框） */
+.ai-code-runner{width:100%;background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px;box-shadow:0 4px 16px rgba(26,102,255,.06)}
+.ai-code-runner-head{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#F8FAFF;border-bottom:1px solid var(--border-light)}
+.ai-code-runner-dot{width:8px;height:8px;border-radius:50%}
+.ai-code-runner-title{font-size:11px;color:var(--text-3);margin-left:6px;font-family:'SF Mono',Consolas,monospace}
+.ai-code-runner-body{padding:10px 12px;font-family:'SF Mono',Consolas,Monaco,monospace;font-size:11.5px;line-height:1.85;color:var(--text-2);max-height:260px;overflow-y:auto;background:#FBFCFE}
+.ai-code-runner-body::-webkit-scrollbar{width:5px}
+.ai-code-runner-body::-webkit-scrollbar-thumb{background:rgba(26,102,255,.15);border-radius:3px}
+.ai-code-line{white-space:pre;opacity:0;animation:codeLineIn .25s ease forwards}
+.ai-code-line .kw{color:#7C3AED}
+.ai-code-line .fn{color:#1A66FF}
+.ai-code-line .str{color:#059669}
+.ai-code-line .cmt{color:#9CA3AF}
+.ai-code-line .cmt.warn{color:#D97706}
+.ai-code-line .cmt.ok{color:#059669}
+.ai-code-line .var{color:#B45309}
+@keyframes codeLineIn{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:translateX(0)}}
+/* 缺口通知（嵌入AI对话框消息流，非阻塞） */
+.ai-gap-notify{width:100%;background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;overflow:hidden;animation:gapNotifyIn .3s ease}
+@keyframes gapNotifyIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ai-gap-notify-head{display:flex;align-items:center;gap:8px;padding:12px 14px 4px}
+.ai-gap-notify-icon{font-size:18px}
+.ai-gap-notify-title{font-size:13px;font-weight:600;color:var(--text-1)}
+.ai-gap-notify-body{padding:2px 14px 6px;font-size:12px;color:var(--text-2);line-height:1.6}
+.ai-gap-notify-list{padding:0 14px 8px}
+.ai-gap-notify-item{display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11.5px;color:#92400E}
+.ai-gap-notify-item::before{content:'⚠️';font-size:10px}
+.ai-gap-notify-actions{display:flex;gap:8px;padding:0 14px 12px;justify-content:flex-end}
+.ai-gap-notify-actions .btn-sm{padding:5px 12px;font-size:12px;border-radius:8px}
 /* 预览区 */
 .ai-preview-header{text-align:center;margin-bottom:24px}
 .ai-preview-header-name{font-size:20px;font-weight:700;color:var(--text-1);margin-bottom:4px}
@@ -660,17 +679,28 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .modal-mask.open{display:flex}
 .modal{background:#fff;border-radius:var(--radius-lg);width:560px;max-width:90vw;max-height:85vh;display:flex;flex-direction:column;animation:modalIn .25s ease}
 @keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
-.modal-head{padding:16px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-size:15px;font-weight:600}
-.modal-close{font-size:20px;color:var(--text-3);cursor:pointer}
-.modal-body{padding:20px;overflow-y:auto;flex:1;word-break:break-word;overflow-wrap:break-word}
-.modal-foot{padding:12px 20px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:8px;background:#FAFBFC}
+.modal-head{padding:20px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:16px;font-weight:600}
+.modal-close{font-size:22px;color:var(--text-3);cursor:pointer;line-height:1;padding:4px}
+.modal-body{padding:24px;overflow-y:auto;flex:1;word-break:break-word;overflow-wrap:break-word}
+.modal-foot{padding:16px 24px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:10px;background:#FAFBFC}
+.modal-foot .btn{padding:9px 20px;font-size:13px}
 .form-group{margin-bottom:14px}
 .form-label{display:block;font-size:12px;color:var(--text-2);margin-bottom:6px}
 .form-label .req{color:var(--danger)}
 .form-input,.form-select,.form-textarea{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:#fff}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary)}
 .form-textarea{resize:vertical;min-height:70px}
+.modal .form-group{margin-bottom:20px}
+.modal .form-group:last-child{margin-bottom:0}
+.modal .form-label{font-size:13px;margin-bottom:8px;font-weight:500;color:var(--text-1)}
+.modal .form-input,.modal .form-select,.modal .form-textarea{padding:10px 14px;font-size:13px}
+.modal .form-textarea{min-height:88px}
+.modal .detail-section{margin-bottom:22px}
+.modal .detail-section:last-child{margin-bottom:0}
+.modal .detail-row{padding:12px 0}
+.modal .detail-label{min-width:90px}
+.modal .req{color:var(--danger);margin-left:2px}
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1D2129;color:#fff;padding:10px 20px;border-radius:6px;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);display:none;align-items:center;gap:8px}
 .toast.show{display:flex;animation:toastIn .25s}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,-12px)}to{opacity:1;transform:translate(-50%,0)}}
@@ -1087,7 +1117,7 @@ function renderPage(){
 /* ============ AI助手首页 - 宽屏亮色系设计 ============ */
 let sidebarCollapsed=false;
 function toggleSidebar(){sidebarCollapsed=!sidebarCollapsed;const s=$('#sidebar');if(s)s.classList.toggle('collapsed',sidebarCollapsed);}
-let aiState={view:'home',generating:false,result:null,gapConfirmed:false,chatMsgs:[{role:'bot',text:'你好！我是AI助手，告诉我你想做什么，我帮你直接生成业务应用。'}],currentApp:null,activeTab:'home',navCollapsed:false,loadingStep:0,editing:false,chatOpen:false,thinking:''};
+let aiState={view:'home',generating:false,codeGen:false,result:null,gapConfirmed:false,chatMsgs:[{role:'bot',text:'你好！我是AI助手，告诉我你想做什么，我帮你直接生成业务应用。'}],currentApp:null,activeTab:'home',navCollapsed:false,loadingStep:0,editing:false,chatOpen:false,thinking:'',codeLines:[],gapNotify:null,gapSent:false};
 const AI_SCENES={
   visit:{name:'客户拜访管理',desc:'记录客户拜访信息，自动生成拜访报告',level:'L2',color:'#1A66FF',icon:'🏃',tabs:['拜访列表','拜访登记','数据统计','我的'],
     pages:[
@@ -1291,7 +1321,34 @@ function renderCanvas(){
         <button class="ai-canvas-chat-close" onclick="aiToggleChat()">×</button>
       </div>
       <div class="ai-canvas-chat-msgs" id="aiChatMsgs">
-        ${aiState.chatMsgs.map(m=>`<div class="ai-canvas-chat-msg ${m.role}"><div class="ai-canvas-chat-bubble">${m.text}</div></div>`).join('')}
+        ${aiState.chatMsgs.map(m=>{
+          if(m.type==='code'){
+            return `<div class="ai-canvas-chat-msg bot" style="max-width:96%"><div class="ai-canvas-chat-bubble" style="padding:10px 12px;background:#FBFCFE;font-family:'SF Mono',Consolas,Monaco,monospace;font-size:11.5px;line-height:1.85;color:var(--text-2);white-space:pre">${m.text}</div></div>`;
+          }
+          if(m.type==='gap'){
+            if(m.sent){
+              const txt=m.sent==='sent'?'✓ 已发送缺口能力工单至总行科技部，应用继续生成中...':'已取消发送，应用继续生成中...';
+              return `<div class="ai-canvas-chat-msg bot"><div class="ai-canvas-chat-bubble">${txt}</div></div>`;
+            }
+            return `<div class="ai-canvas-chat-msg bot" style="max-width:96%"><div class="ai-canvas-chat-bubble" style="padding:0;background:transparent;border:none">
+              <div class="ai-gap-notify">
+                <div class="ai-gap-notify-head">
+                  <span class="ai-gap-notify-icon">⚠️</span>
+                  <span class="ai-gap-notify-title">发现能力缺口</span>
+                </div>
+                <div class="ai-gap-notify-body">生成${m.gaps[0]||''}等缺口能力工单，是否发送至总行科技部补充建设？</div>
+                <div class="ai-gap-notify-list">
+                  ${m.gaps.map(g=>`<div class="ai-gap-notify-item">${g}</div>`).join('')}
+                </div>
+                <div class="ai-gap-notify-actions">
+                  <button class="btn btn-sm" onclick="dismissGapNotify(false)">取消</button>
+                  <button class="btn btn-sm btn-primary" onclick="dismissGapNotify(true)">发送</button>
+                </div>
+              </div>
+            </div></div>`;
+          }
+          return `<div class="ai-canvas-chat-msg ${m.role}"><div class="ai-canvas-chat-bubble">${m.text}</div></div>`;
+        }).join('')}
         ${aiState.thinking?`<div class="ai-canvas-chat-msg bot"><div class="ai-canvas-chat-bubble"><div class="ai-canvas-chat-think"><span class="ai-canvas-chat-think-dot"></span>${aiState.thinking}</div></div></div>`:''}
       </div>
       <div class="ai-canvas-chat-input">
@@ -1309,6 +1366,54 @@ function renderCanvasLoading(){
     <div class="ai-canvas-loading-text">AI正在生成你的应用</div>
     <div class="ai-canvas-loading-step">${steps[currentStep]||steps[0]}</div>
   </div>`;
+}
+const AI_CODE_LINES=[
+  ['<span class="cmt">// 解析用户需求...</span>',
+   '<span class="kw">const</span> <span class="var">intent</span> = <span class="fn">parseIntent</span>( userInput );',
+   '<span class="kw">const</span> <span class="var">modules</span> = <span class="fn">extractModules</span>( <span class="var">intent</span> );'],
+  ['<span class="cmt">// 分析业务场景...</span>',
+   '<span class="kw">const</span> <span class="var">scene</span> = <span class="fn">analyzeScene</span>( <span class="var">intent</span> );',
+   '<span class="kw">const</span> <span class="var">pages</span> = <span class="fn">planPages</span>( <span class="var">scene</span> );'],
+  ['<span class="cmt">// 匹配平台能力...</span>',
+   '<span class="kw">import</span> { <span class="fn">CustomerAPI</span> } <span class="kw">from</span> <span class="str">\'@tlplatform/caps\'</span>;',
+   '<span class="kw">import</span> { <span class="fn">MapService</span> } <span class="kw">from</span> <span class="str">\'@tlplatform/caps\'</span>;'],
+  [],
+  ['<span class="cmt">// 生成页面组件...</span>',
+   '<span class="kw">const</span> <span class="var">PageList</span> = <span class="fn">createPage</span>(<span class="str">"list"</span>, { api: <span class="fn">CustomerAPI</span> });',
+   '<span class="kw">const</span> <span class="var">PageForm</span> = <span class="fn">createPage</span>(<span class="str">"form"</span>, { fields: [...] });',
+   '<span class="kw">const</span> <span class="var">PageReport</span> = <span class="fn">createPage</span>(<span class="str">"report"</span>, {});'],
+  ['<span class="cmt">// 组装小程序...</span>',
+   '<span class="fn">App</span>.<span class="fn">register</span>(<span class="str">"page-list"</span>, <span class="var">PageList</span>);',
+   '<span class="fn">App</span>.<span class="fn">register</span>(<span class="str">"page-form"</span>, <span class="var">PageForm</span>);',
+   '<span class="fn">App</span>.<span class="fn">build</span>(); <span class="cmt ok">// ✓ 构建完成</span>'],
+];
+function appendCodeLines(step,gaps){
+  let lines;
+  if(step===3){
+    if(gaps&&gaps.length>0){
+      lines=[
+        '<span class="cmt warn">// ⚠️ 检测到能力缺口：'+gaps.join('、')+'</span>',
+        '<span class="kw">const</span> <span class="var">gapOrder</span> = <span class="fn">createGapOrder</span>(<span class="str">"'+gaps[0]+'"</span>);',
+        '<span class="cmt">// 生成缺口工单，待确认是否发送至科技部...</span>',
+      ];
+    }else{
+      lines=['<span class="cmt ok">// ✓ 能力匹配完成，无缺口</span>'];
+    }
+  }else{
+    lines=AI_CODE_LINES[step]||[];
+  }
+  if(lines.length>0){
+    const html=lines.map(l=>`<div class="ai-code-line">${l}</div>`).join('');
+    aiState.chatMsgs.push({role:'bot',type:'code',text:html});
+  }
+}
+function scrollChatToBottom(){
+  setTimeout(()=>{
+    const msgs=document.getElementById('aiChatMsgs');
+    if(msgs) msgs.scrollTop=msgs.scrollHeight;
+    const body=document.querySelector('.ai-code-runner-body');
+    if(body) body.scrollTop=body.scrollHeight;
+  },0);
 }
 function renderCanvasPreview(r){
   const scene=AI_SCENES[r.scene]||AI_SCENES.default;
@@ -1365,10 +1470,15 @@ function aiSend(){
   if(!text) return;
   input.value='';
   aiState.generating=true;
+  aiState.codeGen=true;
   aiState.view='canvas';
   aiState.navCollapsed=true;
+  aiState.chatOpen=true;
   aiState.loadingStep=0;
-  aiState.chatMsgs=[{role:'bot',text:'你好！我是AI助手，告诉我你想做什么，我帮你直接生成业务应用。'},{role:'user',text}];
+  aiState.codeLines=[];
+  aiState.gapNotify=null;
+  aiState.gapSent=false;
+  aiState.chatMsgs=[{role:'bot',text:'你好！我是AI助手，告诉我你想做什么，我帮你直接生成业务应用。'},{role:'user',text},{role:'bot',text:'好的，正在为你生成应用，代码生成过程如下：'}];
   renderPage();
   let scene='default',caps=[],gaps=[];
   if(text.includes('拜访')||text.includes('客户')){
@@ -1386,27 +1496,27 @@ function aiSend(){
   function runStep(){
     if(stepIdx<steps.length){
       aiState.loadingStep=stepIdx;
-      const el=document.querySelector('.ai-canvas-loading-step');
-      if(el) el.textContent=steps[stepIdx];
-      if(stepIdx===3&&gaps.length>0&&!aiState.result.gapSent){
-        setTimeout(()=>{openGapModal(gaps);},300);
-        return;
+      appendCodeLines(stepIdx,gaps);
+      if(stepIdx===3&&gaps.length>0&&!aiState.gapSent){
+        aiState.gapSent=true;
+        aiState.chatMsgs.push({role:'bot',type:'gap',gaps:gaps.slice(),sent:null});
       }
+      renderPage();
+      scrollChatToBottom();
       stepIdx++;
-      aiStepTimer=setTimeout(runStep,600);
+      aiStepTimer=setTimeout(runStep,900);
     }else{
       finishGen();
     }
   }
   function finishGen(){
     aiState.generating=false;
+    aiState.codeGen=false;
     aiState.loadingStep=0;
+    aiState.chatMsgs.push({role:'bot',text:'应用已生成完成，请查看右侧预览页面。'});
     renderPage();
+    scrollChatToBottom();
   }
-  aiResumeGen=function(){
-    stepIdx=4;
-    runStep();
-  };
   runStep();
 }
 /* ===== 画布交互 ===== */
@@ -1428,6 +1538,10 @@ function aiNewChat(){
   aiState.activeTab='home';
   aiState.result=null;
   aiState.generating=false;
+  aiState.codeGen=false;
+  aiState.codeLines=[];
+  aiState.gapNotify=null;
+  aiState.gapSent=false;
   aiState.navCollapsed=false;
   aiState.editing=false;
   aiState.chatOpen=false;
@@ -1439,6 +1553,10 @@ function aiBackHome(){
   aiState.view='home';
   aiState.result=null;
   aiState.generating=false;
+  aiState.codeGen=false;
+  aiState.codeLines=[];
+  aiState.gapNotify=null;
+  aiState.gapSent=false;
   aiState.navCollapsed=false;
   aiState.editing=false;
   aiState.chatOpen=false;
@@ -1544,44 +1662,21 @@ function aiChatSend(){
     if(msgs) msgs.scrollTop=msgs.scrollHeight;
   },2200);
 }
-function openGapModal(gaps){
-  const modal=document.querySelector('.modal');
-  const modalTitle=document.getElementById('modalTitle');
-  const modalBody=document.getElementById('modalBody');
-  const modalFoot=document.getElementById('modalFoot');
-  modal.classList.add('ai-gap-modal');
-  modalTitle.textContent='发现能力缺口';
-  modalBody.innerHTML=`
-    <div class="ai-gap-content">
-      <div class="ai-gap-icon">⚠️</div>
-      <div class="ai-gap-title">生成${gaps[0]||''}等缺口能力工单</div>
-      <div class="ai-gap-desc">生成应用过程中检测到以下能力暂未接入，是否发送至总行科技部补充建设？</div>
-      <div class="ai-gap-list">
-        ${gaps.map(g=>`<div class="ai-gap-item">${g}</div>`).join('')}
-      </div>
-      <div class="ai-gap-actions">
-        <button class="btn" onclick="closeGapModal(false)">暂不发送</button>
-        <button class="btn btn-primary" onclick="closeGapModal(true)">发送至总行科技部</button>
-      </div>
-    </div>`;
-  modalFoot.innerHTML='';
-  document.getElementById('modalMask').classList.add('open');
-}
-function closeGapModal(confirm){
-  if(confirm&&aiState.result){
+function dismissGapNotify(send){
+  if(send&&aiState.result){
     aiState.result.gaps.forEach(g=>{
       DATA.gaps.push({id:'GAP-'+String(DATA.gaps.length+1).padStart(3,'0'),cap:g,source:'需求自动发现',from:'AI助手',priority:'中',status:'待处理',date:'2024-08-06'});
     });
-    aiState.result.gapSent=true;
     showToast('缺口能力工单发送成功，已通知总行科技部','success');
-  }else if(aiState.result){
-    aiState.result.gapSent=true;
   }
-  document.querySelector('.modal').classList.remove('ai-gap-modal');
-  closeModal();
-  if(aiResumeGen){
-    setTimeout(aiResumeGen,300);
+  for(let i=aiState.chatMsgs.length-1;i>=0;i--){
+    if(aiState.chatMsgs[i].type==='gap'&&aiState.chatMsgs[i].sent===null){
+      aiState.chatMsgs[i].sent=send?'sent':'cancelled';
+      break;
+    }
   }
+  renderPage();
+  scrollChatToBottom();
 }
 function aiRollback(){
   aiState.view='home';
@@ -1912,7 +2007,7 @@ function editCapability(id,name){
 function toggleCapability(id,action){
   const c=DATA.capabilities.find(x=>x.id===id);
   if(!c) return;
-  openModal(action+'能力 · '+c.name,`<div style="padding:8px 0;font-size:13px;color:var(--text-2);line-height:1.8">确认${action}能力 <strong>${c.name}</strong>（${c.id}）？<br>${action==='停用'?'停用后该能力将无法被新应用引用，已引用应用不受影响。':'启用后该能力可重新被新应用引用。'}</div>`,()=>{
+  openModal(action+'能力 · '+c.name,`<div style="padding:12px 0;font-size:14px;color:var(--text-2);line-height:2">确认${action}能力 <strong>${c.name}</strong>（${c.id}）？<br>${action==='停用'?'停用后该能力将无法被新应用引用，已引用应用不受影响。':'启用后该能力可重新被新应用引用。'}</div>`,()=>{
     c.status=action==='停用'?'停用':'已上线';
     showToast(`已${action} · ${c.name}`,'success');
     renderPage();
@@ -1944,7 +2039,7 @@ function openGapHandle(id){
   const g=DATA.gaps.find(x=>x.id===id);
   if(!g) return;
   openModal('处理工单 · '+id,`
-    <div class="detail-section" style="margin:0">
+    <div class="detail-section" style="margin:0 0 24px">
       <div class="detail-row"><div class="detail-label">工单号</div><div class="detail-value" style="font-family:monospace">${g.id}</div></div>
       <div class="detail-row"><div class="detail-label">能力名称</div><div class="detail-value">${g.cap}</div></div>
       <div class="detail-row"><div class="detail-label">来源</div><div class="detail-value">${g.source}</div></div>
@@ -2008,7 +2103,7 @@ function openRuleAdd(){
 function toggleRule(id,action){
   const r=DATA.rules.find(x=>x.id===id);
   if(!r) return;
-  openModal(action+'规则 · '+r.name,`<div style="padding:8px 0;font-size:13px;color:var(--text-2)">确认${action}规则 <strong>${r.name}</strong>？${action==='停用'?'<br>停用后该规则不再执行拦截。':'<br>启用后该规则将立即生效。'}</div>`,()=>{
+  openModal(action+'规则 · '+r.name,`<div style="padding:12px 0;font-size:14px;color:var(--text-2);line-height:2">确认${action}规则 <strong>${r.name}</strong>？${action==='停用'?'<br>停用后该规则不再执行拦截。':'<br>启用后该规则将立即生效。'}</div>`,()=>{
     r.status=action==='停用'?'已停用':'已生效';
     showToast(`规则已${action}`,'success');
     renderPage();
@@ -2357,7 +2452,7 @@ function renderPromoteTargets(type,selected){
 function openSceneAssess(id){
   const s=DATA.scenes.find(x=>x.id===id);
   openModal('场景评估 · '+s.name,`
-    <div class="detail-section" style="margin:0 0 14px">
+    <div class="detail-section" style="margin:0 0 22px">
       <div class="detail-row"><div class="detail-label">场景</div><div class="detail-value"><strong>${s.name}</strong>（${s.id}）</div></div>
       <div class="detail-row"><div class="detail-label">当前状态</div><div class="detail-value">${getStatusTag(s.status)}</div></div>
     </div>
@@ -2398,7 +2493,7 @@ function openSceneTemplate(id){
   const s=DATA.scenes.find(x=>x.id===id);
   if(s.templated){showToast('该场景已沉淀为模板','info');return}
   openModal('标记为模板 · '+s.name,`
-    <div class="detail-section" style="margin:0 0 14px">
+    <div class="detail-section" style="margin:0 0 22px">
       <div class="detail-row"><div class="detail-label">场景</div><div class="detail-value"><strong>${s.name}</strong>（${s.id}）</div></div>
       <div class="detail-row"><div class="detail-label">当前状态</div><div class="detail-value">${getStatusTag(s.status)}</div></div>
     </div>
@@ -3257,7 +3352,7 @@ function auditQuickAction(id,result){
     }
   }else{
     openModal('驳回审核 · '+a.name,`
-      <div class="detail-section" style="margin:0 0 18px">
+      <div class="detail-section" style="margin:0 0 24px">
         <div class="detail-row"><div class="detail-label">名称</div><div class="detail-value">${a.name}</div></div>
         <div class="detail-row"><div class="detail-label">申请人</div><div class="detail-value">${a.applicant}</div></div>
         <div class="detail-row"><div class="detail-label">申请日期</div><div class="detail-value">${a.date}</div></div>
@@ -3507,7 +3602,7 @@ function openPlanGen(id){
   const r=DATA.requirements.find(x=>x.id===id);
   if(!r) return;
   openModal('方案生成 · '+r.name,`
-    <div class="detail-section" style="margin:0 0 14px">
+    <div class="detail-section" style="margin:0 0 22px">
       <div class="detail-row"><div class="detail-label">需求</div><div class="detail-value"><strong>${r.name}</strong>（${r.id}）</div></div>
       <div class="detail-row"><div class="detail-label">等级</div><div class="detail-value">${getStatusTag(r.level)}</div></div>
     </div>
@@ -3568,7 +3663,7 @@ function openTestVerify(id){
   if(!r) return;
   const tests=[['单元测试','功能模块测试',true],['接口测试','API接口联调',true],['安全扫描','XSS/SQL注入检测',true],['依赖检查','第三方依赖白名单',true],['密钥检测','硬编码密钥检测',true],['数据隔离','应用数据隔离校验',true]];
   openModal('测试验证 · '+r.name,`
-    <div class="detail-section" style="margin:0 0 14px">
+    <div class="detail-section" style="margin:0 0 22px">
       <div class="detail-row"><div class="detail-label">需求</div><div class="detail-value"><strong>${r.name}</strong>（${r.id}）</div></div>
     </div>
     <div style="background:#FFF7E8;padding:12px;border-radius:6px;margin-bottom:14px;font-size:12px;color:var(--text-2);line-height:1.8">
@@ -3594,7 +3689,7 @@ function submitForPublish(id){
   const r=DATA.requirements.find(x=>x.id===id);
   if(!r) return;
   openModal('申请发布 · '+r.name,`
-    <div class="detail-section" style="margin:0 0 14px">
+    <div class="detail-section" style="margin:0 0 22px">
       <div class="detail-row"><div class="detail-label">需求</div><div class="detail-value"><strong>${r.name}</strong>（${r.id}）</div></div>
       <div class="detail-row"><div class="detail-label">等级</div><div class="detail-value">${getStatusTag(r.level)} ${r.level==='L1'?'免审':r.level==='L2'?'主管审核':'科技审核'}</div></div>
       <div class="detail-row"><div class="detail-label">测试状态</div><div class="detail-value"><span class="tag tag-success">全部通过</span></div></div>
