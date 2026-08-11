@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>味冠经营决策驾驶舱 · 指标计算公式规范文档</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  font-size:14px;line-height:1.85;color:#333;max-width:960px;margin:0 auto;padding:32px 28px;background:#fff;
+}
+h1{font-size:24px;font-weight:700;margin:0 0 8px;color:#1a1d2e;text-align:center}
+h2{font-size:18px;font-weight:700;margin:36px 0 16px;color:#1a1d2e;padding-left:10px;border-left:4px solid #4f6ef7}
+h3{font-size:16px;font-weight:600;margin:24px 0 10px;color:#2d3a5c}
+h4{font-size:14px;font-weight:600;margin:18px 0 8px;color:#4f6ef7}
+blockquote{
+  margin:8px 0 16px;padding:8px 16px;background:#f8f9fb;border-left:3px solid #d4d9e2;
+  border-radius:4px;color:#555;font-size:13px;
+}
+blockquote p{margin:2px 0}
+p{margin:6px 0;font-size:13px;color:#444}
+strong{color:#1a1d2e}
+hr{border:none;border-top:1px solid #e5e7ec;margin:28px 0}
+code{
+  background:#f0f4ff;color:#4f6ef7;font-family:"SF Mono","Consolas","Monaco",monospace;
+  font-size:12px;padding:1px 6px;border-radius:3px;
+}
+table{
+  width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:13px;
+  border:1px solid #e2e5ea;border-radius:6px;overflow:hidden;
+}
+th{
+  background:#f0f4ff;color:#1a1d2e;font-weight:600;text-align:left;
+  padding:9px 12px;border-bottom:2px solid #4f6ef7;font-size:12px;white-space:nowrap;
+}
+td{padding:8px 12px;border-bottom:1px solid #eef0f4;color:#444;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:#fafbfc}
+ul,ol{margin:6px 0 12px 22px;padding:0}
+li{margin:4px 0;font-size:13px;color:#444}
+a{color:#4f6ef7;text-decoration:none}
+a:hover{text-decoration:underline}
+.doc-meta{
+  text-align:center;color:#888;font-size:13px;margin-bottom:32px;
+  padding-bottom:20px;border-bottom:1px solid #eef0f4;
+}
+.doc-meta p{margin:2px 0;color:#888}
+.toc{margin:24px 0;padding:16px 20px;background:#fafbfc;border-radius:8px;border:1px solid #e5e7ec}
+.toc h3{margin:0 0 8px;font-size:15px;color:#1a1d2e}
+.toc a{display:block;padding:2px 0;font-size:13px}
+.section-num{color:#4f6ef7;font-weight:600}
+pre{
+  background:#f8f9fb;border:1px solid #e5e7ec;border-radius:6px;
+  padding:12px 16px;overflow-x:auto;font-size:12px;line-height:1.6;
+}
+</style>
+</head>
+<body>
+
+<h1>味冠经营决策驾驶舱 · 指标计算公式规范文档</h1>
+
+<div class="toc">
+  <h3>📑 目录</h3>
+  <a href="#sec1">一、基础数据规范</a>
+  <a href="#sec2">二、首页顶部 7 张统计卡片</a>
+  <a href="#sec3">三、经营分析清单（6 张分析卡片 · TOP 5 展示）</a>
+  <a href="#sec4">四、6 个详情页字段计算公式</a>
+  <a href="#sec5">五、附录</a>
+  <a href="#sec6">六、原型需调整字段</a>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════ -->
+<h2 id="sec1">一、基础数据规范</h2>
+
+<h3>1.1 固定仓库清单（必须严格遵守）</h3>
+
+<table>
+  <tr><th>仓库编号</th><th>仓库名称</th><th>备注</th></tr>
+  <tr><td>01</td><td>发货区</td><td>参与计算</td></tr>
+  <tr><td>03</td><td>奥州外仓</td><td>参与计算</td></tr>
+  <tr><td>04</td><td>三农外仓</td><td>参与计算</td></tr>
+  <tr><td>05</td><td>西库一楼</td><td>参与计算</td></tr>
+  <tr><td>其他</td><td>非固定仓库</td><td>不参与计算</td></tr>
+</table>
+
+<p><strong>口径规则</strong>：</p>
+<ul>
+  <li>同一商品在多个固定仓库有库存时，按编号汇总为一条</li>
+  <li>商品仅在非固定仓库有库存 → 不展示、不参与统计</li>
+</ul>
+
+<h3>1.2 跨场景通用字段定义</h3>
+
+<table>
+  <tr><th>字段编号</th><th>字段名</th><th>数据来源</th><th>取值规则</th></tr>
+  <tr><td>F01（存货名称）</td><td>存货名称</td><td>存货表 - 存货名称</td><td>取存货表的存货名称</td></tr>
+  <tr><td>F02（近30天销量）</td><td>近30天销量（一月销量）</td><td>销货单统计表 - 数量(主单位)</td><td>查询日期往前推 30 天的数量合计</td></tr>
+  <tr><td>F03（15天平均销量）</td><td>15天平均销量</td><td>公式计算</td><td>= F02（近30天销量） ÷ 26 × 15；取整数</td></tr>
+  <tr><td>F04（库存）</td><td>库存</td><td>库存状况表 - 可用量(主)</td><td>4 个固定仓库可用量求和</td></tr>
+  <tr><td>F05（周转率）</td><td>周转率</td><td>公式计算</td><td>= F04（库存） ÷ F03（15天平均销量）；保留 1 位小数</td></tr>
+  <tr><td>F06（上年后15天销量）</td><td>上年后15天销量</td><td>销货单统计表 - 数量(主单位)</td><td>去年查询结束日期往后推 17 天的数量合计</td></tr>
+  <tr><td>F07（销售额）</td><td>销售额</td><td>销货单统计表 - 含税金额</td><td>查询时间范围内含税金额合计</td></tr>
+  <tr><td>F08（销售数量）</td><td>销售数量（产品销量）</td><td>销货单统计表 - 数量(主单位)</td><td>查询时间范围内数量合计</td></tr>
+  <tr><td>F09（进货额）</td><td>进货额</td><td>进货单明细表</td><td>查询时间往前倒推 180 天、4 个固定仓库的进货金额合计</td></tr>
+  <tr><td>F10（进货数量）</td><td>进货数量</td><td>进货单明细表</td><td>与 F09（进货额）同窗口的进货数量合计</td></tr>
+  <tr><td>F11（平均进价）</td><td>平均进价</td><td>公式计算</td><td>= F09（进货额） ÷ F10（进货数量）；四舍五入取整数</td></tr>
+  <tr><td>F12（毛利）</td><td>毛利</td><td>公式计算</td><td>= F07（销售额） − F08（销售数量） × F11（平均进价）；四舍五入取整数</td></tr>
+  <tr><td>F13（毛利率）</td><td>毛利率</td><td>公式计算</td><td>= F12（毛利） ÷ F07（销售额） × 100%；保留 2 位小数 + 百分比符号</td></tr>
+</table>
+
+<h3>1.3 周转率与滞销天数的换算</h3>
+
+<table>
+  <tr><th>周转率区间</th><th>滞销天数区间</th><th>滞销等级标签</th></tr>
+  <tr><td>1 &lt; F05（周转率） ≤ 2</td><td>15 &lt; 天数 ≤ 30</td><td>轻度滞销(15-30天)</td></tr>
+  <tr><td>2 &lt; F05（周转率） ≤ 4</td><td>30 &lt; 天数 ≤ 60</td><td>中度滞销(30-60天)</td></tr>
+  <tr><td>F05（周转率） &gt; 4</td><td>天数 &gt; 60</td><td>重度滞销(60天以上)</td></tr>
+</table>
+
+<p>换算公式：滞销天数 ≈ F05（周转率） × 15（即"当前库存还能卖多少天"）。</p>
+
+<h3>1.4 数字取整与精度约定</h3>
+
+<table>
+  <tr><th>场景</th><th>字段</th><th>取整规则</th></tr>
+  <tr><td>通用</td><td>F03（15天平均销量） / F06（上年后15天销量） / F08（销售数量） / F11（平均进价）</td><td>四舍五入取整数</td></tr>
+  <tr><td>15天平均销量</td><td>F03（15天平均销量）</td><td>保留 1 位小数</td></tr>
+  <tr><td>周转</td><td>F05（周转率）</td><td>保留 1 位小数</td></tr>
+  <tr><td>毛利</td><td>F07（销售额） / F12（毛利） / F09（进货额）</td><td>四舍五入取整数（金额单位：元）</td></tr>
+  <tr><td>毛利率</td><td>F13（毛利率）</td><td>2 位小数，百分号显示</td></tr>
+  <tr><td>销量占比</td><td>见各页约定</td><td>2 位小数，百分号显示</td></tr>
+</table>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════ -->
+<h2 id="sec2">二、首页顶部 7 张统计卡片</h2>
+
+<blockquote>
+  <p>所有卡片统计范围均限定为 4 个固定仓库；点击数字可下钻到对应详情页。</p>
+</blockquote>
+
+<table>
+  <tr><th>卡片编号</th><th>指标名称</th><th>统计口径（卡片公式）</th><th>显示示例</th><th>下钻目标</th></tr>
+  <tr><td>C-01</td><td>产品总数</td><td>4 个固定仓库中有销售记录的去重产品数（主商品）</td><td>1,962</td><td>—</td></tr>
+  <tr><td>C-02</td><td>缺货产品</td><td>COUNT(产品, F04（库存） ≤ 0 且 F02（近30天销量） &gt; 50)</td><td>72</td><td>缺货产品明细</td></tr>
+  <tr><td>C-03</td><td>滞销产品</td><td>COUNT(产品, F05（周转率） &gt; 1)（含全部三档）</td><td>2</td><td>滞销产品明细</td></tr>
+  <tr><td>C-04</td><td>需进货产品</td><td>COUNT(产品, F05（周转率） ≤ 1 且 F04（库存） &gt; 0)</td><td>540</td><td>进货提醒明细</td></tr>
+  <tr><td>C-05</td><td>供应商数量</td><td>取"存货表"的默认供应商数量</td><td>313</td><td>供应商毛利分析</td></tr>
+  <tr><td>C-06</td><td>新品数量</td><td>COUNT(产品, 建档日期 + 2个月 ≥ 查询结束日期)</td><td>116</td><td>新品销售情况</td></tr>
+</table>
+
+<p>注：去掉首页统计卡片中"毛利关注产品"字段</p>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════ -->
+<h2 id="sec3">三、经营分析清单（6 张分析卡片 · TOP 5 展示）</h2>
+
+<blockquote>
+  <p>位于首页下半部分，每张展示按规则排序后的 TOP 5；点击卡片 / 卡片头跳转对应详情页。</p>
+</blockquote>
+
+<h3>3.1 卡片总览</h3>
+
+<table>
+  <tr><th>卡片编号</th><th>卡片名称</th><th>跳转详情页</th><th>TOP 5 字段展示</th><th>TOP 5 排序规则</th><th>筛选条件</th></tr>
+  <tr>
+    <td>A-01</td><td>缺货产品</td><td>缺货产品明细</td>
+    <td>产品、近30天销量、状态（需补货/红）</td>
+    <td>F02（近30天销量）降序</td>
+    <td>F04（库存） ≤ 0 且 F02（近30天销量） &gt; 50</td>
+  </tr>
+  <tr>
+    <td>A-02</td><td>滞销产品</td><td>滞销产品明细</td>
+    <td>产品、周转率、状态（滞销等级）</td>
+    <td>先展示 60天以上(F05&gt;4) → 再 30-60天(2&lt;F05≤4) → 再 15-30天(1&lt;F05≤2)，组内按 F05（周转率）降序，取前 5 条</td>
+    <td>F05（周转率） &gt; 1</td>
+  </tr>
+  <tr>
+    <td>A-03</td><td>进货提醒</td><td>进货提醒明细</td>
+    <td>产品、当前库存</td>
+    <td>F05（周转率）升序（从低到高）</td>
+    <td>F05（周转率） ≤ 1 且 F04（库存） &gt; 0</td>
+  </tr>
+  <tr>
+    <td>A-04</td><td>新品销售情况</td><td>新品销售情况</td>
+    <td>产品、产品销量、状态（毛利率徽章）</td>
+    <td>F08（销售数量）降序</td>
+    <td>建档日期 + 2个月 ≥ 查询结束日期</td>
+  </tr>
+  <tr>
+    <td>A-05</td><td>供应商毛利分析</td><td>供应商毛利分析</td>
+    <td>供应商、产品销量、状态（毛利率徽章）</td>
+    <td>F12（毛利）降序</td>
+    <td>时间范围内有销售记录的供应商</td>
+  </tr>
+  <tr>
+    <td>A-06</td><td>单品毛利分析</td><td>单品毛利分析</td>
+    <td>产品、产品销量、状态（毛利率徽章）</td>
+    <td>F13（毛利率）降序</td>
+    <td>5% ≤ F13（毛利率） ≤ 15%</td>
+  </tr>
+</table>
+
+<h3>3.2 状态徽章规则</h3>
+
+<table>
+  <tr><th>场景</th><th>状态字段</th><th>阈值映射</th></tr>
+  <tr><td>A-01 缺货</td><td>"需补货"</td><td>全部记录均标红（无阈值）</td></tr>
+  <tr><td>A-02 滞销</td><td>"轻度/中度/重度滞销"</td><td>按 1.3 表对应</td></tr>
+  <tr><td>A-03 新品</td><td>毛利率徽章</td><td>按原型显示，不强求色阶规则</td></tr>
+  <tr><td>A-04 供应商</td><td>毛利率徽章</td><td>按原型显示，不强求色阶规则</td></tr>
+  <tr><td>A-05 单品</td><td>毛利率徽章</td><td>按原型显示，不强求色阶规则</td></tr>
+</table>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════ -->
+<h2 id="sec4">四、6 个详情页字段计算公式</h2>
+
+<h3>4.1 缺货产品明细</h3>
+
+<blockquote>
+  <p>进入条件：F04（库存） ≤ 0 且 F02（近30天销量） &gt; 50；按 F02（近30天销量）从高到低排序</p>
+</blockquote>
+
+<h4>4.1.1 顶部 4 张统计卡</h4>
+<p>仅保留列表数量合计，其他均不展示</p>
+
+<h4>4.1.2 列表字段</h4>
+
+<table>
+  <tr><th>编号</th><th>列名</th><th>计算公式 / 取值</th><th>取整</th></tr>
+  <tr><td>L-01</td><td>排名</td><td>按 F02（近30天销量）降序编号</td><td>—</td></tr>
+  <tr><td>L-02</td><td>存货名称</td><td>F01（存货名称）</td><td>—</td></tr>
+  <tr><td>L-03</td><td>近30天销量</td><td>F02（近30天销量）</td><td>整数</td></tr>
+  <tr><td>L-04</td><td>15天平均销量</td><td>F03（15天平均销量）</td><td>1 位小数</td></tr>
+  <tr><td>L-05</td><td>库存</td><td>F04（库存）</td><td>整数（可负）</td></tr>
+  <tr><td>L-06</td><td>销量占比</td><td>= F02（近30天销量） ÷ Σ(列表内 F02) × 100%</td><td>2 位小数</td></tr>
+  <tr><td>L-07</td><td>上年后15天销量</td><td>= F06（上年后15天销量）；去年查询结束日期往后推 17 天的数量合计</td><td>—</td></tr>
+</table>
+
+<hr>
+
+<h3>4.2 滞销产品明细</h3>
+
+<blockquote>
+  <p>进入条件：F05（周转率） &gt; 1（含全部三档）；默认展示档位二（30-60天），支持切换</p>
+  <p>列表排序：先 60天以上 → 再 30-60天 → 再 15-30天，组内按 F05（周转率）降序</p>
+</blockquote>
+
+<h4>4.2.1 顶部 4 张统计卡</h4>
+<p>仅保留列表数量合计，其他均不展示</p>
+
+<h4>4.2.2 列表字段</h4>
+
+<table>
+  <tr><th>编号</th><th>列名</th><th>计算公式 / 取值</th><th>取整</th></tr>
+  <tr><td>L-01</td><td>排名</td><td>按档位优先级 + F05（周转率）降序编号</td><td>—</td></tr>
+  <tr><td>L-02</td><td>存货名称</td><td>F01（存货名称）</td><td>—</td></tr>
+  <tr><td>L-03</td><td>近30天销量</td><td>F02（近30天销量）</td><td>整数</td></tr>
+  <tr><td>L-04</td><td>15天平均销量</td><td>F03（15天平均销量）</td><td>1 位小数</td></tr>
+  <tr><td>L-05</td><td>库存</td><td>F04（库存）</td><td>整数（可负）</td></tr>
+  <tr><td>L-06</td><td>周转率</td><td>F05（周转率）</td><td>1 位小数</td></tr>
+  <tr><td>L-07</td><td>滞销等级</td><td>按 1.3 表查表得出标签</td><td>—</td></tr>
+</table>
+
+<h3>4.3 进货提醒明细</h3>
+
+<blockquote>
+  <p>进入条件：F05（周转率） ≤ 1 且 F04（库存） &gt; 0；按 F05（周转率）从低到高排序</p>
+  <p>周转率为负或 0 时：要展示</p>
+</blockquote>
+
+<h4>4.3.1 顶部 4 张统计卡</h4>
+<p>仅保留列表数量合计，其他均不展示</p>
+
+<h4>4.3.2 列表字段</h4>
+
+<table>
+  <tr><th>编号</th><th>列名</th><th>计算公式 / 取值</th><th>取整</th></tr>
+  <tr><td>L-01</td><td>采购员（仅单品查询模式显示）</td><td>存货所属采购员</td><td>—</td></tr>
+  <tr><td>L-02</td><td>排名</td><td>按 F05（周转率）升序编号（负数最前）</td><td>—</td></tr>
+  <tr><td>L-03</td><td>存货名称</td><td>F01（存货名称）</td><td>—</td></tr>
+  <tr><td>L-04</td><td>库存</td><td>F04（库存）</td><td>整数（可负）</td></tr>
+  <tr><td>L-05</td><td>近30天销量</td><td>F02（近30天销量）</td><td>整数</td></tr>
+  <tr><td>L-06</td><td>15天平均销量</td><td>F03（15天平均销量）</td><td>1 位小数</td></tr>
+  <tr><td>L-07</td><td>周转率</td><td>F05（周转率）</td><td>1 位小数</td></tr>
+  <tr><td>L-08</td><td>补货紧迫度</td><td>紧急：F05 ≤ 0.3；尽快：0.3 &lt; F05 ≤ 0.6；正常：0.6 &lt; F05 ≤ 1</td><td>—</td></tr>
+</table>
+
+<hr>
+
+<h3>4.4 新品销售情况</h3>
+
+<blockquote>
+  <p>进入条件：建档日期 + 2个月 ≥ 查询结束日期（按日边界含端点）</p>
+  <p>新品判定：以建档日期为起点，至后两个月当天仍属于新品；次日不再计入</p>
+</blockquote>
+
+<h4>4.4.1 顶部 4 张统计卡</h4>
+<p>仅保留列表数量合计，其他均不展示</p>
+
+<h4>4.4.2 列表字段</h4>
+
+<table>
+  <tr><th>编号</th><th>列名</th><th>计算公式 / 取值</th><th>取整</th></tr>
+  <tr><td>L-01</td><td>排名</td><td>按 F08（销售数量）降序编号</td><td>—</td></tr>
+  <tr><td>L-02</td><td>存货名称</td><td>F01（存货名称）</td><td>—</td></tr>
+  <tr><td>L-03</td><td>供应商名称</td><td>该产品关联供应商</td><td>—</td></tr>
+  <tr><td>L-04</td><td>建档日期</td><td>取存货表-建档日期</td><td>YYYY-MM-DD</td></tr>
+  <tr><td>L-05</td><td>产品销量</td><td>F08（销售数量）</td><td>整数</td></tr>
+  <tr><td>L-06</td><td>销售额</td><td>F07（销售额）</td><td>元，2 位小数</td></tr>
+  <tr><td>L-07</td><td>毛利</td><td>F12（毛利）（区间平均进价窗口：查询日期往前推 180 天、4 个仓库）</td><td>元，取整数</td></tr>
+  <tr><td>L-08</td><td>毛利率</td><td>F13（毛利率）</td><td>百分比，2 位小数</td></tr>
+</table>
+
+<hr>
+
+<h3>4.5 供应商毛利分析</h3>
+
+<blockquote>
+  <p>进入条件：查询时间范围内、4 个固定仓库有销售记录的所有供应商</p>
+</blockquote>
+
+<h4>4.5.1 顶部 4 张统计卡</h4>
+<p>仅保留列表数量合计，其他均不展示</p>
+
+<h4>4.5.2 列表字段</h4>
+
+<table>
+  <tr><th>编号</th><th>列名</th><th>计算公式 / 取值</th><th>取整</th></tr>
+  <tr><td>L-01</td><td>排名</td><td>按 F12（毛利）降序编号</td><td>—</td></tr>
+  <tr><td>L-02</td><td>供应商名称</td><td>供应商表</td><td>—</td></tr>
+  <tr><td>L-03</td><td>产品销量</td><td>Σ F08（销售数量）（按供应商汇总）</td><td>整数</td></tr>
+  <tr><td>L-04</td><td>销售额</td><td>Σ F07（销售额）（按供应商汇总）</td><td>元，2 位小数</td></tr>
+  <tr><td>L-05</td><td>毛利</td><td>= ΣF07 − ΣF08 × F11（平均进价）（按供应商汇总）</td><td>元，整数</td></tr>
+  <tr><td>L-06</td><td>毛利率</td><td>= L-05（毛利） ÷ L-04（销售额） × 100%</td><td>百分比，2 位小数</td></tr>
+</table>
+
+<hr>
+
+<h3>4.6 单品毛利分析</h3>
+
+<blockquote>
+  <p>进入条件：5% ≤ F13（毛利率） ≤ 15%（不限产品销量）</p>
+</blockquote>
+
+<h4>4.6.1 顶部 4 张统计卡</h4>
+<p>仅保留列表数量合计，其他均不展示</p>
+
+<h4>4.6.2 列表字段</h4>
+
+<table>
+  <tr><th>编号</th><th>列名</th><th>计算公式 / 取值</th><th>取整</th></tr>
+  <tr><td>L-01</td><td>排名</td><td>按 F13（毛利率）降序编号</td><td>—</td></tr>
+  <tr><td>L-02</td><td>存货名称</td><td>F01（存货名称）</td><td>—</td></tr>
+  <tr><td>L-03</td><td>产品销量</td><td>F08（销售数量）</td><td>整数</td></tr>
+  <tr><td>L-04</td><td>销售额</td><td>F07（销售额）</td><td>元，2 位小数</td></tr>
+  <tr><td>L-05</td><td>进货额</td><td>F09（进货额）</td><td>元，2 位小数</td></tr>
+  <tr><td>L-06</td><td>平均进价</td><td>F11（平均进价）</td><td>整数</td></tr>
+  <tr><td>L-07</td><td>毛利</td><td>F12（毛利）</td><td>元，取整数</td></tr>
+  <tr><td>L-08</td><td>毛利率</td><td>F13（毛利率）</td><td>百分比，2 位小数</td></tr>
+</table>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════ -->
+<h2 id="sec5">五、附录</h2>
+
+<h3>5.1 本期权限说明</h3>
+
+<ul>
+  <li>支持：4 固定仓库、采购员查询、日期查询</li>
+  <li>权限：系统内置好管理员以及采购员角色，管理员进来看到全品数据，采购员看到自己对应名下的数据</li>
+  <li>其他场景暂不考虑</li>
+</ul>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════ -->
+<h2 id="sec6">六、原型需调整字段</h2>
+
+<ul>
+  <li>去掉首页统计卡片中"毛利关注产品"字段</li>
+  <li>经营分析清单-进货提醒去掉状态列</li>
+  <li>所有详情页的卡片统计仅保留列表数量统计 其他无需统计</li>
+  <li>缺货详情页建议补货量改为上年后15天销量</li>
+</ul>
+
+</body>
+</html>
