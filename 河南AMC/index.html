@@ -18,7 +18,6 @@
             min-height: 100vh;
         }
 
-        /* ===== 顶部蓝色背景 ===== */
         .header {
             background: linear-gradient(135deg, #0f111e, #1a1d2e);
             padding: 48px 0 40px;
@@ -37,7 +36,6 @@
             padding: 40px 20px;
         }
 
-        /* ===== 卡片样式 ===== */
         .card-grid {
             display: flex;
             flex-direction: column;
@@ -73,7 +71,6 @@
             color: #0f111e;
         }
 
-        /* ===== 密码锁遮罩层 ===== */
         #lockOverlay {
             position: fixed;
             top: 0;
@@ -177,17 +174,16 @@
 
         <div class="container">
             <div class="card-grid">
-                <a href="河南AMC_AI能力管理平台v1.0.html" class="card">
+                <!-- 改成你实际的文件名：河南AMC AI能力管理平台v1.0.html -->
+                <a href="河南AMC%20AI能力管理平台v1.0.html" class="card">
                     <div class="icon"><i class="fas fa-robot"></i></div>
                     <div class="name">河南AMC AI能力管理平台v1.0原型</div>
                 </a>
-                <!-- 后续可继续添加卡片 -->
             </div>
         </div>
     </div>
 
     <script>
-        // ===== 密码验证逻辑 =====
         const CORRECT_PASSWORD = '20260410';
 
         function verifyPassword() {
