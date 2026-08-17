@@ -844,7 +844,7 @@ const ROLES = {
   tech: {name:'王工', avatar:'王', role:'总行科技部 · 能力治理', menus:[
     {group:'企业能力中心', items:[
       {id:'cap-list', icon:'🔌', name:'能力列表'},
-      {id:'gap-order', icon:'🎫', name:'缺口工单', badge:7},
+      {id:'gap-order', icon:'📶', name:'能力需求信号'},
       {id:'rule-cfg', icon:'⚙️', name:'规则配置'},
       {id:'env-list', icon:'🖥️', name:'环境管理'},
     ]},
@@ -907,8 +907,6 @@ const DATA = {
   capabilities:[
     {id:'CAP-001', name:'客户信息查询', type:'API', owner:'数据部', status:'已上线', apps:23, calls:4560},
     {id:'CAP-002', name:'短信通知', type:'API', owner:'IT部', status:'已上线', apps:45, calls:8920},
-    {id:'CAP-003', name:'OCR识别', type:'API', owner:'IT部', status:'缺口', apps:0, calls:0},
-    {id:'CAP-004', name:'人脸比对', type:'API', owner:'安全部', status:'缺口', apps:0, calls:0},
     {id:'CAP-005', name:'地图定位', type:'API', owner:'IT部', status:'已上线', apps:18, calls:2340},
     {id:'CAP-006', name:'二维码生成', type:'API', owner:'IT部', status:'已上线', apps:32, calls:5670},
     {id:'CAP-007', name:'数据表格', type:'UI组件', owner:'平台', status:'已上线', apps:67, calls:0},
@@ -916,11 +914,11 @@ const DATA = {
     {id:'CAP-009', name:'图表组件', type:'UI组件', owner:'平台', status:'已上线', apps:41, calls:0},
     {id:'CAP-010', name:'客户画像数据', type:'数据服务', owner:'数据部', status:'已上线', apps:15, calls:1230},
   ],
-  gaps:[
-    {id:'GAP-001', cap:'OCR识别', source:'信贷材料预审', from:'REQ-2024-003', priority:'高', status:'待处理', date:'2024-08-03', applicant:'张明远'},
-    {id:'GAP-002', cap:'人脸比对', source:'信贷材料预审', from:'REQ-2024-003', priority:'高', status:'待处理', date:'2024-08-03', applicant:'张明远'},
-    {id:'GAP-003', cap:'数据分析引擎', source:'客户满意度调查', from:'REQ-2024-005', priority:'中', status:'处理中', date:'2024-08-01', applicant:'张明远'},
-    {id:'GAP-004', cap:'语音转文字', source:'活动报名小程序', from:'REQ-2024-002', priority:'低', status:'暂不处理', date:'2024-07-28', applicant:'陈小白'},
+  capabilityDemands:[
+    {id:'CD-001', capName:'OCR识别', count:38, departments:['零售业务部','风险管理部'], scenes:['信贷材料预审','客户拜访'], status:'待评估', date:'2024-08-03'},
+    {id:'CD-002', capName:'人脸比对', count:21, departments:['运营管理部'], scenes:['身份核验','开户'], status:'待评估', date:'2024-08-03'},
+    {id:'CD-003', capName:'数据分析引擎', count:16, departments:['零售业务部'], scenes:['客户满意度调查','经营分析'], status:'待评估', date:'2024-08-01'},
+    {id:'CD-004', capName:'语音转文字', count:8, departments:['运营管理部'], scenes:['活动报名','会议纪要'], status:'待评估', date:'2024-07-28'},
   ],
   rules:[
     {id:'R-001', name:'禁止未授权API调用', type:'安全', scope:'全应用', status:'已生效', desc:'AI生成的应用只能调用能力中心登记过的API，禁止直连外部接口'},
@@ -956,7 +954,7 @@ const DATA = {
   ],
   notices:[
     {title:'您的需求《客户拜访管理》已通过审核', time:'10分钟前', read:false},
-    {title:'能力 OCR识别 缺口工单已创建', time:'1小时前', read:false},
+    {title:'能力 OCR识别 需求已记录', time:'1小时前', read:false},
     {title:'应用《活动报名》有新版本 v2.0.1', time:'3小时前', read:false},
     {title:'本周培训课程已开放报名', time:'昨天', read:true},
     {title:'您有3个待审核事项待处理', time:'昨天', read:true},
@@ -1041,7 +1039,7 @@ document.addEventListener('click',e=>{
 const NOTIFICATIONS=[
   {icon:'✅',color:'#00B42A',title:'审核通过',desc:'客户拜访管理（REQ-2024-001）已通过张明远审核',time:'2分钟前',unread:true},
   {icon:'🎉',color:'#1A66FF',title:'发布成功',desc:'活动报名小程序（APP-002）已正式上线',time:'1小时前',unread:true},
-  {icon:'🎫',color:'#FF7D00',title:'能力缺口工单',desc:'OCR识别能力缺口工单 GAP-001 待处理',time:'3小时前',unread:true},
+  {icon:'📶',color:'#1A66FF',title:'能力需求信号',desc:'OCR识别能力已被多次需求，建议评估是否纳入建设',time:'3小时前',unread:true},
 ];
 function toggleNotif(e){
   if(e) e.stopPropagation();
@@ -1325,28 +1323,7 @@ function renderCanvas(){
           if(m.type==='code'){
             return `<div class="ai-canvas-chat-msg bot" style="max-width:96%"><div class="ai-canvas-chat-bubble" style="padding:10px 12px;background:#FBFCFE;font-family:'SF Mono',Consolas,Monaco,monospace;font-size:11.5px;line-height:1.85;color:var(--text-2);white-space:pre">${m.text}</div></div>`;
           }
-          if(m.type==='gap'){
-            if(m.sent){
-              const txt=m.sent==='sent'?'✓ 已发送缺口能力工单至总行科技部，应用继续生成中...':'已取消发送，应用继续生成中...';
-              return `<div class="ai-canvas-chat-msg bot"><div class="ai-canvas-chat-bubble">${txt}</div></div>`;
-            }
-            return `<div class="ai-canvas-chat-msg bot" style="max-width:96%"><div class="ai-canvas-chat-bubble" style="padding:0;background:transparent;border:none">
-              <div class="ai-gap-notify">
-                <div class="ai-gap-notify-head">
-                  <span class="ai-gap-notify-icon">⚠️</span>
-                  <span class="ai-gap-notify-title">发现能力缺口</span>
-                </div>
-                <div class="ai-gap-notify-body">生成${m.gaps[0]||''}等缺口能力工单，是否发送至总行科技部补充建设？</div>
-                <div class="ai-gap-notify-list">
-                  ${m.gaps.map(g=>`<div class="ai-gap-notify-item">${g}</div>`).join('')}
-                </div>
-                <div class="ai-gap-notify-actions">
-                  <button class="btn btn-sm" onclick="dismissGapNotify(false)">取消</button>
-                  <button class="btn btn-sm btn-primary" onclick="dismissGapNotify(true)">发送</button>
-                </div>
-              </div>
-            </div></div>`;
-          }
+
           return `<div class="ai-canvas-chat-msg ${m.role}"><div class="ai-canvas-chat-bubble">${m.text}</div></div>`;
         }).join('')}
         ${aiState.thinking?`<div class="ai-canvas-chat-msg bot"><div class="ai-canvas-chat-bubble"><div class="ai-canvas-chat-think"><span class="ai-canvas-chat-think-dot"></span>${aiState.thinking}</div></div></div>`:''}
@@ -1379,9 +1356,9 @@ function appendCodeLines(step,gaps){
   let text;
   if(step===3){
     if(gaps&&gaps.length>0){
-      text='检测到能力缺口：'+gaps.join('、')+'，正在生成缺口工单...';
+      text='';
     }else{
-      text='能力匹配完成，无缺口。';
+      text='能力匹配完成。';
     }
   }else{
     text=AI_GEN_STEPS[step]||'';
@@ -1482,7 +1459,8 @@ function aiSend(){
       appendCodeLines(stepIdx,gaps);
       if(stepIdx===3&&gaps.length>0&&!aiState.gapSent){
         aiState.gapSent=true;
-        aiState.chatMsgs.push({role:'bot',type:'gap',gaps:gaps.slice(),sent:null});
+        aggregateCapDemand(gaps);
+        aiState.chatMsgs.push({role:'bot',text:'当前平台暂未开放「'+gaps.join('」「')+'」能力，已记录您的能力需求，当前应用将继续基于已有能力生成。'});
       }
       renderPage();
       scrollChatToBottom();
@@ -1646,20 +1624,7 @@ function aiChatSend(){
   },2200);
 }
 function dismissGapNotify(send){
-  if(send&&aiState.result){
-    aiState.result.gaps.forEach(g=>{
-      DATA.gaps.push({id:'GAP-'+String(DATA.gaps.length+1).padStart(3,'0'),cap:g,source:'需求自动发现',from:'AI助手',priority:'中',status:'待处理',date:'2024-08-06'});
-    });
-    showToast('缺口能力工单发送成功，已通知总行科技部','success');
-  }
-  for(let i=aiState.chatMsgs.length-1;i>=0;i--){
-    if(aiState.chatMsgs[i].type==='gap'&&aiState.chatMsgs[i].sent===null){
-      aiState.chatMsgs[i].sent=send?'sent':'cancelled';
-      break;
-    }
-  }
-  renderPage();
-  scrollChatToBottom();
+  // 已废弃：缺口不再生成工单，改为自动聚合到能力需求信号
 }
 function aiRollback(){
   aiState.view='home';
@@ -1763,14 +1728,12 @@ function aiCopyMarket(id){
   else if(m.name.includes('活动')||m.name.includes('报名'))sceneKey='event';
   else if(m.name.includes('理财'))sceneKey='finance';
   else if(m.name.includes('满意度')||m.name.includes('调查'))sceneKey='survey';
-  currentPage='home';
   aiState.view='detail';
   aiState.result={scene:sceneKey,caps:[],gaps:[],gapSent:true};
   aiState.currentApp={id:'COPY-'+Date.now(),name:m.name+' (副本)',ver:'v1.0.0',status:'编辑中',icon:m.icon,color:m.level==='L1'?'#00B42A':m.level==='L2'?'#FF7D00':'#1A66FF',desc:m.desc};
   aiState.editing=false;
   aiState.chatOpen=true;
   aiState.chatMsgs=[{role:'bot',text:`已从「${m.name}」复制，你可以在画布中继续修改，或点击右上角"发布"。`}];
-  renderSidebar();
   renderPage();
 }
 
@@ -1985,7 +1948,7 @@ function editCapability(id,name){
     <div class="form-group"><label class="form-label">能力名称<span class="req">*</span></label><input class="form-input" value="${c.name}"></div>
     <div class="form-group"><label class="form-label">类型<span class="req">*</span></label><select class="form-select"><option ${c.type==='API'?'selected':''}>API</option><option ${c.type==='UI组件'?'selected':''}>UI组件</option><option ${c.type==='数据服务'?'selected':''}>数据服务</option></select></div>
     <div class="form-group"><label class="form-label">Owner</label><input class="form-input" value="${c.owner}"></div>
-    <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option ${c.status==='已上线'?'selected':''}>已上线</option><option ${c.status==='缺口'?'selected':''}>缺口</option><option ${c.status==='停用'?'selected':''}>停用</option></select></div>
+    <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option ${c.status==='已上线'?'selected':''}>已上线</option><option ${c.status==='停用'?'selected':''}>停用</option></select></div>
     <div class="form-group"><label class="form-label">文档URL</label><input class="form-input" placeholder="https://..."></div>
     <div class="form-group"><label class="form-label">描述</label><textarea class="form-textarea" placeholder="能力说明"></textarea></div>`,()=>{showToast('能力信息已保存','success');renderPage();});
 }
@@ -2001,18 +1964,19 @@ function toggleCapability(id,action){
 function pageGapOrder(){
   return `
   <div class="page">
-    <div class="page-head"><div><div class="page-title">缺口工单</div></div></div>
+    <div class="page-head"><div><div class="page-title">能力需求信号</div></div></div>
     <div class="card">
       <div class="card-body" style="padding:0">
         <table class="table">
-          <thead><tr><th>工单号</th><th>能力名称</th><th>来源</th><th>申请人</th><th>状态</th><th>申请日期</th><th>操作</th></tr></thead>
+          <thead><tr><th>能力名称</th><th>需求次数</th><th>涉及部门</th><th>典型场景</th><th>首次提出</th><th>状态</th></tr></thead>
           <tbody>
-            ${DATA.gaps.map(g=>`<tr>
-              <td style="font-family:monospace;color:var(--text-3)">${g.id}</td>
-              <td>${g.cap}</td><td>${g.source}</td>
-              <td>${g.applicant||'-'}</td>
-              <td>${getStatusTag(g.status)}</td><td>${g.date}</td>
-              <td><button class="btn btn-sm btn-ghost" onclick="openGapHandle('${g.id}')">处理</button></td>
+            ${DATA.capabilityDemands.map(d=>`<tr>
+              <td><strong>${d.capName}</strong></td>
+              <td><span class="tag tag-info">${d.count}次</span></td>
+              <td style="color:var(--text-2)">${d.departments.join('、')}</td>
+              <td style="color:var(--text-2)">${d.scenes.join('、')}</td>
+              <td style="color:var(--text-3)">${d.date}</td>
+              <td><span class="tag tag-${d.status==='待评估'?'warning':'gray'}">${d.status}</span></td>
             </tr>`).join('')}
           </tbody>
         </table>
@@ -2020,31 +1984,7 @@ function pageGapOrder(){
     </div>
   </div>`;
 }
-function openGapHandle(id){
-  const g=DATA.gaps.find(x=>x.id===id);
-  if(!g) return;
-  openModal('处理工单 · '+id,`
-    <div class="detail-section" style="margin:0 0 24px">
-      <div class="detail-row"><div class="detail-label">工单号</div><div class="detail-value" style="font-family:monospace">${g.id}</div></div>
-      <div class="detail-row"><div class="detail-label">能力名称</div><div class="detail-value">${g.cap}</div></div>
-      <div class="detail-row"><div class="detail-label">来源</div><div class="detail-value">${g.source}</div></div>
-      <div class="detail-row"><div class="detail-label">申请人</div><div class="detail-value">${g.applicant||'-'}</div></div>
-      <div class="detail-row"><div class="detail-label">当前状态</div><div class="detail-value">${getStatusTag(g.status)}</div></div>
-      <div class="detail-row"><div class="detail-label">申请日期</div><div class="detail-value">${g.date}</div></div>
-    </div>
-    <div class="form-group"><label class="form-label">处理动作<span class="req">*</span></label>
-      <select class="form-select" id="gapAction"><option value="处理中">开始处理</option><option value="已封装">完成封装（上线能力）</option><option value="暂不处理">暂不处理</option></select>
-    </div>
-    <div class="form-group"><label class="form-label">负责人<span class="req">*</span></label><input class="form-input" value="王工" placeholder="负责封装人员"></div>
-    <div class="form-group"><label class="form-label">预计完成时间</label><input class="form-input" type="date" value="2024-08-15"></div>
-    <div class="form-group"><label class="form-label">处理说明</label><textarea class="form-textarea" placeholder="封装方案、依赖说明等"></textarea></div>`,()=>{
-    const action=$('#gapAction').value;
-    g.status=action;
-    g.handler='王工';
-    showToast(action==='已封装'?`能力 ${g.cap} 已封装上线`:`工单已${action}`,'success');
-    renderPage();
-  });
-}
+
 function pageRuleCfg(){
   return `
   <div class="page">
@@ -2457,7 +2397,7 @@ function openSceneAssess(id){
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);margin-bottom:6px"><input type="checkbox" name="gap" value="OCR识别" checked> OCR识别 <span class="tag tag-danger" style="margin-left:4px">缺口</span></label>
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);margin-bottom:6px"><input type="checkbox" name="gap" value="智能推荐引擎" checked> 智能推荐引擎 <span class="tag tag-danger" style="margin-left:4px">缺口</span></label>
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2)"><input type="checkbox" name="gap" value="风险评分模型" > 风险评分模型 <span class="tag tag-success" style="margin-left:4px">已有</span></label>
-        <div style="font-size:11px;color:var(--warning);margin-top:8px;padding-top:8px;border-top:1px dashed var(--border-light)">勾选「缺口」项将自动生成缺口工单并发送消息至科技部王工</div>
+        <div style="font-size:11px;color:var(--warning);margin-top:8px;padding-top:8px;border-top:1px dashed var(--border-light)">勾选「缺口」项将自动记录能力需求信号</div>
       </div>
     </div>
     <div class="form-group"><label class="form-label">评估意见</label><textarea class="form-textarea" placeholder="评估说明、建议等"></textarea></div>`,()=>{
@@ -3009,7 +2949,7 @@ function showAIModifyResponse(text,a){
       ${modifyPlan.steps.map((s,i)=>`<div>${i+1}. ${s}</div>`).join('')}
     </div>
     ${hasGap?`<div style="margin-top:8px;padding:8px 10px;background:rgba(255,125,0,.08);border:1px solid rgba(255,125,0,.3);border-radius:6px;font-size:11px;color:var(--warning)">
-      ⚠️ 检测到 ${missingCaps.length} 项能力缺口，发布后将自动生成缺口工单
+      ⚠️ 检测到 ${missingCaps.length} 项暂未开放的能力，已记录需求信号
     </div>`:''}
     <div style="margin-top:10px;display:flex;gap:6px">
       <button class="btn btn-sm btn-primary" onclick="closeAIAndOpenReq('${newId}')">查看详情并继续</button>
@@ -3395,7 +3335,7 @@ function openRoleSwitch(){toggleRoleMenu()}
 const AI_QUICK=['我每次拜访完客户都要手工登记','我想做一个活动报名小程序','希望能自动提醒理财到期','需要一个客户满意度调查'];
 const AI_FLOW=[
   {user:'我每次拜访完客户都要手工登记',bot:'我理解你的痛点 👍 拜访手工登记确实效率低。让我帮你梳理一下需求：<br><br>1. <strong>目标用户</strong>：客户经理对吗？大约多少人使用？<br>2. <strong>功能范围</strong>：拜访登记 + 报告生成 + 客户画像关联？<br>3. <strong>数据字段</strong>：客户姓名、拜访时间、拜访目的是否足够？<br>4. <strong>权限</strong>：仅本人可见还是支行共享？'},
-  {user:'是的',bot:'好的，需求已经清晰。我帮你匹配了平台能力：<br><br>✓ <strong>客户信息查询</strong>：已有<br>✓ <strong>地图定位</strong>：已有<br>✗ <strong>OCR识别</strong>：缺失（已自动创建缺口工单 GAP-001）<br><br>根据数据敏感度（客户信息）和能力依赖，判定为 <strong>L2 主管审核</strong> 等级。',card:true},
+  {user:'是的',bot:'好的，需求已经清晰。我帮你匹配了平台能力：<br><br>✓ <strong>客户信息查询</strong>：已有<br>✓ <strong>地图定位</strong>：已有<br>✗ <strong>OCR识别</strong>：暂未开放（已记录需求）<br><br>根据数据敏感度（客户信息）和能力依赖，判定为 <strong>L2 主管审核</strong> 等级。',card:true},
 ];
 let aiStep=0;
 let aiCreatedReqId=null;
@@ -3468,7 +3408,7 @@ function sendAI(){
     }else if(text.includes('理财')||text.includes('到期')){
       showAIResponse({bot:'理财到期提醒是个高频场景 💰<br><br>能力匹配：<br>✓ 短信通知<br>✓ 产品查询<br><br>判定为 <strong>L1 免审</strong> 等级。',card:true,scene:'finance'});
     }else if(text.includes('满意度')||text.includes('调查')){
-      showAIResponse({bot:'客户满意度调查很有价值 📊<br><br>能力匹配：<br>✓ 问卷引擎<br>✗ 数据分析（已创建缺口工单）<br><br>判定为 <strong>L2 主管审核</strong> 等级。',card:true,scene:'survey'});
+      showAIResponse({bot:'客户满意度调查很有价值 📊<br><br>能力匹配：<br>✓ 问卷引擎<br>✗ 数据分析（暂未开放，已记录需求）<br><br>判定为 <strong>L2 主管审核</strong> 等级。',card:true,scene:'survey'});
     }else{
       showAIResponse({bot:'我已收到你的需求描述 ✨<br><br>让我帮你梳理一下：<br>1. 目标用户是谁？<br>2. 核心功能有哪些？<br>3. 涉及哪些数据字段？<br>4. 权限要求如何？<br><br>请补充以上信息，我会帮你生成需求卡。'});
     }
@@ -3683,12 +3623,10 @@ function submitForPublish(id){
     <div class="form-group"><label class="form-label">发布版本</label><input class="form-input" value="v1.0.0"></div>`,()=>{
     if(r.level==='L1'){
       r.status='已发布';
-      const gaps=generateGapOrders(r);
+      const missing=r.caps.filter(c=>!c.has).map(c=>c.n);
+      aggregateCapDemand(missing);
       closeModal();
       closeDrawer();
-      if(gaps>0){
-        showToast(`发布成功！已自动生成 ${gaps} 个缺口能力工单，已推送至总行科技部工单池`,'success');
-      }
       setTimeout(()=>publishSuccess(id),200);
     }else{
       r.status='待审核';
@@ -3721,7 +3659,8 @@ function passAudit(id){
     // 发布审核通过 → 已发布
     r.status='已发布';
     r.auditStage=null;
-    const gaps=generateGapOrders(r);
+    const missing=r.caps.filter(c=>!c.has).map(c=>c.n);
+    aggregateCapDemand(missing);
     // 同步场景池状态为已孵化
     if(r.fromScene){
       const sc=DATA.scenes.find(x=>x.id===r.fromScene);
@@ -3730,7 +3669,7 @@ function passAudit(id){
         sc.linkedApp=r.linkedApp||(DATA.apps.find(a=>a.name===r.name)?.id);
       }
     }
-    showToast(gaps>0?`审核通过！已自动生成 ${gaps} 个缺口能力工单，已推送至总行科技部工单池`:'审核已通过，应用发布成功！','success');
+    showToast('审核已通过，应用发布成功！','success');
     closeDrawer();
     setTimeout(()=>publishSuccess(id),200);
   }
@@ -3784,18 +3723,18 @@ function submitReqAudit(id){
   setTimeout(()=>openReqDetail(id),100);
 }
 /* 生成缺口能力工单，返回生成数量 */
-function generateGapOrders(r){
-  const missing=r.caps.filter(c=>!c.has);
-  if(missing.length===0) return 0;
-  const baseNum=DATA.gaps.length;
-  missing.forEach((c,i)=>{
-    const gapId='GAP-'+String(baseNum+i+1).padStart(3,'0');
-    DATA.gaps.unshift({id:gapId, cap:c.n, source:'需求自动发现', from:r.id, priority:'高', status:'待处理', date:'2024-08-05'});
+function aggregateCapDemand(gapNames){
+  // 将缺失能力聚合到 capabilityDemands，按名称去重累加
+  if(!gapNames||gapNames.length===0) return;
+  gapNames.forEach(name=>{
+    const exist=DATA.capabilityDemands.find(d=>d.capName===name);
+    if(exist){
+      exist.count++;
+    }else{
+      const newId='CD-'+String(DATA.capabilityDemands.length+1).padStart(3,'0');
+      DATA.capabilityDemands.push({id:newId, capName:name, count:1, departments:[], scenes:[], status:'待评估', date:new Date().toISOString().slice(0,10)});
+    }
   });
-  // 更新科技部菜单角标
-  const gapMenu=document.querySelector('[data-page="gap-order"] .menu-badge');
-  if(gapMenu) gapMenu.textContent=DATA.gaps.filter(g=>g.status==='待处理').length;
-  return missing.length;
 }
 function publishSuccess(id){
   const r=DATA.requirements.find(x=>x.id===id);
@@ -3813,7 +3752,6 @@ function publishSuccess(id){
     }
   }
   const missing=r.caps.filter(c=>!c.has);
-  const gapList=DATA.gaps.filter(g=>g.from===r.id);
   openModal('🎉 发布成功',`
     <div style="text-align:center;padding:20px 0">
       <div style="font-size:56px;margin-bottom:12px">🎉</div>
@@ -3824,12 +3762,7 @@ function publishSuccess(id){
       <div class="detail-row"><div class="detail-label">应用编号</div><div class="detail-value" style="font-family:monospace">${r.id.replace('REQ','APP')}</div></div>
       <div class="detail-row"><div class="detail-label">版本</div><div class="detail-value">${isModify?`<span style="color:var(--text-4);text-decoration:line-through">${oldVer}</span> → <strong style="color:var(--success)">${newVer}</strong>`:'v1.0.0'}</div></div>
       <div class="detail-row"><div class="detail-label">访问地址</div><div class="detail-value" style="font-family:monospace;color:var(--primary)">https://app.tilong.com/${r.id.toLowerCase()}</div></div>
-    </div>
-    ${gapList.length>0?`<div class="detail-section" style="margin:14px 0">
-      <div class="detail-section-title">🎫 已生成缺口能力工单 <span style="font-size:11px;color:var(--warning);font-weight:400">· 已推送至总行科技部工单池</span></div>
-      ${gapList.map(g=>`
-        <div class="detail-row"><div class="detail-label">${g.id}</div><div class="detail-value">${g.cap} <span class="tag tag-warning">${g.priority}</span> <span class="tag tag-info">${g.status}</span></div></div>`).join('')}
-    </div>`:''}`,null,true);
+    </div>`,null,true);
   $('#modalFoot').innerHTML=`<button class="btn" onclick="closeModal()">关闭</button><button class="btn btn-primary" onclick="closeModal();openPreview('${id}')">📱 查看应用</button>`;
 }
 /* ============ 小程序预览页面 ============ */
