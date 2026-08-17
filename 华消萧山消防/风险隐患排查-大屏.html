@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大屏多级页面交互 (沉浸式详情与导出弹窗)</title>
+    <style>
+        /* --- 基础重置与全局 --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #030b16; /* 深空蓝底 */
+            font-family: "Microsoft YaHei", sans-serif;
+            color: #00f0ff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        .flex { display: flex; }
+        .flex-col { display: flex; flex-direction: column; }
+        .flex-1 { flex: 1; }
+        
+        /* 统一样式 */
+        .text-number { color: #ffffff; font-family: Arial, sans-serif; }
+        .component-box {
+            width: 100%; padding: 10px; background: rgba(0, 20, 40, 0.6);
+            border: 1px solid rgba(0, 240, 255, 0.2); position: relative;
+        }
+        .component-box::before, .component-box::after {
+            content: ''; position: absolute; width: 10px; height: 10px; border: 1px solid #00f0ff;
+        }
+        .component-box::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+        .component-box::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+        .box-title { font-size: 14px; font-weight: bold; padding-bottom: 8px; border-bottom: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 8px; }
+
+        /* --- 顶部导航栏 --- */
+        .top-header {
+            height: 70px; flex-shrink: 0;
+            background: linear-gradient(180deg, rgba(0, 20, 40, 0.9) 0%, rgba(3, 11, 22, 0.95) 100%);
+            border-bottom: 2px solid rgba(0, 240, 255, 0.2);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; position: relative; z-index: 100;
+        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-breadcrumb { color: #8fa9c9; font-size: 14px; }
+        .header-breadcrumb .sep { margin: 0 5px; color: #4f6885; }
+        .header-breadcrumb span { cursor: pointer; }
+        .header-breadcrumb span:hover { color: #fff; }
+        
+        .header-center { 
+            position: absolute; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 20px;
+        }
+        .header-title { 
+            font-size: 28px; font-weight: bold; color: #00f0ff; 
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            letter-spacing: 4px;
+        }
+        .header-deco {
+            width: 40px; height: 2px; background: #00f0ff; position: relative;
+        }
+        .header-deco::before { content: ''; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-left: 2px solid #00f0ff; border-bottom: 2px solid #00f0ff; transform: rotate(45deg); }
+        .header-deco::after { content: ''; position: absolute; right: -5px; top: -4px; width: 10px; height: 10px; border-right: 2px solid #00f0ff; border-bottom: 2px solid #00f0ff; transform: rotate(-45deg); }
+
+        .header-right { display: flex; align-items: center; gap: 15px; font-size: 12px; color: #a9d3ff; }
+        .btn-prd {
+            background: rgba(0, 240, 255, 0.1); border: 1px solid #00f0ff; color: #fff;
+            padding: 6px 12px; border-radius: 4px; display: flex; align-items: center; gap: 5px; cursor: pointer;
+        }
+        .header-time { font-size: 14px; color: #a9d3ff; }
+
+        /* --- 主区域布局 --- */
+        .main-container { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+        /* --- 1. 左侧边栏 (默认显示) --- */
+        .left-panel {
+            width: 350px; height: 100%; padding: 15px 10px;
+            display: flex; flex-direction: column; gap: 10px;
+            background: rgba(3, 11, 22, 0.85); border-right: 1px solid rgba(0, 240, 255, 0.1);
+            flex-shrink: 0; z-index: 10; transition: transform 0.3s ease-in-out;
+        }
+        .left-panel.hidden { transform: translateX(-100%); width: 0; padding: 0; border: none; overflow: hidden; }
+
+        /* 一级列表样式 */
+        .filter-row { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .dropdown-select {
+            background: rgba(0, 40, 80, 0.6); border: 1px solid rgba(0, 240, 255, 0.3);
+            color: #a9d3ff; padding: 8px 10px; border-radius: 4px; outline: none; font-size: 14px;
+            cursor: pointer; appearance: none; width: 100%;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f0ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;
+        }
+        .input-control {
+            background: rgba(0, 40, 80, 0.6); border: 1px solid rgba(0, 240, 255, 0.3);
+            color: #a9d3ff; padding: 8px 10px; border-radius: 4px; outline: none; font-size: 14px; width: 100%;
+        }
+        .input-control::placeholder { color: #4f6885; }
+        
+        .action-row { display: flex; gap: 10px; justify-content: space-between; }
+        .btn-action {
+            flex: 1; padding: 6px 0; text-align: center; border-radius: 4px; cursor: pointer; font-size: 13px;
+        }
+        .btn-query { background: #0056b3; color: #fff; border: 1px solid #007bff; }
+        .btn-clear { background: rgba(255,255,255,0.05); border: 1px solid #4f6885; color: #a9d3ff; }
+
+        .modal-btn-query {
+            background: #0056b3; color: #fff; border: 1px solid #007bff;
+            padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 13px;
+        }
+        .modal-btn-query:hover { background: #0066cc; }
+        .modal-btn-clear {
+            background: rgba(255,255,255,0.05); border: 1px solid #4f6885; color: #a9d3ff;
+            padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 13px;
+        }
+        .modal-btn-clear:hover { background: rgba(255,255,255,0.1); }
+        
+        .btn-export {
+            background: rgba(0, 240, 255, 0.1); border: 1px solid #00f0ff; color: #00f0ff;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center;
+            gap: 5px; font-size: 13px; white-space: nowrap; width: fit-content;
+        }
+        .icon-excel { display: inline-block; width: 14px; height: 14px; background: #28a745; border-radius: 2px; position: relative; }
+        .icon-excel::after { content: 'X'; color: white; font-size: 10px; font-weight: bold; display: flex; justify-content: center; align-items: center; height: 100%; }
+
+        .business-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 6px 0; font-size: 13px; cursor: pointer; border-radius: 4px; transition: background 0.2s;
+        }
+        .business-row:hover { background: rgba(0, 240, 255, 0.05); }
+        .business-label { width: 80px; color: #dbeafe; }
+        .progress-bar-track { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 0 15px; }
+        .progress-bar-fill { height: 100%; background: #00f0ff; border-radius: 2px; box-shadow: 0 0 8px rgba(0, 240, 255, 0.6); }
+        .business-stats { display: flex; gap: 6px; min-width: 70px; justify-content: flex-end; align-items: baseline; color: #a9d3ff; }
+        .business-stats .num { color: #ffffff; }
+
+        /* 新增占位组件样式 */
+        .placeholder-module {
+            width: 100%; height: 150px; display: flex; justify-content: center; align-items: center;
+            color: #4f6885; font-size: 16px; letter-spacing: 2px;
+        }
+
+        /* --- 2. 右侧/中部 内容区 (多页面切换) --- */
+        .content-area {
+            flex: 1; height: 100%; position: relative; overflow: hidden; background: #030b16;
+        }
+        .page-view {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; /* 默认隐藏 */
+            padding: 20px; overflow-y: auto;
+        }
+        .page-view.active { display: block; }
+
+        /* --- 页面视图1：首页占位 --- */
+        .home-placeholder {
+            display: flex; justify-content: center; align-items: center; height: 100%;
+            color: #2c5a7a; font-size: 24px; letter-spacing: 4px;
+        }
+
+        /* --- 页面视图2：场所卡片列表 --- */
+        .search-row-l2 { display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-end; flex-wrap: wrap;}
+        .input-group-l2 { display: flex; flex-direction: column; gap: 5px; min-width: 200px; }
+        .input-group-l2 label { font-size: 13px; color: #7a9ab5; }
+        
+        .card-grid-l2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .place-card {
+            background: rgba(0, 30, 60, 0.4); border: 1px solid rgba(0, 240, 255, 0.15);
+            padding: 15px; display: flex; flex-direction: column; height: 120px;
+            transition: all 0.2s; justify-content: space-between;
+        }
+        .place-card:hover { border-color: #00f0ff; box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); }
+        .card-title { font-size: 15px; font-weight: bold; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-tags { font-size: 12px; color: #a9d3ff; margin-top: 5px; display: flex; gap: 15px; }
+        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 10px;}
+        .detail-btn {
+            background: transparent; border: none; color: #00f0ff; cursor: pointer; font-size: 12px; text-decoration: underline; text-underline-offset: 3px;
+        }
+
+        /* --- 页面视图3：全屏详情报表 --- */
+        .detail-layout { display: flex; gap: 20px; height: 100%; }
+        .detail-left { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+        .info-box-title { font-size: 15px; color: #00f0ff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; }
+        .info-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+        .info-field label { font-size: 12px; color: #a9d3ff; }
+        .info-val-box { background: rgba(0, 40, 80, 0.3); border: 1px solid rgba(0, 240, 255, 0.2); padding: 8px 10px; font-size: 13px; color: #fff; }
+        .detail-center { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .video-panel { flex: 1; background: rgba(0, 20, 40, 0.5); border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; flex-direction: column; color: #4f6885; position: relative; }
+        .trend-panel { height: 180px; background: rgba(0, 20, 40, 0.5); border: 1px solid rgba(255,255,255,0.05); position: relative; padding: 10px 0;}
+        .trend-panel .info-box-title { margin: 0 15px 10px 15px; padding-bottom: 5px; }
+        .trend-chart-placeholder { height: 120px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; }
+        .trend-chart-placeholder::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(90deg, transparent, transparent 29px, rgba(255,255,255,0.05) 29px, rgba(255,255,255,0.05) 30px);
+        }
+        .chart-line { position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: linear-gradient(180deg, transparent 0%, rgba(0, 240, 255, 0.2) 100%); border-top: 2px solid #00f0ff; }
+        .detail-right { width: 350px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+        .score-panel { display: flex; flex-direction: column; }
+        .big-score { font-size: 60px; color: #ff9800; font-weight: bold; line-height: 1; }
+        .score-sub { font-size: 12px; color: #a9d3ff; }
+        .indicator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .indicator-item { background: rgba(0, 40, 80, 0.3); border: 1px solid rgba(255,255,255,0.05); padding: 10px; }
+        .indicator-item .label { font-size: 12px; color: #a9d3ff; margin-bottom: 5px; }
+        .indicator-item .value { font-size: 16px; color: #00f0ff; font-weight: bold; }
+        .indicator-item .value .den { color: #4f6885; font-size: 12px; }
+
+        /* --- 导出弹窗 --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(3, 11, 22, 0.85);
+            backdrop-filter: blur(4px); z-index: 9999; display: none; justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            width: 1100px; max-width: 96%; background: #051123; border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.1); padding: 20px; position: relative; display: flex; flex-direction: column; gap: 20px;
+        }
+        .modal-header { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; color: #fff; font-size: 16px; font-weight: bold;}
+        .modal-close { background: transparent; border: 1px solid #ff4d4f; color: #ff4d4f; border-radius: 4px; padding: 0 8px; cursor: pointer; font-size: 14px;}
+        .modal-search-row { display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; }
+        .modal-input-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px; }
+        .modal-input-group label { font-size: 13px; color: #7a9ab5; }
+        .modal-input, .modal-select { background: rgba(0, 20, 40, 0.8); border: 1px solid rgba(0, 240, 255, 0.3); color: #fff; padding: 8px; border-radius: 2px; outline: none; width: 100%; }
+        .modal-list { display: flex; flex-direction: column; border: 1px solid rgba(0, 240, 255, 0.1); max-height: 250px; overflow-y: auto; }
+        .modal-list-row { display: grid; grid-template-columns: 28px 1.35fr 0.85fr 0.85fr 1.5fr 1.15fr 0.9fr 0.6fr 0.7fr 1fr; align-items: center; gap: 8px; padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #a9d3ff; }
+        .modal-list-row:hover { background: rgba(0,240,255,0.05); }
+        .modal-list-row:last-child { border-bottom: none; }
+        .modal-list-header { color: #00f0ff; font-weight: bold; background: rgba(0, 40, 80, 0.3); }
+        .modal-list-row .col-check { display: flex; justify-content: center; align-items: center; }
+        .modal-list-row .modal-check { width: 15px; height: 15px; accent-color: #00f0ff; cursor: pointer; }
+        .modal-list-row .col { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* 日期区间：两个日期控件固定宽度，避免溢出 */
+        .modal-input-group .date-range { display: flex; align-items: center; gap: 6px; }
+        .modal-input-group .date-range .modal-input { width: 124px; flex-shrink: 0; padding: 8px 6px; }
+        .modal-export-btn { background: rgba(0, 240, 255, 0.1); border: 1px solid #00f0ff; color: #00f0ff; padding: 8px 20px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .modal-export-btn:hover { background: rgba(0, 240, 255, 0.2); }
+        .modal-pagination { display: flex; justify-content: center; align-items: center; gap: 12px; padding-top: 10px; font-size: 13px; color: #a9d3ff; }
+        .modal-pagination button { background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.3); color: #00f0ff; padding: 4px 14px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .modal-pagination button:hover:not(:disabled) { background: rgba(0,240,255,0.2); }
+        .modal-pagination button:disabled { opacity: 0.35; cursor: not-allowed; }
+        .modal-pagination .page-num b { color: #00f0ff; font-size: 14px; }
+
+        /* --- PRD 抽屉（右侧滑出） --- */
+        .prd-drawer-overlay { position: fixed; inset: 0; background: rgba(2, 8, 23, 0.6); backdrop-filter: blur(2px); z-index: 1000; display: flex; justify-content: flex-end; opacity: 0; visibility: hidden; transition: opacity 0.25s ease; }
+        .prd-drawer-overlay.active { opacity: 1; visibility: visible; }
+        .prd-drawer { width: 780px; max-width: 94vw; height: 100%; background: #051123; border-left: 1px solid rgba(0, 240, 255, 0.3); box-shadow: -10px 0 40px rgba(0, 240, 255, 0.08); display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.28s ease; }
+        .prd-drawer-overlay.active .prd-drawer { transform: translateX(0); }
+        .prd-drawer-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 16px; font-weight: bold; flex-shrink: 0; }
+        .prd-drawer-body { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+        .prd-drawer-foot { font-size: 12px; color: #4f6885; border-top: 1px dashed rgba(255,255,255,0.1); padding: 12px 20px; text-align: center; flex-shrink: 0; }
+        .prd-card { background: rgba(0, 30, 60, 0.35); border: 1px solid rgba(0, 240, 255, 0.15); padding: 14px 16px; }
+        .prd-card-title { font-size: 14px; color: #00f0ff; font-weight: bold; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed rgba(0,240,255,0.25); display: flex; align-items: center; gap: 6px; }
+        .prd-card ul { list-style: none; padding: 0; margin: 0; }
+        .prd-card li { font-size: 12.5px; color: #a9d3ff; line-height: 2; padding-left: 14px; position: relative; }
+        .prd-card li::before { content: '▸'; position: absolute; left: 0; top: 0; color: #00f0ff; }
+        .prd-card li b, .prd-card li strong { color: #ffffff; }
+        .prd-card .hl { color: #00f0ff; }
+        .prd-tag { display: inline-block; background: rgba(0,240,255,0.12); border: 1px solid rgba(0,240,255,0.35); color: #00f0ff; font-size: 11px; padding: 0 6px; border-radius: 2px; margin-right: 4px; line-height: 1.6; }
+        .prd-wide { grid-column: 1 / -1; }
+        .prd-foot { font-size: 12px; color: #4f6885; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px; text-align: center; }
+
+        /* --- 滚动条 --- */
+        .page-view::-webkit-scrollbar, .left-panel::-webkit-scrollbar, .modal-list::-webkit-scrollbar { width: 4px; }
+        .page-view::-webkit-scrollbar-thumb, .left-panel::-webkit-scrollbar-thumb, .modal-list::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.3); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- ================= 1. 顶部导航栏 ================= -->
+    <div class="top-header">
+        <div class="header-left">
+            <span class="header-breadcrumb" id="header-breadcrumb">首页 / 风险隐患排查</span>
+        </div>
+        <div class="header-center">
+            <div class="header-deco"></div>
+            <div class="header-title">基层治理</div>
+            <div class="header-deco"></div>
+        </div>
+        <div class="header-right">
+            <button class="btn-prd" onclick="openPRD()">📄 PRD 说明</button>
+            <span class="header-time">2026/08/14 09:56:05</span>
+        </div>
+    </div>
+
+    <!-- ================= 2. 主体区域 ================= -->
+    <div class="main-container">
+        
+        <!-- ================= 左侧边栏 (模块列表) ================= -->
+        <div class="left-panel" id="side-menu">
+            
+            <!-- 模块1：九小场所 -->
+            <div class="component-box flex-shrink-0">
+                <div class="box-title"><span>九小场所</span></div>
+                <!-- 查询区域：区域下拉（短）选择即展示，导出按钮放后面 -->
+                <div class="filter-row">
+                    <div style="display:flex; align-items:center; gap:10px; width:100%;">
+                        <select class="dropdown-select" id="area-select" onchange="onAreaChange(this.value)" style="width:100%; flex:1;">
+                            <option value="萧山区" selected>萧山区</option>
+                            <option value="上城区">上城区</option>
+                            <option value="西湖区">西湖区</option>
+                        </select>
+                        <!-- 点击触发导出弹窗 -->
+                        <button class="btn-export" onclick="openExportModal()" style="flex-shrink:0;"><span class="icon-excel"></span> 导出</button>
+                    </div>
+                </div>
+                
+                <div class="small-business-list" id="level1-list">
+                    <!-- 数据通过 JS 渲染 -->
+                </div>
+            </div>
+
+            <!-- 模块2：高层建筑 (占位) -->
+            <div class="component-box flex-shrink-0">
+                <div class="box-title"><span>高层建筑</span></div>
+                <div class="placeholder-module">[ 数据占位 ]</div>
+            </div>
+
+            <!-- 模块3：出租屋管控 (占位) -->
+            <div class="component-box flex-shrink-0">
+                <div class="box-title"><span>出租屋管控</span></div>
+                <div class="placeholder-module">[ 数据占位 ]</div>
+            </div>
+
+        </div>
+
+        <!-- ================= 右侧内容区 (页面切换核心) ================= -->
+        <div class="content-area">
+            
+            <!-- 视图1：首页占位 -->
+            <div class="page-view active" id="page-view-home">
+                <div class="home-placeholder">
+                    <div>[ 地图核心区域 ] &nbsp;&nbsp;|&nbsp;&nbsp; [ 右侧数据面板 ]</div>
+                </div>
+            </div>
+
+            <!-- 视图2：场所卡片列表 -->
+            <div class="page-view" id="page-view-2">
+                <div class="search-row-l2">
+                    <div class="input-group-l2" style="min-width:260px;">
+                        <label>场所名称</label>
+                        <input type="text" class="input-control" id="place-name-search" placeholder="请输入场所名称" oninput="renderPlaceCards()">
+                    </div>
+                </div>
+                <div class="card-grid-l2" id="place-card-grid">
+                    <!-- 卡片数据通过 JS 渲染 -->
+                </div>
+            </div>
+
+            <!-- 视图3：全屏详情页 -->
+            <div class="page-view" id="page-view-3">
+                <div class="detail-layout">
+                    <div class="detail-left">
+                        <div class="info-box-title">基本信息</div>
+                        <div>
+                            <div class="info-field"><label>单位名称：</label><div class="info-val-box" id="d-name">浙江柳树家纺有限公司朱民</div></div>
+                            <div class="info-field"><label>单位地址：</label><div class="info-val-box" id="d-address">浙江省杭州市萧山区东康路288号</div></div>
+                            <div class="info-field"><label>所属区域：</label><div class="info-val-box" id="d-area">新塘街道</div></div>
+                            <div class="info-field"><label>单位类别：</label><div class="info-val-box"></div></div>
+                            <div class="info-field"><label>单位类型：</label><div class="info-val-box" id="d-type">重点单位</div></div>
+                            <div class="info-field"><label>运营服务机构名称：</label><div class="info-val-box">杭州辉汪科技有限公司（视清云）</div></div>
+                            <div class="info-field"><label>信息完整度：</label><div class="info-val-box">64</div></div>
+                            <div class="info-field"><label>设备完好率：</label><div class="info-val-box">100%</div></div>
+                            <div class="info-field"><label>单位物联网设备质量：</label><input class="input-control" type="text" value="良好" placeholder="请输入设备质量"></div>
+                        </div>
+                    </div>
+                    <div class="detail-center">
+                        <div class="video-panel">
+                            <div class="info-box-title" style="position:absolute; top:8px; left:15px; right:15px; margin-bottom:0;">单位视频</div>
+                            <div style="font-size: 60px; opacity:0.3;">📦</div><div>暂无数据</div>
+                        </div>
+                        <div class="trend-panel">
+                            <div class="info-box-title">历史评分趋势</div>
+                            <div class="trend-chart-placeholder">
+                                <div class="chart-line"></div>
+                                <div style="position:absolute; bottom:-20px; left:0; width:100%; display:flex; justify-content:space-between; font-size:10px; color:#4f6885; padding:0 10px;">
+                                    <span>0227</span><span>0301</span><span>0305</span><span>0310</span><span>0315</span><span>0320</span><span>0325</span><span>0330</span><span>0405</span><span>0410</span><span>0415</span><span>0420</span><span>0426</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-right">
+                        <div class="score-panel">
+                            <div class="info-box-title" style="margin-bottom:10px;">今日评分</div>
+                            <div style="display:flex; align-items:center; gap:20px;">
+                                <div class="big-score">59</div>
+                                <div class="score-sub">评估结果</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="info-box-title" style="margin-bottom:10px;">一级指标</div>
+                            <div class="indicator-grid">
+                                <div class="indicator-item"><div class="label">消防安全责任制落实</div><div class="value">2 <span class="den">/ 15</span></div></div>
+                                <div class="indicator-item"><div class="label">建筑物防火</div><div class="value">20 <span class="den">/ 20</span></div></div>
+                                <div class="indicator-item"><div class="label">消防设施及器材</div><div class="value">0 <span class="den">/ 25</span></div></div>
+                                <div class="indicator-item"><div class="label">消防安全管理</div><div class="value">20 <span class="den">/ 20</span></div></div>
+                                <div class="indicator-item"><div class="label">扑救初起火灾能力</div><div class="value">10 <span class="den">/ 10</span></div></div>
+                                <div class="indicator-item"><div class="label">消防教育培训</div><div class="value">10 <span class="den">/ 10</span></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= 导出弹窗 ================= -->
+    <div class="modal-overlay" id="export-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span>导出条件设置</span>
+                <button class="modal-close" onclick="closeExportModal()">X</button>
+            </div>
+            
+            <div class="modal-search-row">
+                <div class="modal-input-group">
+                    <label>场所类型</label>
+                    <select class="modal-select" id="modal-place-type">
+                        <option value="">全部</option>
+                        <option value="小购物">小购物</option>
+                        <option value="小餐饮">小餐饮</option>
+                        <option value="小住宿">小住宿</option>
+                        <option value="小公共娱乐">小公共娱乐</option>
+                        <option value="小休闲健身">小休闲健身</option>
+                        <option value="小医疗">小医疗</option>
+                        <option value="小教学">小教学</option>
+                        <option value="小生产加工">小生产加工</option>
+                        <option value="小易燃易爆销售/储存场所">小易燃易爆销售/储存场所</option>
+                        <option value="其他类型">其他类型</option>
+                    </select>
+                </div>
+                <div class="modal-input-group">
+                    <label>镇街</label>
+                    <select class="modal-select" id="modal-street"><option value="">全部</option><option value="新塘街道">新塘街道</option></select>
+                </div>
+                <div class="modal-input-group" style="flex:1.6; min-width:290px;">
+                    <label>日期区间</label>
+                    <div class="date-range">
+                        <input type="date" class="modal-input" id="modal-date-start" value="2026-08-01">
+                        <span style="color:#4f6885;">至</span>
+                        <input type="date" class="modal-input" id="modal-date-end" value="2026-08-14">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 查询 / 重置按钮 -->
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="modal-btn-clear" onclick="resetExportFilter()">重置</button>
+                <button class="modal-btn-query" onclick="queryExportFilter()">查询</button>
+            </div>
+
+            <!-- 导出按钮 -->
+            <div style="display:flex; justify-content:flex-end;">
+                <button class="modal-export-btn" onclick="doExport()"><span class="icon-excel"></span> 导出</button>
+            </div>
+
+            <div class="modal-list" id="export-list">
+                <!-- 表头 + 数据行（含复选框）由 JS 渲染 -->
+            </div>
+
+            <div class="modal-pagination" id="export-pagination"></div>
+        </div>
+    </div>
+
+    <!-- ================= PRD 说明抽屉（右侧） ================= -->
+    <div class="prd-drawer-overlay" id="prd-modal">
+        <div class="prd-drawer">
+            <div class="prd-drawer-header">
+                <span>📄 PRD 产品需求说明</span>
+                <button class="modal-close" onclick="closePRD()">✕ 关闭</button>
+            </div>
+
+            <div class="prd-drawer-body">
+
+                <div class="prd-card">
+                    <div class="prd-card-title">1️⃣ 入口路径</div>
+                    <ul>
+                        <li>入口：<b>基层治理 → 除险保安</b> 模块（顶部标题区保持"基层治理"不变）</li>
+                        <li>原"除险保安"模块更名为 <b class="hl">"九小场所"</b></li>
+                        <li>当前原型仅作参考，以业务功能为准</li>
+                    </ul>
+                </div>
+
+                <div class="prd-card">
+                    <div class="prd-card-title">2️⃣ 首页模块调整</div>
+                    <ul>
+                        <li><b>九小场所</b>：展示 9 类场所的 <span class="prd-tag">场所数</span><span class="prd-tag">排查率</span>（名称 + 进度条 + 数量 + 排查率）</li>
+                        <li><span style="color:#ff6b6b;">✕ 删除</span>：挂牌占比模块</li>
+                        <li><span style="color:#28a745;">✔ 保留</span>：高层建筑、出租屋管控模块（占位）</li>
+                        <li>中间地图区、右侧数据面板 <b>保持不变</b>（占位）</li>
+                    </ul>
+                </div>
+
+                <div class="prd-card">
+                    <div class="prd-card-title">3️⃣ 首页查询区</div>
+                    <ul>
+                        <li>仅一个 <b>区域下拉框</b>，默认 <span class="hl">萧山区</span>，支持切换其他区域</li>
+                        <li>选择区域 <b>即查即显</b>，无"查询 / 清空条件"按钮</li>
+                        <li>下拉框拉满整行，<b>导出按钮</b> 紧随右侧</li>
+                    </ul>
+                </div>
+
+                <div class="prd-card">
+                    <div class="prd-card-title">4️⃣ 导出逻辑（三层）</div>
+                    <ul>
+                        <li><b>① 默认导出全部</b>：打开弹窗即全量数据，设置查询条件后可"全部导出"</li>
+                        <li><b>② 列表勾选导出</b>：列表带复选框（表头全选当前页 / 逐行勾选），勾选后导出所选</li>
+                        <li><b>③ 查询项导出</b>：按 <span class="prd-tag">场所类型</span><span class="prd-tag">镇街</span><span class="prd-tag">日期区间</span> 筛选后导出</li>
+                        <li><b>跨页保留</b>：翻页后前一页勾选数据 <b class="hl">不清空</b></li>
+                        <li><b>导出字段</b> = 列表字段：场所名称、场所类型、所在区域、详细地址、管辖机构名称、所属街道名称、建筑面积、联系人、更新日期</li>
+                        <li><b>未勾选任何数据</b>时点导出 → <b class="hl">默认导出全部</b></li>
+                    </ul>
+                </div>
+
+                <div class="prd-card">
+                    <div class="prd-card-title">5️⃣ 场所列表页（二级）</div>
+                    <ul>
+                        <li><b>进入</b>：点击首页九小场所某一类型行</li>
+                        <li>进入后 <b>左侧查询栏隐藏</b>，全屏卡片展示</li>
+                        <li>查询项：<span class="prd-tag">场所名称</span> 输入即过滤</li>
+                        <li>卡片项：<b>场所名称</b> + 类型标签，点击"查看详情"进入三级页</li>
+                        <li>面包屑：首页 / 风险隐患排查 / <b>场所列表</b></li>
+                    </ul>
+                </div>
+
+                <div class="prd-card">
+                    <div class="prd-card-title">6️⃣ 场所详情页（三级）</div>
+                    <ul>
+                        <li><b>进入</b>：点击场所卡片"查看详情"</li>
+                        <li>基本信息：单位名称、单位地址、所属区域、单位类别、单位类型、运营服务机构名称、信息完整度、设备完好率、<b>单位物联网设备质量</b></li>
+                        <li>中间：<b>单位视频</b>（暂无数据）+ 历史评分趋势</li>
+                        <li>右侧：今日评分 + 一级指标 6 项</li>
+                        <li>面包屑：首页 / 风险隐患排查 / 场所列表 / <b>场所详情</b></li>
+                        <li>基本信息、中间、右侧的信息展示同原有 <b class="hl">基层治理-重点单位-单位详情-基础信息</b> 展示</li>
+                    </ul>
+                </div>
+
+                <div class="prd-card prd-wide">
+                    <div class="prd-card-title">7️⃣ 接口说明</div>
+                    <ul>
+                        <li>基础信息对接：<b>应急侧 · 重点单位基础信息接口</b></li>
+                        <li><b>查询项字段映射</b>：场所类型 <span class="prd-tag">place_type</span>（九小场所 + 其他类型）、镇街 <span class="prd-tag">hand_street_name</span>、时间 <span class="prd-tag">update_time</span></li>
+                        <li><b>列表/导出/详情字段映射</b>：场所名称 place_name、场所类型 place_type、所在区域 area、详细地址 address、管辖机构名称 manage_org_name、所属街道名称 street_name、建筑面积 building_area、联系人 contact、更新日期 update_time</li>
+                        <li>当前页面数据为 <b>模拟数据</b>，接口联调时替换即可</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 3. JS 交互逻辑 ================= -->
+    <script>
+        // --- 1. 模拟数据（按区域） ---
+        const baseTypes = [
+            { name: '小购物' }, { name: '小餐饮' }, { name: '小住宿' }, { name: '小公共娱乐' }, { name: '小休闲健身' },
+            { name: '小医疗' }, { name: '小教学' }, { name: '小生产加工' }, { name: '小易燃易爆' }
+        ];
+        const areaData = {
+            '萧山区': [
+                { name: '小购物', count: 10, pct: 78 }, { name: '小餐饮', count: 11, pct: 79 },
+                { name: '小住宿', count: 11, pct: 84 }, { name: '小公共娱乐', count: 4, pct: 84 },
+                { name: '小休闲健身', count: 9, pct: 60 }, { name: '小医疗', count: 16, pct: 86 },
+                { name: '小教学', count: 8, pct: 94 }, { name: '小生产加工', count: 9, pct: 72 },
+                { name: '小易燃易爆', count: 8, pct: 96 }
+            ],
+            '上城区': [
+                { name: '小购物', count: 15, pct: 82 }, { name: '小餐饮', count: 18, pct: 85 },
+                { name: '小住宿', count: 9, pct: 76 }, { name: '小公共娱乐', count: 6, pct: 70 },
+                { name: '小休闲健身', count: 12, pct: 66 }, { name: '小医疗', count: 20, pct: 88 },
+                { name: '小教学', count: 10, pct: 90 }, { name: '小生产加工', count: 7, pct: 68 },
+                { name: '小易燃易爆', count: 5, pct: 92 }
+            ],
+            '西湖区': [
+                { name: '小购物', count: 13, pct: 75 }, { name: '小餐饮', count: 16, pct: 80 },
+                { name: '小住宿', count: 12, pct: 86 }, { name: '小公共娱乐', count: 5, pct: 72 },
+                { name: '小休闲健身', count: 8, pct: 64 }, { name: '小医疗', count: 14, pct: 83 },
+                { name: '小教学', count: 9, pct: 87 }, { name: '小生产加工', count: 11, pct: 74 },
+                { name: '小易燃易爆', count: 6, pct: 90 }
+            ]
+        };
+        let currentArea = '萧山区'; // 当前选中区域
+
+        function generateMockPlaces() {
+            let cards = [];
+            const names = ['浙江柳树家纺', '杭州中杰特种纤维', '如家酒店', '金瑞大厦', '杭州萧山银隆君亭酒店', '潮潮自由山庄', '开元酒店', '萧山区第一中等职业学校'];
+            const types = ['小购物', '小餐饮', '小住宿', '小公共娱乐', '小休闲健身', '小医疗', '小教学', '小生产加工', '小易燃易爆'];
+            for(let i=0; i<30; i++) {
+                const randomType = types[Math.floor(Math.random() * types.length)];
+                cards.push({
+                    id: i,
+                    name: names[Math.floor(Math.random() * names.length)] + (i+1) + '号店',
+                    type: randomType,
+                });
+            }
+            return cards;
+        }
+        const mockPlaceCards = generateMockPlaces();
+
+        // --- 2. DOM 元素 ---
+        const listContainer = document.getElementById('level1-list');
+        const breadcrumb = document.getElementById('header-breadcrumb');
+        const sideMenu = document.getElementById('side-menu');
+        const pageViewHome = document.getElementById('page-view-home');
+        const pageView2 = document.getElementById('page-view-2');
+        const pageView3 = document.getElementById('page-view-3');
+        const cardGrid = document.getElementById('place-card-grid');
+
+        // --- 3. 渲染一级菜单（按区域即查即显） ---
+        function renderLevel1(area) {
+            const list = areaData[area] || areaData['萧山区'];
+            listContainer.innerHTML = '';
+            list.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'business-row';
+                row.onclick = () => openLevel2(item.name);
+                row.innerHTML = `
+                    <div class="business-label">${item.name}</div>
+                    <div class="progress-bar-track"><div class="progress-bar-fill" style="width: ${item.pct}%;"></div></div>
+                    <div class="business-stats"><span class="num">${item.count}家</span><span style="color:#4f6885;font-size:11px;">排查率</span><span>${item.pct}%</span></div>
+                `;
+                listContainer.appendChild(row);
+            });
+        }
+        // 切换区域：直接展示对应数据（无需点击查询）
+        function onAreaChange(area) {
+            currentArea = area;
+            renderLevel1(area);
+        }
+        // 初始化：默认萧山区
+        renderLevel1(currentArea);
+
+        // --- 4. 页面切换逻辑 ---
+        function switchView(viewId) {
+            document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        let currentType = ''; // 当前场所类型
+        function openLevel2(typeName) {
+            sideMenu.classList.add('hidden'); // 进入卡片列表页，去掉左侧查询栏
+            switchView('page-view-2');
+            breadcrumb.innerHTML = `
+                <span onclick="goBackToLevel1()">首页</span> / 
+                <span onclick="goBackToLevel1()">风险隐患排查</span> / 
+                <span style="color:#fff">场所列表</span>
+            `;
+            currentType = typeName;
+            document.getElementById('place-name-search').value = ''; // 清空名称搜索
+            renderPlaceCards();
+        }
+
+        // 渲染场所卡片（按类型 + 场所名称关键字过滤）
+        function renderPlaceCards() {
+            const keyword = (document.getElementById('place-name-search').value || '').trim();
+            let filteredCards = mockPlaceCards.filter(c =>
+                c.type === currentType && (!keyword || c.name.includes(keyword))
+            );
+            if (filteredCards.length === 0) {
+                filteredCards = mockPlaceCards
+                    .filter(c => !keyword || c.name.includes(keyword))
+                    .slice(0, 12);
+            }
+
+            cardGrid.innerHTML = '';
+            if (filteredCards.length === 0) {
+                cardGrid.innerHTML = '<div style="color:#4f6885; text-align:center; padding:40px;">未找到匹配的场所</div>';
+                return;
+            }
+            filteredCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'place-card';
+                cardEl.innerHTML = `
+                    <div>
+                        <div class="card-title" title="${card.name}">${card.name}</div>
+                        <div class="card-tags"><span>类型: ${card.type}</span></div>
+                    </div>
+                    <div class="card-bottom">
+                        <button class="detail-btn" onclick="openLevel3('${card.name}', '${card.type}', '${card.id}')">查看详情</button>
+                    </div>
+                `;
+                cardGrid.appendChild(cardEl);
+            });
+        }
+
+        function goBackToLevel1() {
+            sideMenu.classList.remove('hidden');
+            switchView('page-view-home');
+            breadcrumb.innerHTML = '首页 / 风险隐患排查';
+        }
+
+        function openLevel3(name, type, id) {
+            sideMenu.classList.add('hidden');
+            switchView('page-view-3');
+            breadcrumb.innerHTML = `
+                <span onclick="goBackToLevel1()">首页</span> / 
+                <span onclick="goBackToLevel1()">风险隐患排查</span> / 
+                <span onclick="openLevel2('${type}')">场所列表</span> / 
+                <span style="color:#fff">场所详情</span>
+            `;
+            document.getElementById('d-name').innerText = name;
+            document.getElementById('d-address').innerText = `浙江省杭州市萧山区模拟路${id}号（${name}）`;
+            document.getElementById('d-area').innerText = '新塘街道';
+            document.getElementById('d-type').innerText = type;
+        }
+
+        // --- 5. 导出弹窗逻辑（数据 / 复选框 / 分页 / 导出） ---
+        const exportRows = (() => {
+            const names = ['浙江柳树家纺', '杭州中杰特种纤维', '如家酒店', '金瑞大厦', '萧山银隆君亭酒店', '潮潮自由山庄', '开元酒店', '第一中等职业学校', '萧山万象汇', '恒隆广场店', '汉庭酒店', '外婆家餐饮'];
+            const types = ['小购物', '小餐饮', '小住宿', '小公共娱乐', '小休闲健身', '小医疗', '小教学', '小生产加工', '小易燃易爆'];
+            const areas = ['萧山区', '上城区', '西湖区'];
+            const streets = ['新塘街道', '义蓬街道', '河庄街道', '临江街道', '前进街道'];
+            const orgs = ['萧山区消防救援大队', '新塘街道应急管理站', '义蓬街道综合治理中心', '河庄街道安全办'];
+            const contacts = ['张伟', '李娜', '王强', '刘敏', '陈静'];
+            const rows = [];
+            for (let i = 0; i < 20; i++) {
+                rows.push({
+                    id: i,
+                    name: names[i % names.length] + '（' + (i + 1) + '）',
+                    type: types[i % types.length],
+                    area: areas[i % areas.length],
+                    address: '浙江省杭州市' + areas[i % areas.length] + '示范路' + (i + 10) + '号',
+                    manageOrg: orgs[i % orgs.length],
+                    street: streets[i % streets.length],
+                    buildingArea: (300 + i * 137) + '㎡',
+                    contact: contacts[i % contacts.length] + ' ' + (13800000000 + i * 37),
+                    updateTime: '2026-08-' + String((i % 14) + 1).padStart(2, '0')
+                });
+            }
+            return rows;
+        })();
+        const EXPORT_PAGE_SIZE = 5;
+        let exportPage = 1;
+        const exportSelected = new Set();
+        let filteredExportRows = [...exportRows];
+
+        function renderExportList() {
+            const listEl = document.getElementById('export-list');
+            const totalPages = Math.ceil(filteredExportRows.length / EXPORT_PAGE_SIZE);
+            const start = (exportPage - 1) * EXPORT_PAGE_SIZE;
+            const pageRows = filteredExportRows.slice(start, start + EXPORT_PAGE_SIZE);
+            const pageAllChecked = pageRows.every(r => exportSelected.has(r.id));
+
+            let html = `<div class="modal-list-row modal-list-header">
+                <span class="col-check"><input type="checkbox" class="modal-check" ${pageAllChecked ? 'checked' : ''} onclick="togglePageAll(this)"></span>
+                <span class="col">场所名称</span>
+                <span class="col">场所类型</span>
+                <span class="col">所在区域</span>
+                <span class="col">详细地址</span>
+                <span class="col">管辖机构名称</span>
+                <span class="col">所属街道名称</span>
+                <span class="col">建筑面积</span>
+                <span class="col">联系人</span>
+                <span class="col">更新日期</span>
+            </div>`;
+            pageRows.forEach(r => {
+                html += `<div class="modal-list-row">
+                    <span class="col-check"><input type="checkbox" class="modal-check" ${exportSelected.has(r.id) ? 'checked' : ''} onchange="toggleRow(${r.id}, this)"></span>
+                    <span class="col" title="${r.name}">${r.name}</span>
+                    <span class="col">${r.type}</span>
+                    <span class="col">${r.area}</span>
+                    <span class="col" title="${r.address}">${r.address}</span>
+                    <span class="col">${r.manageOrg}</span>
+                    <span class="col">${r.street}</span>
+                    <span class="col">${r.buildingArea}</span>
+                    <span class="col">${r.contact}</span>
+                    <span class="col">${r.updateTime}</span>
+                </div>`;
+            });
+            listEl.innerHTML = html;
+
+            document.getElementById('export-pagination').innerHTML = `
+                <button onclick="changeExportPage(-1)" ${exportPage <= 1 ? 'disabled' : ''}>上一页</button>
+                <span class="page-num">第 <b>${exportPage}</b> / ${totalPages} 页 · 已选 <b style="color:#28a745">${exportSelected.size}</b> 条</span>
+                <button onclick="changeExportPage(1)" ${exportPage >= totalPages ? 'disabled' : ''}>下一页</button>
+            `;
+        }
+        function toggleRow(id, el) {
+            if (el.checked) exportSelected.add(id); else exportSelected.delete(id);
+            renderExportList(); // 刷新表头全选态与已选计数（跨页勾选保留）
+        }
+        function togglePageAll(el) {
+            const start = (exportPage - 1) * EXPORT_PAGE_SIZE;
+            const pageRows = filteredExportRows.slice(start, start + EXPORT_PAGE_SIZE);
+            pageRows.forEach(r => { if (el.checked) exportSelected.add(r.id); else exportSelected.delete(r.id); });
+            renderExportList();
+        }
+        function changeExportPage(delta) {
+            exportPage += delta;
+            renderExportList();
+        }
+        function doExport() {
+            // 未勾选任何数据时默认导出全部
+            const count = exportSelected.size > 0 ? exportSelected.size : filteredExportRows.length;
+            alert('导出成功！共导出 ' + count + ' 条数据');
+            closeExportModal();
+        }
+        function queryExportFilter() {
+            const typeVal = document.getElementById('modal-place-type').value;
+            const streetVal = document.getElementById('modal-street').value;
+            const startVal = document.getElementById('modal-date-start').value;
+            const endVal = document.getElementById('modal-date-end').value;
+            filteredExportRows = exportRows.filter(r => {
+                if (typeVal && r.type !== typeVal) return false;
+                if (streetVal && r.street !== streetVal) return false;
+                if (startVal && r.updateTime < startVal) return false;
+                if (endVal && r.updateTime > endVal) return false;
+                return true;
+            });
+            exportPage = 1;
+            exportSelected.clear();
+            renderExportList();
+        }
+        function resetExportFilter() {
+            document.getElementById('modal-place-type').value = '';
+            document.getElementById('modal-street').value = '';
+            document.getElementById('modal-date-start').value = '2026-08-01';
+            document.getElementById('modal-date-end').value = '2026-08-14';
+            filteredExportRows = [...exportRows];
+            exportPage = 1;
+            exportSelected.clear();
+            renderExportList();
+        }
+        function openExportModal() {
+            document.getElementById('export-modal').classList.add('active');
+            exportPage = 1;
+            exportSelected.clear();
+            filteredExportRows = [...exportRows];
+            resetExportFilter();
+        }
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.remove('active');
+        }
+
+        // --- 6. PRD 说明弹窗 ---
+        function openPRD() {
+            document.getElementById('prd-modal').classList.add('active');
+        }
+        function closePRD() {
+            document.getElementById('prd-modal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

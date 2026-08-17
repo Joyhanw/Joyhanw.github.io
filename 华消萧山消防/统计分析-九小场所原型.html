@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>统计分析 · 九小场所原型</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #0e1c3d;
+    color: #fff;
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+  .demo-wrap {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1500px;
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+  /* ===== 手机预览 ===== */
+  .preview-wrap {
+    width: 390px;
+    flex-shrink: 0;
+  }
+  .phone {
+    width: 100%;
+    background: linear-gradient(180deg, #2c5cc5 0%, #1a3a8a 50%, #14306d 100%);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    min-height: 820px;
+    position: relative;
+  }
+  .phone-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .phone-header .left { display: flex; align-items: center; gap: 6px; }
+  .phone-header .left .arrow { font-size: 18px; opacity: 0.9; }
+  .phone-header .right { display: flex; align-items: center; gap: 16px; font-size: 18px; }
+  .phone-header .title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .phone-header .back { cursor: pointer; }
+  .phone-header .back:hover { opacity: 0.75; }
+  /* 页面切换（小程序新页面） */
+  .page { display: none; }
+  .page.active { display: block; }
+  .sub-body {
+    background: #fff;
+    height: 768px;
+    overflow-y: auto;
+    padding: 14px;
+  }
+  /* Tabs */
+  .tabs {
+    display: flex;
+    padding: 0 12px;
+    gap: 0;
+    margin-top: 4px;
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .tab.active {
+    color: #fff;
+    border-bottom-color: #fff;
+    font-weight: 600;
+  }
+  /* 卡片 */
+  .card {
+    background: #fff;
+    color: #333;
+    margin: 16px 14px;
+    border-radius: 12px;
+    overflow: visible;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+  .dropdown-btn {
+    background: #f5f8ff;
+    color: #2c5cc5;
+    border: 1px solid #2c5cc5;
+    border-radius: 18px;
+    padding: 5px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all .2s;
+    font-family: inherit;
+  }
+  .dropdown-btn:hover { background: #eaf1ff; }
+  .dropdown-btn.static {
+    cursor: default;
+    pointer-events: none;
+  }
+  .dropdown-btn.static:hover { background: #f5f8ff; }
+  .dropdown-btn .arrow {
+    font-size: 9px;
+    transition: transform .2s;
+  }
+  .dropdown-btn.open .arrow { transform: rotate(180deg); }
+  .dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 16px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    z-index: 50;
+    overflow: hidden;
+    display: none;
+    min-width: 200px;
+    border: 1px solid #eef0f5;
+  }
+  .dropdown-menu.show {
+    display: block;
+    animation: dropdownIn .18s ease-out;
+  }
+  @keyframes dropdownIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .dropdown-item {
+    padding: 11px 14px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background .15s;
+  }
+  .dropdown-item:last-child { border-bottom: none; }
+  .dropdown-item:hover { background: #f5f8ff; color: #2c5cc5; }
+  .dropdown-item.active {
+    background: #f5f8ff;
+    color: #2c5cc5;
+    font-weight: 600;
+  }
+  /* 指标区 */
+  .metrics { padding: 12px 14px 8px; }
+  .metric-row {
+    display: grid;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #f0f0f0;
+  }
+  .metric-row:last-of-type { border-bottom: none; }
+  .metric-row.row2 { grid-template-columns: repeat(2, 1fr); }
+  .metric-row.row3 { grid-template-columns: repeat(3, 1fr); }
+  .metric { text-align: center; padding: 6px 0; }
+  .metric .label { font-size: 12px; color: #999; }
+  .metric .value {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 4px 0 2px;
+    display: inline-block;
+  }
+  .metric .value.clickable {
+    color: #2c5cc5;
+    cursor: pointer;
+  }
+  .metric .value.clickable::after {
+    content: '↗';
+    font-size: 11px;
+    margin-left: 3px;
+    opacity: 0.6;
+  }
+  .metric .sub {
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+    line-height: 1.6;
+  }
+  .metric .sub b {
+    color: #555;
+    font-weight: 600;
+  }
+  .export-row {
+    padding: 12px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .export-btn {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #2c5cc5;
+    background: #fff;
+    color: #2c5cc5;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: inherit;
+  }
+  .export-btn:hover { background: #f5f8ff; }
+  /* ===== 单位列表弹窗 ===== */
+  .modal.list { width: 640px; }
+  .list-head {
+    background: #f9faff;
+    border: 1px solid #eef2ff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .list-head .count {
+    font-size: 14px;
+    color: #1a3a8a;
+    font-weight: 600;
+  }
+  .list-head .count b {
+    font-size: 18px;
+    color: #2c5cc5;
+    margin: 0 4px;
+  }
+  .list-head .type-badge {
+    background: #eaf1ff;
+    color: #2c5cc5;
+    padding: 4px 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .unit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 4px;
+  }
+  .unit-list::-webkit-scrollbar { width: 5px; }
+  .unit-list::-webkit-scrollbar-thumb { background: #c9d6f5; border-radius: 3px; }
+  .unit-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #eef0f5;
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all .18s;
+  }
+  .unit-item:hover {
+    border-color: #2c5cc5;
+    background: #fafcff;
+    transform: translateX(2px);
+  }
+  .unit-item .info { min-width: 0; flex: 1; }
+  .unit-item .name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .unit-item .meta {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .unit-item .meta .t {
+    color: #2c5cc5;
+    background: #f0f4ff;
+    padding: 1px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    margin-right: 8px;
+  }
+  .unit-item .arrow {
+    color: #c0c8d8;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .unit-item:hover .arrow { color: #2c5cc5; }
+  /* ===== 右侧说明 ===== */
+  .preview-info {
+    margin-top: 16px;
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    text-align: center;
+  }
+  .doc-panel {
+    width: 480px;
+    background: #fff;
+    color: #333;
+    border-radius: 14px;
+    padding: 24px 26px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    flex-shrink: 0;
+  }
+  .doc-panel h2 {
+    margin-bottom: 18px;
+    color: #1a3a8a;
+    font-size: 20px;
+    border-bottom: 2px solid #1a3a8a;
+    padding-bottom: 10px;
+  }
+  .doc-panel h3 {
+    margin: 14px 0 8px;
+    color: #2c5cc5;
+    font-size: 15px;
+  }
+  .doc-panel p, .doc-panel li {
+    line-height: 1.85;
+    font-size: 13.5px;
+    color: #555;
+  }
+  .doc-panel ul { padding-left: 20px; margin-top: 4px; }
+  .doc-panel .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .doc-panel .tag {
+    background: #f0f4ff;
+    color: #2c5cc5;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+  /* ===== 详情弹窗 ===== */
+  .modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+  }
+  .modal-mask.show {
+    display: flex;
+    animation: maskIn .2s;
+  }
+  @keyframes maskIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: #fff;
+    border-radius: 14px;
+    width: 600px;
+    max-width: 100%;
+    max-height: 88vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: modalIn .25s;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.94); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .modal.excel { width: 920px; }
+  .modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafbff;
+  }
+  .modal-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a3a8a;
+  }
+  .modal-close {
+    cursor: pointer;
+    font-size: 22px;
+    color: #aaa;
+    line-height: 1;
+    padding: 4px 6px;
+    transition: color .2s;
+  }
+  .modal-close:hover { color: #333; }
+  .modal-body {
+    padding: 18px 20px;
+    overflow-y: auto;
+  }
+  .detail-section { margin-bottom: 20px; }
+  .detail-section h4 {
+    font-size: 14px;
+    color: #1a3a8a;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    border-left: 3px solid #2c5cc5;
+  }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+    background: #f9faff;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #eef2ff;
+  }
+  .detail-item .label {
+    font-size: 12px;
+    color: #999;
+  }
+  .detail-item .value {
+    font-size: 14px;
+    color: #333;
+    margin-top: 5px;
+    font-weight: 500;
+    word-break: break-all;
+  }
+  /* 评分 */
+  .score-head {
+    display: flex;
+    align-items: center;
+    background: #f9faff;
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #eef2ff;
+  }
+  .score-head .num {
+    font-size: 40px;
+    font-weight: 700;
+    color: #f59e0b;
+    line-height: 1;
+  }
+  .score-head .num-label {
+    font-size: 12px;
+    color: #999;
+    margin-top: 6px;
+  }
+  .score-head .ring-wrap {
+    width: 64px;
+    height: 64px;
+    margin-left: auto;
+    position: relative;
+    background: conic-gradient(#f59e0b 0% 59%, #f0f0f0 59% 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .score-head .ring-inner {
+    width: 50px; height: 50px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #999;
+  }
+  .indicators {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .indicator {
+    background: #f9faff;
+    padding: 12px 14px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #555;
+    border: 1px solid #eef2ff;
+  }
+  .indicator .score {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .indicator .score .total {
+    color: #999;
+    font-size: 12px;
+    font-weight: 400;
+  }
+  .score.full { color: #10b981; }
+  .score.partial { color: #f59e0b; }
+  .score.zero { color: #ef4444; }
+  .notice {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #fff8e1;
+    color: #b45309;
+    border-radius: 8px;
+    font-size: 12px;
+    border-left: 3px solid #f59e0b;
+  }
+  /* Excel 预览 */
+  .excel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  .excel-table th, .excel-table td {
+    border: 1px solid #e0e6f5;
+    padding: 8px 10px;
+    text-align: center;
+    color: #333;
+  }
+  .excel-table th {
+    background: #f0f4ff;
+    color: #1a3a8a;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .excel-table .new-col {
+    background: #fff8e1;
+    color: #b45309;
+    position: relative;
+  }
+  .excel-table .new-col::after {
+    content: 'NEW';
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    font-size: 9px;
+    background: #f59e0b;
+    color: #fff;
+    padding: 1px 4px;
+    border-radius: 0 4px 0 4px;
+  }
+  .excel-table .total-row {
+    background: #f0f4ff;
+    font-weight: 700;
+    color: #1a3a8a;
+  }
+  .excel-table .type-row td:first-child {
+    color: #1a3a8a;
+    font-weight: 500;
+    text-align: left;
+  }
+  .excel-meta {
+    background: #f9faff;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #666;
+    margin-top: 12px;
+    border: 1px dashed #c0cff7;
+  }
+
+        /* --- PRD 按钮（固定右上角） --- */
+        .btn-prd-fixed {
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+            background: rgba(0, 240, 255, 0.1); border: 1px solid #00f0ff; color: #fff;
+            padding: 8px 16px; border-radius: 4px; cursor: pointer;
+            font-size: 14px; font-family: inherit; display: flex; align-items: center; gap: 6px;
+            backdrop-filter: blur(6px); transition: all .2s;
+        }
+        .btn-prd-fixed:hover { background: rgba(0, 240, 255, 0.2); box-shadow: 0 0 16px rgba(0,240,255,0.2); }
+        /* --- PRD 抽屉（右侧滑出，深色主题） --- */
+        .prd-drawer-overlay {
+            position: fixed; inset: 0; background: rgba(2, 8, 23, 0.6);
+            backdrop-filter: blur(2px); z-index: 10000; display: flex; justify-content: flex-end;
+            opacity: 0; visibility: hidden; transition: opacity 0.25s ease;
+        }
+        .prd-drawer-overlay.active { opacity: 1; visibility: visible; }
+        .prd-drawer {
+            width: 780px; max-width: 94vw; height: 100%;
+            background: #051123; border-left: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: -10px 0 40px rgba(0, 240, 255, 0.08);
+            display: flex; flex-direction: column;
+            transform: translateX(100%); transition: transform 0.28s ease;
+        }
+        .prd-drawer-overlay.active .prd-drawer { transform: translateX(0); }
+        .prd-drawer-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #fff; font-size: 16px; font-weight: bold; flex-shrink: 0;
+        }
+        .prd-drawer-header .modal-close {
+            background: transparent; border: 1px solid #ff4d4f; color: #ff4d4f;
+            border-radius: 4px; padding: 4px 12px; cursor: pointer; font-size: 14px;
+        }
+        .prd-drawer-header .modal-close:hover { background: rgba(255,77,79,0.1); }
+        .prd-drawer-body {
+            flex: 1; overflow-y: auto; padding: 18px 20px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .prd-drawer-body::-webkit-scrollbar { width: 4px; }
+        .prd-drawer-body::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.3); border-radius: 4px; }
+        .prd-card {
+            background: rgba(0, 30, 60, 0.35); border: 1px solid rgba(0, 240, 255, 0.15);
+            padding: 14px 16px;
+        }
+        .prd-card-title {
+            font-size: 14px; color: #00f0ff; font-weight: bold;
+            margin-bottom: 10px; padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(0,240,255,0.25);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .prd-card ul { list-style: none; padding: 0; margin: 0; }
+        .prd-card li {
+            font-size: 12.5px; color: #a9d3ff; line-height: 2;
+            padding-left: 14px; position: relative;
+        }
+        .prd-card li::before { content: '\25B8'; position: absolute; left: 0; top: 0; color: #00f0ff; }
+        .prd-card li b, .prd-card li strong { color: #ffffff; }
+        .prd-card .hl { color: #00f0ff; }
+        .prd-tag {
+            display: inline-block; background: rgba(0,240,255,0.12);
+            border: 1px solid rgba(0,240,255,0.35); color: #00f0ff;
+            font-size: 11px; padding: 0 6px; border-radius: 2px; margin-right: 4px; line-height: 1.6;
+        }
+
+    </style>
+</head>
+<body>
+
+<button class="btn-prd-fixed" onclick="openPRD()">📄 PRD 说明</button>
+
+<div class="demo-wrap">
+  <!-- ====== 移动端预览 ====== -->
+  <div class="preview-wrap">
+    <div class="phone">
+      <!-- ===== 主页面：排查信息统计 ===== -->
+      <div class="page active" id="mainPage">
+      <!-- 顶部 -->
+      <div class="phone-header">
+        <div class="left">
+          <span class="arrow">&lt;</span>
+          <span>统计分析</span>
+        </div>
+        <div class="right">
+          <span>···</span>
+          <span onclick="closeAll()">×</span>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab">辖区概况</div>
+        <div class="tab active">排查信息</div>
+        <div class="tab">隐患信息</div>
+        <div class="tab">挂牌信息</div>
+      </div>
+
+      <!-- 数据卡片：九小场所 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">九小场所</div>
+          <button class="dropdown-btn" id="dropdownBtn_jiuxiao" onclick="toggleDropdown(event, 'jiuxiao')">
+            <span id="dropdownText_jiuxiao">全部</span>
+            <span class="arrow">▼</span>
+          </button>
+          <div class="dropdown-menu" id="dropdownMenu_jiuxiao">
+            <div class="dropdown-item active" data-value="全部">全部</div>
+            <div class="dropdown-item" data-value="小购物">小购物</div>
+            <div class="dropdown-item" data-value="小餐饮">小餐饮</div>
+            <div class="dropdown-item" data-value="小住宿">小住宿</div>
+            <div class="dropdown-item" data-value="小公共娱乐">小公共娱乐</div>
+            <div class="dropdown-item" data-value="小休闲健身">小休闲健身</div>
+            <div class="dropdown-item" data-value="小医疗">小医疗</div>
+            <div class="dropdown-item" data-value="小教学">小教学</div>
+            <div class="dropdown-item" data-value="小生产加工">小生产加工</div>
+            <div class="dropdown-item" data-value="小易燃易爆销售/储存场所">小易燃易爆销售/储存场所</div>
+          </div>
+        </div>
+        <div class="metrics" id="metrics_jiuxiao"><!-- JS 渲染 --></div>
+        <div class="export-row">
+          <button class="export-btn" onclick="showExcelPreview()">一键导出</button>
+        </div>
+      </div>
+
+      <!-- 数据卡片：厂中厂（与九小场所同级，仅展示不跳转） -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">厂中厂</div>
+          <span class="dropdown-btn static" id="dropdownText_changzhong">全部</span>
+        </div>
+        <div class="metrics" id="metrics_changzhong"><!-- JS 渲染 --></div>
+        <div class="export-row">
+          <button class="export-btn" onclick="showExcelPreview()">一键导出</button>
+        </div>
+      </div>
+      </div><!-- /mainPage -->
+
+      <!-- ===== 单位列表（新页面） ===== -->
+      <div class="page" id="unitListPage">
+        <div class="phone-header">
+          <div class="left back" onclick="backToMain()"><span class="arrow">&lt;</span><span>返回</span></div>
+          <div class="title" id="unitListTitle">场所列表</div>
+          <div class="right"><span onclick="backToMain()">×</span></div>
+        </div>
+        <div class="sub-body" id="unitListBody"></div>
+      </div>
+
+      <!-- ===== 单位详情（新页面） ===== -->
+      <div class="page" id="detailPage">
+        <div class="phone-header">
+          <div class="left back" onclick="backToList()"><span class="arrow">&lt;</span><span>返回</span></div>
+          <div class="title">场所详情</div>
+          <div class="right"><span onclick="backToList()">×</span></div>
+        </div>
+        <div class="sub-body" id="detailBody"></div>
+      </div>
+    </div>
+    <div class="preview-info">九小场所原型 · iPhone 14 尺寸</div>
+  </div>
+
+  
+</div>
+
+<!-- ====== Excel 预览弹窗 ====== -->
+<div class="modal-mask" id="excelModal">
+  <div class="modal excel">
+    <div class="modal-header">
+      <div class="modal-title">📊 导出 Excel 字段预览</div>
+      <div class="modal-close" onclick="closeExcel()">×</div>
+    </div>
+    <div class="modal-body" id="excelBody"></div>
+  </div>
+</div>
+
+<script>
+  /* ===== 数据 ===== */
+  const allData = {
+    totalUnits: 2927, bigUnits: 334,
+    checked: 2922, checkedRate: '99%',
+    fireRisk: 19016, fireFix: 10921, fireRate: '57%',
+    compoundRisk: 1429, compoundFix: 974, compoundRate: '68%',
+    focusRisk: 16185, focusFix: 10464, focusRate: '64%',
+    deadlineRisk: 4260, deadlineFix: 1431, deadlineRate: '33%',
+    immediateRisk: 1497
+  };
+
+  const typeList = [
+    '全部', '小购物', '小餐饮', '小住宿', '小公共娱乐',
+    '小休闲健身', '小医疗', '小教学', '小生产加工', '小易燃易爆销售/储存场所'
+  ];
+
+  /* 不同类型按比例模拟数据 */
+  function getData(type) {
+    if (type === '全部') return allData;
+    const seed = [...type].reduce((a, c) => a + c.charCodeAt(0), 0);
+    const f = ((seed % 8) + 3) / 10; // 0.3~1.0
+    return {
+      totalUnits: Math.round(allData.totalUnits * f),
+      bigUnits: Math.round(allData.bigUnits * f),
+      checked: Math.round(allData.checked * f), checkedRate: '99%',
+      fireRisk: Math.round(allData.fireRisk * f), fireFix: Math.round(allData.fireFix * f), fireRate: '57%',
+      compoundRisk: Math.round(allData.compoundRisk * f), compoundFix: Math.round(allData.compoundFix * f), compoundRate: '68%',
+      focusRisk: Math.round(allData.focusRisk * f), focusFix: Math.round(allData.focusFix * f), focusRate: '64%',
+      deadlineRisk: Math.round(allData.deadlineRisk * f), deadlineFix: Math.round(allData.deadlineFix * f), deadlineRate: '33%',
+      immediateRisk: Math.round(allData.immediateRisk * f)
+    };
+  }
+
+  /* ===== 渲染卡片指标 ===== */
+  function renderMetrics(type, scope) {
+    const d = getData(type);
+    const clickable = scope === 'jiuxiao';
+    const unitTotalHtml = clickable
+      ? `<div class="value clickable" onclick="showUnitList('${type}')">${d.totalUnits}</div>`
+      : `<div class="value">${d.totalUnits}</div>`;
+    document.getElementById('metrics_' + scope).innerHTML = `
+      <div class="metric-row row2">
+        <div class="metric">
+          <div class="label">场所总数</div>
+          ${unitTotalHtml}
+        </div>
+        <div class="metric">
+          <div class="label">规上企业总数</div>
+          <div class="value">${d.bigUnits}</div>
+        </div>
+      </div>
+      <div class="metric-row row3">
+        <div class="metric">
+          <div class="label">已排查数</div>
+          <div class="value">${d.checked}</div>
+          <div class="sub">排查率 <b>${d.checkedRate}</b></div>
+        </div>
+        <div class="metric">
+          <div class="label">消防隐患数</div>
+          <div class="value">${d.fireRisk}</div>
+          <div class="sub">整改数 <b>${d.fireFix}</b><br>整改率 <b>${d.fireRate}</b></div>
+        </div>
+        <div class="metric">
+          <div class="label">综合类隐患数</div>
+          <div class="value">${d.compoundRisk}</div>
+          <div class="sub">整改数 <b>${d.compoundFix}</b><br>整改率 <b>${d.compoundRate}</b></div>
+        </div>
+      </div>
+      <div class="metric-row row3">
+        <div class="metric">
+          <div class="label">集中整改数</div>
+          <div class="value">${d.focusRisk}</div>
+          <div class="sub">整改数 <b>${d.focusFix}</b><br>整改率 <b>${d.focusRate}</b></div>
+        </div>
+        <div class="metric">
+          <div class="label">限期整改数</div>
+          <div class="value">${d.deadlineRisk}</div>
+          <div class="sub">整改数 <b>${d.deadlineFix}</b><br>整改率 <b>${d.deadlineRate}</b></div>
+        </div>
+        <div class="metric">
+          <div class="label">立即整改数</div>
+          <div class="value">${d.immediateRisk}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ===== 下拉 ===== */
+  function toggleDropdown(e, scope) {
+    e.stopPropagation();
+    document.getElementById('dropdownMenu_' + scope).classList.toggle('show');
+    document.getElementById('dropdownBtn_' + scope).classList.toggle('open');
+  }
+
+  document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const v = e.target.dataset.value;
+      const menu = e.target.closest('.dropdown-menu');
+      const scope = menu.id.replace('dropdownMenu_', '');
+      document.getElementById('dropdownText_' + scope).textContent = v;
+      menu.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+      e.target.classList.add('active');
+      menu.classList.remove('show');
+      document.getElementById('dropdownBtn_' + scope).classList.remove('open');
+      renderMetrics(v, scope);
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.dropdown-btn').forEach(b => b.classList.remove('open'));
+  });
+
+  /* ===== 单位列表数据生成 ===== */
+  const typeNamePool = {
+    '小购物': ['便民超市', '社区便利店', '百货商店', '生鲜超市'],
+    '小餐饮': ['家常菜馆', '快餐店', '奶茶店', '早餐店'],
+    '小住宿': ['商务宾馆', '民宿', '旅店', '公寓酒店'],
+    '小公共娱乐': ['网吧', '量贩KTV', '棋牌室', '电玩城'],
+    '小休闲健身': ['健身房', '足浴店', '瑜伽馆', '台球室'],
+    '小医疗': ['社区卫生诊所', '连锁药店', '口腔门诊', '中医馆'],
+    '小教学': ['课外培训机构', '幼儿园', '托管班', '早教中心'],
+    '小生产加工': ['服装加工厂', '食品作坊', '五金加工点', '纸箱加工厂'],
+    '小易燃易爆销售/储存场所': ['加油站', '烟花爆竹销售店', '液化气站', '油漆销售店']
+  };
+  const streetPool = ['义蓬街道', '新湾街道', '河庄街道', '临江街道', '前进街道'];
+  const roadPool = ['商贸路', '创业大道', '河景路', '中心街', '建设路'];
+
+  function genUnits(type, count) {
+    const list = [];
+    for (let i = 0; i < count; i++) {
+      let t = type;
+      if (type === '全部') {
+        t = typeList[1 + (i % 9)];
+      }
+      const pool = typeNamePool[t] || ['单位'];
+      const street = streetPool[i % streetPool.length];
+      const road = roadPool[(i * 3) % roadPool.length];
+      const name = `${street}${pool[i % pool.length]}${String(i + 1).padStart(2, '0')}`;
+      list.push({
+        name,
+        addr: `浙江省杭州市萧山区${street}${road}${28 + i * 7}号`,
+        region: street,
+        category: t,
+        type: t
+      });
+    }
+    return list;
+  }
+
+  /* ===== 页面切换（小程序新页面） ===== */
+  function switchPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+  function backToMain() { switchPage('mainPage'); }
+  function backToList() { switchPage('unitListPage'); }
+
+  /* ===== 单位列表（新页面） ===== */
+  function showUnitList(type) {
+    const d = getData(type);
+    const units = genUnits(type, Math.min(20, Math.max(10, Math.round(d.totalUnits / 150))));
+    const unitRows = units.map((u, i) => `
+      <div class="unit-item" onclick="showDetail(${i}, '${type}')">
+        <div class="info">
+          <div class="name">${u.name}</div>
+          <div class="meta"><span class="t">${u.type}</span>${u.addr}</div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+    `).join('');
+
+    document.getElementById('unitListTitle').textContent = `场所列表 · ${type}`;
+    document.getElementById('unitListBody').innerHTML = `
+      <div class="unit-list">${unitRows}</div>
+    `;
+    window._unitList = units;
+    switchPage('unitListPage');
+  }
+
+  /* ===== 单位详情（新页面） ===== */
+  function showDetail(idx, type) {
+    const units = window._unitList || genUnits(type, 10);
+    const u = units[idx];
+    const d = getData(u.type);
+    document.getElementById('detailBody').innerHTML = `
+      <div class="detail-section">
+        <h4>基础信息</h4>
+        <div class="detail-grid">
+          <div class="detail-item"><div class="label">场所名称</div><div class="value">${u.name}</div></div>
+          <div class="detail-item"><div class="label">场所地址</div><div class="value">${u.addr}</div></div>
+          <div class="detail-item"><div class="label">所属区域</div><div class="value">${u.region}</div></div>
+          <div class="detail-item"><div class="label">单位类别</div><div class="value">${u.type === '小易燃易爆销售/储存场所' ? '高危单位' : '重点单位'}</div></div>
+          <div class="detail-item"><div class="label">九小场所类型</div><div class="value" style="color:#2c5cc5">${u.type}</div></div>
+          <div class="detail-item"><div class="label">运营服务机构名称</div><div class="value">杭州奕环科技服务有限公司（橙蓝云）</div></div>
+          <div class="detail-item"><div class="label">信息完成度</div><div class="value">${64 + (idx * 3) % 36}</div></div>
+          <div class="detail-item"><div class="label">设备完好率</div><div class="value">${85 + (idx * 2) % 16}%</div></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>卡片统计字段</h4>
+        <div class="detail-grid">
+          <div class="detail-item"><div class="label">场所总数</div><div class="value">${d.totalUnits}</div></div>
+          <div class="detail-item"><div class="label">规上企业总数</div><div class="value">${d.bigUnits}</div></div>
+          <div class="detail-item"><div class="label">已排查数</div><div class="value">${d.checked}（排查率 ${d.checkedRate}）</div></div>
+          <div class="detail-item"><div class="label">消防隐患数</div><div class="value">${d.fireRisk}（整改数 ${d.fireFix} / ${d.fireRate}）</div></div>
+          <div class="detail-item"><div class="label">综合类隐患数</div><div class="value">${d.compoundRisk}（整改数 ${d.compoundFix} / ${d.compoundRate}）</div></div>
+          <div class="detail-item"><div class="label">集中整改数</div><div class="value">${d.focusRisk}（整改数 ${d.focusFix} / ${d.focusRate}）</div></div>
+          <div class="detail-item"><div class="label">限期整改数</div><div class="value">${d.deadlineRisk}（整改数 ${d.deadlineFix} / ${d.deadlineRate}）</div></div>
+          <div class="detail-item"><div class="label">立即整改数</div><div class="value">${d.immediateRisk}</div></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>评分明细</h4>
+        <div class="score-head">
+          <div>
+            <div class="num">${50 + (idx * 7) % 40}</div>
+            <div class="num-label">今日评分</div>
+          </div>
+          <div class="ring-wrap">
+            <div class="ring-inner">评估</div>
+          </div>
+        </div>
+        <div class="indicators">
+          <div class="indicator"><span class="name">消防安全责任制落实</span><span class="score partial">2<span class="total"> /15</span></span></div>
+          <div class="indicator"><span class="name">建筑物防火</span><span class="score full">20<span class="total"> /20</span></span></div>
+          <div class="indicator"><span class="name">消防设施及器材</span><span class="score zero">0<span class="total"> /25</span></span></div>
+          <div class="indicator"><span class="name">消防安全管理</span><span class="score full">20<span class="total"> /20</span></span></div>
+          <div class="indicator"><span class="name">扑救初起火灾能力</span><span class="score full">10<span class="total"> /10</span></span></div>
+          <div class="indicator"><span class="name">消防教育培训</span><span class="score full">10<span class="total"> /10</span></span></div>
+        </div>
+      </div>
+    `;
+    switchPage('detailPage');
+  }
+
+  /* ===== Excel 预览 ===== */
+  function showExcelPreview() {
+    const types = typeList.slice(1); // 除"全部"之外的 9 个类型
+    let rowsHtml = '';
+    let total = 0;
+    types.forEach((t, i) => {
+      const d = getData(t);
+      total += d.totalUnits;
+      rowsHtml += `<tr class="type-row">
+        <td>${i + 1}</td>
+        <td>浙江柳桥家居有限公司${1000 + i * 137}</td>
+        <td>浙江省杭州市萧山区义蓬街道288号</td>
+        <td>新疆街道</td>
+        <td>${t}</td>
+        <td class="new-col">${t}</td>
+        <td>${d.totalUnits}</td>
+        <td>${d.bigUnits}</td>
+        <td>${d.checked}</td>
+        <td>${d.checkedRate}</td>
+        <td>${d.fireRisk}</td>
+        <td>${d.fireFix}</td>
+        <td>${d.fireRate}</td>
+        <td>${d.compoundRisk}</td>
+        <td>${d.focusRisk}</td>
+        <td>${d.deadlineRisk}</td>
+        <td>${d.immediateRisk}</td>
+      </tr>`;
+    });
+
+    document.getElementById('excelBody').innerHTML = `
+      <div class="excel-meta">
+        📌 导出字段说明：基础信息（名称/地址/区域/类别/运营方） + 卡片统计字段 + <b>九小场所类型（NEW）</b><br>
+        📊 导出范围：当前所选类型下的全部场所；表格底部自动汇总 <b>场所合计数</b>
+      </div>
+      <table class="excel-table">
+        <thead>
+          <tr>
+            <th>序号</th>
+            <th>场所名称</th>
+            <th>场所地址</th>
+            <th>所属区域</th>
+            <th>单位类别</th>
+            <th class="new-col">九小场所类型</th>
+            <th>场所总数</th>
+            <th>规上企业总数</th>
+            <th>已排查数</th>
+            <th>排查率</th>
+            <th>消防隐患数</th>
+            <th>消防整改数</th>
+            <th>消防整改率</th>
+            <th>综合类隐患</th>
+            <th>集中整改数</th>
+            <th>限期整改数</th>
+            <th>立即整改数</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+          <tr class="total-row">
+            <td colspan="6" style="text-align:right;">场所合计数 →</td>
+            <td>${total}</td>
+            <td>${types.reduce((s, t) => s + getData(t).bigUnits, 0)}</td>
+            <td colspan="10" style="text-align:left;color:#666;font-weight:400;font-size:11px;">
+              共 ${types.length} 种九小场所类型 · 总场所数 ${total}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    document.getElementById('excelModal').classList.add('show');
+  }
+
+  function closeExcel() { document.getElementById('excelModal').classList.remove('show'); }
+
+  document.getElementById('excelModal').addEventListener('click', e => {
+    if (e.target.id === 'excelModal') closeExcel();
+  });
+
+  function closeAll() {
+    if (confirm('关闭预览？')) {
+      document.body.style.opacity = 0.5;
+    }
+  }
+
+  /* ===== 初始渲染 ===== */
+  renderMetrics('全部', 'jiuxiao');
+  renderMetrics('全部', 'changzhong');
+
+        /* ===== PRD 抽屉 ===== */
+        function openPRD() {
+            document.getElementById('prd-modal').classList.add('active');
+        }
+        function closePRD() {
+            document.getElementById('prd-modal').classList.remove('active');
+        }
+        // 点击遮罩关闭
+        document.getElementById('prd-modal').addEventListener('click', function(e) {
+            if (e.target === this) closePRD();
+        });
+
+</script>
+
+<!-- ================= PRD 说明抽屉（右侧滑出） ================= -->
+<div class="prd-drawer-overlay" id="prd-modal">
+    <div class="prd-drawer">
+        <div class="prd-drawer-header">
+            <span>📄 改动方案说明</span>
+            <button class="modal-close" onclick="closePRD()">✕ 关闭</button>
+        </div>
+
+        <div class="prd-drawer-body">
+
+            <div class="prd-card">
+                <div class="prd-card-title">1️⃣ 入口说明</div>
+                <ul>
+                    <li>入口：<b>统计分析 → 排查信息</b>（当前"排查信息" Tab 页）</li>
+                </ul>
+            </div>
+
+            <div class="prd-card">
+                <div class="prd-card-title">2️⃣ 数据来源</div>
+                <ul>
+                    <li>数据<b>直接读取 8902 数据库</b>，本页面<b>仅做展示、查看</b>，不提供新增 / 编辑 / 删除操作。</li>
+                </ul>
+            </div>
+
+            <div class="prd-card">
+                <div class="prd-card-title">3️⃣ 主体卡片字段</div>
+                <ul>
+                    <li>将卡片原标题 <b>"企业"</b> 改为 <b>"九小场所"</b>，卡片内 8 项指标字段保持与原系统一样，取值展示的是九小场所的。</li>
+                    <li style="margin-top:6px;">
+                        <span class="prd-tag">场所总数</span>
+                        <span class="prd-tag">规上企业总数</span>
+                        <span class="prd-tag">已排查数/排查率</span>
+                        <span class="prd-tag">消防隐患数/整改</span>
+                        <span class="prd-tag">综合类隐患数/整改</span>
+                        <span class="prd-tag">集中整改数/整改</span>
+                        <span class="prd-tag">限期整改数/整改</span>
+                        <span class="prd-tag">立即整改数</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="prd-card">
+                <div class="prd-card-title">4️⃣ 类型下拉（卡片右上角）</div>
+                <ul>
+                    <li>圆角胶囊按钮（蓝色边框 + 蓝色文字 + ▼），默认显示 <b>"全部"</b>，点击弹出选项菜单，切换后卡片数据按所选类型重新加载。查询项统一放在卡片右上角，此为原有功能保持不变。</li>
+                    <li style="margin-top:4px;">全部 · 小购物 · 小餐饮 · 小住宿 · 小公共娱乐 · 小休闲健身 · 小医疗 · 小教学 · 小生产加工 · 小易燃易爆销售/储存场所</li>
+                </ul>
+            </div>
+
+            <div class="prd-card">
+                <div class="prd-card-title">5️⃣ 原厂中厂模块保持不变</div>
+                <ul>
+                    <li>厂中厂模块「全部」查询项放到卡片右上角，保持不变。</li>
+                </ul>
+            </div>
+
+            <div class="prd-card">
+                <div class="prd-card-title">6️⃣ 场所列表 + 场所详情（点击"场所总数"触发）</div>
+                <ul>
+                    <li>点击"场所总数" → <b>打开新页面</b>（场所列表，数量较多可滚动浏览，含场所名称、地址、九小场所类型）→ 点击列表中某个场所 → <b>打开新页面</b>（场所详情）。小程序均为新页面跳转，<b>不弹窗</b>，详情页右上角可返回。</li>
+                    <li style="margin-top:4px;"><b>基础信息：</b>场所名称、场所地址、所属区域、单位类别、运营服务机构、信息完成度、设备完好率</li>
+                    <li><b>卡片统计字段：</b>场所总数、规上企业总数、已排查数/排查率、消防隐患数/整改、综合类隐患、集中/限期/立即整改数</li>
+                    <li><b>评分明细：</b>今日评分 + 6 项一级指标得分</li>
+                </ul>
+            </div>
+
+            <div class="prd-card">
+                <div class="prd-card-title">7️⃣ 一键导出 Excel</div>
+                <ul>
+                    <li>导出列结构 = 基础信息 + 卡片字段，<b>新增"九小场所类型"列</b>。</li>
+                    <li>可以通过查询项进行导出，如果查询项搜索全部，那就默认全部。</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
