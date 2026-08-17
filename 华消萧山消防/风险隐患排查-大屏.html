@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -439,12 +440,13 @@
                         <input type="date" class="modal-input" id="modal-date-end" value="2026-08-14">
                     </div>
                 </div>
-            </div>
-
-            <!-- 查询 / 重置按钮 -->
-            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button class="modal-btn-clear" onclick="resetExportFilter()">重置</button>
-                <button class="modal-btn-query" onclick="queryExportFilter()">查询</button>
+                <div class="modal-input-group" style="flex:0 0 auto; min-width:0; align-self:flex-end;">
+                    <label>&nbsp;</label>
+                    <div style="display:flex; gap:10px;">
+                        <button class="modal-btn-clear" onclick="resetExportFilter()">重置</button>
+                        <button class="modal-btn-query" onclick="queryExportFilter()">查询</button>
+                    </div>
+                </div>
             </div>
 
             <!-- 导出按钮 -->
