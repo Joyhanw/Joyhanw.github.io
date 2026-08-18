@@ -621,16 +621,34 @@ var D = {
   callDays: ['07-22','07-23','07-24','07-25','07-26','07-27','07-28'],
   activeTrend: [180,210,195,240,280,320,368],
   requirements: [
-    { id:'REQ-001', name:'自动生成季度业务报告', src:'自动发现', freq:12, people:8, depts:4, pri:'高', status:'已转Skill', skill:'文档智能整理', skills:['文档智能整理','智能报表生成'], time:'2026-07-20', lastTime:'2026-07-28' },
-    { id:'REQ-002', name:'银行回单自动提取与录入', src:'自动发现', freq:9, people:6, depts:3, pri:'高', status:'已转Skill', skill:'批量档案分析', skills:['批量档案分析'], time:'2026-07-19', lastTime:'2026-07-28' },
-    { id:'REQ-003', name:'合同关键条款智能提取', src:'手动新增', freq:7, people:12, depts:5, pri:'高', status:'开发中', skill:'', time:'2026-07-18', lastTime:'2026-07-27' },
-    { id:'REQ-004', name:'监管报表自动填报', src:'自动发现', freq:5, people:4, depts:2, pri:'中', status:'待分析', skill:'', time:'2026-07-17', lastTime:'2026-07-26' },
-    { id:'REQ-005', name:'客户信息跨系统自动汇总', src:'手动新增', freq:4, people:7, depts:3, pri:'中', status:'待分析', skill:'', time:'2026-07-16', lastTime:'2026-07-25' },
-    { id:'REQ-006', name:'出差申请单自动填写', src:'自动发现', freq:8, people:45, depts:8, pri:'高', status:'已转Skill', skill:'出差申请助手', time:'2026-07-15', lastTime:'2026-07-28' },
-    { id:'REQ-007', name:'会议纪要自动生成', src:'自动发现', freq:15, people:32, depts:10, pri:'高', status:'已转Skill', skill:'文档智能整理', time:'2026-07-14', lastTime:'2026-07-27' },
-    { id:'REQ-008', name:'财务报告异常检测', src:'手动新增', freq:3, people:5, depts:2, pri:'中', status:'待分析', skill:'', time:'2026-07-13', lastTime:'2026-07-24' },
-    { id:'REQ-009', name:'项目进度周报生成', src:'自动发现', freq:6, people:18, depts:5, pri:'高', status:'已转Skill', skill:'智能报表生成', time:'2026-07-12', lastTime:'2026-07-28' },
-    { id:'REQ-010', name:'法律文书格式标准化', src:'手动新增', freq:2, people:4, depts:2, pri:'低', status:'已关闭', skill:'', time:'2026-07-11', lastTime:'2026-07-20' }
+    { id:'REQ-001', name:'自动生成季度业务报告', src:'自动发现', freq:12, people:8, depts:4, desc:'员工需定期手工汇总各部门经营数据生成季度业务报告，过程重复耗时。', status:'已采纳', time:'2026-07-20', lastTime:'2026-07-28', processor:'张运维', processTime:'2026-07-25 10:20', srcRecords:[
+      {user:'刘敏', dept:'财务部', time:'2026-07-28 09:12', qa:'帮我自动生成Q2季度业务报告'},
+      {user:'王磊', dept:'投资管理部', time:'2026-07-25 14:30', qa:'季度报告模板和上季度一致，直接生成'},
+      {user:'陈静', dept:'综合管理部', time:'2026-07-22 10:05', qa:'把各子公司经营数据汇总成季度报告'} ] },
+    { id:'REQ-002', name:'银行回单自动提取与录入', src:'自动发现', freq:9, people:6, depts:3, desc:'财务人员需逐笔录入银行回单信息，重复且易错。', status:'已采纳', time:'2026-07-19', lastTime:'2026-07-28', processor:'张运维', processTime:'2026-07-26 15:40', srcRecords:[
+      {user:'赵琳', dept:'财务部', time:'2026-07-28 11:03', qa:'从PDF回单批量提取信息录入系统'},
+      {user:'孙浩', dept:'财务部', time:'2026-07-26 16:22', qa:'这个月回单太多，能自动识别录入吗'} ] },
+    { id:'REQ-003', name:'合同关键条款智能提取', src:'手动新增', freq:7, people:12, depts:5, desc:'法务与业务部门需从大量合同中快速提取关键条款和风险点。', status:'已采纳', time:'2026-07-18', lastTime:'2026-07-27', processor:'李科技', processTime:'2026-07-24 09:00', srcRecords:[
+      {user:'周婷', dept:'法律合规部', time:'2026-07-27 14:12', qa:'帮我把这份合同的风险条款标出来'},
+      {user:'吴强', dept:'业务一部', time:'2026-07-23 10:30', qa:'合同里的违约金和付款节点能自动提取吗'} ] },
+    { id:'REQ-004', name:'监管报表自动填报', src:'自动发现', freq:5, people:4, depts:2, desc:'监管报表填报规则复杂，部分字段需跨系统取数。', status:'待评估', time:'2026-07-17', lastTime:'2026-07-26', srcRecords:[
+      {user:'郑芳', dept:'风险管理部', time:'2026-07-26 09:45', qa:'监管报表能自动取数填报吗'},
+      {user:'钱进', dept:'财务部', time:'2026-07-22 17:10', qa:'报送前的数据核对太费时，有自动化方案吗'} ] },
+    { id:'REQ-005', name:'客户信息跨系统自动汇总', src:'手动新增', freq:4, people:7, depts:3, desc:'客户信息分散在多个系统，需人工汇总比对。', status:'待评估', time:'2026-07-16', lastTime:'2026-07-25', srcRecords:[
+      {user:'冯雪', dept:'客户管理部', time:'2026-07-25 11:20', qa:'能不能把各系统里的客户信息自动汇总一份'} ] },
+    { id:'REQ-006', name:'出差申请单自动填写', src:'自动发现', freq:8, people:45, depts:8, desc:'出差申请单重复填写项多，员工普遍觉得繁琐。', status:'已采纳', time:'2026-07-15', lastTime:'2026-07-28', processor:'李科技', processTime:'2026-07-22 16:00', srcRecords:[
+      {user:'何斌', dept:'业务二部', time:'2026-07-28 08:55', qa:'出差申请单能自动填吗，每次都要手填一遍'},
+      {user:'宋佳', dept:'市场部', time:'2026-07-20 13:40', qa:'申请单和行程信息能关联自动带出吗'} ] },
+    { id:'REQ-007', name:'会议纪要自动生成', src:'自动发现', freq:15, people:32, depts:10, desc:'会议多、纪要整理耗时，需求频率最高。', status:'已采纳', time:'2026-07-14', lastTime:'2026-07-27', processor:'张运维', processTime:'2026-07-21 10:00', srcRecords:[
+      {user:'蒋丽', dept:'综合管理部', time:'2026-07-27 15:30', qa:'会议结束后能自动生成纪要吗'},
+      {user:'沈鹏', dept:'信息技术部', time:'2026-07-18 09:20', qa:'把录音转成结构化会议纪要'} ] },
+    { id:'REQ-008', name:'财务报告异常检测', src:'手动新增', freq:3, people:5, depts:2, desc:'财务数据异常需人工逐项核对，效率低。', status:'待评估', time:'2026-07-13', lastTime:'2026-07-24', srcRecords:[
+      {user:'韩雪', dept:'财务部', time:'2026-07-24 10:15', qa:'能不能自动检测报表里的异常数据'} ] },
+    { id:'REQ-009', name:'项目进度周报生成', src:'自动发现', freq:6, people:18, depts:5, desc:'项目周报需汇总各团队进度，整理耗时。', status:'已采纳', time:'2026-07-12', lastTime:'2026-07-28', processor:'李科技', processTime:'2026-07-20 09:30', srcRecords:[
+      {user:'唐磊', dept:'项目管理部', time:'2026-07-28 17:05', qa:'把各项目进度自动汇总成周报'},
+      {user:'许文', dept:'业务一部', time:'2026-07-22 11:40', qa:'周报模板固定，能不能自动生成'} ] },
+    { id:'REQ-010', name:'法律文书格式标准化', src:'手动新增', freq:2, people:4, depts:2, desc:'法律文书格式不统一，需人工调整。', status:'暂不处理', time:'2026-07-11', lastTime:'2026-07-20', processor:'张运维', processTime:'2026-07-19 14:00', srcRecords:[
+      {user:'梁静', dept:'法律合规部', time:'2026-07-20 09:10', qa:'文书格式能统一模板自动调整吗'} ] }
   ],
   skills: [
     { id:'SK-001', name:'文档智能整理', cat:'文档处理', src:'需求转化', status:'启用', calls:1286, dls:86, ctime:'2026-06-15', reqs:'REQ-001,REQ-007', icon:'fa-file-lines', color:'#4f6ef7', desc:'支持Word、Excel、PPT、PDF等多格式文档的自动整理、格式统一和内容生成。' },
@@ -989,11 +1007,15 @@ function renderDashboard() {
       '<div style="font-size:12px;font-weight:600;color:#e2e4f0;margin-bottom:3px">'+dt.name+'</div>' +
       '<div style="font-size:10px;color:#6b7280">'+dt.active+'人活跃 · '+(dt.skills||0)+'个Skill</div></div>';
   }).join('');
+  // 需求决策统计
+  var reqStats = {total: D.requirements.length, pending:0, adopted:0, deferred:0};
+  D.requirements.forEach(function(r){ if(r.status==='已采纳')reqStats.adopted++; else if(r.status==='暂不处理')reqStats.deferred++; else reqStats.pending++; });
+  var adoptRate = reqStats.total ? Math.round(reqStats.adopted/reqStats.total*100) : 0;
   // Hot requirements Top5
-  var hotReqs = D.requirements.filter(function(r){return r.status!=='已关闭';}).sort(function(a,b){return b.freq-a.freq;}).slice(0,5).map(function(r){
-    var pCls=r.pri==='高'?'tag-red':r.pri==='中'?'tag-yellow':'tag-gray';
-    return '<tr><td style="color:#e2e4f0;font-size:12px">'+r.name+'</td><td style="font-size:11px">'+r.freq+'次</td><td style="font-size:11px">'+r.people+'人</td><td style="font-size:11px">'+r.depts+'个</td><td><span class="tag '+pCls+'" style="font-size:10px">'+r.pri+'</span></td><td><span class="tag '+(r.status==='已转Skill'?'tag-green':r.status==='开发中'?'tag-yellow':'tag-blue')+'" style="font-size:10px">'+r.status+'</span></td></tr>';
-  }).join('') || '<tr><td colspan="6"><div class="empty-state"><p>暂无</p></div></td></tr>';
+  var hotReqs = D.requirements.slice().sort(function(a,b){return b.freq-a.freq;}).slice(0,5).map(function(r){
+    var sCls = r.status==='已采纳'?'tag-green':r.status==='暂不处理'?'tag-gray':'tag-blue';
+    return '<tr><td style="color:#e2e4f0;font-size:12px">'+r.name+'</td><td style="font-size:11px">'+r.freq+'次</td><td style="font-size:11px">'+r.people+'人</td><td style="font-size:11px">'+r.depts+'个</td><td><span class="tag '+sCls+'" style="font-size:10px">'+r.status+'</span></td></tr>';
+  }).join('') || '<tr><td colspan="5"><div class="empty-state"><p>暂无</p></div></td></tr>';
   
   document.getElementById('pageContent').innerHTML = '<div class="dash-wrap">' +
     '<div class="dash-hd"><div class="dash-hd-left"><div class="dh-icon"><i class="fas fa-chart-pie"></i></div><div><h1>AI能力运营驾驶舱</h1></div></div><div class="dash-hd-right"><span class="dh-time"><i class="far fa-clock"></i> '+new Date().toLocaleString()+'</span><span style="display:flex;align-items:center;gap:4px"><span class="status-dot green" style="width:6px;height:6px;display:inline-block;border-radius:50%;background:#22c55e"></span>系统运行正常</span></div></div>' +
@@ -1001,7 +1023,7 @@ function renderDashboard() {
     '<div class="dash-kpi">' +
     '<div class="kpi-card kpi-blue"><div class="kpi-top"><div><div class="kpi-val">'+(d.monthlyCalls||28650).toLocaleString()+'</div><div class="kpi-label">本月调用次数</div></div><div class="kpi-icon" style="color:var(--primary)"><i class="fas fa-phone"></i></div></div><div class="kpi-footer up"><i class="fas fa-arrow-up"></i>较上月增长'+(d.monthlyGrowth||12)+'%<span class="kpi-sub"> 今日'+d.todayCalls.toLocaleString()+'次</span></div></div>' +
     '<div class="kpi-card kpi-green"><div class="kpi-top"><div><div class="kpi-val">'+d.activeUsers+'</div><div class="kpi-label">本月活跃用户</div></div><div class="kpi-icon" style="color:var(--success)"><i class="fas fa-users"></i></div></div><div class="kpi-footer up"><i class="fas fa-arrow-up"></i>覆盖'+d.depts+'个部门<span class="kpi-sub"> 覆盖率'+(Math.round(d.activeUsers/(d.companyTotalUsers||490)*100))+'%</span></div></div>' +
-    '<div class="kpi-card kpi-orange"><div class="kpi-top"><div><div class="kpi-val">'+d.skillsCount+'</div><div class="kpi-label">已启用Skill</div></div><div class="kpi-icon" style="color:var(--warning)"><i class="fas fa-cubes"></i></div></div><div class="kpi-footer up"><i class="fas fa-arrow-up"></i>本月新增'+(d.newSkillsThisMonth||5)+'个<span class="kpi-sub"> 关联'+(d.relatedReqs||28)+'项需求</span></div></div>' +
+    '<div class="kpi-card kpi-orange"><div class="kpi-top"><div><div class="kpi-val">'+d.skillsCount+'</div><div class="kpi-label">已启用Skill</div></div><div class="kpi-icon" style="color:var(--warning)"><i class="fas fa-cubes"></i></div></div><div class="kpi-footer up"><i class="fas fa-arrow-up"></i>本月新增'+(d.newSkillsThisMonth||5)+'个<span class="kpi-sub"> 覆盖'+(d.depts||12)+'个部门</span></div></div>' +
     '<div class="kpi-card kpi-purple"><div class="kpi-top"><div><div class="kpi-val">'+(d.solvedRate||82.6)+'%</div><div class="kpi-label">问题解决率</div></div><div class="kpi-icon" style="color:#8b5cf6"><i class="fas fa-circle-check"></i></div></div><div class="kpi-footer up"><i class="fas fa-check" style="font-size:10px"></i>已反馈'+(d.skillCallTotal||1286).toLocaleString()+'次<span class="kpi-sub"> 已解决'+(d.solvedCount||1062).toLocaleString()+'次</span></div></div></div>' +
     // AI能力接入 KPI row
     '<div class="dash-kpi" style="margin-bottom:12px">' +
@@ -1012,15 +1034,15 @@ function renderDashboard() {
     // Trend + Funnel
     '<div class="dash-grid">' +
     '<div class="dash-card"><div class="dc-hd"><span class="dc-title">AI使用趋势</span><span class="dc-more"><span style="color:var(--primary)">调用次数</span> · <span style="color:var(--success)">活跃用户</span></span></div><div style="display:flex;gap:16px"><div style="flex:1"><div class="dash-trend" style="height:120px;padding:12px 0">'+trendBars+'</div></div><div style="width:1px;background:rgba(255,255,255,0.06)"></div><div style="flex:1"><div class="dash-trend" style="height:120px;padding:12px 0">'+activeBars+'</div></div></div></div>' +
-    '<div class="dash-card"><div class="dc-hd"><span class="dc-title">需求转化漏斗</span></div><div class="dash-funnel" style="padding:20px 0">' +
-    '<div class="df-step" style="background:#4f6ef7"><div class="df-num">47</div><div class="df-lbl">发现需求</div></div>' +
+    '<div class="dash-card"><div class="dc-hd"><span class="dc-title">需求决策情况</span></div><div class="dash-funnel" style="padding:20px 0">' +
+    '<div class="df-step" style="background:#4f6ef7"><div class="df-num">'+reqStats.total+'</div><div class="df-lbl">本月发现需求</div></div>' +
     '<div class="df-arrow"><i class="fas fa-chevron-right"></i></div>' +
-    '<div class="df-step" style="background:#6c5ce7"><div class="df-num">32</div><div class="df-lbl">进入开发</div></div>' +
+    '<div class="df-step" style="background:#6c5ce7"><div class="df-num">'+reqStats.pending+'</div><div class="df-lbl">待评估</div></div>' +
     '<div class="df-arrow"><i class="fas fa-chevron-right"></i></div>' +
-    '<div class="df-step" style="background:#22c55e"><div class="df-num">28</div><div class="df-lbl">已转Skill</div></div>' +
+    '<div class="df-step" style="background:#22c55e"><div class="df-num">'+reqStats.adopted+'</div><div class="df-lbl">已采纳</div></div>' +
     '<div class="df-arrow"><i class="fas fa-chevron-right"></i></div>' +
-    '<div class="df-step" style="background:#16a34a"><div class="df-num">24</div><div class="df-lbl">Skill启用</div></div></div>' +
-    '<div style="text-align:center;font-size:11px;color:#6b7280;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06)">Skill转化率 <strong style="color:#22c55e">87.5%</strong> · 已转Skill <strong>28个</strong> · 覆盖部门 <strong>12个</strong></div></div></div>' +
+    '<div class="df-step" style="background:#9ca3af"><div class="df-num">'+reqStats.deferred+'</div><div class="df-lbl">暂不处理</div></div></div>' +
+    '<div style="text-align:center;font-size:11px;color:#6b7280;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06)">需求采纳率 <strong style="color:#22c55e">'+adoptRate+'%</strong> · 已采纳 <strong>'+reqStats.adopted+'条</strong> · 能力建设由Skill管理推进</div></div></div>' +
     // 热门Skill(条形) + 热门业务能力(数字榜单)
     '<div class="dash-grid"><div class="dash-card"><div class="dc-hd"><span class="dc-title">热门Skill及使用效果</span></div><div class="dash-bar">'+popularBars+'</div></div>' +
     '<div class="dash-card"><div class="dc-hd"><span class="dc-title">热门业务能力</span></div><div>'+toolList+'</div></div></div>' +
@@ -1028,7 +1050,7 @@ function renderDashboard() {
     '<div class="dash-grid"><div class="dash-card"><div class="dc-hd"><span class="dc-title">部门AI使用覆盖</span></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">'+deptCards+'</div></div>' +
     '<div class="dash-card"><div class="dc-hd"><span class="dc-title">业务系统接入情况</span></div>'+sysCards+'</div></div>' +
     // 热门需求Top5
-    '<div class="dash-card" style="margin-bottom:0"><div class="dc-hd"><span class="dc-title">热门需求Top5</span></div><table class="dash-table"><thead><tr><th>需求名称</th><th>频次</th><th>人数</th><th>部门</th><th>优先级</th><th>状态</th></tr></thead><tbody>'+hotReqs+'</tbody></table></div></div>';
+    '<div class="dash-card" style="margin-bottom:0"><div class="dc-hd"><span class="dc-title">热门需求Top5</span></div><table class="dash-table"><thead><tr><th>需求名称</th><th>频次</th><th>人数</th><th>部门</th><th>状态</th></tr></thead><tbody>'+hotReqs+'</tbody></table></div></div>';
 }
 // ===== OVERVIEW =====
 function renderOverview() {
@@ -1045,7 +1067,8 @@ function renderOverview() {
 
 // ===== REQUIREMENTS =====
 function setReqFilter(f) { reqFilter = f; renderRequirements(); }
-function filterReqs(q) { renderRequirements(); }
+var reqQuery = '';
+function filterReqs(q) { reqQuery = q || ''; renderRequirements(); }
 
 
 function buildReqMoreMenu(id, status) {
@@ -1071,21 +1094,20 @@ function buildReqMoreMenu(id, status) {
 
 function renderRequirements() {
   var pageSize = 10;
-  var src = reqFilter === 'all' ? D.requirements : D.requirements.filter(function(r){ return reqFilter === 'pending' ? r.status === '待分析' : reqFilter === 'developing' ? r.status === '开发中' : reqFilter === 'done' ? r.status === '已转Skill' : r.status === '已关闭'; });
+  var src = reqFilter === 'all' ? D.requirements.slice() : D.requirements.filter(function(r){
+    return reqFilter === 'pending' ? r.status === '待评估' : reqFilter === 'adopted' ? r.status === '已采纳' : r.status === '暂不处理';
+  });
+  if (reqQuery) src = src.filter(function(r){ return r.name.indexOf(reqQuery) >= 0 || (r.desc||'').indexOf(reqQuery) >= 0; });
+  src.sort(function(a,b){ return b.freq - a.freq || (b.lastTime||'').localeCompare(a.lastTime||''); });
   var total = src.length, totalPages = Math.max(1, Math.ceil(total / pageSize));
   function renderPage(page) {
     if (page < 1 || page > totalPages) return;
     var start = (page - 1) * pageSize, end = Math.min(start + pageSize, total), pageData = src.slice(start, end);
     var rows = pageData.map(function(r) {
-      var pCls = r.pri === '高' ? 'tag-red' : r.pri === '中' ? 'tag-yellow' : 'tag-gray';
-      var sCls = r.status === '已转Skill' ? 'tag-green' : r.status === '开发中' ? 'tag-yellow' : r.status === '待分析' ? 'tag-blue' : 'tag-gray';
+      var sCls = r.status === '已采纳' ? 'tag-green' : r.status === '暂不处理' ? 'tag-gray' : 'tag-blue';
       var srcIcon = r.src === '自动发现' ? '<i class="fas fa-robot" style="color:var(--primary);margin-right:4px"></i>' : '<i class="fas fa-user-pen" style="color:var(--warning);margin-right:4px"></i>';
       var lt = r.lastTime || r.time || '—';
-      var btns = '<button class="btn btn-text btn-sm" onclick="viewReqDetail(\''+r.id+'\')"><i class="fas fa-eye"></i> 查看</button>' +
-        '<button class="btn btn-text btn-sm" onclick="editReq(\''+r.id+'\')"><i class="fas fa-pen"></i> 编辑</button>' +
-        '<div class="dropdown" style="position:relative;display:inline-block"><button class="btn btn-ghost btn-sm" onclick="togDD(this)">更多 <i class="fas fa-chevron-down" style="font-size:9px"></i></button>' +
-        '<div class="dropdown-menu" style="display:none;position:absolute;right:0;top:100%;z-index:50;min-width:120px;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:4px 0">'+buildReqMoreMenu(r.id,r.status)+'</div></div>';
-      return '<tr><td>'+r.name+'</td><td>'+srcIcon+r.src+'</td><td style="font-size:12px">'+r.freq+'次 · '+r.people+'人</td><td style="font-size:12px">'+lt+'</td><td><span class="tag '+pCls+'">'+r.pri+'</span></td><td><span class="tag '+sCls+'">'+r.status+'</span></td><td><div class="cell-actions">'+btns+'</div></td></tr>';
+      return '<tr><td><div style="font-weight:500">'+r.name+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">'+srcIcon+r.src+'</div></td><td style="font-size:12px;white-space:nowrap">'+r.freq+'次 · '+r.people+'人 · '+r.depts+'部门</td><td style="font-size:12px">'+lt+'</td><td><span class="tag '+sCls+'">'+r.status+'</span></td><td><div class="cell-actions"><button class="btn btn-text btn-sm" onclick="viewReqDetail(\''+r.id+'\')"><i class="fas fa-eye"></i> 查看</button></div></td></tr>';
     }).join('');
     var pg = '';
     if (totalPages > 1) {
@@ -1093,9 +1115,9 @@ function renderRequirements() {
       for (var i=Math.max(1,page-2); i<=Math.min(totalPages,page+2); i++) { pg+='<button class="pg-btn '+(i===page?'active':'')+'" onclick="window.rrP('+i+')">'+i+'</button>'; }
       pg+='<button class="pg-btn '+(page>=totalPages?'disabled':'')+'" onclick="window.rrP('+(page+1)+')"><i class="fas fa-chevron-right"></i></button></div></div>';
     }
-    document.getElementById('rTC').innerHTML = '<div class="table-wrap"><table><thead><tr><th>需求名称</th><th>来源</th><th>热度</th><th>最近出现时间</th><th>优先级</th><th>状态</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="7"><div class="empty-state"><i class="fas fa-inbox"></i><p>暂无需求</p></div></td></tr>')+'</tbody></table></div>'+pg;
+    document.getElementById('rTC').innerHTML = '<div class="table-wrap"><table><thead><tr><th>需求场景</th><th>热度</th><th>最近出现</th><th>处理结果</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="5"><div class="empty-state"><i class="fas fa-inbox"></i><p>暂无需求</p></div></td></tr>')+'</tbody></table></div>'+pg;
   }
-  document.getElementById('pageContent').innerHTML = '<div class="page-hd"><div class="page-hd-title">需求池</div><div class="page-hd-actions"><button class="btn btn-primary" onclick="newRequirement()"><i class="fas fa-plus"></i> 新增需求</button></div></div><div class="card" style="margin-bottom:0"><div class="filter-row" style="margin-bottom:0"><div class="filter-row-left"><div class="search-box"><i class="fas fa-search"></i><input placeholder="搜索需求..." oninput="filterReqs(this.value)"></div><select class="filter-select"><option value="">来源</option><option>自动发现</option><option>手动新增</option></select><select class="filter-select" id="reqPriF"><option value="">优先级</option><option>高</option><option>中</option><option>低</option></select></div></div><div class="filter-tabs" style="margin-bottom:12px"><button class="ftab '+(reqFilter==='all'?'active':'')+'" onclick="setReqFilter(\'all\')">全部</button><button class="ftab '+(reqFilter==='pending'?'active':'')+'" onclick="setReqFilter(\'pending\')">待分析</button><button class="ftab '+(reqFilter==='developing'?'active':'')+'" onclick="setReqFilter(\'developing\')">开发中</button><button class="ftab '+(reqFilter==='done'?'active':'')+'" onclick="setReqFilter(\'done\')">已转Skill</button><button class="ftab '+(reqFilter==='closed'?'active':'')+'" onclick="setReqFilter(\'closed\')">已关闭</button></div><div id="rTC"></div></div>';
+  document.getElementById('pageContent').innerHTML = '<div class="page-hd"><div class="page-hd-title">需求池</div><div class="page-hd-actions"><button class="btn btn-primary" onclick="newRequirement()"><i class="fas fa-plus"></i> 新增需求</button></div></div><div class="card" style="margin-bottom:0"><div class="filter-row" style="margin-bottom:0"><div class="filter-row-left"><div class="search-box"><i class="fas fa-search"></i><input placeholder="搜索需求..." oninput="filterReqs(this.value)"></div></div></div><div class="filter-tabs" style="margin-bottom:12px"><button class="ftab '+(reqFilter==='all'?'active':'')+'" onclick="setReqFilter(\'all\')">全部</button><button class="ftab '+(reqFilter==='pending'?'active':'')+'" onclick="setReqFilter(\'pending\')">待评估</button><button class="ftab '+(reqFilter==='adopted'?'active':'')+'" onclick="setReqFilter(\'adopted\')">已采纳</button><button class="ftab '+(reqFilter==='deferred'?'active':'')+'" onclick="setReqFilter(\'deferred\')">暂不处理</button></div><div id="rTC"></div></div>';
   window.rrP = renderPage;
   renderPage(1);
 }
@@ -1186,48 +1208,71 @@ function unlinkSkill(id,name) { openModal('确认解绑','<p style="font-size:14
 function confirmUnlinkSkill(id,name) { var r=D.requirements.find(function(x){return x.id===id;}); if(r.skills)r.skills=r.skills.filter(function(s){return s!==name;}); if(!r.skills||r.skills.length===0)r.status='待分析'; closeModal(); renderRequirements(); showToast('已解绑','','i'); }
 function newRequirement() {
   openModal('新增需求',
-    '<div class="form-group"><label>需求名称 <span class="required">*</span></label><input class="form-control" id="nRN" placeholder="请输入需求名称"></div>' +
-    '<div class="form-group"><label>需求描述</label><textarea class="form-control" id="nRD" placeholder="描述需求的背景和期望效果" style="min-height:80px"></textarea></div>' +
-    '<div class="form-row"><div class="form-group"><label>优先级</label><select class="form-control" id="nRP"><option>高</option><option selected>中</option><option>低</option></select></div></div>',
+    '<div class="form-group"><label>需求场景 <span class="required">*</span></label><input class="form-control" id="nRN" placeholder="请输入需求场景名称"></div>' +
+    '<div class="form-group"><label>需求描述</label><textarea class="form-control" id="nRD" placeholder="描述该需求的背景和期望效果" style="min-height:80px"></textarea></div>' +
+    '<div style="font-size:11px;color:var(--text-muted)">新增后默认状态为「待评估」，等待运营/审核人员判断是否采纳。</div>',
     '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="cNR()">确认新增</button>');
 }
 function cNR() {
   var n = document.getElementById('nRN').value.trim();
-  if (!n) { showToast('请输入需求名称','','w'); return; }
+  if (!n) { showToast('请输入需求场景','','w'); return; }
   D.requirements.unshift({
     id:'REQ-'+String(D.requirements.length+1).padStart(3,'0'),
     name:n, src:'手动新增', freq:1, people:1, depts:1,
-    pri:document.getElementById('nRP').value,
     desc:document.getElementById('nRD').value.trim(),
-    status:'待分析',
+    status:'待评估',
     time:new Date().toISOString().slice(0,10),
-    lastTime:new Date().toISOString().slice(0,10)
+    lastTime:new Date().toISOString().slice(0,10),
+    srcRecords:[]
   });
   closeModal(); renderRequirements();
   showToast('新增成功','需求「'+n+'」已添加','s');
+}
+function adoptReq(id) {
+  var r = D.requirements.find(function(x){return x.id===id;}); if(!r)return;
+  r.status = '已采纳';
+  r.processor = D.user.name || '当前用户';
+  r.processTime = new Date().toLocaleString();
+  closeDrawer(); renderRequirements();
+  showToast('已采纳','该需求已进入企业待建设清单','s');
+}
+function deferReq(id) {
+  var r = D.requirements.find(function(x){return x.id===id;}); if(!r)return;
+  r.status = '暂不处理';
+  r.processor = D.user.name || '当前用户';
+  r.processTime = new Date().toLocaleString();
+  closeDrawer(); renderRequirements();
+  showToast('已暂不处理','该需求当前暂不建设，热度回升可重新评估','s');
 }
 
 function cNR() { var n=document.getElementById('nRN').value.trim(); if(!n)return; D.requirements.unshift({id:'REQ-'+String(D.requirements.length+1).padStart(3,'0'),name:n,src:'手动新增',freq:1,people:1,depts:1,pri:document.getElementById('nRP').value,status:'待分析',time:new Date().toISOString().slice(0,10)}); closeModal(); renderRequirements(); showToast('新增成功','','s'); }
 function viewReqDetail(id) {
   var r = D.requirements.find(function(x){return x.id===id;}); if(!r)return;
-  var srcR='<tr><td>唯安</td><td>信息技术部</td><td>2026-07-20 14:32</td><td>能否自动生成季度业务报告？</td></tr>';
-  var linked=(r.skills&&r.skills.length>0)?r.skills:[];
-  var lh='';
-  if (linked.length === 0) {
-    lh = '<div class="empty-state" style="padding:16px 0"><p>暂无关联Skill</p></div>';
-  } else {
-    linked.forEach(function(sk){
-      var s=D.skills.find(function(x){return x.name===sk;});
-      var st=s?s.status:'启用';
-      lh+='<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f9fafb;border-radius:6px;margin-bottom:6px"><div style="flex:1"><div style="font-size:13px;font-weight:500">'+sk+'</div><span class="tag '+(st==='启用'?'tag-green':'tag-gray')+'" style="font-size:10px">'+st+'</span></div><button class="btn btn-text btn-xs" onclick="closeDrawer();viewMarketSkill(\''+(s?s.id:'SK-001')+'\')"><i class="fas fa-eye"></i> 查看</button></div>';
-    });
+  var sCls = r.status==='已采纳'?'tag-green':r.status==='暂不处理'?'tag-gray':'tag-blue';
+  var srcIcon = r.src==='自动发现'?'<i class="fas fa-robot" style="color:var(--primary);margin-right:4px"></i>':'<i class="fas fa-user-pen" style="color:var(--warning);margin-right:4px"></i>';
+  var srcRows = (r.srcRecords && r.srcRecords.length) ? r.srcRecords.map(function(s){
+    return '<tr><td>'+s.user+'</td><td>'+s.dept+'</td><td>'+s.time+'</td><td>'+s.qa+'</td></tr>';
+  }).join('') : '<tr><td colspan="4"><div class="empty-state" style="padding:12px 0"><p>暂无来源记录</p></div></td></tr>';
+  var processInfo = '';
+  if (r.status !== '待评估') {
+    processInfo = '<div style="font-size:12px;color:var(--text-muted);padding:10px 12px;background:#f9fafb;border-radius:6px;margin-bottom:4px"><i class="fas fa-user-check" style="margin-right:6px"></i>处理人：'+(r.processor||'—')+' · 处理时间：'+(r.processTime||'—')+'</div>';
   }
-  var pCls=r.pri==='高'?'tag-red':r.pri==='中'?'tag-yellow':'tag-gray';
-  var lt = r.lastTime || r.time || '—';
-  openDrawer('需求详情','<div style="margin-bottom:16px"><div style="font-size:16px;font-weight:600">'+r.name+'</div><div style="display:flex;gap:8px;margin-top:4px"><span class="tag '+(r.status==='已转Skill'?'tag-green':r.status==='开发中'?'tag-yellow':r.status==='待分析'?'tag-blue':'tag-gray')+'">'+r.status+'</span><span class="tag '+pCls+'">'+r.pri+'优先级</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;padding:14px;background:#f9fafb;border-radius:8px"><div><div style="font-size:11px;color:var(--text-muted)">来源</div><div>'+(r.src==='自动发现'?'<i class="fas fa-robot" style="color:var(--primary);margin-right:4px"></i>':'<i class="fas fa-user-pen" style="color:var(--warning);margin-right:4px"></i>')+r.src+'</div></div><div><div style="font-size:11px;color:var(--text-muted)">出现次数</div><div>'+r.freq+'次</div></div><div><div style="font-size:11px;color:var(--text-muted)">涉及人数</div><div>'+r.people+'人</div></div><div><div style="font-size:11px;color:var(--text-muted)">最近出现时间</div><div>'+lt+'</div></div></div>'+
-    '<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">需求描述</div><div style="font-size:13px;color:var(--text-secondary);line-height:1.7;padding:12px;background:#f9fafb;border-radius:6px;min-height:60px">'+(r.desc||'暂无描述')+'</div></div>'+
-    '<div style="margin-bottom:14px"><div style="font-size:14px;font-weight:600">来源记录</div><div style="max-height:140px;overflow-y:auto;margin-top:8px"><table><thead><tr><th>用户</th><th>部门</th><th>时间</th><th>问题摘要</th></tr></thead><tbody>'+srcR+'</tbody></table></div></div>'+
-    '<div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:14px;font-weight:600">关联Skill</span><button class="btn btn-text btn-xs" onclick="closeDrawer();linkSkill(\''+id+'\')"><i class="fas fa-plus"></i> 关联Skill</button></div><div style="max-height:240px;overflow-y:auto">'+lh+'</div></div>');
+  var actions = '';
+  if (r.status === '待评估') {
+    actions = '<div style="display:flex;gap:10px;padding-top:14px;border-top:1px solid var(--border-light)"><button class="btn btn-primary" onclick="adoptReq(\''+id+'\')"><i class="fas fa-check"></i> 采纳需求</button><button class="btn btn-outline" onclick="deferReq(\''+id+'\')"><i class="fas fa-ban"></i> 暂不处理</button></div>';
+  }
+  openDrawer('需求详情',
+    '<div style="margin-bottom:14px"><div style="font-size:16px;font-weight:600">'+r.name+'</div><div style="display:flex;gap:8px;margin-top:6px;align-items:center"><span class="tag '+sCls+'">'+r.status+'</span><span style="font-size:12px;color:var(--text-muted)">'+srcIcon+r.src+'</span></div></div>' +
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;padding:14px;background:#f9fafb;border-radius:8px">' +
+    '<div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--primary)">'+r.freq+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">出现次数</div></div>' +
+    '<div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--primary)">'+r.people+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">涉及人数</div></div>' +
+    '<div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--primary)">'+r.depts+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">涉及部门</div></div></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">' +
+    '<div><div style="font-size:11px;color:var(--text-muted)">首次出现时间</div><div style="font-size:13px">'+(r.time||'—')+'</div></div>' +
+    '<div><div style="font-size:11px;color:var(--text-muted)">最近出现时间</div><div style="font-size:13px">'+(r.lastTime||'—')+'</div></div></div>' +
+    '<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">需求描述</div><div style="font-size:13px;color:var(--text-secondary);line-height:1.7;padding:12px;background:#f9fafb;border-radius:6px">'+(r.desc||'暂无描述')+'</div></div>' +
+    '<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">来源记录</div><div style="max-height:160px;overflow-y:auto"><table><thead><tr><th>提出用户</th><th>部门</th><th>时间</th><th>问题摘要</th></tr></thead><tbody>'+srcRows+'</tbody></table></div></div>' +
+    processInfo + actions);
 }
 function editReq(id) {
   var r = D.requirements.find(function(x){ return x.id === id; });
@@ -1255,7 +1300,7 @@ function editReq(id) {
 // ===== SKILLS =====
 function renderSkills() {
   var pageSize=10;
-  var src=D.skills;
+  var src=D.skills.slice();
   var total=src.length,tp=Math.max(1,Math.ceil(total/pageSize));
   function rP(p){
     if(p<1||p>tp)return; var s=(p-1)*pageSize,e=Math.min(s+pageSize,total),pd=src.slice(s,e);
@@ -1265,7 +1310,8 @@ function renderSkills() {
         '<button class="btn btn-text btn-xs" onclick="viewManageSkill(\''+sk.id+'\')"><i class="fas fa-eye"></i> 查看</button>'+
         '<button class="btn btn-text btn-xs" onclick="editSkill(\''+sk.id+'\')"><i class="fas fa-pen"></i> 编辑</button>'+
         '<button class="btn btn-text btn-xs" onclick="'+tFn+'(\''+sk.id+'\')"><i class="fas '+tIc+'"></i> '+tL+'</button>'+
-        '<button class="btn btn-text btn-xs" onclick="quickInstall(\''+sk.id+'\')"><i class="fas fa-download"></i> 安装</button></td></tr>';
+        '<button class="btn btn-text btn-xs" onclick="quickInstall(\''+sk.id+'\')"><i class="fas fa-download"></i> 安装</button>'+
+        '<button class="btn btn-text btn-xs" onclick="showToast(\'已导出\',\'「'+sk.name+'」已导出\',\'s\')"><i class="fas fa-file-export"></i> 导出</button></td></tr>';
     }).join('');
     var pg=''; if(tp>1){
       pg='<div class="pagination"><div class="pg-info">共'+total+'条，第'+p+'/'+tp+'页</div><div class="pg-btns"><button class="pg-btn '+(p<=1?'disabled':'')+'" onclick="window.skP('+(p-1)+')"><i class="fas fa-chevron-left"></i></button>';
@@ -1274,63 +1320,37 @@ function renderSkills() {
     }
     document.getElementById('sTC').innerHTML='<div class="table-wrap"><table><thead><tr><th>Skill名称</th><th>分类</th><th>状态</th><th>调用次数</th><th>下载次数</th><th>创建时间</th><th>操作</th></tr></thead><tbody>'+(rows||'<tr><td colspan="7"><div class="empty-state"><i class="fas fa-cubes"></i><p>暂无</p></div></td></tr>')+'</tbody></table></div>'+pg;
   }
+  var adoptedCount = D.requirements.filter(function(r){return r.status==='已采纳';}).length;
   document.getElementById('pageContent').innerHTML='<div class="page-hd"><div class="page-hd-title">Skill管理</div><div class="page-hd-actions"><button class="btn btn-outline" onclick="importSkill()"><i class="fas fa-upload"></i> 导入</button><button class="btn btn-primary" onclick="newSkill()"><i class="fas fa-plus"></i> 新增</button></div></div>'+
+    (adoptedCount>0 ? '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:#eef4ff;border:1px solid #c7d7ff;border-radius:8px;font-size:13px"><i class="fas fa-lightbulb" style="color:var(--primary)"></i><span>有 <strong style="color:var(--primary)">'+adoptedCount+'</strong> 条已采纳需求待建设</span><button class="btn btn-text btn-xs" style="margin-left:auto" onclick="goAdopted()"><span style="color:var(--primary);font-weight:600">去处理 →</span></button></div>' : '') +
     '<div class="card" style="margin-bottom:0"><div class="filter-row"><div class="filter-row-left"><div class="search-box"><i class="fas fa-search"></i><input placeholder="搜索Skill..."></div><select class="filter-select"><option>全部分类</option><option>文档处理</option><option>数据分析</option><option>流程自动化</option><option>法务</option></select></div></div><div id="sTC"></div></div>';
   window.skP=rP; rP(1);
 }
+function goAdopted(){ reqFilter='adopted'; navigate('requirements'); }
 function enableSkill(id){D.skills.find(function(x){return x.id===id;}).status='启用';renderSkills();showToast('已启用','','s');}
 function disableSkill(id){D.skills.find(function(x){return x.id===id;}).status='停用';renderSkills();showToast('已停用','','i');}
 function newSkill(){
-  var rh = '';
-  D.requirements.forEach(function(r){
-    rh += '<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;border-bottom:1px solid var(--border-light)">' +
-      '<input type="checkbox" class="ns-req-cb" value="'+r.id+'" style="width:14px;height:14px;accent-color:var(--primary);cursor:pointer"> ' +
-      '<span style="flex:1">'+r.name+'</span>' +
-      '<span class="tag '+(r.status==='已转Skill'?'tag-green':r.status==='开发中'?'tag-yellow':'tag-blue')+'" style="font-size:10px">'+r.status+'</span></label>';
-  });
   openModal('新增Skill',
     '<div class="form-group"><label>Skill名称 <span class="required">*</span></label><input class="form-control" id="skN" placeholder="请输入Skill名称"></div>' +
     '<div class="form-group"><label>描述</label><textarea class="form-control" id="skD" placeholder="描述Skill的功能和使用场景" style="min-height:80px"></textarea></div>' +
     '<div class="form-group"><label>分类</label><select class="form-control" id="skC"><option>文档处理</option><option>数据分析</option><option>流程自动化</option><option>法务</option><option>其他</option></select></div>' +
-    // 关联需求
-    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
-    '<div style="font-size:14px;font-weight:600;margin-bottom:8px">关联需求</div>' +
-    '<div class="search-box" style="width:auto;margin-bottom:6px"><i class="fas fa-search"></i><input placeholder="搜索需求..." oninput="filterNsReq(this.value)" style="font-size:12px;padding:5px 10px 5px 28px"></div>' +
-    '<div id="nsReqList" style="max-height:160px;overflow-y:auto;border:1px solid var(--border-light);border-radius:6px;padding:4px">'+rh+'</div></div>' +
-    // 上传技能包
-    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
-    '<div style="font-size:14px;font-weight:600;margin-bottom:8px">上传技能包</div>' +
-    '<div style="border:2px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer" id="nsPkgArea" onclick="document.getElementById(\'nsPkgInput\').click()">' +
-    '<i class="fas fa-folder-open" style="font-size:28px;color:var(--text-muted);display:block;margin-bottom:6px"></i>' +
-    '<span style="font-size:13px;color:var(--text-secondary)">选择文件夹</span>' +
-    '<input type="file" id="nsPkgInput" webkitdirectory style="display:none" onchange="handleNsPkgSelect(this)"></div>' +
-    '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.5">所有资源文件仅来自所选文件夹，不支持逐条手动添加资源。<br>选择文件夹时建议使用 Chrome 或 Edge 以获得最佳体验。</div>' +
-    '<div id="nsPkgValidate" style="margin-top:10px;padding:12px;background:#f9fafb;border-radius:6px;font-size:12px;color:var(--text-muted);min-height:40px">' +
-    '<i class="fas fa-circle-info" style="margin-right:4px"></i>尚未选择文件夹。选择技能包后，将在此处显示针对包内文件的校验结果。</div></div>',
+    '<div class="form-group"><label>Skill内容 <span class="required">*</span></label><textarea class="form-control" id="skContent" placeholder="编写Skill的指令/提示词内容，或在平台外写好后粘贴过来" style="min-height:130px;font-family:monospace;font-size:12px"></textarea></div>' +
+    '<div style="font-size:11px;color:var(--text-muted)">创建方式：平台创建 · 初始状态：停用（启用后自动进入Skill市场）</div>',
     '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="cNS()">创建</button>');
 }
-function cNS(){var n=document.getElementById('skN').value.trim();if(!n){showToast('请输入名称','','w');return;}
-  var reqIds=[];document.querySelectorAll('.ns-req-cb:checked').forEach(function(el){reqIds.push(el.value);});
-  var sk={id:'SK-'+String(D.skills.length+1).padStart(3,'0'),name:n,cat:document.getElementById('skC').value,src:'手动创建',status:'停用',calls:0,dls:0,ctime:new Date().toISOString().slice(0,10),icon:'fa-cube',color:'#6b7280',desc:document.getElementById('skD').value.trim()||'',reqs:reqIds.join(','),pkg:window._nsPkgInfo||null};
-  // Update requirements' skills array
-  reqIds.forEach(function(rid){var r=D.requirements.find(function(x){return x.id===rid;});if(r){if(!r.skills)r.skills=[];if(r.skills.indexOf(sk.name)<0)r.skills.push(sk.name);r.status='已转Skill';}});
-  D.skills.unshift(sk);window._nsPkgInfo=null;closeModal();renderSkills();showToast('创建成功','','s');}
+function cNS(){
+  var n=document.getElementById('skN').value.trim();
+  if(!n){showToast('请输入Skill名称','','w');return;}
+  var content=document.getElementById('skContent').value.trim();
+  if(!content){showToast('请输入Skill内容','','w');return;}
+  var sk={id:'SK-'+String(D.skills.length+1).padStart(3,'0'),name:n,cat:document.getElementById('skC').value,src:'平台创建',status:'停用',calls:0,dls:0,ctime:new Date().toISOString().slice(0,10),icon:'fa-cube',color:'#6b7280',desc:document.getElementById('skD').value.trim()||'',content:content,pkg:null};
+  D.skills.unshift(sk);closeModal();renderSkills();showToast('创建成功','Skill「'+n+'」已创建（停用状态）','s');}
 
 // ===== EDIT SKILL =====
 function editSkill(id) {
   var sk = D.skills.find(function(x){return x.id===id;});
   if (!sk) return;
   window._editSkillId = id;
-  var curReqIds = sk.reqs ? sk.reqs.split(',').map(function(x){return x.trim();}).filter(function(x){return x;}) : [];
-  var rh = '';
-  D.requirements.forEach(function(r){
-    var checked = curReqIds.indexOf(r.id) >= 0 ? 'checked' : '';
-    rh += '<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;border-bottom:1px solid var(--border-light)">' +
-      '<input type="checkbox" class="es-req-cb" value="'+r.id+'" '+checked+' style="width:14px;height:14px;accent-color:var(--primary);cursor:pointer"> ' +
-      '<span style="flex:1">'+r.name+'</span>' +
-      '<span class="tag '+(r.status==='已转Skill'?'tag-green':r.status==='开发中'?'tag-yellow':'tag-blue')+'" style="font-size:10px">'+r.status+'</span></label>';
-  });
-  // Package info
   var pkgHtml = '';
   if (sk.pkg) {
     pkgHtml = '<div id="esPkgInfo" style="margin-bottom:8px;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;display:flex;align-items:center;justify-content:space-between">' +
@@ -1343,12 +1363,6 @@ function editSkill(id) {
     '<div class="form-group"><label>Skill名称 <span class="required">*</span></label><input class="form-control" id="esN" value="'+sk.name+'"></div>' +
     '<div class="form-group"><label>描述</label><textarea class="form-control" id="esD" style="min-height:80px">'+(sk.desc||'')+'</textarea></div>' +
     '<div class="form-group"><label>分类</label><select class="form-control" id="esC"><option '+(sk.cat==='文档处理'?'selected':'')+'>文档处理</option><option '+(sk.cat==='数据分析'?'selected':'')+'>数据分析</option><option '+(sk.cat==='流程自动化'?'selected':'')+'>流程自动化</option><option '+(sk.cat==='法务'?'selected':'')+'>法务</option><option '+(sk.cat==='其他'?'selected':'')+'>其他</option></select></div>' +
-    // 关联需求
-    '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
-    '<div style="font-size:14px;font-weight:600;margin-bottom:8px">关联需求</div>' +
-    '<div class="search-box" style="width:auto;margin-bottom:6px"><i class="fas fa-search"></i><input placeholder="搜索需求..." oninput="filterEsReq(this.value)" style="font-size:12px;padding:5px 10px 5px 28px"></div>' +
-    '<div id="esReqList" style="max-height:160px;overflow-y:auto;border:1px solid var(--border-light);border-radius:6px;padding:4px">'+rh+'</div></div>' +
-    // 上传技能包
     '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">' +
     '<div style="font-size:14px;font-weight:600;margin-bottom:8px">上传技能包</div>' + pkgHtml +
     '<div style="border:2px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer" id="esPkgArea" onclick="document.getElementById(\'esPkgInput\').click()">' +
@@ -1366,34 +1380,9 @@ function confirmEditSkill() {
   if (!sk) return;
   var name = document.getElementById('esN').value.trim();
   if (!name) { showToast('请输入Skill名称','','w'); return; }
-  var oldName = sk.name;
   sk.name = name;
   sk.desc = document.getElementById('esD').value.trim();
   sk.cat = document.getElementById('esC').value;
-  // Handle 关联需求
-  var newReqIds = [];
-  document.querySelectorAll('.es-req-cb:checked').forEach(function(el){newReqIds.push(el.value);});
-  var oldReqIds = sk.reqs ? sk.reqs.split(',').map(function(x){return x.trim();}).filter(function(x){return x;}) : [];
-  // Remove associations that were unchecked
-  oldReqIds.forEach(function(rid){
-    if (newReqIds.indexOf(rid) < 0) {
-      var r = D.requirements.find(function(x){return x.id===rid;});
-      if (r && r.skills) r.skills = r.skills.filter(function(s){return s !== oldName && s !== name;});
-    }
-  });
-  // Add new associations
-  newReqIds.forEach(function(rid){
-    var r = D.requirements.find(function(x){return x.id===rid;});
-    if (r) {
-      if (!r.skills) r.skills = [];
-      if (r.skills.indexOf(name) < 0) {
-        r.skills.push(name);
-        if (r.status !== '已关闭') r.status = '已转Skill';
-      }
-    }
-  });
-  sk.reqs = newReqIds.join(',');
-  // Handle 技能包
   if (window._esPkgInfo) sk.pkg = window._esPkgInfo;
   window._editSkillId = null;
   window._esPkgInfo = null;
@@ -1467,24 +1456,7 @@ function viewManageSkill(id) {
   var s=D.skills.find(function(x){return x.id===id;});if(!s)return;
   window._smSkillId = id;
   var stTag = s.status==='启用'?'tag-green':'tag-gray';
-  // 关联需求 list (需求名称|状态|查看)
-  var reqHtml = '';
-  var reqIds = s.reqs ? s.reqs.split(',').map(function(x){return x.trim();}).filter(function(x){return x;}) : [];
-  if (reqIds.length === 0) {
-    reqHtml = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">暂无关联需求</div>';
-  } else {
-    reqHtml = reqIds.map(function(rid){
-      var r = D.requirements.find(function(x){return x.id===rid;});
-      var name = r ? r.name : rid;
-      var st = r ? r.status : '—';
-      var stCls = st==='已转Skill'?'tag-green':st==='开发中'?'tag-yellow':st==='待分析'?'tag-blue':'tag-gray';
-      return '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#f9fafb;border-radius:6px;margin-bottom:6px">' +
-        '<div style="flex:1;min-width:0;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+name+'</div>' +
-        '<span class="tag '+stCls+'" style="font-size:10px;flex-shrink:0">'+st+'</span>' +
-        '<button class="btn btn-text btn-xs" onclick="viewReqDetail(\''+(r?r.id:'')+'\')" style="flex-shrink:0"><i class="fas fa-eye"></i> 查看</button></div>';
-    }).join('');
-  }
-  // 技能包 info
+  var srcLabel = (s.src==='外部导入') ? '外部导入' : '平台创建';
   var pkgHtml = '';
   if (s.pkg) {
     pkgHtml = '<div style="padding:12px 14px;background:#f9fafb;border-radius:6px;font-size:13px">' +
@@ -1495,25 +1467,17 @@ function viewManageSkill(id) {
   } else {
     pkgHtml = '<div style="font-size:12px;color:var(--text-muted);padding:10px 0">暂无技能包</div>';
   }
-  var tL = s.status==='启用'?'停用':'启用';
-  var tIc = s.status==='启用'?'fa-pause':'fa-play';
   var drawer = document.getElementById('drawer');
   if (drawer) drawer.classList.add('wide');
   openDrawer('Skill详情',
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><i class="fas '+s.icon+'" style="color:'+s.color+';font-size:18px"></i><span style="font-size:16px;font-weight:600">'+s.name+'</span><span class="tag tag-blue" style="font-size:10px">'+s.cat+'</span><span class="tag '+stTag+'" style="font-size:10px">'+s.status+'</span></div>' +
-    // 基础信息 two-col
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;padding:14px;background:#f9fafb;border-radius:8px">' +
     '<div><div style="font-size:11px;color:var(--text-muted)">Skill名称</div><div style="font-size:13px;font-weight:500">'+s.name+'</div></div>' +
-    '<div><div style="font-size:11px;color:var(--text-muted)">分类</div><div style="font-size:13px">'+s.cat+'</div></div>' +
-    
+    '<div><div style="font-size:11px;color:var(--text-muted)">创建方式</div><div style="font-size:13px">'+srcLabel+'</div></div>' +
     '<div><div style="font-size:11px;color:var(--text-muted)">创建时间</div><div style="font-size:13px">'+s.ctime+'</div></div>' +
     '<div><div style="font-size:11px;color:var(--text-muted)">调用次数</div><div style="font-size:13px;font-weight:500">'+s.calls.toLocaleString()+'</div></div>' +
     '<div><div style="font-size:11px;color:var(--text-muted)">下载次数</div><div style="font-size:13px;font-weight:500">'+s.dls+'</div></div></div>' +
-    // Skill描述
     '<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">Skill描述</div><div style="font-size:13px;color:var(--text-secondary);line-height:1.7;padding:12px;background:#f9fafb;border-radius:6px">'+s.desc+'</div></div>' +
-    // 关联需求
-    '<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">关联需求</div>'+reqHtml+'</div>' +
-    // 技能包
     '<div><div style="font-size:13px;font-weight:600;margin-bottom:6px">技能包信息</div>'+pkgHtml+'</div>'
   );
 }
@@ -3955,6 +3919,7 @@ function zoomImage(el) {
 <td>以客户配置为准</td>
 <td>&nbsp;</td>
 </tr>
+
 </table>
 
 </div></details>
