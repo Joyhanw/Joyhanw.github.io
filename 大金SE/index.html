@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大金SE项目</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f0f2f5;
+            color: #1a1d2e;
+            min-height: 100vh;
+        }
+
+        /* ===== 顶部蓝色背景 ===== */
+        .header {
+            background: linear-gradient(135deg, #0f111e, #1a1d2e);
+            padding: 48px 0 40px;
+            color: #fff;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .container {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* ===== 卡片样式 ===== */
+        .card-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 28px 24px;
+            border: 1px solid #e8eaef;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+        .card:hover {
+            border-color: #4f6ef7;
+            box-shadow: 0 8px 30px rgba(79, 110, 247, 0.13);
+            transform: translateY(-3px);
+        }
+        .card .icon {
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+        .card .name {
+            font-size: 17px;
+            font-weight: 600;
+            color: #0f111e;
+            line-height: 1.4;
+        }
+        .card .tag {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 11px;
+            padding: 2px 14px;
+            border-radius: 12px;
+            background: #eef1ff;
+            color: #4f6ef7;
+        }
+
+        /* ===== 密码锁遮罩层 ===== */
+        #lockOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 17, 30, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.5s ease;
+        }
+        #lockOverlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .lock-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px 36px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+        }
+        .lock-box .lock-icon {
+            font-size: 48px;
+            color: #4f6ef7;
+            margin-bottom: 16px;
+        }
+        .lock-box h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #0f111e;
+        }
+        .lock-box p {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        .lock-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .lock-box input:focus {
+            border-color: #4f6ef7;
+            box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.1);
+        }
+        .lock-box .error-msg {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 8px;
+            min-height: 20px;
+        }
+        .lock-box button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #4f6ef7, #6c5ce7);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .lock-box button:hover {
+            opacity: 0.9;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 640px) {
+            .container {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 密码锁遮罩 ===== -->
+    <div id="lockOverlay">
+        <div class="lock-box">
+            <div class="lock-icon"><i class="fas fa-lock"></i></div>
+            <h2>请输入访问密码</h2>
+            <p>该项目受密码保护，请输入密码查看</p>
+            <input type="password" id="passwordInput" placeholder="请输入密码" onkeydown="if(event.key==='Enter') verifyPassword()">
+            <div class="error-msg" id="errorMsg"></div>
+            <button onclick="verifyPassword()"><i class="fas fa-unlock"></i> 解锁</button>
+        </div>
+    </div>
+
+    <!-- ===== 主内容 ===== -->
+    <div id="mainContent" style="display:none;">
+        <div class="header">
+            <h1>大金SE项目</h1>
+        </div>
+
+        <div class="container">
+            <div class="card-grid">
+
+                <!-- 卡片：大金SE能力指标平台 -->
+                <a href="大金SE能力指标平台.html" class="card">
+                    <div class="icon" style="color:#4f6ef7;"><i class="fas fa-robot"></i></div>
+                    <div class="name">大金SE能力指标平台</div>
+                    <span class="tag"><i class="fas fa-pen-ruler"></i> 原型</span>
+                </a>
+
+                <!-- 后续可继续添加卡片 -->
+                <!--
+                <a href="你的文件.html" class="card">
+                    <div class="icon" style="color:#22c55e;"><i class="fas fa-file"></i></div>
+                    <div class="name">页面名称</div>
+                    <span class="tag">标签</span>
+                </a>
+                -->
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== 密码验证逻辑 =====
+        const CORRECT_PASSWORD = '20260410';
+
+        function verifyPassword() {
+            const input = document.getElementById('passwordInput');
+            const errorMsg = document.getElementById('errorMsg');
+            const entered = input.value.trim();
+
+            if (entered === CORRECT_PASSWORD) {
+                document.getElementById('lockOverlay').classList.add('hidden');
+                document.getElementById('mainContent').style.display = 'block';
+                errorMsg.textContent = '';
+                input.value = '';
+            } else {
+                errorMsg.textContent = '❌ 密码错误，请重新输入';
+                input.value = '';
+                input.focus();
+            }
+        }
+    </script>
+
+</body>
+</html>
