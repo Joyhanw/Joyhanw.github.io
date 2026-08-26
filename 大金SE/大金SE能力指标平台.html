@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -2979,7 +2980,6 @@ function techHeadBar() {
   const offOpts = ['全部', ...(q.region && q.region !== '全部'
     ? (CONFIG.org.find(r => r.name === q.region) || { offices: [] }).offices.map(o => o.name)
     : allOffices)];
-  const levels = ['全部', ...SE_LEVELS];
   return `
   ${pageHead('技术力画像', '', isHQ ? `
     <button class="btn" data-act="import-cap"><i class="ri-upload-2-line"></i>导入能力数据</button>
@@ -2993,7 +2993,6 @@ function techHeadBar() {
     ${techTimePicker(s)}
     ${isHQ ? `<select class="select" id="tf-region" style="min-width:120px">${regions.map(c => `<option${(q.region || '全部') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>
     <select class="select" id="tf-office" style="min-width:130px">${offOpts.map(c => `<option${(q.office || '全部') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>` : ''}
-    <select class="select" id="tf-level" style="min-width:110px">${levels.map(c => `<option${(q.level || '全部') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>
     <button class="btn btn-primary" data-act="tech-search"><i class="ri-search-line"></i>查询</button>
     <button class="btn" data-act="tech-reset">重置</button>
   </div>`;
@@ -3044,41 +3043,40 @@ function techTeam() {
   ${nav}
   ${cur === 'overview' ? techOverviewTable(scope) : cur === 'short' ? techSubShortfall(scope) : techModelCap()}`;
 }
-/* SE 能力总览：主表在首页内联；HQ 有事务所列，事务所端无。排名+姓名 sticky-left，操作 sticky-right，横向可滚动。 */
+/* SE 能力总览：一屏紧凑展示，字段与筛选保留，无横向滚动（去掉 sticky / min-width 拉伸） */
 function techOverviewTable(scope) {
   const isHQ = APP.role === 'hq_admin';
   const filt = APP.q.techSub;
   const sub = SUB_DIMS;
   const rows = scope.slice().sort((a, b) => b.tech - a.tech).map(m => ({ m, s: seSub(m) }));
   const shown = filt ? rows.filter(r => r.s[sub.indexOf(filt)] < 75) : rows;
-  const cellSub = 'style="min-width:96px;text-align:right"';
-  const cellSubH = 'class="right" style="min-width:96px"';
+  const cellSub = 'style="text-align:right;padding:9px 6px;white-space:nowrap"';
+  const cellSubH = 'style="text-align:right;padding:9px 6px;line-height:1.35"';
+  const cellFix = 'style="padding:9px 8px"';
   return `
   <div class="card mt16">
     ${filt ? `<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn btn-sm" data-act="tech-sub-filter" data-dim="${filt}"><i class="ri-close-line"></i>取消筛选「${filt}」低分（&lt;75）</button></div>` : ''}
-    <div style="overflow-x:auto;border:1px solid var(--g200);border-radius:10px">
-      <table class="tbl" style="min-width:${isHQ ? 1400 : 1280}px;margin:0">
+    <div style="border:1px solid var(--g200);border-radius:10px;overflow:hidden">
+      <table class="tbl" style="margin:0">
         <thead><tr>
-          <th style="position:sticky;left:0;background:var(--g50);z-index:3;min-width:60px">排名</th>
-          <th style="position:sticky;left:60px;background:var(--g50);z-index:3;min-width:120px">姓名</th>
-          ${isHQ ? '<th style="min-width:120px">事务所</th>' : ''}
-          <th style="min-width:96px">能力等级</th>
-          <th class="right" style="min-width:100px">综合得分</th>
+          <th style="width:44px;text-align:center;${cellFix}">排名</th>
+          <th style="min-width:84px">姓名</th>
+          ${isHQ ? '<th>事务所</th>' : ''}
+          <th>能力等级</th>
+          <th class="right">综合得分</th>
           ${sub.map(x => `<th ${cellSubH}>${x}${filt === x ? ' <i class="ri-filter-line" style="color:var(--e600)"></i>' : ''}</th>`).join('')}
-          <th style="position:sticky;right:0;background:var(--g50);z-index:3;min-width:80px;text-align:center">操作</th>
         </tr></thead>
         <tbody>
         ${shown.map((r, i) => {
           const m = r.m, s = r.s;
           const idx = DEMO.members.indexOf(m);
           return `<tr>
-            <td class="fw600" style="position:sticky;left:0;background:#fff;z-index:2">${i + 1}</td>
-            <td class="fw600" style="position:sticky;left:60px;background:#fff;z-index:2">${esc(m.name)}<div style="font-size:11px;color:var(--g400)">${m.id}</div></td>
-            ${isHQ ? `<td>${m.office}</td>` : ''}
-            <td><span class="badge ${LV_BADGE[m.level] || 'badge-gray'}">${m.level}</span></td>
-            <td class="right num fw600" style="color:${m.tech < 75 ? 'var(--r500)' : 'var(--e600)'}">${m.tech}</td>
-            ${s.map((v, k) => `<td ${cellSub} class="num" ${filt === sub[k] ? 'style="min-width:96px;text-align:right;background:#fff7ed"' : ''}><span style="color:${v < 70 ? 'var(--r500)' : v < 75 ? 'var(--a600)' : 'var(--g700)'}">${v}</span></td>`).join('')}
-            <td style="position:sticky;right:0;background:#fff;z-index:2;text-align:center"><button class="btn btn-sm" data-act="tech-person" data-idx="${idx}">查看</button></td>
+            <td class="fw600" style="text-align:center;${cellFix}">${i + 1}</td>
+            <td class="fw600" style="${cellFix}"><a href="javascript:;" data-act="tech-person" data-idx="${idx}" style="color:var(--e600);text-decoration:none">${esc(m.name)}</a></td>
+            ${isHQ ? `<td style="${cellFix}">${m.office}</td>` : ''}
+            <td style="${cellFix}"><span class="badge ${LV_BADGE[m.level] || 'badge-gray'}">${m.level}</span></td>
+            <td class="right num fw600" style="${cellFix};color:${m.tech < 75 ? 'var(--r500)' : 'var(--e600)'}">${m.tech}</td>
+            ${s.map((v, k) => `<td class="num" ${cellSub} ${filt === sub[k] ? 'style="text-align:right;padding:9px 6px;white-space:nowrap;background:#fff7ed"' : ''}><span style="color:${v < 70 ? 'var(--r500)' : v < 75 ? 'var(--a600)' : 'var(--g700)'}">${v}</span></td>`).join('')}
           </tr>`;
         }).join('') || `<tr><td colspan="${isHQ ? 12 : 11}"><div class="empty"><i class="ri-inbox-line"></i>没有符合条件的 SE</div></td></tr>`}
         </tbody>
@@ -3095,7 +3093,7 @@ function techSubShortfall(scope) {
     low: scope.filter(m => seSub(m)[i] < 75).length,
   })).sort((a, b) => a.avg - b.avg);
   return `
-  <div class="card mt16">
+  <div class="card">
     <table class="tbl">
       <tr><th>能力项</th><th class="right" style="width:180px">平均得分</th><th class="right" style="width:180px">低分SE人数</th></tr>
       ${rows.map(r => `<tr>
@@ -3136,7 +3134,7 @@ function officeModelStats() {
 function techModelCap() {
   const rows = officeModelStats();
   return `
-  <div class="card mt16">
+  <div class="card">
     <table class="tbl">
       <tr><th>机型</th><th class="right">覆盖SE人数</th><th class="right">擅长人数</th><th class="right">熟练人数</th><th class="right">一般人数</th><th class="right">待提升人数</th></tr>
       ${rows.map(m => `<tr>
@@ -3540,7 +3538,7 @@ function planOps(p) {
   const btn = (act, txt, cls) => `<button class="btn btn-sm${cls ? ' ' + cls : ''}" data-act="${act}" data-id="${p.id}">${txt}</button>`;
   if (p.status === '草稿') return btn('plan-edit', '编辑') + btn('plan-publish', '发布', 'btn-primary') + btn('plan-del', '删除');
   if (p.status === '未开始') return btn('plan-end', '结束') + btn('plan-del', '删除');
-  if (p.status === '进行中') return btn('plan-end', '结束');
+  if (p.status === '进行中') return btn('stats', '成绩');
   return btn('plan-del', '删除');
 }
 
