@@ -426,10 +426,27 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .ai-canvas-chat-think{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3);font-style:italic}
 .ai-canvas-chat-think-dot{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:thinkPulse 1.2s ease infinite}
 @keyframes thinkPulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.ai-canvas-chat-notice{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;border-radius:12px;background:#FFF7E8;border:1px solid #FFD98A;font-size:12.5px;line-height:1.6;color:var(--text-1)}
+.ai-canvas-chat-notice-icon{flex-shrink:0;font-size:14px}
+.ai-canvas-chat-notice-text{flex:1;word-break:break-word}
+.ai-canvas-chat-notice-btn{flex-shrink:0;background:#fff;border:1px solid var(--border);border-radius:6px;padding:3px 12px;font-size:12px;color:var(--text-2);cursor:pointer;margin-top:4px}
+.ai-canvas-chat-notice-btn:hover{border-color:var(--primary);color:var(--primary)}
+/* 能力缺失反馈卡片（对话框内嵌，聊天气泡样式） */
+.ai-canvas-cap-card{display:flex;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:12px;border-bottom-left-radius:4px;text-align:left;max-width:100%;align-items:center;gap:6px;flex-wrap:wrap}
+.ai-canvas-cap-card-text{font-size:13px;color:var(--text-1);line-height:1.5}
+.ai-canvas-cap-card-btns{display:flex;gap:6px;margin-left:auto}
+.ai-canvas-cap-card-btn{padding:4px 10px;border-radius:10px;font-size:12px;cursor:pointer;transition:.15s;border:none;font-weight:500;white-space:nowrap}
+.ai-canvas-cap-card-btn.primary{background:var(--primary);color:#fff}
+.ai-canvas-cap-card-btn.primary:hover{background:var(--primary-dark)}
+.ai-canvas-cap-card-btn.secondary{background:var(--bg-page);color:var(--text-2);border:1px solid var(--border)}
+.ai-canvas-cap-card-btn.secondary:hover{background:var(--border-light)}
 .ai-canvas-chat-input{padding:10px 12px;border-top:1px solid var(--border-light);display:flex;gap:8px;background:#fff}
 .ai-canvas-chat-input textarea{flex:1;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;resize:none;min-height:50px;font-family:inherit;max-height:120px}
 .ai-canvas-chat-input textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)}
 .ai-canvas-chat-send{width:50px;height:50px;border-radius:10px;background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.ai-canvas-chat-quicks{display:flex;gap:6px;padding:6px 12px;flex-wrap:wrap;border-top:1px solid var(--border-light);background:#F7F8FA}
+.ai-canvas-quick-item{font-size:11px;padding:4px 10px;background:#fff;color:var(--text-2);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:.15s;white-space:nowrap}
+.ai-canvas-quick-item:hover{background:var(--primary-light);color:var(--primary);border-color:var(--primary)}
 .ai-canvas-chat-send:hover{background:var(--primary-dark)}
 /* 模板详情弹窗 */
 .ai-tpl-body{display:grid;grid-template-columns:280px 1fr;min-height:300px}
@@ -1324,9 +1341,18 @@ function renderCanvas(){
             return `<div class="ai-canvas-chat-msg bot" style="max-width:96%"><div class="ai-canvas-chat-bubble" style="padding:10px 12px;background:#FBFCFE;font-family:'SF Mono',Consolas,Monaco,monospace;font-size:11.5px;line-height:1.85;color:var(--text-2);white-space:pre">${m.text}</div></div>`;
           }
 
+          if(m.type==='notice'){
+            return `<div class="ai-canvas-chat-msg bot"><div class="ai-canvas-chat-notice"><div class="ai-canvas-chat-notice-icon">⚠️</div><div class="ai-canvas-chat-notice-text">${m.text}</div><button class="ai-canvas-chat-notice-btn" onclick="closeChatNotice(this)">知道了</button></div></div>`;
+          }
+          if(m.type==='cap-card'){
+            return `<div class="ai-canvas-chat-msg bot"><div class="ai-canvas-chat-bubble" style="padding:10px 14px;max-width:100%"><div class="ai-canvas-cap-card-text">暂无对应原子能力，是否反馈？</div><div class="ai-canvas-cap-card-btns" style="margin-top:8px"><button class="ai-canvas-cap-card-btn secondary" onclick="skipCapDemand('${m.cap}')">暂不实现</button><button class="ai-canvas-cap-card-btn primary" onclick="submitCapDemand('${m.cap}')">提交工单</button></div></div></div>`;
+          }
           return `<div class="ai-canvas-chat-msg ${m.role}"><div class="ai-canvas-chat-bubble">${m.text}</div></div>`;
         }).join('')}
         ${aiState.thinking?`<div class="ai-canvas-chat-msg bot"><div class="ai-canvas-chat-bubble"><div class="ai-canvas-chat-think"><span class="ai-canvas-chat-think-dot"></span>${aiState.thinking}</div></div></div>`:''}
+      </div>
+      <div class="ai-canvas-chat-quicks" id="aiChatQuicks">
+        ${AI_MISSING_QUICK.map(q=>`<span class="ai-canvas-quick-item" onclick="askMissingCap('${q.cap}')">💡 ${q.label}</span>`).join('')}
       </div>
       <div class="ai-canvas-chat-input">
         <textarea id="aiChatInput" placeholder="描述修改需求，AI会帮你调整..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiChatSend()}"></textarea>
@@ -1352,6 +1378,31 @@ const AI_GEN_STEPS=[
   '生成页面组件...',
   '组装小程序...',
 ];
+/* 平台暂无原子能力的快捷请求：点击后对话框内弹出能力反馈卡片 */
+const AI_MISSING_QUICK=[
+  {label:'获取行内业务数据',cap:'行内业务数据获取'},
+];
+function askMissingCap(capName){
+  if(aiState.view!=='canvas'&&aiState.view!=='detail'){aiState.view='canvas';}
+  aiState.chatOpen=true;
+  aiState.chatMsgs.push({role:'user',text:'获取行内业务数据'});
+  aiState.chatMsgs.push({role:'bot',text:'我检测到「'+capName+'」能力不在当前平台能力清单中，暂无法基于该能力生成应用。'});
+  aiState.chatMsgs.push({role:'bot',type:'cap-card',cap:capName});
+  renderPage();
+  scrollChatToBottom();
+}
+function submitCapDemand(capName){
+  aggregateCapDemand([capName]);
+  showToast('已提交能力工单到科技部门，我们将尽快评估','success');
+  aiState.chatMsgs.push({role:'bot',text:'已为您记录需求「'+capName+'」，提交至总行科技部能力工单池评估。'});
+  renderPage();
+  scrollChatToBottom();
+}
+function skipCapDemand(capName){
+  aiState.chatMsgs.push({role:'bot',text:'好的，暂不实现该功能。有其他开发需求随时告诉我～'});
+  renderPage();
+  scrollChatToBottom();
+}
 function appendCodeLines(step,gaps){
   let text;
   if(step===3){
@@ -1460,7 +1511,7 @@ function aiSend(){
       if(stepIdx===3&&gaps.length>0&&!aiState.gapSent){
         aiState.gapSent=true;
         aggregateCapDemand(gaps);
-        aiState.chatMsgs.push({role:'bot',text:'当前平台暂未开放「'+gaps.join('」「')+'」能力，已记录您的能力需求，当前应用将继续基于已有能力生成。'});
+        aiState.chatMsgs.push({role:'bot',text:'已基于已有能力生成应用。「'+gaps.join('」「')+'」能力将在后续版本开放，届时自动生效，无需重复申请。'});
       }
       renderPage();
       scrollChatToBottom();
@@ -3328,6 +3379,7 @@ function openModal(title,body,confirmFn,hideFooter){
   $('#modalMask').classList.add('open');
 }
 function closeModal(){$('#modalMask').classList.remove('open')}
+function closeChatNotice(el){el.closest('.ai-canvas-chat-notice').style.display='none'}
 
 /* ============ 角色切换 ============ */
 function openRoleSwitch(){toggleRoleMenu()}
