@@ -1,1 +1,1160 @@
 
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海牛AI应用创新平台</title>
+<style>
+:root{
+  --primary:#1A66FF;--primary-dark:#0F47C7;--primary-light:#E8F0FF;
+  --success:#00B42A;--warning:#FF7D00;--danger:#F53F3F;
+  --text-1:#1D2129;--text-2:#4E5969;--text-3:#86909C;--text-4:#C9CDD4;
+  --bg-page:#F2F3F5;--border:#E5E6EB;--border-light:#EEF0F3;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 2px 10px rgba(0,0,0,.06);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg-page);color:var(--text-1);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:13px;outline:none}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#D8DADF;border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ===== 登录页 ===== */
+.login-page{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,#0F2B46,#123A60 55%,#1A66FF 130%);display:flex;align-items:center;justify-content:center}
+.login-page::before{content:'';position:absolute;right:-120px;top:-120px;width:480px;height:480px;background:radial-gradient(circle,rgba(26,102,255,.35) 0%,transparent 70%);border-radius:50%}
+.login-page::after{content:'';position:absolute;left:-160px;bottom:-160px;width:520px;height:520px;background:radial-gradient(circle,rgba(0,212,255,.18) 0%,transparent 70%);border-radius:50%}
+.login-card{position:relative;width:400px;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:40px 36px;z-index:1}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo-icon{width:56px;height:56px;border-radius:14px;margin:0 auto 12px;background:linear-gradient(135deg,#1A66FF,#00D4FF);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;box-shadow:0 8px 20px rgba(26,102,255,.3)}
+.login-logo-title{font-size:20px;font-weight:700;color:var(--text-1)}
+.login-logo-sub{font-size:12px;color:var(--text-3);margin-top:4px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:12px;color:var(--text-2);margin-bottom:6px}
+.form-input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#FAFBFC;transition:.2s}
+.form-input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px var(--primary-light)}
+.login-btn{width:100%;padding:12px;border-radius:8px;background:var(--primary);color:#fff;font-size:15px;font-weight:600;margin-top:6px;transition:.2s}
+.login-btn:hover{background:var(--primary-dark)}
+.login-tip{text-align:center;font-size:12px;color:var(--text-4);margin-top:16px}
+.login-tip strong{color:var(--primary);font-weight:500}
+
+/* ===== 主布局 ===== */
+.app{display:none;flex-direction:column;height:100vh;overflow:hidden}
+.app.ready{display:flex}
+.header{height:56px;background:#0F2B46;color:#fff;flex-shrink:0;display:flex;align-items:center;padding:0 20px;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:100}
+.logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;letter-spacing:.5px}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,#1A66FF,#00D4FF);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold}
+.logo .sub{font-size:11px;color:rgba(255,255,255,.6);font-weight:400;margin-left:2px}
+.header-nav{display:flex;gap:28px;margin-left:48px;flex:1}
+.header-nav a{color:rgba(255,255,255,.7);font-size:14px;padding:8px 2px;position:relative;transition:.2s;cursor:pointer}
+.header-nav a:hover{color:#fff}
+.header-nav a.active{color:#fff;font-weight:500}
+.header-nav a.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:#1A66FF;border-radius:2px}
+.header-right{display:flex;align-items:center;gap:16px}
+.env-tag{background:rgba(0,180,42,.15);color:#5BFF8A;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid rgba(0,180,42,.3)}
+.user-info{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.2s}
+.user-info:hover{background:rgba(255,255,255,.1)}
+.avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#FF7D00,#FFB400);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500;line-height:1.2}
+
+
+.user-info{position:relative}
+.user-arrow{font-size:10px;color:rgba(255,255,255,.5);margin-left:-2px}
+.user-menu{display:none;position:absolute;top:42px;right:0;width:150px;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);border:1px solid var(--border);overflow:hidden;z-index:500;animation:upIn .18s ease}
+.user-menu.open{display:block}
+@keyframes upIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.user-menu-item{padding:10px 14px;font-size:12.5px;color:var(--text-1);cursor:pointer;display:flex;align-items:center;gap:8px}
+.user-menu-item:hover{background:var(--primary-light);color:var(--primary)}
+.user-menu-item.logout:hover{background:#FFECE8;color:var(--danger)}
+.user-menu-divider{height:1px;background:var(--border-light);margin:4px 0}
+
+/* ===== 首页 ===== */
+.main{flex:1;overflow-y:auto;background:var(--bg-page)}
+
+/* ===== 生成页 ===== */
+.gen-layout{display:flex;height:calc(100vh - 56px);overflow:hidden}
+.gen-main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-page)}
+.gen-topbar{height:52px;background:#fff;border-bottom:1px solid var(--border-light);flex-shrink:0;display:flex;align-items:center;padding:0 16px;gap:12px}
+.gen-topbar-left{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-2);font-size:13px;padding:5px 10px;border-radius:6px;transition:.15s}
+.gen-topbar-left:hover{background:var(--primary-light);color:var(--primary)}
+.gen-topbar-title{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden}
+.gen-topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+.gen-btn{padding:6px 14px;border-radius:6px;font-size:12.5px;color:var(--text-2);border:1px solid var(--border);background:#fff;transition:.15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.gen-btn:hover{border-color:var(--primary);color:var(--primary)}
+.gen-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.gen-btn.primary:hover{background:var(--primary-dark);color:#fff}
+.gen-canvas-area{flex:1;overflow:auto;padding:32px;display:flex;align-items:flex-start;justify-content:center}
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
+.loading-spinner{width:44px;height:44px;border:4px solid var(--primary-light);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-main{font-size:16px;font-weight:600;color:var(--text-1)}
+.loading-step{font-size:13px;color:var(--text-3);background:#fff;padding:5px 14px;border-radius:20px;box-shadow:var(--shadow-sm)}
+.idle-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
+.idle-ico{font-size:52px}
+
+/* 小程序壳（轻量预览 — 黑色粗边框备用版本已移除） */
+.mp-preview-shell{width:375px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.08);border:1px solid var(--border-light);animation:popIn .35s ease;flex-shrink:0}
+@keyframes popIn{from{opacity:.5;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.mp-status-bar{display:flex;justify-content:space-between;padding:10px 22px;background:#F9FAFB;font-size:11px;color:var(--text-1);font-weight:600;border-bottom:1px solid var(--border-light)}
+.mp-body{min-height:560px;background:#F7F8FA;padding-bottom:64px}
+.mp-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;border-bottom:1px solid var(--border-light)}
+.mp-nav-title{font-size:16px;font-weight:600}
+.mp-nav-right{display:flex;gap:14px;color:var(--text-2)}
+.mp-search{padding:10px 16px}
+.mp-search-bar{background:#fff;border-radius:8px;padding:0 12px;display:flex;align-items:center;gap:8px;border:1px solid var(--border)}
+.mp-search-bar input{border:none;padding:9px 0;font-size:13px;flex:1;background:transparent}
+.mp-banner{padding:0 16px}
+.mp-banner-box{background:linear-gradient(135deg,#FF7D00,#FFB400);border-radius:12px;padding:18px;color:#fff;margin:12px 0;position:relative;overflow:hidden}
+.mp-banner-box::after{content:'';position:absolute;right:-20px;top:-20px;width:110px;height:110px;background:radial-gradient(circle,rgba(255,255,255,.25) 0%,transparent 70%);border-radius:50%}
+.mp-banner-title{font-size:18px;font-weight:600;position:relative;z-index:1}
+.mp-banner-sub{font-size:12px;opacity:.85;margin-top:4px;position:relative;z-index:1}
+.mp-section-title{font-size:14px;font-weight:600;color:var(--text-1);padding:12px 16px 8px}
+.mp-list{padding:0 16px;display:flex;flex-direction:column;gap:10px}
+.mp-card{background:#fff;border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow-sm);cursor:pointer;transition:.15s;border:1px solid transparent}
+.mp-card:hover{border-color:var(--primary)}
+.mp-card-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.mp-card-content{flex:1;min-width:0}
+.mp-card-name{font-size:14px;font-weight:600;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-card-meta{font-size:11px;color:var(--text-3);margin-top:4px}
+.mp-card-status{font-size:11px;display:inline-block}
+.mp-card-right{color:var(--text-4);font-size:18px;flex-shrink:0}
+
+
+
+
+
+
+
+.mp-form{padding:4px 16px}
+.mp-form-group{margin-bottom:12px}
+.mp-form-label{font-size:12.5px;color:var(--text-1);font-weight:500;margin-bottom:6px;display:block}
+.red{color:var(--danger);margin-left:2px}
+.mp-form-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:13px;appearance:auto}
+.mp-form-input:focus{border-color:var(--primary)}
+.mp-form-input::placeholder{color:var(--text-4)}
+.mp-submit-btn{display:block;width:calc(100% - 32px);margin:18px auto 8px;padding:12px;border-radius:10px;background:var(--primary);color:#fff;font-size:15px;font-weight:600;text-align:center;transition:.2s}
+.mp-submit-btn:hover{background:var(--primary-dark)}
+.mp-qrcode{text-align:center;padding:26px 20px}
+.mp-qrcode-box{width:150px;height:150px;margin:0 auto 16px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;position:relative}
+.mp-qrcode-box::before{content:'';position:absolute;inset:5px;border-radius:4px;background:repeating-linear-gradient(0deg,#1D2129 0,#1D2129 2px,transparent 2px,transparent 6px);background-size:100% 6px;opacity:.14}
+.qr-dot{width:30px;height:30px;background:var(--primary);border-radius:6px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+.mp-qrcode-tip{font-size:15px;font-weight:600;color:var(--text-1);margin-bottom:6px}
+.mp-qrcode-sub{font-size:12px;color:var(--text-3)}
+.mp-qrcode-time{font-size:11px;color:var(--text-4);margin-top:8px}
+.mp-mine-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.mp-mine-item{background:#fff;border-radius:12px;padding:14px;box-shadow:var(--shadow-sm)}
+.mp-mine-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.mp-mine-item-name{font-size:14px;font-weight:600}
+.mp-mine-item-status{font-size:11px;padding:2px 10px;border-radius:10px}
+.st-registered{background:var(--primary-light);color:var(--primary)}
+.st-checked{background:#E8FFEA;color:var(--success)}
+.st-canceled{background:#F2F3F5;color:var(--text-3)}
+.mp-mine-item-info{font-size:12px;color:var(--text-3)}
+.mp-mine-item-code{font-size:11px;font-family:monospace;color:var(--text-2);margin-top:6px;background:#FAFBFC;padding:4px 8px;border-radius:4px;display:inline-block}
+.mp-empty{text-align:center;padding:50px 20px;color:var(--text-3)}
+.empty-ico{font-size:40px;margin-bottom:8px}
+.mp-tabbar{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border-light);display:flex;z-index:50}
+.mp-tabbar span{flex:1;text-align:center;padding:8px 0 10px;font-size:11px;color:var(--text-3);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:.15s;user-select:none}
+.mp-tabbar span .tab-ico{font-size:18px}
+.mp-tabbar span.tab-active{color:var(--primary);font-weight:500}
+.mp-back-btn{padding:10px 16px;display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text-2);cursor:pointer;width:fit-content}
+.mp-back-btn:hover{color:var(--primary)}
+.phone-body-wrap{position:relative}
+
+/* PC壳 */
+.pc-shell{width:100%;max-width:800px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.12);border:1px solid var(--border);animation:popIn .35s ease;flex-shrink:0}
+.pc-browser-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#F2F3F5;border-bottom:1px solid var(--border-light)}
+.pc-dot{width:10px;height:10px;border-radius:50%}
+.pc-url{flex:1;background:#fff;border-radius:6px;padding:4px 12px;font-size:11px;color:var(--text-3);margin-left:8px}
+.pc-layout{display:flex;min-height:460px}
+.pc-sidebar{width:160px;background:#0F2B46;padding:16px 0;flex-shrink:0}
+.pc-sidebar-logo{color:#fff;font-size:14px;font-weight:700;padding:0 16px 16px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:12px}
+.pc-menu-item{padding:10px 16px;color:rgba(255,255,255,.65);font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.pc-menu-item.active{background:var(--primary);color:#fff}
+.pc-main{flex:1;background:#F7F8FA;padding:18px;overflow-x:auto}
+.pc-main-title{font-size:16px;font-weight:600;margin-bottom:14px}
+.pc-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.pc-stat{background:#fff;border-radius:8px;padding:14px;box-shadow:var(--shadow-sm)}
+.pc-stat-label{font-size:11px;color:var(--text-3);margin-bottom:4px}
+.pc-stat-value{font-size:22px;font-weight:700}
+.pc-table{width:100%;background:#fff;border-radius:8px;overflow:hidden;box-shadow:var(--shadow-sm);border-collapse:collapse}
+.pc-table th{background:#FAFBFC;font-size:11px;color:var(--text-3);text-align:left;padding:9px 12px;border-bottom:1px solid var(--border-light);font-weight:500;white-space:nowrap}
+.pc-table td{padding:9px 12px;font-size:12px;color:var(--text-2);border-bottom:1px solid var(--border-light);white-space:nowrap}
+.pc-table tr:last-child td{border-bottom:none}
+.pc-tag{font-size:10px;padding:2px 8px;border-radius:4px;display:inline-block}
+
+/* 右侧对话 */
+.gen-chat{width:420px;background:#fff;border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .25s,opacity .25s;overflow:hidden}
+.gen-chat.closed{width:0;opacity:0;border:none}
+.gen-chat-head{background:#0F2B46;color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.gen-chat-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.gen-chat-close{font-size:20px;color:rgba(255,255,255,.7);cursor:pointer;padding:4px 6px;border-radius:4px;transition:.15s;line-height:1}
+.gen-chat-close:hover{background:rgba(255,255,255,.15);color:#fff}
+.gen-chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;background:#FAFAF7}
+.gen-chat-msg{display:flex;gap:8px;max-width:100%}
+.gen-chat-msg.user{flex-direction:row-reverse}
+.gen-chat-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
+.gen-chat-bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.65;max-width:88%;word-break:break-word}
+.gen-chat-msg.bot .gen-chat-bubble{background:#fff;color:var(--text-1);border:1px solid var(--border);border-bottom-left-radius:4px}
+.gen-chat-msg.user .gen-chat-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+
+
+
+
+
+.req-label{width:64px;color:var(--text-3);flex-shrink:0}
+.req-value{color:var(--text-1);flex:1}
+
+
+
+
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 12px;border-radius:6px;font-size:12.5px;background:#fff;color:var(--text-2);border:1px solid var(--border);transition:.15s;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--primary);color:var(--primary)}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark);color:#fff}
+
+
+
+.gen-chat-input{padding:10px 12px;border-top:1px solid var(--border-light);display:flex;gap:8px;background:#fff;flex-shrink:0}
+.gen-chat-input textarea{flex:1;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;resize:none;min-height:44px;max-height:110px;font-family:inherit;background:#FAFBFC}
+.gen-chat-input textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light);background:#fff}
+.gen-chat-send{width:44px;height:44px;border-radius:10px;background:var(--primary);color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.gen-chat-send:hover{background:var(--primary-dark)}
+
+/* 浮动对话按钮 */
+.chat-fab{position:fixed;bottom:24px;right:24px;width:46px;height:46px;border-radius:50%;background:var(--primary);color:#fff;font-size:19px;box-shadow:0 4px 14px rgba(26,102,255,.4);display:none;align-items:center;justify-content:center;cursor:pointer;z-index:300;transition:.2s}
+.chat-fab.show{display:flex}
+.chat-fab:hover{background:var(--primary-dark);transform:scale(1.08)}
+
+/* 我的应用 */
+.app-page{padding:24px;max-width:1100px;margin:0 auto}
+.app-page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.app-page-title{font-size:20px;font-weight:700;color:var(--text-1)}
+.app-page-sub{font-size:12px;color:var(--text-3);margin-top:4px}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.app-card{background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border-light);cursor:pointer;transition:.2s}
+.app-card:hover{box-shadow:var(--shadow);transform:translateY(-2px);border-color:var(--primary)}
+.app-card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.app-card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.app-card-name{font-size:15px;font-weight:600;color:var(--text-1)}
+.app-card-ver{font-size:11px;color:var(--text-3);margin-top:2px}
+.app-card-desc{font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.app-card-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border-light)}
+.app-card-status{font-size:11px;padding:2px 10px;border-radius:10px}
+.st-launched{background:#E8FFEA;color:var(--success)}
+.st-generating{background:var(--primary-light);color:var(--primary)}
+
+/* .icon-btn removed — replaced by platform tag */
+.app-empty{text-align:center;padding:60px 20px;color:var(--text-3)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+
+/* 通用标签 */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;font-size:11px;border-radius:4px;line-height:1.6}
+.tag-success{background:#E8FFEA;color:var(--success)}
+.tag-primary{background:var(--primary-light);color:var(--primary)}
+.tag-warning{background:#FFF7E8;color:var(--warning)}
+.tag-gray{background:#F2F3F5;color:var(--text-3)}
+
+/* 弹窗 */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal-mask.open{display:flex}
+.modal{background:#fff;border-radius:12px;width:460px;max-width:92vw;max-height:85vh;display:flex;flex-direction:column;animation:modalIn .25s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{font-size:20px;color:var(--text-3);cursor:pointer;padding:4px}
+.modal-body{padding:18px 20px;overflow-y:auto}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:10px;background:#FAFBFC;flex-shrink:0}
+.modal-foot .btn{padding:8px 20px;font-size:13px}
+.form-select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:#fff;appearance:auto}
+
+/* Toast */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-12px);background:#1D2129;color:#fff;padding:10px 20px;border-radius:6px;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;transition:.25s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.warning{background:var(--warning)}
+
+@media (max-width:1200px){.gen-chat{width:360px}}
+@media (max-width:960px){.gen-chat{width:320px}}
+
+
+/* 平铺详情页（）*/
+.tile-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 12px 4px}
+.tile-detail{background:#fff;border-radius:10px;padding:12px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm)}
+.tile-detail .td-icon{font-size:18px;margin-bottom:6px}
+.tile-detail .td-label{font-size:10px;color:var(--text-3)}
+.tile-detail .td-value{font-size:12.5px;font-weight:600;color:var(--text-1);margin-top:2px}
+.tile-detail-big{grid-column:1/3;background:#fff;border-radius:10px;padding:12px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm)}
+.tile-detail-big .td-desc{font-size:12px;color:var(--text-2);line-height:1.6}
+.tile-detail-act{grid-column:1/3;display:flex;gap:8px}
+.tile-detail-act button{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.2s}
+.tile-detail-act .td-btn-primary{background:var(--primary);color:#fff}
+.tile-detail-act .td-btn-default{background:#F2F3F5;color:var(--text-1)}
+
+/* ===== 首页大输入区 + 示例需求 ===== */
+.home-wrap{max-width:820px;margin:0 auto;padding:48px 24px 40px}
+.home-title{font-size:30px;font-weight:700;color:var(--text-1);text-align:center}
+.home-sub{font-size:14px;color:var(--text-3);text-align:center;margin:10px 0 24px}
+.input-area{background:#fff;border-radius:22px;box-shadow:0 4px 20px rgba(0,0,0,.06);border:1px solid var(--border-light);padding:14px;transition:.2s}
+.input-area:focus-within{border-color:var(--primary);box-shadow:0 6px 24px rgba(26,102,255,.14)}
+.input-big{width:100%;border:none;resize:none;font-size:16px;line-height:1.7;padding:16px;min-height:150px;max-height:220px;background:transparent}
+.input-big::placeholder{color:var(--text-4)}
+.input-tools{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 2px;border-top:1px solid var(--border-light);margin-top:6px}
+.input-tools-left{display:flex;align-items:center;gap:6px}
+.tool-btn{padding:6px 10px;border-radius:6px;font-size:12.5px;color:var(--text-3);transition:.15s;display:flex;align-items:center;gap:4px;background:transparent;border:1px solid transparent}
+.tool-btn:hover{background:var(--primary-light);color:var(--primary)}
+.send-arrow{width:42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0;box-shadow:0 2px 8px rgba(26,102,255,.3);border:none;cursor:pointer;line-height:1}
+.send-arrow:hover{background:var(--primary-dark)}
+.send-arrow:disabled{background:#C9D7F0;box-shadow:none;cursor:not-allowed}
+.home-platform-select{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border-light);width:fit-content}
+.home-platform-select span{padding:8px 18px;font-size:14px;cursor:pointer;color:var(--text-2);transition:.15s;user-select:none;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
+.home-platform-select span:hover{color:var(--primary)}
+.home-platform-select span.active{color:var(--primary);font-weight:600;border-bottom-color:var(--primary)}
+.home-tool-divider{width:1px;height:16px;background:var(--border);margin:0 4px}
+.home-model-select{padding:5px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:12px;color:var(--text-2);appearance:auto;cursor:pointer;transition:.15s;max-width:160px}
+.home-model-select:hover{border-color:var(--primary);color:var(--primary)}
+.input-tools-right{display:flex;align-items:center;gap:10px}
+.reqdoc-optl{color:var(--text-3)}
+
+
+.reqdoc-conv{display:flex;flex-direction:column;gap:12px}
+.reqdoc-conv-msg{display:flex;gap:10px;max-width:100%}
+.reqdoc-conv-msg.user{flex-direction:row-reverse}
+.reqdoc-conv-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;color:#fff}
+.reqdoc-conv-avatar.user{background:linear-gradient(135deg,#FF7D00,#FFB400)}
+.reqdoc-conv-avatar.ai{background:var(--primary)}
+.reqdoc-conv-bubble{padding:12px 16px;border-radius:14px;font-size:14px;line-height:1.7;max-width:88%;word-break:break-word}
+.reqdoc-conv-msg.user .reqdoc-conv-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+.reqdoc-conv-msg.ai .reqdoc-conv-bubble{background:#fff;color:var(--text-1);border:1px solid var(--border);border-bottom-left-radius:4px}
+
+/* ===== 需求说明书页：加宽 + 结构化文档 ===== */
+.reqdoc-page{max-width:960px;margin:0 auto;padding:24px 24px 180px;display:flex;flex-direction:column;gap:14px}
+.reqdoc-card{background:#fff;border-radius:12px;border:1px solid var(--border-light);box-shadow:var(--shadow);overflow:hidden;animation:popIn .35s ease}
+.reqdoc-head{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border-light)}
+.reqdoc-title{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.reqdoc-actions .btn{padding:6px 16px;font-size:12.5px}
+.reqdoc-body{padding:24px 28px}
+.reqdoc-doc-section{margin-bottom:22px}
+.reqdoc-doc-section:last-child{margin-bottom:0}
+.reqdoc-doc-h{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text-1);margin-bottom:8px}
+.reqdoc-doc-h .no{width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:600}
+.reqdoc-doc-p{font-size:13.5px;line-height:1.9;color:var(--text-2)}
+
+.reqdoc-doc-line{display:flex;align-items:baseline;gap:8px;font-size:13.5px;line-height:2;color:var(--text-2)}
+.reqdoc-doc-line .dot{width:5px;height:5px;border-radius:50%;background:var(--primary);flex-shrink:0;align-self:center}
+.reqdoc-editor{border:none;border-radius:0;padding:24px 28px;font-size:13.5px;line-height:1.9;resize:vertical;width:100%;min-height:420px;background:#fff;font-family:inherit;outline:none}
+.reqdoc-editor:focus{box-shadow:inset 0 0 0 2px var(--primary);border-radius:12px}
+.reqdoc-gen-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:#FAFBFC;border-top:1px solid var(--border-light)}
+.reqdoc-gen-hint{font-size:12.5px;color:var(--text-3);display:flex;align-items:center;gap:6px}
+.reqdoc-gen-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 36px;border-radius:10px;background:var(--primary);color:#fff;font-size:14.5px;font-weight:600;transition:.2s;box-shadow:0 4px 14px rgba(26,102,255,.3)}
+.reqdoc-gen-btn:hover{background:var(--primary-dark);box-shadow:0 6px 20px rgba(26,102,255,.4)}
+.reqdoc-chat-bar{position:fixed;bottom:0;left:0;right:0;padding:14px 24px;background:#fff;border-top:1px solid var(--border-light);display:flex;gap:10px;align-items:flex-end;z-index:50;box-shadow:0 -4px 16px rgba(0,0,0,.05)}
+.reqdoc-chat-input{flex:1;border:1px solid var(--border);border-radius:16px;padding:16px 18px;font-size:14px;resize:none;min-height:100px;max-height:140px;font-family:inherit;background:#fff;outline:none;transition:.2s;line-height:1.7;box-sizing:border-box}
+.reqdoc-chat-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.reqdoc-chat-send{width:42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(26,102,255,.3)}
+.reqdoc-chat-send:hover{background:var(--primary-dark)}
+.reqdoc-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:16px}
+
+/* ===== 平铺预览：轻量白底容器 ===== */
+.tiled-grid{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:flex-start;padding:8px}
+.tiled-label{text-align:center;font-size:16px;font-weight:600;color:var(--text-1);margin-bottom:20px}
+.tiled-mini{flex:0 0 auto;width:280px;border-radius:18px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);border:1px solid var(--border);background:#fff;transition:.2s;animation:tileIn .3s ease}
+.tiled-mini:hover{box-shadow:0 8px 28px rgba(0,0,0,.1)}
+@keyframes tileIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tiled-mini-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:#F7F8FA;border-bottom:1px solid var(--border-light);font-size:11px;color:var(--text-3)}
+.tiled-mini-title{padding:12px 14px;font-size:14px;font-weight:600;border-bottom:1px solid var(--border-light)}
+.tiled-mini-body{padding:12px 14px;min-height:110px;font-size:12.5px;color:var(--text-2);line-height:1.7}
+.tiled-mini-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F5F6F7}
+.tiled-mini-item:last-child{border-bottom:none}
+.tiled-mini-item-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.tiled-mini-stat{text-align:center;padding:8px}
+.tiled-mini-stat-val{font-size:18px;font-weight:700;color:var(--text-1)}
+.tiled-mini-stat-lbl{font-size:10px;color:var(--text-3);margin-top:2px}
+.tiled-qr{text-align:center;padding:12px}
+.tiled-qr-box{width:72px;height:72px;margin:0 auto 8px;background:repeating-linear-gradient(0deg,#1D2129 0,#1D2129 2px,transparent 2px,transparent 5px);background-size:100% 5px;opacity:.15}
+.tiled-qr-tip{font-size:11px;font-weight:600;color:var(--text-1)}
+.tiled-pc{width:320px}
+.tiled-pc-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#F2F3F5;border-bottom:1px solid var(--border-light)}
+.tiled-pc-url{flex:1;background:#fff;border-radius:4px;padding:2px 8px;font-size:10px;color:var(--text-3);margin-left:4px}
+
+/* 小程序壳（登录/我的应用等已用场景仍保留，生成预览不再使用黑壳） */
+</style>
+</head>
+<body>
+<!-- 登录页 -->
+<div class="login-page" id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">海</div>
+      <div class="login-logo-title">海牛AI应用创新平台</div>
+      <div class="login-logo-sub">一句话，让AI帮你生成专属应用</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">手机号</label>
+      <input class="form-input" id="loginPhone" placeholder="请输入手机号" value="13800138000">
+    </div>
+    <div class="form-group">
+      <label class="form-label">密码</label>
+      <input class="form-input" id="loginPwd" type="password" placeholder="请输入密码" value="123456">
+    </div>
+    <button class="login-btn" onclick="doLogin()">登 录</button>
+    <div class="login-tip">账号由平台统一开通，当前账号 <strong>唯安</strong></div>
+  </div>
+</div>
+
+<!-- 主应用 -->
+<div class="app" id="app">
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">海</div>
+      <span>海牛AI应用创新平台<span class="sub">v1.0</span></span>
+    </div>
+    <nav class="header-nav">
+      <a class="active" id="navHome" onclick="switchNav('home')">首页</a>
+      <a id="navMyApps" onclick="switchNav('myapps')">我的应用</a>
+    </nav>
+    <div class="header-right">
+      <span class="env-tag">● 已登录</span>
+      <div class="user-info" onclick="toggleUserMenu(event)">
+        <div class="avatar">唯</div>
+        <div>
+          <div class="user-name" id="headerUserName">唯安</div>
+        </div>
+        <span class="user-arrow">▾</span>
+        <div class="user-menu" id="userMenu">
+          <div class="user-menu-item logout" onclick="logout()">⏻ 退出登录</div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="main" id="mainArea"></div>
+</div>
+
+<div class="chat-fab" id="chatFab" onclick="toggleChat()">💬</div>
+
+<div class="modal-mask" id="modalMask">
+  <div class="modal" id="modalBox">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">标题</div>
+      <span class="modal-close" onclick="closeModal()">×</span>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const emptyFn=()=>{};
+
+/* ===== 状态 ===== */
+const FAKE_APPS=[
+  {id:'APP-001',name:'活动报名小程序',icon:'🎉',color:'#FF7D00',ver:'v1.0.0',status:'已上线',desc:'1. 活动列表展示；2. 在线报名登记；3. 签到码生成；4. 报名统计查看',scene:'event',date:'2026-08-20',platform:'mp'},
+  {id:'APP-002',name:'客户拜访管理',icon:'📋',color:'#1A66FF',ver:'v1.2.0',status:'已上线',desc:'1. 拜访记录登记；2. 拜访计划安排；3. 拜访报告生成；4. 客户画像查看',scene:'visit',date:'2026-08-15',platform:'pc'},
+  {id:'APP-003',name:'月度问卷调研',icon:'📊',color:'#00B42A',ver:'v0.9.0',status:'已下架',desc:'1. 问卷模板创建；2. 在线答题收集；3. 数据统计分析；4. 结果导出',scene:'survey',date:'2026-08-08',platform:'pc'},
+];
+const state={
+  page:'home',
+  platform:'mp',
+  model:'海牛GPT-4 全能',
+  inputText:'',
+  chatMsgs:[],
+  reqDoc:null,
+  reqFullText:'',
+  reqState:'none',
+  generating:false,
+  genStarted:false,
+  genStep:0,
+  currentApp:null,
+  myApps:FAKE_APPS.slice(),
+  chatOpen:true,
+  mpTab:'home',
+};
+
+/* ===== 场景模板 ===== */
+const SCENES={
+  event:{name:'活动报名小程序',icon:'🎉',color:'#FF7D00',level:'L1',user:'活动参与者',
+    funcs:['活动列表展示','在线报名登记','签到码生成','报名统计查看'],
+    fields:['活动名称','报名人','手机号','参加人数','备注'],
+    md:'# 活动报名小程序\n\n**目标用户**：活动参与者\n\n## 核心功能\n1. 活动列表展示\n2. 在线报名登记\n3. 签到码生成\n4. 报名统计查看',
+    scene:'event',
+    sections:{overview:'面向活动参与者提供的「活动报名小程序」应用，用于完成活动发布、在线报名、签到管理、报名统计的业务闭环。',
+      users:'活动参与者（报名活动、签到入场）、活动管理员（发布活动、查看报名统计）',
+      pages:'活动列表页（展示所有活动，支持搜索筛选）、在线报名页（填写表单提交报名）、签到码页（生成并展示签到码）、报名统计页（查看活动报名数据）、活动管理后台（PC端活动发布与管理）',
+      flow:'① 管理员发布活动 → ② 用户在活动列表中选择活动 → ③ 填写报名信息提交 → ④ 系统生成签到码 → ⑤ 活动当天现场扫码签到 → ⑥ 管理员查看报名统计',
+      rules:'⚡ 每人同一活动仅可报名一次\n⚡ 签到码有效期至活动结束\n⚡ 活动名额已满自动关闭报名\n⚡ 报名截止后不可取消',
+      fields:[
+        {name:'活动名称',type:'文本',req:'是',note:'活动标题'},
+        {name:'报名人',type:'文本',req:'是',},
+        {name:'手机号',type:'手机号',req:'是',},
+        {name:'参加人数',type:'数字',req:'否',},
+        {name:'备注',type:'文本',req:'否',}
+      ],
+      notImpl:'微信消息推送提醒\n报名费用在线支付\n活动评价与反馈\n数据分析报表导出',
+      acceptance:'✅ 管理员可发布/编辑/下架活动\n✅ 用户可查看活动列表并报名\n✅ 报名后生成唯一签到码\n✅ 管理员查看报名统计概览'
+    }},
+  visit:{name:'客户拜访管理',icon:'📋',color:'#1A66FF',level:'L1',user:'客户经理',
+    funcs:['拜访记录登记','拜访计划安排','拜访报告生成','客户画像查看'],
+    fields:['客户姓名','拜访时间','拜访目的'],
+    md:'# 客户拜访管理\n\n**目标用户**：客户经理\n\n## 核心功能\n1. 拜访记录登记\n2. 拜访计划安排\n3. 拜访报告生成\n4. 客户画像查看',
+    scene:'visit',
+    sections:{overview:'面向客户经理提供的「客户拜访管理」应用，用于完成拜访计划安排、拜访记录登记、拜访报告生成、客户画像查看的业务闭环。',
+      users:'客户经理（拜访全流程管理）、销售主管（查看团队拜访统计）',
+      pages:'拜访计划页（查看和安排拜访计划）、拜访登记页（记录每次拜访详情）、拜访报告页（查看拜访总结报告）、客户画像页（查看客户信息和历史拜访）、数据统计页（拜访数据概览）',
+      flow:'① 客户经理制定拜访计划 → ② 执行拜访并登记记录 → ③ 系统生成拜访报告 → ④ 更新客户画像 → ⑤ 主管查看团队拜访数据',
+      rules:'⚡ 拜访记录需在拜访后24小时内提交\n⚡ 每月至少完成8次客户拜访\n⚡ 新客户拜访需主管审批\n⚡ 拜访报告自动归档至客户档案',
+      fields:[
+        {name:'客户名称',type:'文本',req:'是'},
+        {name:'拜访时间',type:'日期时间',req:'是'},
+        {name:'拜访目的',type:'文本',req:'是'},
+        {name:'拜访摘要',type:'文本',req:'否'},
+        {name:'下次跟进',type:'日期',req:'否'}
+      ],
+      notImpl:'拜访轨迹GPS定位\n客户满意度评分\n拜访费用报销\n智能拜访提醒推送',
+      acceptance:'✅ 客户经理可登记拜访记录\n✅ 支持拜访计划安排\n✅ 拜访报告自动生成\n✅ 查看客户历史拜访数据'
+    }},
+};
+
+const EVENT_ACTIVITIES=[
+  {name:'青春交友 · 城市定向跑',date:'2026-09-10',time:'14:00',status:'名额紧张',color:'#E8F0FF',icon:'🎊',desc:'城市定向跑活动，组队完成趣味任务，速度与智慧的较量！'},
+  {name:'瑜伽体验公开课',date:'2026-09-12',time:'19:00',status:'报名中',color:'#E8FFEA',icon:'🧘',desc:'专业瑜伽导师带领，放松身心，感受身体与心灵的平衡。'},
+  {name:'新员工入职培训',date:'2026-09-15',time:'09:00',status:'报名中',color:'#FFF7E8',icon:'🎓',desc:'为新入职员工准备的全面入职培训课程，了解企业文化。'},
+];
+const MY_REGISTRATIONS=[
+  {name:'青春交友 · 城市定向跑',date:'2026-09-10',time:'14:00',status:'已签到',code:'QK-8321'},
+  {name:'瑜伽体验公开课',date:'2026-09-12',time:'19:00',status:'已报名',code:'QK-8322'},
+];
+
+/* ===== 登录 ===== */
+function doLogin(){
+  showToast('登录成功，欢迎回来','success');
+  $('loginPage').style.display='none';
+  $('app').classList.add('ready');
+  renderHome();
+}
+
+/* ===== 用户菜单 / 退出 ===== */
+function toggleUserMenu(e){
+  e.stopPropagation();
+  const m=$('userMenu');
+  if(!m)return;
+  m.classList.toggle('open');
+  if(m.classList.contains('open')){
+    setTimeout(()=>document.addEventListener('click',closeUserMenu),0);
+  }else{
+    document.removeEventListener('click',closeUserMenu);
+  }
+}
+function closeUserMenu(){const m=$('userMenu');if(m)m.classList.remove('open');document.removeEventListener('click',closeUserMenu);}
+function logout(){
+  showToast('已退出登录','info');
+  $('app').classList.remove('ready');
+  $('loginPage').style.display='flex';
+}
+
+/* ===== 导航 ===== */
+function switchNav(p){
+  state.page=p;
+  $('navHome').classList.toggle('active',p==='home');
+  $('navMyApps').classList.toggle('active',p==='myapps');
+  if(p==='home')renderHome();
+  else if(p==='myapps')renderMyApps();
+}
+
+function goMyApps(){switchNav('myapps');}
+
+/* ===== 首页 ===== */
+function renderHome(){
+  $('mainArea').className='main';
+  $('mainArea').innerHTML=`<div class="home-wrap">
+    <div class="home-title">✨ 描述需求，AI生成专属应用</div>
+    <div class="home-sub">说一句话，AI帮你完成需求梳理、应用生成与部署</div>
+    <div class="input-area">
+      <div class="home-platform-select" id="homePFSel">
+        <span class="${state.platform==='mp'?'active':''}" data-p="mp" onclick="selHomePF(this)">📱 小程序</span>
+        <span class="${state.platform==='pc'?'active':''}" data-p="pc" onclick="selHomePF(this)">💻 PC</span>
+      </div>
+      <textarea class="input-big" id="homeInput" placeholder="描述你的业务需求，例如：我想做一个活动报名小程序…" oninput="onHomeInput()" >我想做一个活动报名小程序，支持在线发布活动，参与人报名后生成签到码，管理员可以查看报名统计</textarea>
+      <div class="input-tools">
+        <div class="input-tools-left">
+          <button class="tool-btn" title="上传需求文档" onclick="showToast('支持上传需求文档','info')">📎</button>
+          <button class="tool-btn" title="语音输入" onclick="showToast('语音输入接入中','info')">🎤</button>
+        </div>
+        <div class="input-tools-right">
+          <select class="home-model-select" id="homeModelSel" onchange="onHomeModel(this)">
+            <option ${state.model==='海牛GPT-4 全能'?'selected':''}>🧠 海牛GPT-4 全能</option>
+            <option ${state.model==='海牛GPT-4 极速'?'selected':''}>⚡ 海牛GPT-4 极速</option>
+            <option ${state.model==='海牛GPT-4 轻量'?'selected':''}>🪶 海牛GPT-4 轻量</option>
+          </select>
+          <button class="send-arrow" id="homeSendBtn" onclick="startGen()" title="生成需求说明书">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  onHomeInput();
+}
+
+function onHomeModel(sel){
+  state.model=sel.value;
+  showToast('已切换至'+sel.value,'info',1500);
+}
+
+function fillExample(el){
+  const inp=$('homeInput');
+  if(!inp)return;
+  const map={
+    '营销活动报名':'我想做一个营销活动报名小程序，支持在线发布活动，参与人报名后生成签到码，管理员可以查看报名统计',
+    '历史营销活动案例库':'我想做一个历史营销活动案例库，沉淀往期优秀活动方案，支持按行业、时间、效果筛选和查看',
+    '客户拜访记录':'我想做一个客户拜访记录应用，客户经理可以登记每次拜访记录、安排拜访计划并生成拜访报告',
+  };
+  inp.value=map[el.textContent.trim()]||'';
+  onHomeInput();
+  inp.focus();
+}
+
+function onHomeInput(){
+  const btn=$('homeSendBtn');
+  if(!btn)return;
+  const inp=$('homeInput');
+  btn.disabled=!(inp&&inp.value.trim());
+}
+
+function selHomePF(el){
+  document.querySelectorAll('#homePFSel span').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  state.platform=el.dataset.p;
+}
+
+/* ===== 生成流程 ===== */
+function startGen(){
+  const inp=$('homeInput');
+  const text=inp?inp.value.trim():state.inputText;
+  if(!text){showToast('请输入一句话需求','info');return;}
+  state.inputText=text;
+  state.page='reqdoc';
+  $('navHome').classList.add('active');
+  $('navMyApps').classList.remove('active');
+  $('mainArea').className='main';
+  const reqSteps=['正在理解需求...','正在梳理页面和业务规则...','正在生成需求说明书...'];
+  $('mainArea').innerHTML=`<div class="reqdoc-page"><div class="reqdoc-loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-main">AI正在为你梳理需求说明书</div>
+      <div class="loading-step" id="reqdocLoadingText">${reqSteps[0]}</div>
+    </div></div>`;
+  let step=0;
+  const t=setInterval(()=>{
+    step++;
+    if(step<reqSteps.length){
+      const el=$('reqdocLoadingText');
+      if(el)el.textContent=reqSteps[step];
+    }else{
+      clearInterval(t);
+      const sc=detectScene(text);
+      const tpl=SCENES[sc];
+      state.reqDoc={...tpl,scene:sc};
+      state.reqFullText=tpl.md;
+      state.reqState='viewing';
+      renderReqDocPage();
+    }
+  },800);
+}
+
+function detectScene(text){
+  if(text.includes('报名')||text.includes('活动')||text.includes('签到'))return 'event';
+  if(text.includes('拜访')||text.includes('客户'))return 'visit';
+  return 'event';
+}
+
+function showReqCard(){/* 已废弃：需求说明书改为独立页面 */}
+
+/* ===== 需求说明书页（对话格式：用户需求 → AI回复 → 说明书卡片 → 立即生成 → 底部持续对话） ===== */
+function renderReqDocPage(){
+  state.page='reqdoc';
+  $('mainArea').className='main';
+  const r=state.reqDoc;
+  const ed=state.reqState==='editing';
+  const userText=state.inputText||'';
+  const sec=r.sections||{};
+  const viewBody=`<div class="reqdoc-body">
+      <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">1</span>应用概述</div>
+        <p class="reqdoc-doc-p">${sec.overview||`面向${r.user}提供的「${r.name}」应用，用于完成业务需求的在线化闭环。`}</p></div>
+      <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">2</span>用户与使用场景</div>
+        <p class="reqdoc-doc-p">${sec.users||r.user}</p></div>
+      <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">3</span>页面与功能</div>
+        <div class="reqdoc-doc-line"><span class="dot"></span><span>${(r.funcs||[]).join('、')}</span></div>
+        <p class="reqdoc-doc-p" style="margin-top:6px">${sec.pages||''}</p></div>
+      <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">4</span>核心流程</div>
+        ${(sec.flow||'').split('\n').map(x=>`<div class="reqdoc-doc-line"><span class="dot"></span><span>${x}</span></div>`).join('')}</div>
+      <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">5</span>关键业务规则</div>
+        ${(sec.rules||'').split('\n').map(x=>`<div class="reqdoc-doc-line"><span class="dot"></span><span>${x}</span></div>`).join('')}</div>
+      <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">6</span>数据字段</div>
+        ${(sec.fields||[]).map(f=>`<div class="reqdoc-doc-line"><span class="dot"></span><span><strong>${f.name}</strong>（${f.type}，<span class="${f.req==='是'?'':'reqdoc-optl'}">${f.req==='是'?'必填':'选填'}</span>）${f.note?`<span style="color:var(--text-3)">— ${f.note}</span>`:''}</span></div>`).join('')}</div>
+      <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">7</span>本期不实现功能</div>
+        ${(sec.notImpl||'').split('\n').map(x=>`<div class="reqdoc-doc-line"><span class="dot" style="background:var(--text-4)"></span><span style="color:var(--text-3)">${x}</span></div>`).join('')}</div>
+      <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">8</span>验收重点</div>
+        ${(sec.acceptance||'').split('\n').map(x=>`<div class="reqdoc-doc-line"><span class="dot" style="background:var(--success)"></span><span>${x}</span></div>`).join('')}</div>
+    </div>`;
+  $('mainArea').innerHTML=`<div class="reqdoc-page">
+    <div class="reqdoc-conv">
+      <!-- 原始需求 -->
+      <div class="reqdoc-conv-msg user"><div class="reqdoc-conv-avatar user">我</div>
+        <div class="reqdoc-conv-bubble">${userText}</div></div>
+      <!-- AI回复 -->
+      <div class="reqdoc-conv-msg ai"><div class="reqdoc-conv-avatar ai">海牛</div>
+        <div class="reqdoc-conv-bubble">好的，已根据你的需求整理出需求说明书。请阅读并确认下方内容，如需调整可点击右上角「编辑」或直接在下方告诉AI。</div></div>
+    </div>
+    <div class="reqdoc-card">
+      <div class="reqdoc-head">
+        <div class="reqdoc-title">📋 需求说明书</div>
+        <div class="reqdoc-actions">${ed
+          ?`<button class="btn" onclick="cancelReqDocEdit()">✕ 取消</button><button class="btn btn-primary" onclick="saveReqDoc()">✓ 保存</button>`
+          :`<button class="btn" onclick="editReqDoc()">✏ 编辑</button>`}</div>
+      </div>
+      ${ed?`<textarea class="reqdoc-editor" id="reqdocEditor" placeholder="可修改需求说明书的完整内容，保存后作为正式生成依据">${r.md||''}</textarea>`
+        :viewBody}
+      ${ed?'':`<div class="reqdoc-gen-row">
+        <div class="reqdoc-gen-hint">💡 如需调整，可点击编辑或在下方告诉AI</div>
+        <button class="reqdoc-gen-btn" onclick="confirmGen()">⚡ 立即生成</button>
+      </div>`}
+    </div>
+  </div>
+  <div class="reqdoc-chat-bar">
+    <textarea class="reqdoc-chat-input" id="reqdocChatInput" placeholder='输入补充或修改需求，例如“增加附件上传，去掉审批流程”' onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();reqdocChatSend()}"></textarea>
+    <button class="reqdoc-chat-send" onclick="reqdocChatSend()">➤</button>
+  </div>`;
+  const ci=$('reqdocChatInput');
+  if(ci&&!ed)ci.focus();
+}
+
+function editReqDoc(){state.reqState='editing';renderReqDocPage();}
+function cancelReqDocEdit(){state.reqState='viewing';renderReqDocPage();}
+
+function saveReqDoc(){
+  const ta=$('reqdocEditor');
+  if(ta)state.reqFullText=ta.value;
+  const m=state.reqFullText;
+  const n=m.match(/^#\s+(.+)$/m);const u=m.match(/\*\*目标用户\*\*：(.+)/);const l=m.match(/\*\*访问等级\*\*：(.+)/);
+  if(n)state.reqDoc.name=n[1].trim();if(u)state.reqDoc.user=u[1].trim();if(l)state.reqDoc.level=l[1].trim();
+  state.reqState='viewing';
+  showToast('需求说明书已保存','success');
+  renderReqDocPage();
+}
+
+/* 底部持续对话：用户补充需求 → 更新说明书（不重新生成文件） */
+function reqdocChatSend(){
+  const inp=$('reqdocChatInput');
+  const text=inp?inp.value.trim():'';
+  if(!text){showToast('请输入补充需求','info');return;}
+  const r=state.reqDoc;
+  // 将补充内容合并进说明书（模拟AI消化后落库）：写入页面与功能 + 关键业务规则 + 完整文本
+  r.funcs=Array.from(new Set([...r.funcs, text]));
+  r.sections=r.sections||{};
+  r.sections.pages=(r.sections.pages||'')+'\n'+(text+(r.sections.pages?'':'（由对话补充）'));
+  r.sections.rules=(r.sections.rules||'')+'\n'+'补充需求已纳入：'+text;
+  state.reqFullText=(state.reqFullText||r.md)+'\n\n补充需求：'+text;
+  state.reqDocMsg=text;
+  state.reqState='viewing';
+  inp.value='';
+  showToast('已根据补充需求更新说明书','success');
+  renderReqDocPage();
+}
+
+function confirmGen(){
+  const m=state.reqFullText||state.reqDoc.md;
+  const n=m.match(/^#\s+(.+)$/m);const u=m.match(/\*\*目标用户\*\*：(.+)/);const l=m.match(/\*\*访问等级\*\*：(.+)/);
+  if(n)state.reqDoc.name=n[1].trim();if(u)state.reqDoc.user=u[1].trim();if(l)state.reqDoc.level=l[1].trim();
+  // 保存当前最新需求说明书，并作为完整上下文进入生成
+  state.reqFullText=m;
+  state.page='gen';
+  $('navHome').classList.add('active');
+  $('navMyApps').classList.remove('active');
+  state.reqState='viewing';
+  state.currentApp=null;state.chatOpen=true;
+  state.chatMsgs=[
+    {role:'user',text:'需求说明书已确认，开始生成应用'},
+    {role:'bot',text:'✅ 已收到确认后的需求说明书，自动开始生成应用'},
+    {role:'bot',text:'📋 已根据确认后的需求说明书开始生成应用 · 需求说明书：应用概述、目标用户、核心功能、数据字段、页面与功能 …… <span style="color:var(--primary);cursor:pointer" onclick="showToast(&apos;已作为生成上下文全部传入AI&apos;, &apos;&apos;, 2500)">展开全部</span>'},
+    {role:'bot',text:'生成过程中可随时与我对话，完成后可继续提出修改意见（增加字段、调整按钮、修改样式、增加筛选等）。'},
+  ];
+  renderGen();
+  setTimeout(genApp,900);
+}
+
+function genApp(){
+  state.generating=true;state.genStarted=true;state.genStep=0;
+  if(state.reqFullText){state.chatMsgs.push({role:'bot',text:'📋 完整需求说明书已自动传入，无需手动复制粘贴',small:true});}
+  renderGen();
+  const steps=['🏗️ 理解需求中...','🔍 分析业务场景...','🔌 匹配平台能力...','📄 生成页面结构...','🧩 组装业务功能...','✅ 应用完成中...'];
+  showStepsBar(steps,0);
+  let step=0;
+  const t=setInterval(()=>{
+    step++;
+    if(step<steps.length){
+      state.genStep=step;showStepsBar(steps,step);updateGenLoading();
+      state.chatMsgs.push({role:'bot',text:steps[step],small:true});
+      renderChat();
+    }
+    else{clearInterval(t);finishGenApp();}
+  },750);
+}
+
+function showStepsBar(s,idx){
+  const stepsEl=document.getElementById('genStepsBar');
+  if(!stepsEl)return;
+  stepsEl.innerHTML=s.map(function(st,i){return '<span'+(i<idx?' class="done"':i===idx?' class="active"':'')+'>'+st+'</span>';}).join('');
+}
+function renderChat(){
+  const el=document.getElementById('genChatMsgs');
+  if(!el)return;
+  el.innerHTML=state.chatMsgs.map(renderMsg).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function finishGenApp(){
+  state.generating=false;
+  const sc=state.reqDoc.scene||'event';
+  const app={
+    id:'APP-'+String(state.myApps.length+1).padStart(3,'0'),
+    name:state.reqDoc.name,
+    icon:SCENES[sc].icon,
+    color:SCENES[sc].color,
+    ver:'v1.0.0',status:'已上线',
+    desc:state.reqDoc.funcs.map((f,i)=>`${i+1}. ${f}`).join('；'),
+    scene:sc,date:'2026-09-03',platform:state.platform,
+  };
+  state.currentApp=app;
+  state.myApps.unshift(app);
+  state.chatMsgs.push({role:'bot',text:'🎉 应用已生成完成！已自动保存到「我的应用」。'});
+  state.chatMsgs.push({role:'bot',text:'右侧对话框可继续提出修改意见，例如：增加字段、调整按钮位置、修改页面样式、增加筛选条件等。'});
+  renderGen();scrollChat();
+}
+
+/* ===== 返回 / 对话开关 ===== */
+function goBack(){
+  if(state.page==='reqdoc'){state.page='home';renderHome();return;}
+  state.page='home';$('navHome').classList.add('active');$('navMyApps').classList.remove('active');renderHome();
+}
+function toggleChat(){state.chatOpen=!state.chatOpen;renderGen();}
+function closeChat(){state.chatOpen=false;renderGen();}
+
+/* ===== 渲染生成页 ===== */
+function renderGen(){
+  $('mainArea').className='main';
+  const r=state.reqDoc;
+  const hasApp=!!state.currentApp;
+  const topRight=hasApp?`<button class="gen-btn primary" onclick="showToast('应用已发布 ✨','success')">🚀 发布</button>`:'';
+  $('mainArea').innerHTML=`<div class="gen-layout">
+    <div class="gen-main">
+      <div class="gen-topbar">
+        <div class="gen-topbar-left" onclick="goBack()"><span>←</span><span>返回首页</span></div>
+        <div class="gen-topbar-title">${state.generating?'🤖AI生成中':r?'✨ '+r.name:'🤖AI生成'}</div>
+        <div class="gen-topbar-right">${topRight}</div></div>
+      <div class="gen-canvas-area">${state.generating?genLoading():hasApp?genPreview(state.currentApp):genIdle()}</div>
+    </div>
+    <div class="gen-chat ${state.chatOpen?'':'closed'}" id="genChatPanel">
+      <div class="gen-chat-head">
+        <div class="gen-chat-title">🤖 AI助手 <span style="font-size:11px;opacity:.7;font-weight:400">海牛GPT-4</span></div>
+        <span class="gen-chat-close" onclick="closeChat()">×</span>
+      </div>
+      <div class="gen-chat-msgs" id="genChatMsgs">${state.chatMsgs.map(renderMsg).join('')}</div>
+      <div class="gen-chat-input">
+        <textarea id="genChatInput" placeholder="输入需求或修改意见..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend()}"></textarea>
+        <button class="gen-chat-send" onclick="chatSend()">➤</button>
+      </div>
+    </div>
+  </div>`;
+  updateFab();
+}
+
+function renderMsg(m){
+  if(m.type==='req'){return '';}
+  const avatar=`<div class="gen-chat-avatar" style="${m.role==='user'?'background:linear-gradient(135deg,#FF7D00,#FFB400)':'background:#1A66FF'}">${m.role==='user'?'唯':'🤖'}</div>`;
+  const smallCls=m.small?' style="font-size:12px"':'';
+  return `<div class="gen-chat-msg ${m.role}">${avatar}<div class="gen-chat-bubble"${smallCls}>${m.text||''}</div></div>`;
+}
+
+function reqCardHTML(req){return '';}
+
+function genIdle(){return `<div class="idle-state"><div class="idle-ico">🤖</div><div class="loading-main">等待AI生成你的应用</div><div class="loading-step">生成完成后将在这里预览</div></div>`;}
+function genLoading(){return `<div class="loading-state"><div class="loading-spinner"></div><div class="loading-main">AI正在${state.generating?'生成':'处理'}你的应用</div><div class="loading-step">${['理解需求中...','分析业务场景中...','匹配平台能力中...','生成需求说明书中...','生成页面结构中...','组装业务功能中...','应用完成中...'][state.genStep]||'处理中...'}</div></div>`;}
+function updateGenLoading(){const e=document.querySelector('.loading-step');if(e)e.textContent=['理解需求中...','分析业务场景中...','匹配平台能力中...','生成需求说明书中...','生成页面结构中...','组装业务功能中...','应用完成中...'][state.genStep]||'处理中...';}
+function updateFab(){const f=$('chatFab');if(!f)return;f.className='chat-fab'+(state.page==='gen'&&!state.chatOpen?' show':'');}
+
+/* ===== 应用预览 ===== */
+function genPreview(app){
+  var sc=app.scene||'event';
+  var tiles=getTiledPages(sc);
+  if(!tiles||tiles.length===0){return state.platform==='mp'?mpPreview(app):pcPreview(app);}
+  var isMp=state.platform==='mp';
+  var labelEl=isMp?'📱 小程序应用预览':'💻 PC应用预览';
+  return '<div class="tiled-label">'+labelEl+'</div><div class="tiled-grid">'+
+    tiles.map(function(t){return renderTile(t,isMp);}).join('')+'</div>';
+}
+function renderTile(t,isMp){
+  if(isMp){
+    return '<div class="tiled-mini"><div class="tiled-mini-bar"><span>9:41</span><span>📶 🔋</span></div>'+
+      '<div class="tiled-mini-title">'+t.title+'</div>'+
+      '<div class="tiled-mini-body">'+t.body+'</div></div>';
+  }
+  return '<div class="tiled-mini tiled-pc"><div class="tiled-pc-bar"><span class="pc-dot" style="background:#F53F3F"></span><span class="pc-dot" style="background:#FF7D00"></span><span class="pc-dot" style="background:#00B42A"></span><span class="tiled-pc-url">app.hainiu.com</span></div>'+
+    '<div class="tiled-mini-title">'+t.title+'</div>'+
+    '<div class="tiled-mini-body">'+t.body+'</div></div>';
+}
+function getTiledPages(sc){
+  var P={"event":[
+    {title:"活动列表",body:'<div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#E8F0FF">🎊</div><div>青春交友·城市定向跑<br><span style="font-size:10px;color:var(--text-3)">9月10日 14:00</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#E8FFEA">🧘</div><div>瑜伽体验公开课<br><span style="font-size:10px;color:var(--text-3)">9月12日 19:00</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#FFF7E8">🎓</div><div>新员工入职培训<br><span style="font-size:10px;color:var(--text-3)">9月15日 09:00</span></div></div>'},
+    {title:"在线报名",body:'<div style="display:flex;flex-direction:column;gap:8px"><div><span style="font-size:10px;color:var(--text-3)">姓名</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请输入姓名</span></div><div><span style="font-size:10px;color:var(--text-3)">手机号</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请输入手机号</span></div><div style="margin-top:6px;padding:8px;background:var(--primary);color:#fff;border-radius:6px;text-align:center;font-size:12px;font-weight:600">提交报名</div></div>'},
+    {title:"签到码",body:'<div class="tiled-qr"><div class="tiled-qr-box"></div><div class="tiled-qr-tip">QK-8321</div><div style="font-size:10px;color:var(--text-3);margin-top:4px">签到码</div></div>'},
+    {title:"我的报名",body:'<div class="tiled-mini-item"><div style="font-size:13px">青春交友·城市定向跑</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#E8FFEA;color:var(--success);margin-left:auto">已签到</span></div><div class="tiled-mini-item"><div style="font-size:13px">瑜伽体验公开课</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--primary-light);color:var(--primary);margin-left:auto">已报名</span></div>'}
+  ],"visit":[
+    {title:"拜访列表",body:'<div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#DBEAFE">🏢</div><div>台州泰隆机械厂<br><span style="font-size:10px;color:var(--text-3)">今日上午</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#D1FAE5">🏪</div><div>临海小商品超市<br><span style="font-size:10px;color:var(--text-3)">昨日下午</span></div></div></div>'},
+    {title:"拜访登记",body:'<div style="display:flex;flex-direction:column;gap:8px"><div><span style="font-size:10px;color:var(--text-3)">客户名称</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请选择客户</span></div><div><span style="font-size:10px;color:var(--text-3)">拜访类型</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">新客拜访</span></div><div style="margin-top:6px;padding:8px;background:var(--primary);color:#fff;border-radius:6px;text-align:center;font-size:12px;font-weight:600">提交拜访记录</div></div>'},
+    {title:"数据统计",body:'<div style="display:flex;gap:8px;justify-content:space-around"><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">28</div><div class="tiled-mini-stat-lbl">本月拜访</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">92%</div><div class="tiled-mini-stat-lbl">完成率</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">6</div><div class="tiled-mini-stat-lbl">新增客户</div></div></div>'}
+  ]};
+  return P[sc]||P.event;
+}
+
+function mpPreview(app){
+  return `<div class="mp-preview-shell">
+    <div class="mp-status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="phone-body-wrap"><div class="mp-body" id="mpBody">${mpPage('home')}</div>
+    <div class="mp-tabbar" id="mpTabbar">
+      <span data-t="home" class="tab-active" onclick="mpPage('home')"><span class="tab-ico">🏠</span>活动</span>
+      <span data-t="mine" onclick="mpPage('mine')"><span class="tab-ico">📝</span>我的报名</span>
+      <span data-t="setting" onclick="showToast('个人设置','info')"><span class="tab-ico">👤</span>我的</span>
+    </div></div></div>`;
+}
+
+function mpPage(t){
+  state.mpTab=t;
+  const b=$('mpBody');const tb=$('mpTabbar');
+  if(tb)tb.querySelectorAll('span').forEach(s=>s.className=s.dataset.t===t?'tab-active':'');
+  let html='';
+  if(t==='home'){
+    html=`<div class="mp-nav"><div class="mp-nav-title">🎉 活动列表</div><div class="mp-nav-right"><span onclick="showToast('搜索','info')">🔍</span></div></div>
+    <div class="mp-search"><div class="mp-search-bar">🔍 <input placeholder="搜索活动名称..."></div></div>
+    <div class="mp-banner"><div class="mp-banner-box"><div class="mp-banner-title">全民健身月</div><div class="mp-banner-sub">参与活动赢积分，兑换精美礼品</div></div></div>
+    <div class="mp-section-title">推荐活动</div><div class="mp-list">`;
+    EVENT_ACTIVITIES.forEach((a,i)=>{
+      const sClass=a.status==='名额紧张'?'tag tag-warning':'tag tag-primary';
+      html+=`<div class="mp-card" data-idx="${i}" onclick="showEDetail(${i})"><div class="mp-card-icon" style="background:${a.color}">${a.icon}</div>
+        <div class="mp-card-content"><div class="mp-card-name">${a.name}</div>
+        <div class="mp-card-meta">${a.date} ${a.time}</div>
+        <span class="mp-card-status ${sClass}">${a.status}</span></div>
+        <span class="mp-card-right">›</span></div>`;
+    });
+    html+=`</div>`;
+  }else if(t==='mine'){
+    html=`<div class="mp-nav"><div class="mp-nav-title">📝 我的报名</div></div>`;
+    if(MY_REGISTRATIONS.length===0){
+      html+=`<div class="mp-empty"><div class="empty-ico">📭</div><div>暂无报名记录</div></div>`;
+    }else{
+      html+=`<div class="mp-mine-list">`;
+      MY_REGISTRATIONS.forEach(r=>{
+        const sC=r.status==='已签到'?'st-checked':'st-registered';
+        html+=`<div class="mp-mine-item"><div class="mp-mine-item-top"><div class="mp-mine-item-name">${r.name}</div><span class="mp-mine-item-status ${sC}">${r.status}</span></div>
+          <div class="mp-mine-item-info">${r.date} ${r.time||''}</div>${r.code?`<div class="mp-mine-item-code">签到码：${r.code}</div>`:''}</div>`;
+      });
+      html+=`</div>`;
+    }
+  }else{
+    html=`<div class="mp-nav"><div class="mp-nav-title">👤 个人中心</div></div>
+    <div class="mp-empty"><div class="empty-ico" style="font-size:56px">👤</div><div>唯安</div><div style="font-size:12px;color:var(--text-3);margin-top:4px">业务创新者</div></div>`;
+  }
+  if(b)b.innerHTML=html;
+}
+
+function showEDetail(idx){
+  const a=EVENT_ACTIVITIES[idx];
+  const b=$('mpBody');if(!b)return;
+  b.innerHTML=`<div class="mp-back-btn" onclick="mpPage('home')">← 返回列表</div>
+    <div class="tile-detail-grid">
+      <div class="tile-detail"><div class="td-icon">📅</div><div class="td-label">活动时间</div><div class="td-value">${a.date} ${a.time}</div></div>
+      <div class="tile-detail"><div class="td-icon">🏷️</div><div class="td-label">活动状态</div><div class="td-value"><span class="tag ${a.status==='名额紧张'?'tag-warning':'tag-primary'}">${a.status}</span></div></div>
+      <div class="tile-detail"><div class="td-icon">📍</div><div class="td-label">活动地点</div><div class="td-value">海牛大厦A座3层活动中心</div></div>
+      <div class="tile-detail"><div class="td-icon">🏢</div><div class="td-label">举办方</div><div class="td-value">海牛科技 · 行政部</div></div>
+      <div class="tile-detail-big"><div class="td-label" style="margin-bottom:3px;font-size:11px">活动介绍</div>
+        <div style="font-size:12.5px;color:var(--text-2);line-height:1.7">${a.desc}</div></div>
+      <div class="tile-detail-act">
+        <button class="td-btn-primary" onclick="showReg(${idx})">立即报名</button>
+        <button class="td-btn-default" onclick="showToast('暂不开放','info')">收藏</button>
+      </div>
+    </div>`;
+}
+
+function showReg(idx){
+  const a=EVENT_ACTIVITIES[idx];
+  const b=$('mpBody');if(!b)return;
+  b.innerHTML=`<div class="mp-back-btn" onclick="showEDetail(${idx})">← 返回活动详情</div>
+    <div style="padding:12px 16px;font-size:15px;font-weight:600">${a.name} · 报名</div>
+    <div class="mp-form"><div class="mp-form-group"><label class="mp-form-label">姓名 <span class="red">*</span></label><input class="mp-form-input" placeholder="请输入姓名"></div>
+    <div class="mp-form-group"><label class="mp-form-label">手机号 <span class="red">*</span></label><input class="mp-form-input" placeholder="请输入手机号"></div>
+    <div class="mp-form-group"><label class="mp-form-label">参加人数</label><select class="mp-form-input" style="appearance:auto"><option>1人</option><option>2人</option><option>3人</option></select></div>
+    <div class="mp-form-group"><label class="mp-form-label">备注</label><input class="mp-form-input" placeholder="如有特殊需求请注明"></div></div>
+    <button class="mp-submit-btn" onclick="submitReg(${idx})">提交报名</button>`;
+}
+
+function submitReg(idx){
+  const a=EVENT_ACTIVITIES[idx];const b=$('mpBody');if(!b)return;
+  const code='QK-'+Math.floor(1000+Math.random()*9000);
+  b.innerHTML=`<div style="text-align:center;padding:30px 20px"><div style="font-size:48px;margin-bottom:12px">🎉</div>
+    <div style="font-size:16px;font-weight:600;margin-bottom:4px">报名成功！</div>
+    <div style="font-size:13px;color:var(--text-2);margin-bottom:20px">${a.name}</div>
+    <div class="mp-qrcode"><div class="mp-qrcode-box"><div class="qr-dot">✓</div></div>
+    <div class="mp-qrcode-tip">签到码：${code}</div>
+    <div class="mp-qrcode-sub">活动当天出示此码签到</div></div></div>`;
+  if(!MY_REGISTRATIONS.find(r=>r.name===a.name)){
+    MY_REGISTRATIONS.unshift({name:a.name,date:a.date,time:a.time,status:'已报名',code});
+  }
+}
+
+function pcPreview(app){
+  return `<div class="pc-shell"><div class="pc-browser-bar"><span class="pc-dot" style="background:#F53F3F"></span><span class="pc-dot" style="background:#FF7D00"></span><span class="pc-dot" style="background:#00B42A"></span>
+    <span class="pc-url">https://app.hainiu.com/activity · 活动报名管理后台</span></div>
+    <div class="pc-layout">
+      <div class="pc-sidebar"><div class="pc-sidebar-logo">🎉 活动后台</div>
+      <div class="pc-menu-item active">🏠 活动管理</div><div class="pc-menu-item" onclick="showToast('报名列表','info')">📝 报名列表</div>
+      <div class="pc-menu-item" onclick="showToast('签到管理','info')">✅ 签到管理</div><div class="pc-menu-item" onclick="showToast('报名统计','info')">📊 报名统计</div>
+      <div class="pc-menu-item" onclick="showToast('系统设置','info')">⚙ 系统设置</div></div>
+      <div class="pc-main">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="pc-main-title" style="margin-bottom:0">📊 报名统计</div>
+          <div style="display:flex;gap:8px"><button class="gen-btn" onclick="showToast('新增活动','info')">＋ 新增活动</button>
+          <button class="gen-btn primary" onclick="showToast('数据已导出','success')">📤 导出</button></div></div>
+        <div class="pc-stat-grid"><div class="pc-stat"><div class="pc-stat-label">活动总数</div><div class="pc-stat-value">12</div></div>
+        <div class="pc-stat"><div class="pc-stat-label">累计报名</div><div class="pc-stat-value">356 人</div></div>
+        <div class="pc-stat"><div class="pc-stat-label">今日新增</div><div class="pc-stat-value">28 人</div></div></div>
+        <div class="pc-main-title">📝 最新报名</div>
+        <table class="pc-table"><tr><th>报名人</th><th>活动</th><th>手机号</th><th>报名时间</th><th>状态</th><th>签到码</th></tr>
+        <tr><td>张三</td><td>城市定向跑</td><td>138****0001</td><td>2026-09-03 14:30</td><td><span class="pc-tag tag-success">已签到</span></td><td style="font-family:monospace">QK-8321</td></tr>
+        <tr><td>李四</td><td>瑜伽体验课</td><td>138****0002</td><td>2026-09-03 10:15</td><td><span class="pc-tag tag-primary">已报名</span></td><td style="font-family:monospace">QK-8322</td></tr>
+        <tr><td>王五</td><td>入职培训</td><td>138****0003</td><td>2026-09-02 16:45</td><td><span class="pc-tag tag-gray">待确认</span></td><td style="font-family:monospace">QK-8323</td></tr>
+        <tr><td>赵六</td><td>瑜伽体验课</td><td>138****0004</td><td>2026-09-02 09:00</td><td><span class="pc-tag tag-success">已签到</span></td><td style="font-family:monospace">QK-8324</td></tr></table>
+      </div></div></div>`;
+}
+
+/* ===== 对话互动 ===== */
+function chatSend(){
+  const inp=$('genChatInput');
+  if(!inp||!inp.value.trim())return;
+  const text=inp.value.trim();inp.value='';
+  state.chatMsgs.push({role:'user',text});
+  state.chatMsgs.push({role:'bot',text:'好的，需求已记录。你可以修改需求说明书后重新生成，或在「我的应用」中查看已生成的应用。'});
+  renderGen();scrollChat();
+}
+
+function scrollChat(){
+  setTimeout(()=>{
+    const el=$('genChatMsgs');
+    if(el)el.scrollTop=el.scrollHeight;
+  },50);
+}
+
+/* ===== 我的应用 ===== */
+function renderMyApps(){
+  $('mainArea').className='main';
+  const kw=(state.appFilterName||'').toLowerCase();
+  const st=state.appFilterStatus||'';
+  const all=state.myApps.map((a,i)=>({a,i})).filter(({a})=>(!kw||(a.name||'').toLowerCase().includes(kw))&&(!st||a.status===st));
+  const apps=all.map(x=>x.a);
+  $('mainArea').innerHTML=`<div class="app-page">
+    <div class="app-page-head"><div><div class="app-page-title">我的应用</div></div>
+    <button class="btn btn-primary" style="padding:8px 18px" onclick="switchNav('home')">＋ 新建应用</button></div>
+    <div class="app-filter" style="display:flex;gap:10px;margin-bottom:16px">
+      <input class="form-input" id="appFilterName" style="flex:1" placeholder="搜索应用名称..." value="${state.appFilterName||''}" oninput="onAppFilter()">
+      <select class="form-select" id="appFilterStatus" style="width:150px" onchange="onAppFilter()">
+        <option value="">全部状态</option><option value="已上线" ${st==='已上线'?'selected':''}>已上线</option><option value="已下架" ${st==='已下架'?'selected':''}>已下架</option>
+      </select>
+    </div>
+    ${apps.length===0?`<div class="app-empty"><div class="empty-icon">📭</div><div style="font-size:15px;font-weight:600;color:var(--text-2)">${state.myApps.length===0?'还没有应用':'没有符合条件的应用'}</div>
+    <div style="font-size:12px;color:var(--text-3);margin:6px 0 16px">${state.myApps.length===0?'回到首页，说一句话需求，AI帮你生成第一个应用':'试试调整搜索关键词或状态筛选'}</div>
+    <button class="btn btn-primary" style="padding:9px 22px" onclick="switchNav('home')">立即创建</button></div>`
+    :`<div class="app-grid">${apps.map((a,j)=>appCard(a,all[j].i)).join('')}</div>`}</div>`;
+}
+function onAppFilter(){
+  const nEl=$('appFilterName'),sEl=$('appFilterStatus');
+  state.appFilterName=nEl?nEl.value:'';
+  state.appFilterStatus=sEl?sEl.value:'';
+  renderMyApps();
+}
+
+function appCard(a,i){
+  return `<div class="app-card" onclick="previewApp(${i})">
+    <div class="app-card-top"><div class="app-card-icon" style="background:${a.color}22">${a.icon}</div>
+    <div><div class="app-card-name">${a.name}</div><div class="app-card-ver">${a.ver} · ${a.date}</div></div></div>
+    <div class="app-card-desc">${a.desc}</div>
+    <div class="app-card-bottom"><span class="app-card-status ${a.status==='已上线'?'st-launched':'st-generating'}">● ${a.status}</span>
+    <span class="tag ${a.platform==='mp'?'tag-primary':'tag-gray'}">${a.platform==='mp'?'📱 小程序':'💻 PC'}</span></div></div>`;
+}
+
+function openAppDetail(i){
+  const a=state.myApps[i];if(!a)return;
+  openModal('应用详情',`<div style="margin-bottom:12px;display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:12px;background:${a.color}22;display:flex;align-items:center;justify-content:center;font-size:22px">${a.icon}</div>
+    <div><div style="font-size:16px;font-weight:600">${a.name}</div><div style="font-size:12px;color:var(--text-3)">${a.ver} · ${a.date}</div></div></div>
+    <div style="margin-bottom:10px"><span class="app-card-status ${a.status==='已上线'?'st-launched':'st-generating'}">● ${a.status}</span>　<span class="tag tag-primary">${state.platform==='mp'?'📱 小程序':'💻 PC'}</span></div>
+    <div style="font-size:12.5px;color:var(--text-2);line-height:1.7">${a.desc}</div>`,
+    null);
+}
+
+function previewApp(i){
+  closeModal();
+  state.currentApp=state.myApps[i];
+  state.page='gen';
+  state.chatOpen=true;
+  $('navHome').classList.add('active');
+  $('navMyApps').classList.remove('active');
+  renderGen();
+}
+
+function editApp(i){
+  closeModal();
+  const a=state.myApps[i];if(!a)return;
+  state.page='gen';
+  state.reqDoc={name:a.name,icon:a.icon,color:a.color,level:'L1',user:'-',funcs:a.desc.split('；').map(s=>s.replace(/^\d+\.\s*/,'')),fields:['-'],md:'# '+a.name+'\n\n**目标用户**：-\n\n\n## 核心功能\n'+a.desc.split('；').map((s,i)=>`${i+1}. ${s.replace(/^\d+\.\s*/,'')}`).join('\n'),scene:a.scene};
+  state.reqState='editing';
+  state.chatOpen=true;
+  $('navHome').classList.add('active');
+  $('navMyApps').classList.remove('active');
+  renderGen();scrollChat();
+}
+
+function toggleApp(i){
+  const a=state.myApps[i];if(!a)return;
+  a.status=a.status==='已上线'?'已下架':'已上线';
+  showToast(`应用已${a.status==='已上线'?'上线':'下架'}`,'success');
+  renderMyApps();
+}
+
+/* ===== 弹窗 ===== */
+function openModal(title,body,confirmFn,hideFooter){
+  $('modalTitle').textContent=title;
+  $('modalBody').innerHTML=body;
+  if(hideFooter){$('modalFoot').style.display='none';}else{
+    $('modalFoot').style.display='flex';
+    $('modalFoot').innerHTML=`<button class="btn" onclick="closeModal()">取消</button><button class="btn btn-primary" id="modalConfirmBtn">确定</button>`;
+    $('modalConfirmBtn').onclick=()=>{const r=confirmFn?confirmFn():true;if(r!==false)closeModal();};
+  }
+  const mb=$('modalMask');if(mb)mb.classList.add('open');
+}
+function closeModal(){$('modalMask').classList.remove('open');}
+
+let toastTimer=null;
+function showToast(msg,type='info',dur=2000){
+  const t=$('toast');
+  t.className='toast show '+type;
+  t.innerHTML=msg||'';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),dur);
+}
+</script>
+</body>
+</html>
