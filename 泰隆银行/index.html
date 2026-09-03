@@ -94,87 +94,6 @@
             color: #d97706;
         }
 
-        /* ===== 密码锁遮罩层 ===== */
-        #lockOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 17, 30, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            transition: opacity 0.5s ease;
-        }
-        #lockOverlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .lock-box {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 40px 36px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
-        }
-        .lock-box .lock-icon {
-            font-size: 48px;
-            color: #4f6ef7;
-            margin-bottom: 16px;
-        }
-        .lock-box h2 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #0f111e;
-        }
-        .lock-box p {
-            font-size: 14px;
-            color: #6b7280;
-            margin-bottom: 20px;
-        }
-        .lock-box input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .lock-box input:focus {
-            border-color: #4f6ef7;
-            box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.1);
-        }
-        .lock-box .error-msg {
-            color: #ef4444;
-            font-size: 13px;
-            margin-top: 8px;
-            min-height: 20px;
-        }
-        .lock-box button {
-            margin-top: 16px;
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #4f6ef7, #6c5ce7);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .lock-box button:hover {
-            opacity: 0.9;
-        }
-
         /* ===== 响应式 ===== */
         @media (max-width: 640px) {
             .container {
@@ -185,73 +104,37 @@
 </head>
 <body>
 
-    <!-- ===== 密码锁遮罩 ===== -->
-    <div id="lockOverlay">
-        <div class="lock-box">
-            <div class="lock-icon"><i class="fas fa-lock"></i></div>
-            <h2>请输入访问密码</h2>
-            <p>该项目受密码保护，请输入密码查看</p>
-            <input type="password" id="passwordInput" placeholder="请输入密码" onkeydown="if(event.key==='Enter') verifyPassword()">
-            <div class="error-msg" id="errorMsg"></div>
-            <button onclick="verifyPassword()"><i class="fas fa-unlock"></i> 解锁</button>
-        </div>
-    </div>
-
     <!-- ===== 主内容 ===== -->
-    <div id="mainContent" style="display:none;">
-        <div class="header">
-            <h1>泰隆银行项目</h1>
-        </div>
-
-        <div class="container">
-            <div class="card-grid">
-
-                <!-- 卡片 1：POC 效果验证 -->
-                <a href="泰隆银行AI应用生成POC_框架.html" class="card">
-                    <div class="icon" style="color:#8b5cf6;"><i class="fas fa-flask"></i></div>
-                    <div class="name">泰隆银行 AI 应用生成 POC 效果验证</div>
-                    <span class="tag tag-purple"><i class="fas fa-vial"></i> 验证</span>
-                </a>
-
-                <!-- 卡片 2：一期原型 -->
-                <a href="泰隆银行AI应用创新平台_一期原型.html" class="card">
-                    <div class="icon" style="color:#22c55e;"><i class="fas fa-robot"></i></div>
-                    <div class="name">泰隆银行 AI 应用创新平台 一期原型</div>
-                    <span class="tag tag-green"><i class="fas fa-pen-ruler"></i> 原型</span>
-                </a>
-
-                <!-- 卡片 3：蓝图方案 -->
-                <a href="泰隆银行AI应用创新平台_蓝图方案.html" class="card">
-                    <div class="icon" style="color:#f59e0b;"><i class="fas fa-sitemap"></i></div>
-                    <div class="name">泰隆银行 AI 应用创新平台 蓝图方案</div>
-                    <span class="tag tag-orange"><i class="fas fa-project-diagram"></i> 蓝图</span>
-                </a>
-
-            </div>
-        </div>
+    <div class="header">
+        <h1>泰隆银行项目</h1>
     </div>
 
-    <script>
-        // ===== 密码验证逻辑 =====
-        const CORRECT_PASSWORD = '20260410';
+    <div class="container">
+        <div class="card-grid">
 
-        function verifyPassword() {
-            const input = document.getElementById('passwordInput');
-            const errorMsg = document.getElementById('errorMsg');
-            const entered = input.value.trim();
+            <!-- 卡片 1：POC 效果验证 -->
+            <a href="泰隆银行AI应用生成POC_框架.html" class="card">
+                <div class="icon" style="color:#8b5cf6;"><i class="fas fa-flask"></i></div>
+                <div class="name">泰隆银行 AI 应用生成 POC 效果验证</div>
+                <span class="tag tag-purple"><i class="fas fa-vial"></i> 验证</span>
+            </a>
 
-            if (entered === CORRECT_PASSWORD) {
-                document.getElementById('lockOverlay').classList.add('hidden');
-                document.getElementById('mainContent').style.display = 'block';
-                errorMsg.textContent = '';
-                input.value = '';
-            } else {
-                errorMsg.textContent = '❌ 密码错误，请重新输入';
-                input.value = '';
-                input.focus();
-            }
-        }
-    </script>
+            <!-- 卡片 2：一期原型 -->
+            <a href="泰隆银行AI应用创新平台_一期原型.html" class="card">
+                <div class="icon" style="color:#22c55e;"><i class="fas fa-robot"></i></div>
+                <div class="name">泰隆银行 AI 应用创新平台 一期原型</div>
+                <span class="tag tag-green"><i class="fas fa-pen-ruler"></i> 原型</span>
+            </a>
+
+            <!-- 卡片 3：蓝图方案 -->
+            <a href="泰隆银行AI应用创新平台_蓝图方案.html" class="card">
+                <div class="icon" style="color:#f59e0b;"><i class="fas fa-sitemap"></i></div>
+                <div class="name">泰隆银行 AI 应用创新平台 蓝图方案</div>
+                <span class="tag tag-orange"><i class="fas fa-project-diagram"></i> 蓝图</span>
+            </a>
+
+        </div>
+    </div>
 
 </body>
 </html>
