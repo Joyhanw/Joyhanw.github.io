@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>海牛AI应用创新平台</title>
+<title>AI应用创新平台</title>
 <style>
 :root{
   --primary:#1A66FF;--primary-dark:#0F47C7;--primary-light:#E8F0FF;
@@ -393,7 +393,7 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
   <div class="login-card">
     <div class="login-logo">
       <div class="login-logo-icon">海</div>
-      <div class="login-logo-title">海牛AI应用创新平台</div>
+      <div class="login-logo-title">AI应用创新平台</div>
       <div class="login-logo-sub">一句话，让AI帮你生成专属应用</div>
     </div>
     <div class="form-group">
@@ -414,7 +414,7 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
   <header class="header">
     <div class="logo">
       <div class="logo-icon">海</div>
-      <span>海牛AI应用创新平台<span class="sub">v1.0</span></span>
+      <span>AI应用创新平台</span>
     </div>
     <nav class="header-nav">
       <a class="active" id="navHome" onclick="switchNav('home')">首页</a>
@@ -1068,11 +1068,8 @@ function renderMyApps(){
   $('mainArea').innerHTML=`<div class="app-page">
     <div class="app-page-head"><div><div class="app-page-title">我的应用</div></div>
     <button class="btn btn-primary" style="padding:8px 18px" onclick="switchNav('home')">＋ 新建应用</button></div>
-    <div class="app-filter" style="display:flex;gap:10px;margin-bottom:16px">
-      <input class="form-input" id="appFilterName" style="flex:1" placeholder="搜索应用名称..." value="${state.appFilterName||''}" oninput="onAppFilter()">
-      <select class="form-select" id="appFilterStatus" style="width:150px" onchange="onAppFilter()">
-        <option value="">全部状态</option><option value="已上线" ${st==='已上线'?'selected':''}>已上线</option><option value="已下架" ${st==='已下架'?'selected':''}>已下架</option>
-      </select>
+    <div class="app-filter" style="margin-bottom:16px">
+      <input class="form-input" id="appFilterName" style="width:100%" placeholder="搜索应用名称..." value="${state.appFilterName||''}" oninput="onAppFilter()">
     </div>
     ${apps.length===0?`<div class="app-empty"><div class="empty-icon">📭</div><div style="font-size:15px;font-weight:600;color:var(--text-2)">${state.myApps.length===0?'还没有应用':'没有符合条件的应用'}</div>
     <div style="font-size:12px;color:var(--text-3);margin:6px 0 16px">${state.myApps.length===0?'回到首页，说一句话需求，AI帮你生成第一个应用':'试试调整搜索关键词或状态筛选'}</div>
@@ -1080,11 +1077,10 @@ function renderMyApps(){
     :`<div class="app-grid">${apps.map((a,j)=>appCard(a,all[j].i)).join('')}</div>`}</div>`;
 }
 function onAppFilter(){
-  const nEl=$('appFilterName'),sEl=$('appFilterStatus');
-  state.appFilterName=nEl?nEl.value:'';
-  state.appFilterStatus=sEl?sEl.value:'';
-  renderMyApps();
-}
+	  const nEl=$('appFilterName');
+	  state.appFilterName=nEl?nEl.value:'';
+	  renderMyApps();
+	}
 
 function appCard(a,i){
   return `<div class="app-card" onclick="previewApp(${i})">
