@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>2026年度SE理论考试-空调基础</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--primary:#1a6cff;--primary-weak:#eaf1ff;--success:#00b578;--danger:#f53f3f;--warning:#ff8f1f;--bg:#f5f6f8;--card:#fff;--text:#1d2129;--text2:#4e5969;--text3:#86909c;--border:#e8e9ec;--radius:12px;--shadow:0 4px 16px rgba(0,0,0,.05)}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto}
+.page{display:none;min-height:100vh;flex-direction:column}
+.page.active{display:flex}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.primary{color:var(--primary)}.success{color:var(--success)}.danger{color:var(--danger)}.warning{color:var(--warning)}
+.btn{border:none;border-radius:26px;height:50px;font-size:17px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:#fff;color:var(--primary);border:1.5px solid var(--primary)}
+.btn-danger{background:#fff;color:var(--danger);border:1.5px solid var(--danger)}
+.btn-block{width:100%}
+/* ---------- 页面1 考试信息 ---------- */
+.hero{background:linear-gradient(135deg,#1a6cff,#0d47a1);color:#fff;padding:26px 20px 30px;text-align:center;border-radius:0 0 20px 20px}
+.hero .badge{display:inline-block;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:2px 12px;font-size:12px;margin-bottom:10px}
+.hero h1{font-size:21px;font-weight:700;margin-bottom:6px}
+.hero .sub{font-size:13px;opacity:.85}
+.info-wrap{padding:16px 16px 100px}
+.info-block h3{font-size:13px;color:var(--text3);margin:14px 0 10px;padding-left:8px;border-left:3px solid var(--primary)}
+.info-grid{display:flex;flex-wrap:wrap;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.info-grid .item{width:50%;padding:12px 14px;border-bottom:1px solid var(--border)}
+.info-grid .item:nth-child(odd){border-right:1px solid var(--border)}
+.info-grid .item:nth-last-child(-n+2){border-bottom:none}
+.info-grid .item .label{font-size:12px;color:var(--text3);margin-bottom:4px}
+.info-grid .item .value{font-size:15px;font-weight:600}
+.info-grid .item.full{width:100%;border-right:none}
+.user-form{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:6px 16px 16px}
+.form-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.form-item:last-child{border-bottom:none}
+.form-item label{display:block;font-size:13px;color:var(--text3);margin-bottom:6px}
+.form-item label b{color:var(--danger);font-weight:400;margin-right:2px}
+.form-item input{width:100%;border:none;outline:none;font-size:16px;color:var(--text);padding:4px 0}
+.form-item input::placeholder{color:var(--text3)}
+.footer-btn{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;padding:12px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(0,0,0,.05);z-index:20}
+.footer-btn .btn{width:100%}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.78);color:#fff;padding:12px 24px;border-radius:10px;font-size:15px;z-index:999;opacity:0;pointer-events:none;transition:opacity .25s;max-width:80%;text-align:center}
+.toast.show{opacity:1}
+/* ---------- 页面2 答题 ---------- */
+.exam-top{position:sticky;top:0;background:#fff;z-index:20;box-shadow:0 1px 8px rgba(0,0,0,.06);padding:12px 16px 10px}
+.exam-top .row1{display:flex;justify-content:space-between;align-items:center}
+.exam-top .name{font-size:15px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.exam-top .time{display:flex;align-items:center;background:#fff4e5;color:#b45309;border-radius:6px;padding:4px 10px;font-weight:700;font-size:15px}
+.exam-top .time .ic{font-size:14px;margin-right:4px}
+.exam-top .time.danger-bg{background:#fdeaea;color:#d12b2b}
+.exam-top .row2{margin-top:8px;display:flex;justify-content:space-between;align-items:center}
+.exam-top .progress{font-size:13px;color:var(--text2)}
+.exam-top .progress b{color:var(--primary)}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;flex:1;margin:0 12px;overflow:hidden}
+.progress-bar i{display:block;height:100%;background:var(--primary);border-radius:3px;transition:width .3s}
+.q-wrap{padding:14px 16px 100px}
+.q-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+.q-type{display:inline-block;font-size:12px;padding:2px 8px;border-radius:4px;margin-right:8px;vertical-align:2px}
+.q-type.judge{background:#e8f7f0;color:#0a9f6b}
+.q-type.single{background:var(--primary-weak);color:var(--primary)}
+.q-type.multi{background:#fdf0e3;color:#d97a12}
+.q-type.fill{background:#eef0fb;color:#5b5bd6}
+.q-type.essay{background:#f6ecff;color:#9854e0}
+.q-stem{font-size:16px;font-weight:600;margin:4px 0 14px}
+.q-stem .score{font-size:12px;color:var(--text3);font-weight:400;margin-left:6px}
+.option{display:flex;align-items:flex-start;padding:13px 12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:10px;transition:all .15s;cursor:pointer}
+.option .key{width:26px;height:26px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text2);flex-shrink:0;transition:all .15s}
+.option .text{flex:1;font-size:15px;line-height:1.5;padding-left:10px;padding-top:2px}
+.option.selected{border-color:var(--primary);background:var(--primary-weak)}
+.option.selected .key{background:var(--primary);color:#fff}
+.option.disabled{cursor:default}
+.fill-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;outline:none;background:#fafbfc;transition:border .15s}
+.fill-input:focus{border-color:var(--primary);background:#fff}
+.fill-input[readonly]{background:#f0f1f4;color:var(--text2)}
+.essay-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;outline:none;background:#fafbfc;min-height:160px;resize:vertical;font-family:inherit;transition:border .15s}
+.essay-textarea:focus{border-color:var(--primary);background:#fff}
+.essay-textarea[readonly]{background:#f0f1f4;color:var(--text2)}
+.q-nav{display:flex;justify-content:space-between;margin-top:16px;gap:12px}
+.q-nav .btn{flex:1;height:46px;font-size:16px}
+.q-nav .btn-sm{height:42px;font-size:15px}
+/* ---------- 答题底部工具栏（仅题号导航/提交） ---------- */
+.exam-bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;display:flex;box-shadow:0 -2px 12px rgba(0,0,0,.06);z-index:30}
+.exam-bottom .tool{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0 calc(8px + env(safe-area-inset-bottom));font-size:11px;color:var(--text2);cursor:pointer;border:none;background:#fff}
+.exam-bottom .tool .ic{font-size:21px;margin-bottom:2px}
+.exam-bottom .tool:active{background:var(--bg)}
+.exam-bottom .tool.submit{color:var(--danger);font-weight:600}
+.exam-bottom .tool.submit .ic{color:var(--danger)}
+.exam-bottom .tool.disabled{opacity:.4;pointer-events:none}
+/* 题号弹窗 */
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:flex-end;justify-content:center}
+.mask.show{display:flex}
+.sheet{background:#fff;width:100%;max-width:480px;border-radius:16px 16px 0 0;max-height:75vh;display:flex;flex-direction:column;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(40px);opacity:.6}to{transform:translateY(0);opacity:1}}
+.sheet .sheet-head{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.sheet .sheet-head h4{font-size:16px}
+.sheet .sheet-close{font-size:26px;color:var(--text3);line-height:1;padding:0 4px;cursor:pointer}
+.sheet .legend{display:flex;gap:14px;padding:10px 16px;font-size:12px;color:var(--text2);border-bottom:1px solid var(--border)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:4px;vertical-align:-1px}
+.legend .dot-cur{background:var(--primary)}
+.legend .dot-done{background:var(--success)}
+.legend .dot-todo{background:#fff;border:1.5px solid var(--border)}
+.num-grid{overflow-y:auto;padding:16px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.num-item{height:42px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:15px;font-weight:600;cursor:pointer;transition:all .15s}
+.num-item.todo{background:#fff;color:var(--text2)}
+.num-item.done{background:#e8f7f0;border-color:#bde9d6;color:#0a9f6b}
+.num-item.cur{background:var(--primary);border-color:var(--primary);color:#fff}
+.num-item:active{transform:scale(.94)}
+/* 提交确认弹窗 */
+.dialog{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;display:none;align-items:center;justify-content:center;padding:32px}
+.dialog.show{display:flex}
+.dialog-box{background:#fff;border-radius:14px;padding:24px 20px 16px;width:100%;max-width:320px;text-align:center}
+.dialog-box .dlg-title{font-size:17px;font-weight:700;margin-bottom:10px}
+.dialog-box .dlg-msg{font-size:14px;color:var(--text2);margin-bottom:6px;line-height:1.7}
+.dialog-box .dlg-msg.warn{color:var(--warning);font-weight:600}
+.dialog-box .dlg-btns{display:flex;gap:12px;margin-top:18px}
+.dialog-box .dlg-btns .btn{flex:1;height:42px;font-size:15px;border-radius:22px}
+/* ---------- 页面3 结果 ---------- */
+.result-wrap{padding:24px 20px 40px;text-align:center}
+.result-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 20px;margin-bottom:16px}
+.result-ring{width:110px;height:110px;border-radius:50%;margin:6px auto 14px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.result-ring .score-num{font-size:34px;font-weight:800;line-height:1.1}
+.result-ring .score-total{font-size:12px;opacity:.75}
+.result-ring.pass{background:linear-gradient(135deg,#e6f9f0,#d2f5e5);color:#0a9f6b}
+.result-ring.fail{background:linear-gradient(135deg,#fdeaea,#fbdcdc);color:#d12b2b}
+.result-ring.pending{background:linear-gradient(135deg,#fdf0e3,#fae7cf);color:#d97a12}
+.result-badge{display:inline-block;padding:6px 24px;border-radius:22px;font-size:16px;font-weight:700;margin-bottom:16px}
+.result-badge.pass{background:#e8f7f0;color:#0a9f6b;border:1px solid #bde9d6}
+.result-badge.fail{background:#fdeaea;color:#d12b2b;border:1px solid #f5c4c4}
+.result-badge.pending{background:#fdf0e3;color:#d97a12;border:1px solid #f2d3a8}
+.result-meta{display:flex;background:var(--bg);border-radius:10px;padding:14px 0}
+.result-meta .m-item{flex:1;text-align:center}
+.result-meta .m-item .v{font-size:16px;font-weight:700}
+.result-meta .m-item .l{font-size:12px;color:var(--text3);margin-top:2px}
+.result-pending-detail{margin-top:14px;padding:14px;background:#fffaf2;border:1px dashed #f2d3a8;border-radius:10px;font-size:14px;color:var(--text2);text-align:left;line-height:1.8}
+.result-pending-detail .pending-notice{font-size:13px;color:var(--warning);font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px dashed #f2d3a8}
+.result-pending-detail .prow{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.result-pending-detail .pl{color:var(--text3)}
+
+.result-note{font-size:13px;color:var(--text3);margin-bottom:20px}
+.result-btns .btn{margin-bottom:12px}
+/* ---------- 页面4 解析 ---------- */
+.analy-header{position:sticky;top:0;background:#fff;z-index:20;padding:12px 16px;box-shadow:0 1px 8px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center}
+.analy-header .score-sum{font-size:13px;color:var(--text2)}
+.analy-header .score-sum b{color:var(--primary);font-size:16px}
+.analy-wrap{padding:14px 16px 40px}
+.analy-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.analy-card .q-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.analy-card .q-head .q-txt{font-size:15px;font-weight:600;line-height:1.5;flex:1}
+.analy-card .tag{font-size:12px;padding:2px 8px;border-radius:4px;font-weight:600;flex-shrink:0;margin-left:8px}
+.tag.correct{background:#e8f7f0;color:#0a9f6b}
+.tag.wrong{background:#fdeaea;color:#d12b2b}
+.tag.pending{background:#fdf0e3;color:#d97a12}
+.analy-row{font-size:14px;margin-bottom:10px;line-height:1.7}
+.analy-row .lb{color:var(--text3);font-size:13px;margin-right:8px}
+.analy-row .val{background:var(--bg);border-radius:6px;padding:6px 10px;display:inline-block}
+.analy-row .val.my{background:#fdf2f2;border:1px dashed #f5c4c4}
+.analy-row .val.my.right{background:#f0faf5;border-color:#bde9d6}
+.analy-row .val.blank{color:var(--text3)}
+.analy-option{margin-top:6px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text2);margin-bottom:6px}
+.analy-option .k{font-weight:600;color:var(--text);margin-right:6px}
+.analy-desc{margin-top:12px;padding:12px;background:#f7f8fa;border-radius:8px;font-size:13px;color:var(--text2);border-left:3px solid var(--primary)}
+.analy-desc .lb{color:var(--text3);font-weight:600;display:block;margin-bottom:4px}
+.back-home{display:block;text-align:center;padding:16px;color:var(--primary);font-size:14px;text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- ============ 页面1 考试信息 ============ -->
+<div class="page" id="page-info">
+  <div class="hero">
+    <span class="badge" id="exam-type-badge"></span>
+    <h1 id="exam-name"></h1>
+    <div class="sub" id="exam-sub"></div>
+  </div>
+  <div class="info-wrap">
+    <div class="info-block">
+      <h3>考试信息</h3>
+      <div class="info-grid">
+        <div class="item"><div class="label">开始时间</div><div class="value" id="info-start"></div></div>
+        <div class="item"><div class="label">截止时间</div><div class="value" id="info-end"></div></div>
+        <div class="item"><div class="label">考试时长</div><div class="value" id="info-dur"></div></div>
+        <div class="item"><div class="label">总分 / 及格分</div><div class="value" id="info-score-range"></div></div>
+      </div>
+    </div>
+    <div class="info-block">
+      <h3>考生信息</h3>
+      <div class="user-form">
+        <div class="form-item">
+          <label><b>*</b>姓名</label>
+          <input type="text" id="user-name" placeholder="请输入姓名" autocomplete="off">
+        </div>
+        <div class="form-item">
+          <label><b>*</b>工号</label>
+          <input type="text" id="user-id" placeholder="请输入工号" autocomplete="off">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-btn">
+    <button class="btn btn-primary" id="btn-start" onclick="handleStart()">开始考试</button>
+  </div>
+</div>
+
+<!-- ============ 页面2 答题 ============ -->
+<div class="page" id="page-exam">
+  <div class="exam-top">
+    <div class="row1">
+      <div class="name" id="exam-top-name"></div>
+      <div class="time" id="exam-timer"><span class="ic">&#9201;</span><span id="exam-timer-text">00:00</span></div>
+    </div>
+    <div class="row2">
+      <div class="progress">答题进度 <b id="progress-now">0</b>/<span id="progress-total">0</span></div>
+      <div class="progress-bar"><i id="progress-bar"></i></div>
+    </div>
+  </div>
+
+  <div class="q-wrap">
+    <div class="q-card">
+      <div class="q-type" id="q-type"></div><span class="q-stem" id="q-stem"></span>
+      <div id="q-body"></div>
+      <div class="q-nav">
+        <button class="btn btn-outline btn-sm" id="btn-prev" onclick="prevQ()">上一题</button>
+        <button class="btn btn-primary btn-sm" id="btn-next" onclick="nextQ()">下一题</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-bottom">
+    <button class="tool" onclick="openSheet()"><span class="ic">&#9776;</span>题号导航</button>
+    <button class="tool submit" id="exm-submit-btn" onclick="openSubmitDialog()"><span class="ic">&#128228;</span>提交试卷</button>
+  </div>
+</div>
+
+<!-- 题号弹窗 -->
+<div class="mask" id="sheet-mask" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h4>题目导航</h4>
+      <span class="sheet-close" onclick="closeSheet()">&#215;</span>
+    </div>
+    <div class="legend">
+      <span><i class="dot-cur"></i>当前题</span>
+      <span><i class="dot-done"></i>已答</span>
+      <span><i class="dot-todo"></i>未答</span>
+    </div>
+    <div class="num-grid" id="num-grid"></div>
+  </div>
+</div>
+
+<!-- 提交确认弹窗 -->
+<div class="dialog" id="submit-dialog" onclick="if(event.target===this)closeSubmitDialog()">
+  <div class="dialog-box">
+    <div class="dlg-title">确认提交试卷</div>
+    <div class="dlg-msg">确认提交试卷吗？提交后不可继续作答。</div>
+    <div class="dlg-msg warn" id="dlg-unanswered" style="display:none"></div>
+    <div class="dlg-btns">
+      <button class="btn btn-outline" onclick="closeSubmitDialog()">取消</button>
+      <button class="btn btn-primary" onclick="confirmSubmit()">确认提交</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 页面3 结果 ============ -->
+<div class="page" id="page-result">
+  <div class="result-wrap">
+    <div class="result-card">
+      <div class="result-ring pass" id="result-ring">
+        <span class="score-num" id="result-score">0</span>
+        <span class="score-total" id="result-total">/100</span>
+      </div>
+      <div class="result-badge pass" id="result-badge">未通过</div>
+      <div class="result-meta">
+        <div class="m-item"><div class="v" id="result-pass-line">60</div><div class="l">及格分</div></div>
+        <div class="m-item"><div class="v" id="result-submit-time">-</div><div class="l">提交时间</div></div>
+      </div>
+      <div class="result-pending-detail" id="pending-detail" style="display:none">
+      <div class="pending-notice">&#9888; 以下为客观题成绩，并非最终成绩，仅供参考</div>
+      <div class="pending-scores">
+        <div class="prow"><span class="pl">客观题得分</span><b class="primary" id="pending-auto">0 分</b></div>
+        <div class="prow"><span class="pl">简答题</span><span class="warning" id="pending-essay">待阅卷</span></div>
+      </div>
+    </div>
+    </div>
+    <div class="result-btns">
+      <button class="btn btn-primary btn-block" id="btn-analysis" onclick="goAnalysis()">查看答案解析</button>
+      <button class="btn btn-outline btn-block" onclick="backToInfo()" style="margin-top:12px">返回考试信息</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 页面4 答案解析 ============ -->
+<div class="page" id="page-analysis">
+  <div class="analy-header">
+    <div style="font-size:16px;font-weight:700">答案解析</div>
+    <div class="score-sum" id="ana-score-wrap">得分 <b id="ana-score">0</b>/<span id="ana-total">100</span></div>
+  </div>
+  <div class="analy-wrap" id="ana-list"></div>
+  <a class="back-home" onclick="backToResult()">返回考试结果</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= 模拟数据 ================= */
+var EXAM = {
+  id: 'exam-2026-SE-THEORY-AIR',
+  name: '2026年度SE理论考试-空调基础',
+  type: '理论考试',
+  startTime: '2026-09-01 09:00',
+  endTime: '2026-09-30 18:00',
+  duration: 45,
+  totalScore: 100,
+  passScore: 60,
+  questions: [
+    {id:1, type:'judge', score:5, stem:'多联机空调系统的制冷剂管路长度不应超过100米。',
+      options:['正确','错误'], answer:'A',
+      explanation:'根据GB/T 18837-2015，多联机系统制冷剂管路最大长度不宜超过100米。'},
+    {id:2, type:'judge', score:5, stem:'所有空调室外机安装位置必须设置防护栏。',
+      options:['正确','错误'], answer:'B',
+      explanation:'室外机安装高度距地面超过2.5米时才需设置防护栏，并非所有情况。'},
+    {id:3, type:'single', score:10, stem:'以下哪种制冷剂对臭氧层破坏最大？',
+      options:['R410A','R22','R32','R290'], answer:'B',
+      explanation:'R22属于HCFC类制冷剂，含有氯原子，对臭氧层有破坏作用；R410A、R32、R290均不含氯。'},
+    {id:4, type:'single', score:10, stem:'中央空调水系统中，冷冻水供回水温差一般设计为多少？',
+      options:['3℃','5℃','7℃','10℃'], answer:'B',
+      explanation:'冷冻水供回水温差通常按5℃设计，是能效与舒适性之间的平衡点。'},
+    {id:5, type:'multi', score:15, stem:'以下哪些属于空调系统的节能措施？（多选）',
+      options:['变频调速','热回收','提高送风温度','合理分区'], answer:['A','B','D'],
+      explanation:'提高送风温度会降低舒适性，不是推荐的节能措施。变频调速、热回收和合理分区均为有效节能手段。'},
+    {id:6, type:'multi', score:15, stem:'空调水系统中，常用的水泵配置方式有哪些？（多选）',
+      options:['定频泵','变频泵','一用一备','串联运行'], answer:['A','B','C'],
+      explanation:'串联运行一般用于特殊的高扬程场景，不是常用配置。定频泵、变频泵和一用一备是常见配置方式。'},
+    {id:7, type:'fill', score:10, stem:'空调能效比 EER 的英文全称是______。',
+      answer:'Energy Efficiency Ratio', accept:['energy efficiency ratio','energyefficiencyratio','eer'],
+      explanation:'EER = Energy Efficiency Ratio（能源效率比），是衡量空调制冷性能的重要指标。'},
+    {id:8, type:'fill', score:10, stem:'空调选型中，俗称"1匹"对应的制冷量约为______W。',
+      answer:'2500', accept:['2500w','2500瓦','2500'],
+      explanation:'行业惯例1匹约等于2500W制冷量，是选型时常用的估算值。'},
+    {id:9, type:'essay', score:10, stem:'请简述空调系统安装完成后需要进行哪些调试工作。',
+      answer:null, explanation:'调试工作包括：冷媒压力测试、真空干燥、追加制冷剂、开机运行测试、参数设定与调整、系统平衡调试等。'},
+    {id:10, type:'essay', score:10, stem:'请说明多联机空调系统与中央空调水系统的主要区别。',
+      answer:null, explanation:'多联机采用制冷剂直接蒸发方式，各室内机独立控制、节约吊顶空间；水系统以水为冷媒，通过风机盘管换热，舒适性好但控制精度相对较低。'}
+  ]
+};
+
+/* 本场考试参加人员名单（正式系统从服务端获取，原型内置演示人员） */
+var STAFF = [
+  {name:'张伟', uid:'SE1001'},
+  {name:'李娜', uid:'SE1002'},
+  {name:'王强', uid:'SE1003'},
+  {name:'刘洋', uid:'SE1004'},
+  {name:'唯安', uid:'1234'}
+];
+
+var TYPE_MAP = {judge:'判断题',single:'单选题',multi:'多选题',fill:'填空题',essay:'简答题'};
+var LETTERS = ['A','B','C','D','E','F'];
+
+/* ================= 存储（按人员隔离：考试ID + 工号） ================= */
+function recKey(uid){ return 'dk_exam_h5_'+EXAM.id+'_'+uid; }
+function loadRec(uid){ try{return JSON.parse(localStorage.getItem(recKey(uid)))||null;}catch(e){return null;} }
+function saveRec(rec){ localStorage.setItem(recKey(rec.uid), JSON.stringify(rec)); }
+
+/* 当前考生（全局） */
+var state = null;   // 当前考生记录
+
+function $(id){ return document.getElementById(id); }
+function toast(msg, ms){
+  var t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, ms||2200);
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  $(id).classList.add('active');
+}
+function pad(n){ return n<10?'0'+n:''+n; }
+function fmtTime(ts){
+  var d = new Date(ts), m = pad(d.getMonth()+1), dd = pad(d.getDate());
+  var hh = pad(d.getHours()), mm = pad(d.getMinutes());
+  return m+'月'+dd+'日 '+hh+':'+mm;
+}
+function fmtTimeShort(ts){
+  var d = new Date(ts), hh = pad(d.getHours()), mm = pad(d.getMinutes());
+  return hh+':'+mm;
+}
+function parseTime(str){
+  var parts = str.replace(/-/g,' ').replace(/:/g,' ').split(/\s+/);
+  return new Date(+parts[0], +parts[1]-1, +parts[2], +parts[3], +parts[4]).getTime();
+}
+
+/* ================= 判分 ================= */
+function isAnswered(q, val){
+  if(val === undefined || val === null) return false;
+  if(q.type==='multi') return Array.isArray(val) && val.length>0;
+  if(q.type==='fill' || q.type==='essay') return String(val).trim()!=='';
+  return val !== '';
+}
+function gradeQuestion(q, val){
+  if(val === undefined || val === null || val === '') return {correct:false, score:0};
+  if(q.type==='judge' || q.type==='single'){
+    return String(val) === String(q.answer) ? {correct:true, score:q.score} : {correct:false, score:0};
+  }
+  if(q.type==='multi'){
+    if(!Array.isArray(val)) return {correct:false, score:0};
+    var a = (q.answer||[]).slice().sort().join(','), b = val.slice().sort().join(',');
+    return a===b ? {correct:true, score:q.score} : {correct:false, score:0};
+  }
+  if(q.type==='fill'){
+    var ans = String(val).trim().toLowerCase();
+    var acc = [String(q.answer).toLowerCase()].concat((q.accept||[]).map(function(s){return String(s).toLowerCase();}));
+    return acc.indexOf(ans)>=0 ? {correct:true, score:q.score} : {correct:false, score:0};
+  }
+  if(q.type==='essay'){ return {correct:null, score:0, pending:true}; }
+  return {correct:false, score:0};
+}
+function calcScore(answers){
+  var auto = 0, pending = 0, essayCount = 0, correct = 0;
+  EXAM.questions.forEach(function(q){
+    var val = answers ? answers[q.id] : undefined;
+    var r = gradeQuestion(q, val);
+    if(q.type==='essay'){ essayCount++; if(r.pending) pending += q.score; }
+    else { auto += r.score; if(r.correct) correct++; }
+  });
+  return {auto:auto, pending:pending, essayCount:essayCount, correct:correct};
+}
+
+/* ================= 页面1：考试信息 ================= */
+function renderInfo(){
+  $('exam-name').textContent = EXAM.name;
+  $('exam-sub').textContent = '大金SE工程师能力考核';
+  $('exam-type-badge').textContent = EXAM.type;
+  $('info-start').textContent = fmtTime(parseTime(EXAM.startTime));
+  $('info-end').textContent = fmtTime(parseTime(EXAM.endTime));
+  $('info-dur').textContent = EXAM.duration + '分钟';
+  $('info-score-range').textContent = EXAM.totalScore + '分 / ' + EXAM.passScore + '分及格';
+}
+
+/* ================= 考生身份校验 ================= */
+function handleStart(){
+  var name = $('user-name').value.trim();
+  var uid = $('user-id').value.trim();
+  if(!name){ toast('请输入姓名'); return; }
+  if(!uid){ toast('请输入工号'); return; }
+
+  var now = Date.now();
+  var st = parseTime(EXAM.startTime), et = parseTime(EXAM.endTime);
+
+  // 1. 姓名与工号匹配人员
+  var person = null;
+  for(var i=0;i<STAFF.length;i++){
+    if(STAFF[i].name === name && STAFF[i].uid === uid){ person = STAFF[i]; break; }
+  }
+  if(!person){
+    // 再单独判断姓名存在但工号不符，提示更精确
+    var nameExists = STAFF.some(function(p){ return p.name === name; });
+    toast(nameExists ? '姓名与工号不匹配，请检查后重新输入。' : '姓名与工号不匹配，请检查后重新输入。');
+    return;
+  }
+  // 2. 人员存在但不在本场参加人员（原型：名单内默认都在场，规则保留）
+  // 若未来名单增加 inExam 字段，此处判断
+  if(person.inExam === false){
+    toast('您不在本次考试参加人员范围内。');
+    return;
+  }
+
+  // 3. 加载该人员的考试记录
+  var rec = loadRec(person.uid);
+  if(!rec){
+    rec = {name:name, uid:uid, answers:{}, startTs:null, submitted:false, submitTs:null, score:null, graded:false, source:null};
+    saveRec(rec);
+  }
+
+  // 4. 未到开始时间
+  if(now < st){ toast('考试尚未开始'); return; }
+  // 5. 超过截止时间
+  if(now > et){ toast('考试已结束'); return; }
+
+  // 6. 已提交 → 清除旧记录，允许重新答题；未提交 → 保留进度继续答题
+  if(rec.submitted){
+    rec = {name:name, uid:uid, answers:{}, startTs:null, submitted:false, submitTs:null, score:null, graded:false, source:null};
+    saveRec(rec);
+  }
+
+  // 7. 未开始 → 开始计时；已答题未提交 → 恢复
+  state = rec;
+  if(!state.startTs){
+    state.startTs = Date.now();
+    saveRec(state);
+  }
+  startExamPage();
+}
+
+/* ================= 页面2：答题 ================= */
+var curQ = 0;
+var timerInt = null;
+
+function startExamPage(){
+  showPage('page-exam');
+  $('exam-top-name').textContent = EXAM.name;
+  $('progress-total').textContent = EXAM.questions.length;
+  if(state.lastQ !== undefined) curQ = state.lastQ; else curQ = 0;
+  renderQ();
+  startTimer();
+}
+
+/* 实际结束时间 = min(开始答题+时长, 考试截止时间) */
+function getEndTime(){
+  var t1 = state.startTs + EXAM.duration*60*1000;
+  var t2 = parseTime(EXAM.endTime);
+  return Math.min(t1, t2);
+}
+function getRemainMs(){
+  return Math.max(0, getEndTime() - Date.now());
+}
+
+function startTimer(){
+  clearInterval(timerInt);
+  var timerEl = $('exam-timer'), txt = $('exam-timer-text');
+  function tick(){
+    var remain = getRemainMs();
+    if(remain <= 0){
+      txt.textContent = '00:00';
+      clearInterval(timerInt);
+      autoSubmit();
+      return;
+    }
+    var total = Math.floor(remain/1000);
+    var mm = Math.floor(total/60), ss = total%60;
+    txt.textContent = pad(mm)+':'+pad(ss);
+    if(remain < 10*60*1000){ timerEl.classList.add('danger-bg'); }
+    else { timerEl.classList.remove('danger-bg'); }
+  }
+  tick();
+  timerInt = setInterval(tick, 1000);
+}
+
+function renderQ(){
+  var q = EXAM.questions[curQ];
+  $('q-type').textContent = TYPE_MAP[q.type];
+  $('q-type').className = 'q-type ' + q.type;
+  $('q-stem').textContent = q.stem;
+  var scoreEl = document.createElement('span');
+  scoreEl.className = 'score';
+  scoreEl.textContent = '('+q.score+'分)';
+  $('q-stem').appendChild(scoreEl);
+
+  var body = $('q-body'); body.innerHTML = '';
+  var val = state.answers ? state.answers[q.id] : undefined;
+
+  if(q.type==='judge' || q.type==='single'){
+    q.options.forEach(function(opt, idx){
+      var d = document.createElement('div');
+      d.className = 'option' + (val===LETTERS[idx] ? ' selected':'');
+      d.innerHTML = '<span class="key">'+LETTERS[idx]+'</span><span class="text">'+opt+'</span>';
+      d.onclick = function(){ selectOne(q.id, LETTERS[idx]); };
+      body.appendChild(d);
+    });
+  }
+  else if(q.type==='multi'){
+    var sel = Array.isArray(val) ? val : [];
+    q.options.forEach(function(opt, idx){
+      var d = document.createElement('div');
+      var on = sel.indexOf(LETTERS[idx])>=0;
+      d.className = 'option' + (on?' selected':'');
+      d.innerHTML = '<span class="key">'+LETTERS[idx]+'</span><span class="text">'+opt+'</span>';
+      d.onclick = function(){ toggleMulti(q.id, LETTERS[idx], d); };
+      body.appendChild(d);
+    });
+  }
+  else if(q.type==='fill'){
+    var inp = document.createElement('input');
+    inp.className = 'fill-input';
+    inp.placeholder = '请输入答案';
+    inp.value = val || '';
+    inp.addEventListener('input', function(){ saveAnswer(q.id, inp.value); });
+    body.appendChild(inp);
+  }
+  else if(q.type==='essay'){
+    var ta = document.createElement('textarea');
+    ta.className = 'essay-textarea';
+    ta.placeholder = '请在此输入你的答案';
+    ta.value = val || '';
+    ta.addEventListener('input', function(){ saveAnswer(q.id, ta.value); });
+    body.appendChild(ta);
+  }
+
+  // 上一题/下一题（题目卡片内，唯一入口）
+  if(curQ === 0){
+    $('btn-prev').style.visibility = 'hidden';
+  } else {
+    $('btn-prev').style.visibility = 'visible';
+  }
+  if(curQ === EXAM.questions.length-1){
+    $('btn-next').textContent = '提交试卷';
+    $('btn-next').onclick = openSubmitDialog;
+  } else {
+    $('btn-next').textContent = '下一题';
+    $('btn-next').onclick = nextQ;
+  }
+  updateProgress();
+}
+
+function selectOne(qid, key){
+  var q = EXAM.questions[curQ];
+  if(state.answers[qid] === key){
+    delete state.answers[qid];
+  } else {
+    state.answers[qid] = key;
+  }
+  saveRec(state);
+  renderQ();
+}
+function toggleMulti(qid, key, el){
+  var arr = Array.isArray(state.answers[qid]) ? state.answers[qid].slice() : [];
+  var i = arr.indexOf(key);
+  if(i>=0) arr.splice(i,1); else arr.push(key);
+  state.answers[qid] = arr;
+  saveRec(state);
+  el.classList.toggle('selected');
+  updateProgress();
+}
+function saveAnswer(qid, val){
+  if(!state.answers) state.answers = {};
+  state.answers[qid] = val;
+  saveRec(state);
+  updateProgress();
+}
+function updateProgress(){
+  var done = 0;
+  EXAM.questions.forEach(function(q){
+    if(isAnswered(q, state.answers[q.id])) done++;
+  });
+  $('progress-now').textContent = done;
+  var pct = Math.round(done/EXAM.questions.length*100);
+  $('progress-bar').style.width = pct+'%';
+  state.lastQ = curQ;
+  saveRec(state);
+}
+function prevQ(){ if(curQ>0){ curQ--; state.lastQ=curQ; saveRec(state); renderQ(); } }
+function nextQ(){ if(curQ<EXAM.questions.length-1){ curQ++; state.lastQ=curQ; saveRec(state); renderQ(); } }
+
+/* 题号弹窗 */
+function openSheet(){
+  var grid = $('num-grid'); grid.innerHTML = '';
+  EXAM.questions.forEach(function(q, idx){
+    var b = document.createElement('button');
+    b.className = 'num-item';
+    if(idx===curQ) b.classList.add('cur');
+    else if(isAnswered(q, state.answers[q.id])) b.classList.add('done');
+    else b.classList.add('todo');
+    b.textContent = idx+1;
+    b.onclick = function(){ curQ = idx; state.lastQ = curQ; saveRec(state); closeSheet(); renderQ(); };
+    grid.appendChild(b);
+  });
+  $('sheet-mask').classList.add('show');
+}
+function closeSheet(){ $('sheet-mask').classList.remove('show'); }
+
+/* 提交 */
+function openSubmitDialog(){
+  var unanswered = EXAM.questions.filter(function(q){ return !isAnswered(q, state.answers[q.id]); });
+  if(unanswered.length>0){
+    $('dlg-unanswered').style.display = 'block';
+    $('dlg-unanswered').textContent = '当前还有'+unanswered.length+'题未作答，确认提交吗？';
+  } else {
+    $('dlg-unanswered').style.display = 'none';
+  }
+  $('submit-dialog').classList.add('show');
+}
+function closeSubmitDialog(){ $('submit-dialog').classList.remove('show'); }
+function confirmSubmit(){ closeSubmitDialog(); doSubmit('manual'); }
+function autoSubmit(){ doSubmit('auto'); }
+
+function doSubmit(source){
+  clearInterval(timerInt);
+  state.submitted = true;
+  state.submitTs = Date.now();
+  state.source = source;
+  saveRec(state);
+
+  var r = calcScore(state.answers);
+  state.autoScore = r.auto;
+  state.pendingScore = r.pending;
+  state.essayCount = r.essayCount;
+
+  if(r.pending > 0){
+    state.score = null;
+    state.graded = false;
+  } else {
+    state.score = r.auto;
+    state.graded = true;
+  }
+  saveRec(state);
+
+  var tip = source==='auto' ? '时间到，自动交卷' : '提交成功';
+  toast(tip, 1500);
+  setTimeout(goResult, 1600);
+}
+
+/* ================= 页面3：结果 ================= */
+function goResult(){
+  showPage('page-result');
+  var hasPending = !state.graded;
+  var displayScore = hasPending ? (state.autoScore||0) : state.score;
+  $('result-score').textContent = displayScore;
+  $('result-total').textContent = '/'+EXAM.totalScore;
+  $('result-pass-line').textContent = EXAM.passScore;
+  $('result-submit-time').textContent = state.submitTs ? fmtTimeShort(state.submitTs) : '-';
+
+  var pd = $('pending-detail');
+  if(hasPending){
+    $('result-badge').textContent = '待阅卷';
+    $('result-badge').className = 'result-badge pending';
+    $('result-ring').className = 'result-ring pending';
+    $('result-score').textContent = displayScore;
+    pd.style.display = 'block';
+    $('pending-auto').textContent = displayScore + ' 分';
+    $('pending-essay').textContent = '待阅卷（'+state.essayCount+'题，共'+state.pendingScore+'分）';
+    $('btn-analysis').textContent = '查看答案与解析';
+  } else {
+    pd.style.display = 'none';
+    var pass = displayScore >= EXAM.passScore;
+    $('result-badge').textContent = pass ? '通过' : '未通过';
+    $('result-badge').className = 'result-badge ' + (pass?'pass':'fail');
+    $('result-ring').className = 'result-ring ' + (pass?'pass':'fail');
+    $('btn-analysis').textContent = '查看答案解析';
+  }
+}
+function backToInfo(){ showPage('page-info'); }
+
+/* ================= 页面4：解析 ================= */
+function fmtAnswerText(q, val, isCorrect){
+  // 选择题显示"字母. 内容"
+  if(q.type==='judge' || q.type==='single'){
+    if(val === undefined || val === null || val === '') return '未作答';
+    var idx = LETTERS.indexOf(String(val));
+    return String(val) + '. ' + (idx>=0 ? q.options[idx] : '');
+  }
+  if(q.type==='multi'){
+    if(!Array.isArray(val) || val.length===0) return '未作答';
+    return val.map(function(v){
+      var idx = LETTERS.indexOf(v);
+      return v + '. ' + (idx>=0 ? q.options[idx] : '');
+    }).join('、');
+  }
+  if(q.type==='fill' || q.type==='essay'){
+    return (val!==undefined && String(val).trim()!=='') ? String(val) : '未作答';
+  }
+  return '';
+}
+function fmtRightAnswer(q){
+  if(q.type==='multi'){
+    return (q.answer||[]).map(function(v){
+      var idx = LETTERS.indexOf(v);
+      return v + '. ' + (idx>=0 ? q.options[idx] : '');
+    }).join('、');
+  }
+  if(q.type==='judge' || q.type==='single'){
+    var idx = LETTERS.indexOf(String(q.answer));
+    return String(q.answer) + '. ' + (idx>=0 ? q.options[idx] : '');
+  }
+  if(q.type==='fill') return q.answer;
+  return '';
+}
+
+function goAnalysis(){
+  showPage('page-analysis');
+  var hasPending = !state.graded;
+  $('ana-score').textContent = hasPending ? (state.autoScore||0) : state.score;
+  $('ana-total').textContent = EXAM.totalScore;
+
+  var list = $('ana-list'); list.innerHTML = '';
+  EXAM.questions.forEach(function(q, idx){
+    var val = state.answers[q.id];
+    var r = gradeQuestion(q, val);
+    var card = document.createElement('div');
+    card.className = 'analy-card';
+
+    var head = document.createElement('div');
+    head.className = 'q-head';
+    var tag = '';
+    if(q.type==='essay') tag = '<span class="tag pending">'+(val?'待阅卷':'未作答')+'</span>';
+    else if(r.correct) tag = '<span class="tag correct">正确</span>';
+    else tag = '<span class="tag wrong">错误</span>';
+    head.innerHTML = '<div class="q-txt"><span class="q-type '+q.type+'" style="font-size:11px">'+TYPE_MAP[q.type]+'</span> <b>'+idx+'.</b> '+q.stem+'</div>'+tag;
+    card.appendChild(head);
+
+    // 我的答案
+    var myRow = document.createElement('div');
+    myRow.className = 'analy-row';
+    var myText = fmtAnswerText(q, val, r.correct);
+    var myCls = 'val my';
+    if(q.type!=='essay' && myText!=='未作答') myCls += r.correct ? ' right' : '';
+    myRow.innerHTML = '<span class="lb">我的答案</span><span class="'+myCls+'">'+escapeHtml(myText)+'</span>';
+    card.appendChild(myRow);
+
+    // 正确答案 / 参考答案
+    var rightRow = document.createElement('div');
+    rightRow.className = 'analy-row';
+    if(q.type==='essay'){
+      rightRow.innerHTML = '<span class="lb">参考答案</span><span class="val blank">待阅卷后展示</span>';
+    } else {
+      rightRow.innerHTML = '<span class="lb">正确答案</span><span class="val right">'+escapeHtml(fmtRightAnswer(q))+'</span>';
+    }
+    card.appendChild(rightRow);
+
+    // 本题得分
+    var scoreRow = document.createElement('div');
+    scoreRow.className = 'analy-row';
+    if(q.type==='essay'){
+      scoreRow.innerHTML = '<span class="lb">本题得分</span><span class="val blank">待阅卷</span>';
+    } else {
+      scoreRow.innerHTML = '<span class="lb">本题得分</span><span class="val '+(r.correct?'right':'')+'">'+r.score+'/'+q.score+'分</span>';
+    }
+    card.appendChild(scoreRow);
+
+    // 解析
+    var desc = document.createElement('div');
+    desc.className = 'analy-desc';
+    desc.innerHTML = '<span class="lb">答案解析</span>'+escapeHtml(q.explanation);
+    card.appendChild(desc);
+
+    list.appendChild(card);
+  });
+}
+function backToResult(){ showPage('page-result'); }
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ================= 初始化 ================= */
+(function init(){
+  renderInfo();
+  showPage('page-info');
+})();
+</script>
+</body>
+</html>
