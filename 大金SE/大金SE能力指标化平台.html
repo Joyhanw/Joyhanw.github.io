@@ -815,16 +815,16 @@ body.sb-collapsed .sb-toggle{left:64px}
 .role-matrix-btns label,.role-matrix-row .rm-name label{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--g600);cursor:pointer;user-select:none}
 .role-matrix input[type=checkbox]{width:15px;height:15px;accent-color:var(--e600);cursor:pointer}
 /* ---------- 数据范围卡片 ---------- */
-.role-dscope-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:16px}
-.role-dscope-card{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--g200);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
+.role-dscope-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.role-dscope-card{display:flex;align-items:flex-start;gap:8px;border:1px solid var(--g200);border-radius:8px;padding:10px 12px;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
 .role-dscope-card:hover{border-color:var(--e300);background:var(--e50)}
 .role-dscope-card.active{border-color:var(--e500);background:var(--e50);box-shadow:0 0 0 2px var(--e100)}
 .role-dscope-card input{display:none}
-.role-dscope-card .rd-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--g300);margin-top:1px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.role-dscope-card .rd-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--g300);margin-top:1px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .role-dscope-card.active .rd-radio{border-color:var(--e500)}
-.role-dscope-card.active .rd-radio::after{content:'';width:9px;height:9px;border-radius:50%;background:var(--e500)}
-.role-dscope-card .rd-title{font-weight:600;color:var(--g900);margin-bottom:3px}
-.role-dscope-card .rd-desc{font-size:12px;color:var(--g500);line-height:1.4}
+.role-dscope-card.active .rd-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--e500)}
+.role-dscope-card .rd-title{font-weight:600;color:var(--g900);margin-bottom:2px;font-size:13px}
+.role-dscope-card .rd-desc{font-size:11px;color:var(--g500);line-height:1.3}
 /* ---------- 额外指定范围 / 组织树 / 标签 ---------- */
 .role-scope-extra{margin-top:16px}
 .role-org-search{margin:14px 0 10px}
@@ -1094,6 +1094,7 @@ const ALL_MENUS = [
 ];
 
 const DATA_SCOPE_TYPES = [
+  { id: 'self',           label: '仅本人' },
   { id: 'all',            label: '全部数据' },
   { id: 'dept',           label: '本组织' },
   { id: 'dept_and_child', label: '本组织及下级' },
@@ -2388,6 +2389,7 @@ function renderShell() {
         </div>
         <button class="prd-btn" data-act="open-prd" title="查看PRD文档"><i class="ri-file-text-line"></i>PRD</button>
         <button class="h5-btn" data-act="open-h5" title="打开H5考试页面"><i class="ri-survey-line"></i>H5</button>
+        <button class="h5-btn" data-act="open-export" title="导出报告模板"><i class="ri-file-download-line"></i>导出模版</button>
         <div class="dropdown" id="role-drop">
           <button class="role-btn" data-act="toggle-role"><i class="ri-switch-line"></i>角色：<span class="rl">${esc(roleName(role))}</span><i class="ri-arrow-down-s-line"></i></button>
           <div class="dd-menu" id="role-menu">
@@ -2492,6 +2494,7 @@ function handleAct(act, el) {
     case 'close-modal': clearInterval(window.__examTimer); closeModal(); break;
     case 'open-prd': window.open(PRD_TD_LINK, '_blank'); break;
     case 'open-h5': window.open('考试H5.html', '_blank'); break;
+    case 'open-export': window.open('报告导出模板.html', '_blank'); break;
     case 'prd-toc': prdNavToggle(); break;
     case 'close-drawer': closeDrawer(); break;
     case 'toast': toast(d.msg || '操作成功', d.type || 'success'); break;
@@ -2673,6 +2676,13 @@ function handleAct(act, el) {
     case 'dict-item-save': doDictItemSave(d.tid, d.id || null); break;
     case 'dict-item-toggle': toggleDictItem(d.tid, d.id); break;
     case 'dict-item-toggle-confirm': doDictItemToggle(d.tid, d.id); break;
+    case 'pos-add': openPositionEdit(d.tid, null); break;
+    case 'pos-edit': openPositionEdit(d.tid, d.id); break;
+    case 'pos-save': doPositionSave(d.tid, d.id || null); break;
+    case 'pos-toggle': togglePosition(d.tid, d.id); break;
+    case 'pos-toggle-confirm': doPositionToggle(d.tid, d.id); break;
+    case 'pos-query': APP.posQuery = APP.posQuery || {}; APP.posQuery.name = ($('#pq-name')||{}).value || ''; APP.posQuery.status = ($('#pq-status')||{}).value || ''; renderView(APP.view); break;
+    case 'pos-query-reset': APP.posQuery = {}; renderView(APP.view); break;
     case 'dict-type-add': openDictTypeEdit(null); break;
     case 'dict-type-edit': openDictTypeEdit(d.id); break;
     case 'dict-type-save': doDictTypeSave(d.id || null); break;
@@ -7673,7 +7683,8 @@ function roleEditModal(id) {
   const scopeOrgs = role ? (role.scopeOrgs || []) : [];
   const status = role ? role.status : '启用';
   const allData = ds === 'all';
-  const localScope = !allData;
+  const selfData = ds === 'self';
+  const localScope = ds === 'dept';
 
   openDrawer(
     drawerHead('<i class="ri-shield-user-line"></i>', isEdit ? '编辑角色' : '新增角色', isEdit ? esc(role.name) : '') +
@@ -7708,6 +7719,11 @@ function roleEditModal(id) {
                 '<input type="radio" name="r-dscope" value="all"' + (allData ? ' checked' : '') + '>' +
                 '<span class="rd-radio"></span>' +
                 '<div><div class="rd-title">全部数据</div><div class="rd-desc">可查看系统中的全部组织数据</div></div>' +
+              '</label>' +
+              '<label class="role-dscope-card' + (selfData ? ' active' : '') + '" data-value="self">' +
+                '<input type="radio" name="r-dscope" value="self"' + (selfData ? ' checked' : '') + '>' +
+                '<span class="rd-radio"></span>' +
+                '<div><div class="rd-title">仅本人</div><div class="rd-desc">仅可查看本人的数据</div></div>' +
               '</label>' +
               '<label class="role-dscope-card' + (localScope ? ' active' : '') + '" data-value="dept">' +
                 '<input type="radio" name="r-dscope" value="dept"' + (localScope ? ' checked' : '') + '>' +
@@ -7863,30 +7879,30 @@ const ORG_STATUS_BADGE = { 启用: 'badge-green', 停用: 'badge-gray' };
 const SYSTEM_ROLES = ['SE工程师', '事务所管理员', '总部管理员', '分公司管理员', '协力店管理员'];
 const ORG_ICON = { 本部: 'ri-building-2-line', 分公司: 'ri-building-line', 部门: 'ri-folder-line', 地区: 'ri-map-pin-line' };
 const ORG_NODES = [
-  { id: 'ORG-HQ',    code: 'HQ',     name: '本部',       parentId: null,        type: '本部',  status: '启用', sort: 1 },
-  { id: 'ORG-HQ-SVC',   code: 'HQ-SVC',   name: '服务部', parentId: 'ORG-HQ',   type: '部门',  status: '启用', sort: 1 },
-  { id: 'ORG-HQ-SVC-SH', code: 'HQ-SVC-SH', name: '上海地区', parentId: 'ORG-HQ-SVC', type: '地区',  status: '启用', sort: 1 },
-  { id: 'ORG-HQ-SVC-BJ', code: 'HQ-SVC-BJ', name: '北京地区', parentId: 'ORG-HQ-SVC', type: '地区',  status: '启用', sort: 2 },
-  { id: 'ORG-HQ-SVC-WH', code: 'HQ-SVC-WH', name: '武汉地区', parentId: 'ORG-HQ-SVC', type: '地区',  status: '启用', sort: 3 },
-  { id: 'ORG-HQ-SVC-GZ', code: 'HQ-SVC-GZ', name: '广州地区', parentId: 'ORG-HQ-SVC', type: '地区',  status: '启用', sort: 4 },
-  { id: 'ORG-HQ-TECH',   code: 'HQ-TECH',   name: '技术部', parentId: 'ORG-HQ',   type: '部门',  status: '启用', sort: 2 },
-  { id: 'ORG-HQ-PLAN',   code: 'HQ-PLAN',   name: '企画部', parentId: 'ORG-HQ',   type: '部门',  status: '启用', sort: 3 },
-  { id: 'ORG-SH',     code: 'SH',     name: '上海分公司', parentId: null,        type: '分公司',  status: '启用', sort: 2 },
-  { id: 'ORG-SH-SVC',    code: 'SH-SVC',    name: '服务部', parentId: 'ORG-SH',  type: '部门',  status: '启用', sort: 1 },
-  { id: 'ORG-SH-TECH',   code: 'SH-TECH',   name: '技术部', parentId: 'ORG-SH',  type: '部门',  status: '启用', sort: 2 },
-  { id: 'ORG-SH-PLAN',   code: 'SH-PLAN',   name: '企画部', parentId: 'ORG-SH',  type: '部门',  status: '启用', sort: 3 },
-  { id: 'ORG-BJ',     code: 'BJ',     name: '北京分公司', parentId: null,        type: '分公司',  status: '启用', sort: 3 },
-  { id: 'ORG-BJ-SVC',    code: 'BJ-SVC',    name: '服务部', parentId: 'ORG-BJ',  type: '部门',  status: '启用', sort: 1 },
-  { id: 'ORG-BJ-TECH',   code: 'BJ-TECH',   name: '技术部', parentId: 'ORG-BJ',  type: '部门',  status: '启用', sort: 2 },
-  { id: 'ORG-BJ-PLAN',   code: 'BJ-PLAN',   name: '企画部', parentId: 'ORG-BJ',  type: '部门',  status: '启用', sort: 3 },
-  { id: 'ORG-WH',     code: 'WH',     name: '武汉分公司', parentId: null,        type: '分公司',  status: '启用', sort: 4 },
-  { id: 'ORG-WH-SVC',    code: 'WH-SVC',    name: '服务部', parentId: 'ORG-WH',  type: '部门',  status: '启用', sort: 1 },
-  { id: 'ORG-WH-TECH',   code: 'WH-TECH',   name: '技术部', parentId: 'ORG-WH',  type: '部门',  status: '启用', sort: 2 },
-  { id: 'ORG-WH-PLAN',   code: 'WH-PLAN',   name: '企画部', parentId: 'ORG-WH',  type: '部门',  status: '启用', sort: 3 },
-  { id: 'ORG-GZ',     code: 'GZ',     name: '广州分公司', parentId: null,        type: '分公司',  status: '启用', sort: 5 },
-  { id: 'ORG-GZ-SVC',    code: 'GZ-SVC',    name: '服务部', parentId: 'ORG-GZ',  type: '部门',  status: '启用', sort: 1 },
-  { id: 'ORG-GZ-TECH',   code: 'GZ-TECH',   name: '技术部', parentId: 'ORG-GZ',  type: '部门',  status: '启用', sort: 2 },
-  { id: 'ORG-GZ-PLAN',   code: 'GZ-PLAN',   name: '企画部', parentId: 'ORG-GZ',  type: '部门',  status: '启用', sort: 3 },
+  { id: 'ORG-HQ',    code: 'HQ',     name: '本部',       parentId: null,        type: '本部',  status: '启用', sort: 1, admin: '' },
+  { id: 'ORG-HQ-SVC',   code: 'HQ-SVC',   name: '服务部', parentId: 'ORG-HQ',   type: '部门',  status: '启用', sort: 1, admin: '' },
+  { id: 'ORG-HQ-SVC-SH', code: 'HQ-SVC-SH', name: '上海地区', parentId: 'ORG-HQ-SVC', type: '地区',  status: '启用', sort: 1, admin: '' },
+  { id: 'ORG-HQ-SVC-BJ', code: 'HQ-SVC-BJ', name: '北京地区', parentId: 'ORG-HQ-SVC', type: '地区',  status: '启用', sort: 2, admin: '' },
+  { id: 'ORG-HQ-SVC-WH', code: 'HQ-SVC-WH', name: '武汉地区', parentId: 'ORG-HQ-SVC', type: '地区',  status: '启用', sort: 3, admin: '' },
+  { id: 'ORG-HQ-SVC-GZ', code: 'HQ-SVC-GZ', name: '广州地区', parentId: 'ORG-HQ-SVC', type: '地区',  status: '启用', sort: 4, admin: '' },
+  { id: 'ORG-HQ-TECH',   code: 'HQ-TECH',   name: '技术部', parentId: 'ORG-HQ',   type: '部门',  status: '启用', sort: 2, admin: '' },
+  { id: 'ORG-HQ-PLAN',   code: 'HQ-PLAN',   name: '企画部', parentId: 'ORG-HQ',   type: '部门',  status: '启用', sort: 3, admin: '' },
+  { id: 'ORG-SH',     code: 'SH',     name: '上海分公司', parentId: null,        type: '分公司',  status: '启用', sort: 2, admin: '' },
+  { id: 'ORG-SH-SVC',    code: 'SH-SVC',    name: '服务部', parentId: 'ORG-SH',  type: '部门',  status: '启用', sort: 1, admin: '' },
+  { id: 'ORG-SH-TECH',   code: 'SH-TECH',   name: '技术部', parentId: 'ORG-SH',  type: '部门',  status: '启用', sort: 2, admin: '' },
+  { id: 'ORG-SH-PLAN',   code: 'SH-PLAN',   name: '企画部', parentId: 'ORG-SH',  type: '部门',  status: '启用', sort: 3, admin: '' },
+  { id: 'ORG-BJ',     code: 'BJ',     name: '北京分公司', parentId: null,        type: '分公司',  status: '启用', sort: 3, admin: '' },
+  { id: 'ORG-BJ-SVC',    code: 'BJ-SVC',    name: '服务部', parentId: 'ORG-BJ',  type: '部门',  status: '启用', sort: 1, admin: '' },
+  { id: 'ORG-BJ-TECH',   code: 'BJ-TECH',   name: '技术部', parentId: 'ORG-BJ',  type: '部门',  status: '启用', sort: 2, admin: '' },
+  { id: 'ORG-BJ-PLAN',   code: 'BJ-PLAN',   name: '企画部', parentId: 'ORG-BJ',  type: '部门',  status: '启用', sort: 3, admin: '' },
+  { id: 'ORG-WH',     code: 'WH',     name: '武汉分公司', parentId: null,        type: '分公司',  status: '启用', sort: 4, admin: '' },
+  { id: 'ORG-WH-SVC',    code: 'WH-SVC',    name: '服务部', parentId: 'ORG-WH',  type: '部门',  status: '启用', sort: 1, admin: '' },
+  { id: 'ORG-WH-TECH',   code: 'WH-TECH',   name: '技术部', parentId: 'ORG-WH',  type: '部门',  status: '启用', sort: 2, admin: '' },
+  { id: 'ORG-WH-PLAN',   code: 'WH-PLAN',   name: '企画部', parentId: 'ORG-WH',  type: '部门',  status: '启用', sort: 3, admin: '' },
+  { id: 'ORG-GZ',     code: 'GZ',     name: '广州分公司', parentId: null,        type: '分公司',  status: '启用', sort: 5, admin: '' },
+  { id: 'ORG-GZ-SVC',    code: 'GZ-SVC',    name: '服务部', parentId: 'ORG-GZ',  type: '部门',  status: '启用', sort: 1, admin: '' },
+  { id: 'ORG-GZ-TECH',   code: 'GZ-TECH',   name: '技术部', parentId: 'ORG-GZ',  type: '部门',  status: '启用', sort: 2, admin: '' },
+  { id: 'ORG-GZ-PLAN',   code: 'GZ-PLAN',   name: '企画部', parentId: 'ORG-GZ',  type: '部门',  status: '启用', sort: 3, admin: '' },
 ];
 /* 组织关联人员：组织节点 -> 人员 */
 const ORG_MEMBERS = {
@@ -8095,6 +8111,7 @@ function orgDetailInfoHTML(id) {
       <div><span style="color:var(--g500);font-size:13px">组织代码</span><div style="font-weight:600;margin-top:2px">${esc(n.code)}</div></div>
       <div><span style="color:var(--g500);font-size:13px">上级组织</span><div style="font-weight:600;margin-top:2px">${parent ? esc(parent.name) : '无'}</div></div>
       <div><span style="color:var(--g500);font-size:13px">状态</span><div style="font-weight:600;margin-top:2px"><span class="badge ${n.status==='启用'?'badge-green':'badge-gray'}">${esc(n.status)}</span></div></div>
+      <div><span style="color:var(--g500);font-size:13px">管理员</span><div style="font-weight:600;margin-top:2px">${esc(n.admin || '-')}</div></div>
     </div>
   </div>`;
 }
@@ -8133,6 +8150,7 @@ function openOrgEdit(id, parentId) {
         <div class="field2 full"><label><span class="req">*</span>组织代码</label><input class="input" id="og-code" value="${esc(dv.code)}" placeholder="如：SH-SVC" style="max-width:260px"></div>
         <div class="field2"><label><span class="req">*</span>上级组织</label><select class="select" id="og-parent"${parentDisabled ? ' disabled style="background:var(--g50);color:var(--g400)"' : ''}>${parentOpts}</select></div>
         <div class="field2"><label><span class="req">*</span>状态</label><select class="select" id="og-status">${['启用', '停用'].map(s => `<option${dv.status === s ? ' selected' : ''}>${s}</option>`).join('')}</select></div>
+        <div class="field2 full"><label>管理员</label><input class="input" id="og-admin" list="person-name-list" value="${esc(n ? (n.admin || '') : '')}" placeholder="请选择姓名（一期一人）" style="max-width:260px"></div>
       </div>
     </div>
     <div class="modal-foot">
@@ -8145,6 +8163,7 @@ function doOrgSave(id) {
   const parentId = (($('#og-parent') || {}).value || '') || null;
   const type = id ? (orgNode(id) ? orgNode(id).type : '部门') : '部门';
   const status = (($('#og-status') || {}).value || '启用').trim();
+  const admin = (($('#og-admin') || {}).value || '').trim();
   if (!name) { toast('请填写组织名称', 'error'); return; }
   if (!code) { toast('请填写组织代码', 'error'); return; }
   if (ORG_NODES.some(x => x.code === code && x.id !== id)) { toast('组织代码已存在', 'error'); return; }
@@ -8152,12 +8171,12 @@ function doOrgSave(id) {
   if (parentId && id && isDescendant(id, parentId)) { toast('上级组织不能选择自身下级', 'error'); return; }
   if (id) {
     const n = orgNode(id);
-    Object.assign(n, { name, code, parentId, type, status });
+    Object.assign(n, { name, code, parentId, type, status, admin });
     toast('组织已保存');
   } else {
     const nid = 'ORG-' + (Math.random().toString(36).slice(2, 8).toUpperCase());
     const sort = orgChildren(parentId).reduce((m, x) => Math.max(m, x.sort), 0) + 1;
-    ORG_NODES.push({ id: nid, code, name, parentId, type, status, sort });
+    ORG_NODES.push({ id: nid, code, name, parentId, type, status, sort, admin });
     APP.tab.sysOrg = nid;
     toast('组织已新增');
   }
@@ -8523,6 +8542,7 @@ const OFFICE_DATA = [
       { region: '上海市/长宁区', detail: '天山路600弄1号' },
       { region: '上海市/闵行区', detail: '申北路88号' },
     ],
+    admin: '',
     teams: [
       { id: 'TM01', code: 'SH-JX',  name: '上海维修一组', status: '启用', addresses: [{region:'上海市/长宁区', detail:'天山路600弄1号'}] },
       { id: 'TM02', code: 'SH-JX2', name: '上海维修二组', status: '启用', addresses: [{region:'上海市/长宁区', detail:'天山路600弄1号'}] },
@@ -8532,6 +8552,7 @@ const OFFICE_DATA = [
     addresses: [
       { region: '浙江省/杭州市/西湖区', detail: '文三路478号' },
     ],
+    admin: '',
     teams: [
       { id: 'TM04', code: 'HZ-JX',  name: '杭州维修组', status: '启用', addresses: [{region:'浙江省/杭州市/西湖区', detail:'文三路478号'}] },
       { id: 'TM05', code: 'HZ-BY',  name: '杭州保养组', status: '启用', addresses: [{region:'浙江省/杭州市/西湖区', detail:'文三路478号'}] },
@@ -8541,6 +8562,7 @@ const OFFICE_DATA = [
       { region: '广东省/广州市/天河区', detail: '体育西路191号' },
       { region: '广东省/广州市/番禺区', detail: '南大路26号' },
     ],
+    admin: '',
     teams: [
       { id: 'TM06', code: 'GZ-JX',  name: '广州维修组', status: '启用', addresses: [{region:'广东省/广州市/天河区', detail:'体育西路191号'}] },
       { id: 'TM07', code: 'GZ-BY',  name: '广州保养组', status: '启用', addresses: [{region:'广东省/广州市/天河区', detail:'体育西路191号'}] },
@@ -8558,13 +8580,13 @@ const OFFICE_PEOPLE = {
             { id: 'SE009', name: '郑琳', no: 'GZ0152', dept: '保养组', scope: '社内' } ],
 };
 const PARTNER_DATA = [
-  { id: 'PT01', code: 'PT-SH01', name: '虹桥协力店',   status: '启用', linkType: '维修小组', toId: 'TM01', officeId: 'OF01', sort: 1,
+  { id: 'PT01', code: 'PT-SH01', name: '虹桥协力店',   status: '启用', linkType: '维修小组', toId: 'TM01', officeId: 'OF01', sort: 1, admin: '',
     addresses: [{region:'上海市/闵行区', detail:'虹桥路1001号'}], hasPeople: true, hasHistory: true },
-  { id: 'PT02', code: 'PT-SH02', name: '浦东协力店',   status: '启用', linkType: '事务所',   toId: 'OF01', officeId: 'OF01', sort: 2,
+  { id: 'PT02', code: 'PT-SH02', name: '浦东协力店',   status: '启用', linkType: '事务所',   toId: 'OF01', officeId: 'OF01', sort: 2, admin: '',
     addresses: [{region:'上海市/浦东新区', detail:'世纪大道2000号'}], hasPeople: false, hasHistory: true },
-  { id: 'PT03', code: 'PT-HZ01', name: '滨江协力店',   status: '启用', linkType: '维修小组', toId: 'TM04', officeId: 'OF02', sort: 3,
+  { id: 'PT03', code: 'PT-HZ01', name: '滨江协力店',   status: '启用', linkType: '维修小组', toId: 'TM04', officeId: 'OF02', sort: 3, admin: '',
     addresses: [{region:'浙江省/杭州市/滨江区', detail:'滨安路500号'}], hasPeople: false, hasHistory: false },
-  { id: 'PT04', code: 'PT-GZ01', name: '天河协力店',   status: '停用', linkType: '维修小组', toId: 'TM06', officeId: 'OF03', sort: 4,
+  { id: 'PT04', code: 'PT-GZ01', name: '天河协力店',   status: '停用', linkType: '维修小组', toId: 'TM06', officeId: 'OF03', sort: 4, admin: '',
     addresses: [{region:'广东省/广州市/天河区', detail:'天河路300号'}], hasPeople: true, hasHistory: true },
 ];
 function officeById(id) { return OFFICE_DATA.find(o => o.id === id); }
@@ -8669,6 +8691,7 @@ function openOfficeEdit(id) {
     '<div class="field2"><label><span class="req">*</span>事务所代码</label><input class="input" id="of-code" value="' + esc(o ? o.code : '') + '" placeholder="如：SH" style="max-width:200px"></div>' +
     '<div class="field2"><label><span class="req">*</span>所属分公司</label><select class="select" id="of-branch"><option value="">请选择</option>' + branchOpts + '</select></div>' +
     '<div class="field2"><label><span class="req">*</span>状态</label><select class="select" id="of-status">' + stOpts + '</select></div>' +
+    '<div class="field2 full"><label>管理员</label><input class="input" id="of-admin" list="person-name-list" value="' + esc(o ? (o.admin || '') : '') + '" placeholder="请选择姓名（一期一人）" style="max-width:260px"></div>' +
     '<div class="field2 full"><label><span class="req">*</span>管理区域 / 地址</label>' + addrHtml + '</div>' +
     '</div></div><div class="modal-foot"><button class="btn" data-act="close-modal">取消</button><button class="btn btn-primary" data-act="of-save" data-id="' + (id || '') + '">' + (isEdit ? '保存' : '新增') + '</button></div>');
 }
@@ -8677,6 +8700,7 @@ function doOfficeSave(id) {
   const name = (($('#of-name') || {}).value || '').trim();
   const code = (($('#of-code') || {}).value || '').trim();
   const branch = ($('#of-branch') || {}).value || '';
+  const admin = (($('#of-admin') || {}).value || '').trim();
   const status = ($('#of-status') || {}).value || '启用';
   // Parse address tags into {region,detail}
   var addrTags = (($('#of-addresses') || {}).value || '').split(',').filter(function(x){return x.trim();});
@@ -8699,11 +8723,11 @@ function doOfficeSave(id) {
   if (OFFICE_DATA.some(function(x) { return x.code === code && x.id !== id; })) { toast('事务所代码已存在', 'error'); return; }
   if (id) {
     const o = officeById(id);
-    Object.assign(o, { name, code, branch, adminAreas, status, addresses });
+    Object.assign(o, { name, code, branch, adminAreas, status, addresses, admin });
     toast('事务所已保存');
   } else {
     var oid = 'OF' + String(OFFICE_DATA.length + 1).padStart(2, '0');
-    OFFICE_DATA.push({ id: oid, code, name, branch, adminAreas: adminAreas, status: status, addresses: addresses, teams: [] });
+    OFFICE_DATA.push({ id: oid, code, name, branch, adminAreas: adminAreas, status: status, addresses: addresses, admin: admin, teams: [] });
     toast('事务所已新增');
   }
   closeModal(); renderView(APP.view);
@@ -8753,6 +8777,7 @@ function officeDetailTabBody(o, tab) {
       '<div><span style="' + labelStyle + '">事务所代码</span><div style="' + valStyle + '">' + esc(o.code) + '</div></div>' +
       '<div><span style="' + labelStyle + '">所属分公司</span><div style="' + valStyle + '">' + esc(o.branch || '—') + '</div></div>' +
       '<div><span style="' + labelStyle + '">状态</span><div style="' + valStyle + '"><span class="badge ' + (o.status === '启用' ? 'badge-green' : 'badge-gray') + '">' + esc(o.status) + '</span></div></div>' +
+      '<div><span style="' + labelStyle + '">管理员</span><div style="' + valStyle + '">' + esc(o.admin || '—') + '</div></div>' +
       '<div><span style="' + labelStyle + '">管理区域</span><div style="' + valStyle + '">' +
         ((o.adminAreas || []).length
           ? '<div class="tag-pool" style="margin:0">' + o.adminAreas.map(function(a){return '<span class="tag">' + esc(a) + '</span>';}).join('') + '</div>'
@@ -8961,6 +8986,7 @@ function openPartnerEdit(id) {
       '<select class="select" id="pt-toId" data-change="pt-linktype-change" style="min-width:200px">' + (linkType === '事务所' ? offOpts : tmOpts) + '</select></div>' +
       '<div style="font-size:12px;color:var(--g500);margin-top:4px" id="pt-derived-office"></div></div>' +
     '<div class="field2"><label><span class="req">*</span>状态</label><select class="select" id="pt-status">' + stOpts + '</select></div>' +
+    '<div class="field2 full"><label>管理员</label><input class="input" id="pt-admin" list="person-name-list" value="' + esc(p ? (p.admin || '') : '') + '" placeholder="请选择姓名（一期一人）" style="max-width:260px"></div>' +
     '<div class="field2 full"><label>地址信息</label><table class="tbl" style="margin:0"><thead><tr><th style="width:120px">省</th><th style="width:120px">市</th><th style="width:120px">区</th><th>详细地址</th><th style="width:60px">操作</th></tr></thead><tbody id="pt-addr-tbody">' + (addrRows || '<tr class="pt-addr-empty"><td colspan="5" class="tc">暂无地址，点击下方按钮添加</td></tr>') + '</tbody></table>' +
     '<button class="btn btn-sm" data-act="pt-addr-add" style="margin-top:8px"><i class="ri-add-line"></i>添加地址</button></div>' +
     '</div></div><div class="modal-foot"><button class="btn" data-act="close-modal">取消</button><button class="btn btn-primary" data-act="pt-save" data-id="' + (id || '') + '">' + (isEdit ? '保存' : '新增') + '</button></div>');
@@ -8990,6 +9016,7 @@ function doPartnerSave(id) {
   const code = (($('#pt-code') || {}).value || '').trim();
   const linkType = ($('#pt-linkType') || {}).value || '事务所';
   const toId = (($('#pt-toId') || {}).value || '').trim();
+  const admin = (($('#pt-admin') || {}).value || '').trim();
   const status = ($('#pt-status') || {}).value || '启用';
   const sort = p_sort_val(id);
   var addresses = [];
@@ -9018,11 +9045,11 @@ function doPartnerSave(id) {
   }
   if (id) {
     const p = partnerById(id);
-    Object.assign(p, { name, code, linkType, toId, officeId, status, sort, addresses });
+    Object.assign(p, { name, code, linkType, toId, officeId, status, sort, addresses, admin });
     toast('协力店已保存');
   } else {
     const pid = 'PT' + String(PARTNER_DATA.length + 1).padStart(2, '0');
-    PARTNER_DATA.push({ id: pid, code, name, linkType, toId, officeId, status, sort, addresses: addresses, hasPeople: false, hasHistory: false });
+    PARTNER_DATA.push({ id: pid, code, name, linkType, toId, officeId, status, sort, addresses: addresses, admin: admin, hasPeople: false, hasHistory: false });
     toast('协力店已新增');
   }
   closeModal(); renderView(APP.view);
@@ -9050,6 +9077,7 @@ function openPartnerDetail(id) {
     '<div class="field2"><label>关联对象</label><div style="padding:7px 0">' + linkLabel + '</div></div>' +
     '<div class="field2"><label>所属事务所</label><div style="padding:7px 0">' + offLabel + '</div></div>' +
     '<div class="field2"><label>状态</label><div style="padding:7px 0">' + (p.status === '启用' ? '<span class="badge badge-green">启用</span>' : '<span class="badge badge-gray">停用</span>') + '</div></div>' +
+    '<div class="field2"><label>管理员</label><div style="padding:7px 0">' + esc(p.admin || '—') + '</div></div>' +
     '</div>' +
     '<div class="d-grid" style="margin-top:16px"><div class="d-label">地址信息（' + (p.addresses || []).length + '）</div>' +
     '<div class="card" style="margin:0"><table class="tbl"><thead><tr><th>管理区域</th><th>详细地址</th></tr></thead><tbody>' + (addrRows || '<tr><td colspan="2" class="tc">暂无地址</td></tr>') + '</tbody></table></div></div>');
@@ -9127,6 +9155,14 @@ let DICT_TYPES = [
           { id: 'TC010201', name: '综合理论', status: '启用', desc: '综合理论知识' },
         ] },
     ] },
+  { id: 'DT02', name: '职务', used: true, kind: 'position',
+    positions: [
+      { id: 'DP01', name: '总经理', code: 'GM',       sort: 1, status: '启用', updatedTime: '2026-09-01 10:00' },
+      { id: 'DP02', name: '部长',   code: 'MINISTER',   sort: 2, status: '启用', updatedTime: '2026-09-01 10:00' },
+      { id: 'DP03', name: '科长',   code: 'SECTION_CHIEF', sort: 3, status: '启用', updatedTime: '2026-09-01 10:00' },
+      { id: 'DP04', name: '课长',   code: 'SECTION_HEAD',  sort: 4, status: '启用', updatedTime: '2026-09-01 10:00' },
+      { id: 'DP05', name: '所长',   code: 'OFFICE_HEAD',   sort: 5, status: '启用', updatedTime: '2026-09-01 10:00' },
+    ] },
 ];
 function vSysDict(el) {
   const cur = DICT_TYPES.find(t => t.id === APP.tab.dictType) || DICT_TYPES[0];
@@ -9136,13 +9172,14 @@ function vSysDict(el) {
 function dictBody(cur) {
   const side = DICT_TYPES.map(t => {
     const active = cur && t.id === cur.id;
-    const cnt = t.categories ? t.categories.length : (t.items || []).length;
+    const cnt = t.categories ? t.categories.length : t.positions ? t.positions.length : (t.items || []).length;
     return `<div class="rm-cat${active ? ' active' : ''}" data-act="dict-cat" data-id="${t.id}">
       <i class="ri-price-tag-3-line"></i><span class="rm-cat-name">${esc(t.name)}</span>
       </div>`;
   }).join('');
   if (!cur) return `<div class="card" style="margin:0"><div class="empty"><i class="ri-book-2-line"></i>暂无字典类型</div></div>`;
-  if (cur.tree) return treeBody(cur, side);
+  if (cur.kind === 'position') return positionBody(cur, side);
+    if (cur.tree) return treeBody(cur, side);
   const rows = cur.items.slice().sort((a, b) => a.sort - b.sort).map(it => `<tr${it.status === '停用' ? ' style="opacity:.5"' : ''}>
       <td class="fw600">${esc(it.name)}</td>
       <td>${it.status === '启用' ? '<span class="badge badge-green">启用</span>' : '<span class="badge badge-gray">停用</span>'}</td>
@@ -9167,7 +9204,114 @@ function dictBody(cur) {
     </div>
   </div>`;
 }
-/* 题目分类 · 树形表格（一级/二级，可展开收起） */
+/* 职务：查询区 + 列表 */
+function positionBody(cur, side) {
+  const q = APP.posQuery = APP.posQuery || {};
+  let list = cur.positions.slice().sort((a, b) => a.sort - b.sort || (a.id < b.id ? -1 : 1));
+  if (q.name) list = list.filter(x => x.name.includes(q.name));
+  if (q.status) list = list.filter(x => x.status === q.status);
+  const rows = list.map(p => `<tr${p.status === '停用' ? ' style="opacity:.5"' : ''}>
+    <td class="fw600">${esc(p.name)}</td>
+    <td style="font-family:monospace;font-size:12.5px;color:var(--g600)">${esc(p.code)}</td>
+    <td>${p.status === '启用' ? '<span class="badge badge-green">启用</span>' : '<span class="badge badge-gray">停用</span>'}</td>
+    <td>${p.sort}</td>
+    <td style="color:var(--g600);font-size:12.5px">${p.updatedTime}</td>
+    <td class="right">
+      <button class="btn btn-sm" data-act="pos-edit" data-tid="${cur.id}" data-id="${p.id}">编辑</button>
+      <button class="btn btn-sm" data-act="pos-toggle" data-tid="${cur.id}" data-id="${p.id}">${p.status === '启用' ? '停用' : '启用'}</button></td></tr>`).join('');
+  return `
+  <div style="display:flex;gap:16px;align-items:flex-start">
+    <div class="card" style="margin:0;width:200px;flex:0 0 200px;padding:8px">
+      <div class="rm-cat-list">${side}</div>
+    </div>
+    <div class="card" style="margin:0;flex:1">
+      <div class="query-bar" style="margin-bottom:10px">
+        <input class="input" id="pq-name" placeholder="职务名称" value="${esc(q.name||'')}" style="width:150px" onkeydown="if(event.key==='Enter')document.querySelector('[data-act=pos-queryync]').click()">
+        <select class="select" id="pq-status" style="width:90px">
+          <option value="">全部状态</option>
+          ${['启用','停用'].map(s => '<option'+(q.status===s?' selected':'')+'>'+s+'</option>').join('')}
+        </select>
+        <button class="btn btn-sm btn-primary" data-act="pos-query">查询</button>
+        <button class="btn btn-sm" data-act="pos-query-reset">重置</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <i class="ri-price-tag-3-line" style="color:var(--e500);font-size:14.5px"></i>
+        <span style="font-weight:700;font-size:14.5px;color:var(--g800)">${esc(cur.name)}</span>
+        <div style="flex:1"></div>
+        <button class="btn btn-sm btn-primary" data-act="pos-add" data-tid="${cur.id}"><i class="ri-add-line"></i>新增职务</button>
+      </div>
+      <table class="tbl" style="margin-top:0">
+        <tr><th style="width:140px">职务名称</th><th style="width:108px">职务编码</th><th style="width:78px">状态</th><th style="width:56px">排序</th><th style="width:140px">更新时间</th><th style="width:120px" class="right">操作</th></tr>
+        ${rows || '<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:28px">暂无职务数据</td></tr>'}
+      </table>
+    </div>
+  </div>`;
+}
+/* 职务 新增/编辑 */
+function openPositionEdit(tid, id) {
+  const t = DICT_TYPES.find(x => x.id === tid); if (!t) return;
+  const it = id ? t.positions.find(x => x.id === id) : null;
+  const isEdit = !!it;
+  const nextSort = t.positions.reduce((m, x) => Math.max(m, x.sort), 0) + 1;
+  const dv = { name: it ? it.name : '', code: it ? it.code : '', sort: it ? it.sort : nextSort, status: it ? it.status : '启用' };
+  openModal(modalHead(isEdit ? '编辑职务' : '新增职务', '') + `
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field2 full"><label><span class="req">*</span>职务名称</label><input class="input" id="pos-name" value="${esc(dv.name)}" placeholder="如：总经理"></div>
+        <div class="field2 full"><label>职务编码</label><input class="input" id="pos-code" value="${esc(dv.code)}" placeholder="如：GM"${isEdit ? ' readonly style="background:var(--g100);color:var(--g500)"' : ''}></div>
+        <div class="field2"><label>排序<span style="font-size:11px;color:var(--g400);font-weight:400;margin-left:6px">数字越小越靠前</span></label><input class="input" id="pos-sort" type="number" value="${dv.sort}"></div>
+        ${isEdit ? '' : '<div class="field2"><label><span class="req">*</span>状态</label><select class="select" id="pos-status"><option value="启用" selected>启用</option><option value="停用">停用</option></select></div>'}
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-act="close-modal">取消</button>
+      <button class="btn btn-primary" data-act="pos-save" data-tid="${tid}" data-id="${id || ''}">${isEdit ? '保存' : '新增'}</button></div>`);
+}
+function doPositionSave(tid, id) {
+  const t = DICT_TYPES.find(x => x.id === tid); if (!t) return;
+  const name = (($('#pos-name') || {}).value || '').trim();
+  const code = (($('#pos-code') || {}).value || '').trim();
+  const sort = +(($('#pos-sort') || {}).value) || 0;
+  if (!name) { toast('请填写职务名称', 'error'); return; }
+
+  const dupCode = t.positions.find(x => x.code === code && x.id !== id);
+  if (dupCode) { toast('职务编码「' + code + '」已存在，请更换', 'error'); return; }
+  const dupName = t.positions.find(x => x.name === name && x.id !== id);
+  if (dupName) { toast('职务名称「' + name + '」已存在，请更换', 'error'); return; }
+  const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
+  if (id) {
+    const it = t.positions.find(x => x.id === id);
+    Object.assign(it, { name, sort, updatedTime: now });
+    toast('职务已保存');
+  } else {
+    const status = ($('#pos-status') || {}).value || '启用';
+    const n = t.positions.reduce((m, x) => Math.max(m, +x.id.slice(2)), 0) + 1;
+    t.positions.push({ id: 'DP' + String(n).padStart(2, '0'), name, code, sort, status, updatedTime: now });
+    toast('职务已新增');
+  }
+  closeModal();
+  renderView(APP.view);
+}
+function togglePosition(tid, id) {
+  const t = DICT_TYPES.find(x => x.id === tid); if (!t) return;
+  const it = t.positions.find(x => x.id === id); if (!it) return;
+  if (it.status !== '启用') { it.status = '启用'; it.updatedTime = new Date().toISOString().slice(0, 16).replace('T', ' '); toast('「' + it.name + '」已启用'); renderView(APP.view); return; }
+  openModal(modalHead('停用职务', '') + `
+    <div class="modal-body"><p style="font-size:13.5px;line-height:1.9;color:var(--g700)">确认停用「<b>${esc(it.name)}</b>」吗？当前职务已被人员或审批配置引用，停用后不可用于新增业务，历史数据不受影响。</p></div>
+    <div class="modal-foot">
+      <button class="btn" data-act="close-modal">取消</button>
+      <button class="btn btn-danger" data-act="pos-toggle-confirm" data-tid="${tid}" data-id="${id}">确认停用</button></div>`);
+}
+function doPositionToggle(tid, id) {
+  const t = DICT_TYPES.find(x => x.id === tid); if (!t) return;
+  const it = t.positions.find(x => x.id === id); if (!it) return;
+  it.status = '停用';
+  it.updatedTime = new Date().toISOString().slice(0, 16).replace('T', ' ');
+  closeModal();
+  toast('「' + it.name + '」已停用');
+  renderView(APP.view);
+}
+/**/
 function treeBody(cur, side) {
   const open = APP.tab.dictOpen = APP.tab.dictOpen || {};
   const rows = [];
@@ -15770,5 +15914,6 @@ document.body.appendChild(overlay);
 </template>
 
 
+<datalist id="person-name-list"><option value="刘洋"><option value="吴俊"><option value="吴刚"><option value="周雪梅"><option value="孙海峰"><option value="张三"><option value="张明辉"><option value="李四"><option value="李志远"><option value="李明轩"><option value="林芳"><option value="王丽"><option value="王建国"><option value="赵丽"><option value="赵倩"><option value="郑晓东"><option value="郑琳"><option value="陈志强"><option value="陈昊"></datalist>
 </body>
 </html>
