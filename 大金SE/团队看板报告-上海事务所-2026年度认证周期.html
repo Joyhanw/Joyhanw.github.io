@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>团队看板报告（上海事务所）</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f6fa;color:#1a1d2e;margin:0;padding:32px 16px}
+.wrap{max-width:1000px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 2px 16px rgba(15,23,42,.08);padding:28px 36px 32px}
+.bar{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #10b981;padding-bottom:12px;margin-bottom:16px;flex-wrap:wrap;gap:6px}
+.bar h1{font-size:20px;margin:0}
+.bar .st{font-size:12.5px;color:#10b981;font-weight:600}
+.meta{font-size:12.5px;color:#64748b;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:16px}
+.meta b{color:#334155}
+h2{font-size:15px;color:#0f172a;margin:22px 0 10px;padding-left:9px;border-left:3px solid #10b981}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:4px 0 6px}
+.kpi{border:1px solid #e8ebf0;border-radius:10px;padding:14px 16px}
+.kpi .lb{font-size:12px;color:#64748b;margin-bottom:5px}
+.kpi .v{font-size:22px;font-weight:700}
+.kpi .v small{font-size:12px;color:#64748b;font-weight:400}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f7f8fa;text-align:left;padding:9px 12px;border-bottom:1px solid #e8ebf0}
+td{padding:8px 12px;border-bottom:1px solid #f0f1f4}
+th.right,td.right{text-align:right}
+.num{font-variant-numeric:tabular-nums}
+.fw600{font-weight:600}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.badge-green{background:#d1fae5;color:#047857}
+.badge-red{background:#fee2e2;color:#b91c1c}
+.badge-amber{background:#fef3c7;color:#b45309}
+.badge-gray{background:#eef0f3;color:#64748b}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-cyan{background:#cffafe;color:#0e7490}
+.badge-purple{background:#f3e8ff;color:#7e22ce}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.hbar{margin-bottom:9px}
+.hb-head{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px}
+.hb-nm{font-weight:600;color:#334155}
+.hb-meta{color:#64748b}
+.hb-track{height:10px;background:#eef0f3;border-radius:5px;overflow:hidden}
+.hb-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#34d399,#059669)}
+.bars{display:flex;align-items:flex-end;gap:10px;padding:6px 2px 0}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bar-v{font-size:12px;font-weight:600;color:#334155}
+.bar-b{width:100%;max-width:46px;border-radius:5px 5px 0 0;background:linear-gradient(180deg,#34d399,#059669)}
+.bar-l{font-size:11.5px;color:#64748b;white-space:nowrap}
+.dist{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.dist-item{border:1px solid #e8ebf0;border-radius:10px;padding:13px 14px;text-align:center}
+.dist-label{font-size:11.5px;color:#64748b}
+.dist-num{font-size:18px;font-weight:700;margin-top:4px}
+.dist-num small{font-size:11px;color:#64748b;font-weight:400}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.cert-card{border:1px solid #e8ebf0;border-radius:10px;padding:14px 16px}
+.score-card{text-align:center;border:1px solid #e8ebf0;border-radius:10px;padding:18px 14px}
+.score-card .score{font-size:44px;font-weight:800;line-height:1}
+.radar-wrap{display:flex;justify-content:center;padding:4px 0}
+.radar-legend{display:flex;justify-content:center;gap:18px;font-size:12px;color:#64748b;margin-top:2px}
+.radar-legend .dot{background:#059669}
+.radar-legend .dot.ref{background:#94a3b8}
+.foot{margin-top:22px;font-size:12px;color:#94a3b8;border-top:1px solid #f0f1f4;padding-top:12px}
+@media print{body{background:#fff;padding:0}.wrap{box-shadow:none;border-radius:0}}
+</style>
+</head>
+<body><div class="wrap">
+  <div class="bar">
+    <div><h1>2026年度认证周期</h1></div>
+    <div class="st">生成日期：2026-09-08</div>
+  </div>
+  <div class="meta"><span>统计周期：<b>2026-04-01 ～ 2027-03-31</b></span></div>
+  
+    
+  <div class="kpis">
+    <div class="kpi"><div class="lb">工程师总数</div><div class="v">28<small> 人</small></div></div>
+    <div class="kpi"><div class="lb">本期产值</div><div class="v">386<small> 万元</small></div></div>
+    <div class="kpi"><div class="lb">综合得分</div><div class="v">81.5<small> 分</small></div></div>
+  </div>
+    <div class="grid2"><div class="card"><h2>SE 排名</h2>
+    <table>
+      <tr><th>排名</th><th>SE姓名</th><th>能力等级</th><th class="right">综合得分</th></tr>
+      <tr>
+        <td>1</td>
+        <td class="fw600">张明辉</td>
+        <td><span class="badge badge-purple">5级技术主任</span></td>
+        <td class="right num fw600">100</td>
+      </tr><tr>
+        <td>2</td>
+        <td class="fw600">王丽</td>
+        <td><span class="badge badge-amber">4级工程师</span></td>
+        <td class="right num fw600">100</td>
+      </tr><tr>
+        <td>3</td>
+        <td class="fw600">李志远</td>
+        <td><span class="badge badge-green">3级技师</span></td>
+        <td class="right num fw600">98.1</td>
+      </tr><tr>
+        <td>4</td>
+        <td class="fw600">赵倩</td>
+        <td><span class="badge badge-gray">新人</span></td>
+        <td class="right num fw600">96.3</td>
+      </tr><tr>
+        <td>5</td>
+        <td class="fw600">陈昊</td>
+        <td><span class="badge badge-blue">1级技术员</span></td>
+        <td class="right num fw600">87.5</td>
+      </tr>
+    </table>
+  </div><div class="card"><h2>技术指标表现</h2><div class="bars" style="height:160px">
+    <div class="bar-col">
+      <span class="bar-v">80 分</span>
+      <div class="bar-b" style="height:100px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">理论考试</span>
+    </div>
+    <div class="bar-col">
+      <span class="bar-v">81.3 分</span>
+      <div class="bar-b" style="height:101px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">实操考试</span>
+    </div>
+    <div class="bar-col">
+      <span class="bar-v">96.4 分</span>
+      <div class="bar-b" style="height:120px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">个人业绩</span>
+    </div>
+    <div class="bar-col">
+      <span class="bar-v">76.5 分</span>
+      <div class="bar-b" style="height:95px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">KPI</span>
+    </div>
+    <div class="bar-col">
+      <span class="bar-v">79.1 分</span>
+      <div class="bar-b" style="height:98px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">面谈/答辩</span>
+    </div></div></div>
+    <div class="card"><h2>能力等级分布</h2><div class="dist">
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#c084fc"></span>5级技术主任</div>
+      <div class="dist-num">3<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#fbbf24"></span>4级工程师</div>
+      <div class="dist-num">5<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#34d399"></span>3级技师</div>
+      <div class="dist-num">7<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#67e8f9"></span>2级高级技术员</div>
+      <div class="dist-num">6<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#93c5fd"></span>1级技术员</div>
+      <div class="dist-num">5<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#d1d5db"></span>新人</div>
+      <div class="dist-num">2<small> 人</small></div></div>
+  </div>
+  </div></div>
+
+  </div></body></html>
