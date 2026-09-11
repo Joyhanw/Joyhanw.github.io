@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>报告导出模板</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;background:#f0f3f6;color:#1a1d2e}
+.layout{display:flex;height:100vh;overflow:hidden}
+.side{width:220px;flex:none;background:#0f172a;color:#cbd5e1;display:flex;flex-direction:column}
+.side-head{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.side-head .t{font-size:15px;font-weight:700;color:#fff}
+.side-head .s{font-size:11.5px;color:#64748b;margin-top:3px}
+.side-nav{flex:1;padding:12px 10px;overflow:auto}
+.nav-item{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13.5px;color:#94a3b8;margin-bottom:4px;transition:background .15s,color .15s}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#e2e8f0}
+.nav-item.active{background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:600}
+.nav-item i{font-size:16px}
+.nav-item .ic{width:20px;text-align:center;flex:none}
+.side-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:11.5px;color:#64748b}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.main-bar{height:52px;flex:none;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:12px}
+.main-bar .t{font-size:15px;font-weight:700;color:#0f172a}
+.main-bar .back{cursor:pointer;font-size:12.5px;color:#64748b;display:flex;align-items:center;gap:4px}
+.main-bar .back:hover{color:#059669}
+.frame-wrap{flex:1;min-height:0}
+iframe{width:100%;height:100%;border:0;background:#fff}
+/* 无图标纯文本菜单项用圆点替代 */
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#34d399;flex:none}
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="side">
+    <div class="side-head">
+      <div class="t">报告导出模板</div>
+      <div class="s">大金SE能力指标化平台</div>
+    </div>
+    <div class="side-nav">
+      <div class="nav-item active" data-key="overview"><span class="dot"></span><span>综合看版</span></div>
+      <div class="nav-item" data-key="team"><span class="dot"></span><span>团队看版</span></div>
+      <div class="nav-item" data-key="profile"><span class="dot"></span><span>技术力画像</span></div>
+      <div class="nav-item" data-key="wordbank"><span class="dot"></span><span>Word题库模版导入</span></div>
+    </div>
+    <div class="side-foot">© 2026 大金（中国）SE能力指标化平台</div>
+  </div>
+  <div class="main">
+    <div class="main-bar">
+      <div class="t" id="bar-title">综合看版</div>
+      <div class="back" onclick="goBack()">返回指标化平台</div>
+    </div>
+    <div class="frame-wrap"><iframe id="report-frame"></iframe></div>
+  </div>
+</div>
+<script>
+var PAGES = {
+  overview: { file: '综合看板报告-2026年度认证周期.html', title: '综合看版' },
+  team:     { file: '团队看板报告-上海事务所-2026年度认证周期.html', title: '团队看版' },
+  profile:  { file: '技术力画像报告-张明辉-2026年度认证周期.html', title: '技术力画像' },
+  wordbank: { file: 'Word题库模版.html', title: 'Word题库模版导入' }
+};
+function goBack(){ if (window.opener && !window.opener.closed) { window.opener.focus(); } window.close(); }
+function select(k){
+  var cfg = PAGES[k]; if (!cfg) return;
+  document.querySelectorAll('.nav-item').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-key') === k); });
+  document.getElementById('bar-title').textContent = cfg.title;
+  document.getElementById('report-frame').src = cfg.file;
+}
+document.querySelectorAll('.nav-item').forEach(function(el){
+  el.addEventListener('click', function(){ select(el.getAttribute('data-key')); });
+});
+select('overview');
+</script>
+</body>
+</html>
