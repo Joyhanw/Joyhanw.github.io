@@ -860,7 +860,7 @@ const ROLES = {
   ]},
   tech: {name:'王工', avatar:'王', role:'总行科技部 · 能力治理', menus:[
     {group:'企业能力中心', items:[
-      {id:'cap-list', icon:'🔌', name:'能力列表'},
+      {id:'cap-list', icon:'🔌', name:'能力模块'},
       {id:'gap-order', icon:'📶', name:'能力需求信号'},
       {id:'rule-cfg', icon:'⚙️', name:'规则配置'},
       {id:'env-list', icon:'🖥️', name:'环境管理'},
@@ -922,14 +922,14 @@ const DATA = {
     {id:'AUD-H003', name:'晨会打卡', type:'需求审核', applicant:'王芳', date:'2024-07-15', result:'驳回', auditor:'张明远', note:'功能范围需细化'},
   ],
   capabilities:[
-    {id:'CAP-001', name:'客户信息查询', type:'API', owner:'数据部', status:'已上线', apps:23, calls:4560},
-    {id:'CAP-002', name:'短信通知', type:'API', owner:'IT部', status:'已上线', apps:45, calls:8920},
-    {id:'CAP-005', name:'地图定位', type:'API', owner:'IT部', status:'已上线', apps:18, calls:2340},
-    {id:'CAP-006', name:'二维码生成', type:'API', owner:'IT部', status:'已上线', apps:32, calls:5670},
-    {id:'CAP-007', name:'数据表格', type:'UI组件', owner:'平台', status:'已上线', apps:67, calls:0},
-    {id:'CAP-008', name:'表单组件', type:'UI组件', owner:'平台', status:'已上线', apps:54, calls:0},
-    {id:'CAP-009', name:'图表组件', type:'UI组件', owner:'平台', status:'已上线', apps:41, calls:0},
-    {id:'CAP-010', name:'客户画像数据', type:'数据服务', owner:'数据部', status:'已上线', apps:15, calls:1230},
+    {id:'MOD-001', name:'客户信息查询', type:'API', owner:'数据部', status:'已上线', apps:23, calls:4560},
+    {id:'MOD-002', name:'短信通知', type:'API', owner:'IT部', status:'已上线', apps:45, calls:8920},
+    {id:'MOD-005', name:'地图定位', type:'API', owner:'IT部', status:'已上线', apps:18, calls:2340},
+    {id:'MOD-006', name:'二维码生成', type:'API', owner:'IT部', status:'已上线', apps:32, calls:5670},
+    {id:'MOD-007', name:'数据表格', type:'UI组件', owner:'平台', status:'已上线', apps:67, calls:0},
+    {id:'MOD-008', name:'表单组件', type:'UI组件', owner:'平台', status:'已上线', apps:54, calls:0},
+    {id:'MOD-009', name:'图表组件', type:'UI组件', owner:'平台', status:'已上线', apps:41, calls:0},
+    {id:'MOD-010', name:'客户画像数据', type:'数据服务', owner:'数据部', status:'已上线', apps:15, calls:1230},
   ],
   capabilityDemands:[
     {id:'CD-001', capName:'OCR识别', count:38, departments:['零售业务部','风险管理部'], scenes:['信贷材料预审','客户拜访'], status:'待评估', date:'2024-08-03'},
@@ -1966,16 +1966,16 @@ function pageAuditHistory(){
 function pageCapList(){
   return `
   <div class="page">
-    <div class="page-head"><div><div class="page-title">能力列表</div></div><button class="btn btn-primary" onclick="openModal('注册新能力',\`<div class='form-group'><label class='form-label'>能力名称<span class='req'>*</span></label><input class='form-input' placeholder='如：OCR识别'></div><div class='form-group'><label class='form-label'>类型<span class='req'>*</span></label><select class='form-select'><option>API</option><option>UI组件</option><option>数据服务</option></select></div><div class='form-group'><label class='form-label'>Owner</label><input class='form-input' placeholder='负责部门'></div><div class='form-group'><label class='form-label'>文档URL</label><input class='form-input' placeholder='https://...'></div><div class='form-group'><label class='form-label'>描述</label><textarea class='form-textarea' placeholder='能力说明'></textarea></div>\`,()=>showToast('能力注册成功，已上架','success'))">+ 注册能力</button></div>
+    <div class="page-head"><div><div class="page-title">能力模块</div></div><button class="btn btn-primary" onclick="openModal('注册新能力模块',\`<div class='form-group'><label class='form-label'>模块名称<span class='req'>*</span></label><input class='form-input' placeholder='如：OCR识别'></div><div class='form-group'><label class='form-label'>类型<span class='req'>*</span></label><select class='form-select'><option>API</option><option>UI组件</option><option>数据服务</option></select></div><div class='form-group'><label class='form-label'>Owner</label><input class='form-input' placeholder='负责部门'></div><div class='form-group'><label class='form-label'>文档URL</label><input class='form-input' placeholder='https://...'></div><div class='form-group'><label class='form-label'>描述</label><textarea class='form-textarea' placeholder='模块说明'></textarea></div>\`,()=>showToast('能力模块注册成功，已上架','success'))">+ 注册能力模块</button></div>
     <div class="card">
       <div class="card-body" style="padding:0">
         <div class="toolbar" style="padding:14px 18px 0">
-          <input class="search-input" placeholder="搜索能力名称">
+          <input class="search-input" placeholder="搜索模块名称">
           <select class="select"><option>全部类型</option><option>API</option><option>UI组件</option><option>数据服务</option></select>
           <select class="select"><option>全部状态</option><option>已上线</option><option>缺口</option><option>停用</option></select>
         </div>
         <table class="table" style="margin-top:14px">
-          <thead><tr><th>能力ID</th><th>名称</th><th>类型</th><th>Owner</th><th>状态</th><th>引用应用</th><th>调用次数</th><th>操作</th></tr></thead>
+          <thead><tr><th>模块ID</th><th>模块名称</th><th>类型</th><th>Owner</th><th>状态</th><th>引用应用</th><th>调用次数</th><th>操作</th></tr></thead>
           <tbody>
             ${DATA.capabilities.map(c=>`<tr>
               <td style="font-family:monospace;color:var(--text-3)">${c.id}</td>
@@ -1995,18 +1995,18 @@ function pageCapList(){
 }
 function editCapability(id,name){
   const c=DATA.capabilities.find(x=>x.id===id);
-  openModal('编辑能力 · '+name,`
-    <div class="form-group"><label class="form-label">能力名称<span class="req">*</span></label><input class="form-input" value="${c.name}"></div>
+  openModal('编辑能力模块 · '+name,`
+    <div class="form-group"><label class="form-label">模块名称<span class="req">*</span></label><input class="form-input" value="${c.name}"></div>
     <div class="form-group"><label class="form-label">类型<span class="req">*</span></label><select class="form-select"><option ${c.type==='API'?'selected':''}>API</option><option ${c.type==='UI组件'?'selected':''}>UI组件</option><option ${c.type==='数据服务'?'selected':''}>数据服务</option></select></div>
     <div class="form-group"><label class="form-label">Owner</label><input class="form-input" value="${c.owner}"></div>
     <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option ${c.status==='已上线'?'selected':''}>已上线</option><option ${c.status==='停用'?'selected':''}>停用</option></select></div>
     <div class="form-group"><label class="form-label">文档URL</label><input class="form-input" placeholder="https://..."></div>
-    <div class="form-group"><label class="form-label">描述</label><textarea class="form-textarea" placeholder="能力说明"></textarea></div>`,()=>{showToast('能力信息已保存','success');renderPage();});
+    <div class="form-group"><label class="form-label">描述</label><textarea class="form-textarea" placeholder="模块说明"></textarea></div>`,()=>{showToast('能力模块信息已保存','success');renderPage();});
 }
 function toggleCapability(id,action){
   const c=DATA.capabilities.find(x=>x.id===id);
   if(!c) return;
-  openModal(action+'能力 · '+c.name,`<div style="padding:12px 0;font-size:14px;color:var(--text-2);line-height:2">确认${action}能力 <strong>${c.name}</strong>（${c.id}）？<br>${action==='停用'?'停用后该能力将无法被新应用引用，已引用应用不受影响。':'启用后该能力可重新被新应用引用。'}</div>`,()=>{
+  openModal(action+'能力模块 · '+c.name,`<div style="padding:12px 0;font-size:14px;color:var(--text-2);line-height:2">确认${action}能力模块 <strong>${c.name}</strong>（${c.id}）？<br>${action==='停用'?'停用后该能力模块将无法被新应用引用，已引用应用不受影响。':'启用后该能力模块可重新被新应用引用。'}</div>`,()=>{
     c.status=action==='停用'?'停用':'已上线';
     showToast(`已${action} · ${c.name}`,'success');
     renderPage();
