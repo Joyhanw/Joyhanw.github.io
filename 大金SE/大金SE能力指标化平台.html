@@ -818,7 +818,7 @@ body.sb-collapsed .sb-toggle{left:64px}
 .role-matrix-btns label,.role-matrix-row .rm-name label{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--g600);cursor:pointer;user-select:none}
 .role-matrix input[type=checkbox]{width:15px;height:15px;accent-color:var(--e600);cursor:pointer}
 /* ---------- 数据范围卡片 ---------- */
-.role-dscope-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.role-dscope-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
 .role-dscope-card{display:flex;align-items:flex-start;gap:8px;border:1px solid var(--g200);border-radius:8px;padding:10px 12px;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
 .role-dscope-card:hover{border-color:var(--e300);background:var(--e50)}
 .role-dscope-card.active{border-color:var(--e500);background:var(--e50);box-shadow:0 0 0 2px var(--e100)}
@@ -846,22 +846,38 @@ body.sb-collapsed .sb-toggle{left:64px}
 .role-view-section .rv-title{font-size:13px;font-weight:600;color:var(--g600);margin-bottom:8px}
 .role-view-section .rv-content{line-height:1.7;color:var(--g800)}
 .role-view-tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:7px;background:var(--g100);color:var(--g700);font-size:12px;margin:0 6px 6px 0}
-/* 证书要求配置矩阵 */
-.cr-wrap{overflow-x:auto;margin-top:0}
-.cr-wrap .tbl{min-width:1060px}
+/* 证书要求配置 / 考试参加准则 矩阵（带边框网格 + 分组分隔 + 固定左列） */
+.cr-wrap{overflow-x:auto;margin-top:0;border:1px solid var(--g200);border-radius:12px;background:#fff}
+.cr-wrap .tbl{table-layout:fixed;width:max-content;border-collapse:separate;border-spacing:0}
 .cr-wrap .tbl th,.cr-wrap .tbl td{text-align:center;padding:8px 6px;white-space:nowrap}
 .cr-wrap .tbl th{font-size:12px}
+.cr-wrap .tbl th,.cr-wrap .tbl td{border-left:1px solid var(--g100)}
+.cr-wrap .tbl th.nbl,.cr-wrap .tbl td.nbl{border-left:none}
 .cr-wrap .tbl .cr-l{text-align:left;padding-left:12px}
 .cr-wrap .tbl .cr-left{text-align:left}
 .cr-wrap .tbl .cr-diff{color:var(--g500);font-size:12px}
-.cr-wrap .tbl .cr-c{width:44px;min-width:44px}
+.cr-wrap .tbl .cr-c{width:46px;min-width:46px}
 .cr-chk{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1.5px solid var(--g300);border-radius:3px;font-size:11px;color:#fff;transition:all .1s;cursor:default;background:#fff}
 .cr-chk.on{background:var(--e500);border-color:var(--e500)}
 .cr-chk i{font-size:13px}
 .cr-editable .cr-chk{cursor:pointer}
 .cr-editable .cr-chk.off:hover{border-color:var(--e400);background:var(--e50)}
-.cr-wrap .tbl .cr-subh{padding:4px 6px 10px;font-size:11px;color:var(--g600);font-weight:500;border-top:1px solid var(--g100);background:var(--g50)}
-.cr-wrap .tbl .cr-mh{padding:10px 6px 4px;border-bottom:none!important}
+/* 职级分组分隔线（信息列│矩阵、1级│2级、2级│3级、3级│4级、4级│5级） */
+.cr-wrap .tbl th.cr-sep,.cr-wrap .tbl td.cr-sep{border-left:1px solid var(--g300)}
+/* 表头两级：组名背景加深、去掉断续线，子表头浅色 */
+.cr-wrap .tbl .cr-subh{width:46px;min-width:46px;padding:4px 6px 10px;font-size:11px;color:var(--g600);font-weight:500;background:var(--g50)}
+.cr-wrap .tbl .cr-mh{padding:10px 6px 4px;border-bottom:none!important;background:var(--g100)}
+/* 已勾选单元格浅色底，勾选规律呈色块可读 */
+.cr-wrap .tbl td.cr-on{background:#eefaf3}
+/* 左侧信息列横向滚动时固定（证书矩阵3列 / 参加准则2列） */
+.cr-cert .tbl th.stk1,.cr-cert .tbl td.stk1{position:sticky;left:0;width:88px;min-width:88px}
+.cr-cert .tbl th.stk2,.cr-cert .tbl td.stk2{position:sticky;left:88px;width:124px;min-width:124px}
+.cr-cert .tbl th.stk3,.cr-cert .tbl td.stk3{position:sticky;left:212px;width:144px;min-width:144px}
+.cr-attend .tbl th.stk1,.cr-attend .tbl td.stk1{position:sticky;left:0;width:88px;min-width:88px}
+.cr-attend .tbl th.stk2,.cr-attend .tbl td.stk2{position:sticky;left:88px;width:108px;min-width:108px}
+.cr-wrap .tbl th.stk1,.cr-wrap .tbl th.stk2,.cr-wrap .tbl th.stk3{background:var(--g50);z-index:3}
+.cr-wrap .tbl td.stk1,.cr-wrap .tbl td.stk2,.cr-wrap .tbl td.stk3{background:#fff;z-index:2}
+.cr-wrap .tbl tbody tr:hover td.stk1,.cr-wrap .tbl tbody tr:hover td.stk2,.cr-wrap .tbl tbody tr:hover td.stk3{background:#f0fdf6}
 </style>
 </head>
 <body>
@@ -1302,6 +1318,7 @@ const DEMO = {
     { id: 102, examMode: '正式', creator: '李伟', title: '2026年Q4商用多联机维修测评', paper: '多联机维修卷（单选×12 · 多选×5 · 判断×3）', start: '2026-10-08 09:00', end: '2026-10-18 18:00', dur: 90, pass: 65, maxTry: 1, people: 45, status: '未开始', created: '2026-08-22', desc: '面向商用多联机维修岗，重点考核复杂故障诊断与处理。', scope: '全部区域 · 全部事务所', scopeOffices: ['上海事务所', '杭州事务所', '广州事务所'] },
     { id: 103, examMode: '正式', creator: '王强', title: '2026年新员工安全规范考试', paper: '安全规范卷（单选×8 · 判断×7）', start: '', end: '', dur: 45, pass: 60, maxTry: 3, people: 0, status: '草稿', created: '2026-08-24', desc: '新入职 SE 安全作业规范培训后测评。', scope: '未设置', scopeOffices: [] },
     { id: 104, examMode: '正式', creator: '张敏', title: '2026年Q2商用多联机维修测评', paper: '多联机维修卷（单选×12 · 多选×5 · 判断×3）', start: '2026-06-10 09:00', end: '2026-06-20 18:00', dur: 90, pass: 60, maxTry: 2, people: 45, status: '已结束', created: '2026-06-05', desc: '2026 年第二季度商用多联机维修能力测评。', scope: '华东区 · 全部事务所', scopeOffices: ['上海事务所', '杭州事务所'], link: 'https://exam.daikin.cn/take?e=104', round: 1 },
+    { id: 105, examMode: '正式', creator: '张敏', title: '2026年Q1空调基础能力测评', paper: '空调基础-综合卷（单选×10 · 多选×5 · 判断×5）', start: '2026-03-10 09:00', end: '2026-03-20 18:00', dur: 60, pass: 60, maxTry: 2, people: 42, status: '已结束', created: '2026-03-05', desc: '2026 年第一季度空调基础能力测评（仅保留结束操作）。', scope: '华东区 · 全部事务所', scopeOffices: ['上海事务所', '杭州事务所'], link: 'https://exam.daikin.cn/take?e=105', round: 1, endOnly: true },
   ],
   myExams: [
     { title: '2026年Q3空调基础能力测评', mode: '正式', score: '待参加', pass: null, time: '2026-08-10' },
@@ -1327,7 +1344,7 @@ const DEMO = {
       formType: '答辩', passScore: 70, level: '5级技术主任', targetLevel: '5级技术主任', attachments: [], finalResult: null,
       participants: [{ name: '王工', weight: 33, submitted: false, dims: null, comment: null, submitTime: null, memo: "", attachments: [] }, { name: '李工', weight: 33, submitted: false, dims: null, comment: null, submitTime: null, memo: "", attachments: [] }, { name: '陈工', weight: 34, submitted: false, dims: null, comment: null, submitTime: null, memo: "", attachments: [] }] },
     { id: 2, title: '2026年度技术面谈', tmpl: '技术答辩标准模板', seId: 'SE002', place: '上海事务所 3F 会议室', date: '2026-08-26', start: '10:00', dur: 40,
-      status: '审批中', desc: '针对复杂故障案例进行技术复盘，评估诊断思路与技术决策能力。',
+      status: '评分中', desc: '针对复杂故障案例进行技术复盘，评估诊断思路与技术决策能力。',
       formType: '面谈', passScore: 70, level: '3级技师', targetLevel: '3级技师', attachments: [], finalResult: null,
       participants: [{ name: '王工', weight: 33, submitted: false, dims: null, comment: null, submitTime: null, memo: "", attachments: [] }, { name: '李工', weight: 33, submitted: false, dims: null, comment: null, submitTime: null, memo: "", attachments: [] }, { name: '王敏', weight: 34, submitted: false, dims: null, comment: null, submitTime: null, memo: "", attachments: [] }] },
     { id: 3, title: '2026年度技术面谈', tmpl: '技术答辩标准模板', seId: 'SE006', place: '上海事务所 3F 会议室', date: '2026-08-20', start: '09:30', dur: 40,
@@ -2390,6 +2407,7 @@ document.addEventListener('click', e => {
   if (!$('#nt-menu') || !$('#nt-drop').contains(t)) $('#nt-menu') && $('#nt-menu').classList.remove('open');
   if (!$('#td-menu') || !$('#td-drop').contains(t)) $('#td-menu') && $('#td-menu').classList.remove('open');
   if (!$('#perf-imp-menu') || !$('#perf-imp-drop').contains(t)) $('#perf-imp-menu') && $('#perf-imp-menu').classList.remove('open');
+  if (!$('#qi-entry-menu') || !$('#qi-entry-drop').contains(t)) $('#qi-entry-menu') && $('#qi-entry-menu').classList.remove('open');
   $$('.row-menu').forEach(m => { if (!m.contains(t)) m.classList.remove('open'); });
   $$('.def-jsel').forEach(s => { if (s.classList.contains('open') && !s.contains(t)) s.classList.remove('open'); });
   const actEl = t.closest('[data-act]');
@@ -2571,7 +2589,10 @@ function handleAct(act, el) {
     case 'exam-se-submit': submitSEExam(false); break;
     case 'exam-se-done': closeModal(); renderView(APP.view); syncTopTodo(); break;
     case 'exam-se-viewsheet': closeModal(); renderView(APP.view); openSEAnswerSheet(+d.id); syncTopTodo(); break;
-    case 'exam-se-sheet': openSEAnswerSheet(+d.id); break;
+    case 'exam-se-sheet': openSEAnswerSheet(+d.id, d.try ? +d.try : 0); break;
+    case 'exam-se-record': openSERecord(+d.id); break;
+    case 'exam-prac-start': openPracStart(+d.id); break;
+    case 'exam-prac-view': openPracView(+d.id); break;
     case 'se-prac-new': openSEPracticeNew(); break;
     case 'se-prac-mode': { const pd = window.__sePrac; if (pd) { sePracPull(); pd.mode = d.mode; renderSEPracticeNew(); } break; }
     case 'se-prac-cat': { const pd = window.__sePrac; if (pd) { sePracPull(); const cs = pd.cats, c = d.cat; const i = cs.indexOf(c); if (i < 0) cs.push(c); else cs.splice(i, 1); renderSEPracticeNew(); } break; }
@@ -2629,10 +2650,15 @@ function handleAct(act, el) {
     case 'plan-f-cat1-change': { const v = $('#plan-f-cat1').value; const t = DICT_TYPES.find(x => x.id === 'DT01'); const p = t && t.categories.find(c => c.name === v); const c2 = $('#plan-f-cat2'); if (c2) { if (p) { c2.innerHTML = '<option value="">全部分类</option>' + p.children.filter(c => c.status === '启用').map(c => '<option>' + c.name + '</option>').join(''); } else { c2.innerHTML = '<option value="">全部分类</option>'; } } break; }
     case 'sp-f-cat1-change': { const v = $('#sp-f-cat1').value; const t = DICT_TYPES.find(x => x.id === 'DT01'); const p = t && t.categories.find(c => c.name === v); const c2 = $('#sp-f-cat2'); if (c2) { if (p) { c2.innerHTML = '<option value="">全部分类</option>' + p.children.filter(c => c.status === '启用').map(c => '<option>' + c.name + '</option>').join(''); } else { c2.innerHTML = '<option value="">全部分类</option>'; } } break; }
     case 'q-reset': APP.q.qbank = {}; renderView(APP.view); break;
-    case 'import-qbank': openImportQBank(); break;
-    case 'qi-upload': openImportQBank(true); break;
-    case 'qi-reupload': openImportQBank(); break;
-    case 'qi-cat1-change': { const v = $('#qi-cat1').value; const t = DICT_TYPES.find(x => x.id === 'DT01'); const p = t && t.categories.find(c => c.name === v); const c2 = $('#qi-cat2'); if (c2) { c2.innerHTML = '<option value="">请选择</option>' + (p ? p.children.filter(c => c.status === '启用').map(c => '<option value="' + esc(c.name) + '">' + esc(c.name) + '</option>').join('') : ''); } break; }
+    case 'qi-entry-menu': { const mm = $('#qi-entry-menu'); if (mm) mm.classList.toggle('open'); break; }
+    case 'qi-entry': closeDropdowns(); openImportQBank(d.mode); break;
+    case 'qi-file': qiPickFile(d.mode); break;
+    case 'qi-restart': openImportQBank(APP.qiDraft ? APP.qiDraft.mode : null); break;
+    case 'qi-import': qiDoImport(); break;
+    case 'qi-preview': { const da = APP.qiDraft; if (da) { da.preview = true; qiRender(); } break; }
+    case 'qi-back': { const da = APP.qiDraft; if (da) { da.preview = false; qiRender(); } break; }
+    case 'qi-row-attr': { const da = APP.qiDraft; if (da) { const r = da.rows[+d.idx]; if (r) { r[d.key] = el.value; if (d.key === 'cat1') r.cat2 = ''; qiRender(); } } break; }
+    case 'qi-del': { const da = APP.qiDraft; if (da) { const ix = DEMO.questions.findIndex(q => q.id === d.id); if (ix >= 0) DEMO.questions.splice(ix, 1); toast('已删除该试题'); qiRender(); } break; }
     case 'plan-mode': planPull(); APP.planDraft.mode = d.mode; renderPlanEdit(); break;
     case 'plan-cat-toggle': { planPull(); const cs = APP.planDraft.cats, c = d.cat; const i = cs.indexOf(c); if (i < 0) cs.push(c); else cs.splice(i, 1); renderPlanEdit(); break; }
     case 'plan-grader-toggle': { planPull(); const gs = APP.planDraft.graders, gid = +d.gid; const i = gs.indexOf(gid); if (i < 0) gs.push(gid); else gs.splice(i, 1); renderPlanEdit(); break; }
@@ -3059,7 +3085,8 @@ function handleAct(act, el) {
         se: ($('#df-se') || {}).value || '',
         form: ($('#df-form') || {}).value || '全部',
         status: ($('#df-status') || {}).value || '全部',
-        date: ($('#df-date') || {}).value || '',
+        dateStart: ($('#df-date-start') || {}).value || '',
+        dateEnd: ($('#df-date-end') || {}).value || '',
       };
       renderView(APP.view); break;
     }
@@ -3086,9 +3113,8 @@ function handleAct(act, el) {
     case 'def-score-memo-save': {
       const tm = DEMO.defenseTasks.find(x => x.id === +d.id);
       if (tm) {
-        const me = tm.participants.find(p => p.name === (APP.user && APP.user.name));
         const ta = $('#def-score-memo');
-        if (ta) (me || tm).memo = ta.value;
+        if (ta) tm.memo = ta.value;
         toast('面谈纪要已保存');
       }
       break;
@@ -3105,7 +3131,6 @@ function handleAct(act, el) {
       }
       break;
     }
-    case 'def-score': openDefScore(+d.id); break;
     case 'def-submit-score': {
       const t = DEMO.defenseTasks.find(x => x.id === +d.id);
       if (t) {
@@ -3120,14 +3145,14 @@ function handleAct(act, el) {
           });
           me.submitted = true;
           me.dims = vals;
-          me.comment = (($('#def-score-comment') || {}).value || '').trim() || '故障诊断能力强、流程规范。';
+          me.comment = (($('#def-score-comment') || {}).value || '').trim();
           me.submitTime = new Date().toLocaleString('zh-CN');
-          /* 会议纪要保存到当前评分人（HQ 端按人展示） */
+          /* 会议纪要保存到任务级（会议维度共享） */
           const mt = $('#def-score-memo');
-          if (mt && mt.value.trim()) me.memo = mt.value.trim();
+          if (mt && mt.value.trim()) t.memo = mt.value.trim();
         }
         const allSubmitted = t.participants.every(p => p.submitted);
-        t.status = allSubmitted ? '审批中' : '评分中';
+        t.status = allSubmitted ? '已完成' : '评分中';
         closeDrawer && closeDrawer();
         toast(allSubmitted ? '评分已提交，已生成最终成绩' : '评分已提交，等待其余评委完成');
         renderShell();
@@ -3295,8 +3320,8 @@ function handleAct(act, el) {
       var bc2 = null;
       var bonus2 = (DEMO.techLevelConfig && DEMO.techLevelConfig.bonus) || [];
       for (var ai = 0; ai < bonus2.length; ai++) if (bonus2[ai][0] === ac) bc2 = bonus2[ai];
-      if (bc2) { ar = (bc2[1] === '扣分') ? [-(bc2[2] || 1), 0] : [0, +(bc2[2] || 2)]; }
-      asVal = Math.max(ar[0], Math.min(ar[1], asVal));
+      if (bc2 && bc2[1] === '加/扣分') bc2 = null; /* 其他：自定义加/扣分，不限范围 */
+      if (bc2) { ar = (bc2[1] === '扣分') ? [-(bc2[2] || 1), 0] : [0, +(bc2[2] || 2)]; asVal = Math.max(ar[0], Math.min(ar[1], asVal)); }
       window.__alAdjust = asVal;
       updateDrawer(alLevelApprovalHTML(window.__alDrawerId)); break;
     }
@@ -3551,6 +3576,7 @@ function closeDropdowns() {
   $('#nt-menu') && $('#nt-menu').classList.remove('open');
   $('#td-menu') && $('#td-menu').classList.remove('open');
   $('#perf-imp-menu') && $('#perf-imp-menu').classList.remove('open');
+  $('#qi-entry-menu') && $('#qi-entry-menu').classList.remove('open');
   $$('.row-menu').forEach(x => x.classList.remove('open'));
 }
 
@@ -3685,9 +3711,9 @@ function todoSE() {
     const rm = DEMO.msgs.find(x => x.type === '缺证提醒');
     list.push({ key: 'cert-' + t.key, type: 'cert_upload', title: TODO_TYPE.cert_upload.label, summary: `${t.label}（必备证书）尚未上传`, timeLabel: '提醒时间', time: (rm && rm.time) || '—', action: '去上传', go: { kind: 'cert_upload', lock: t.key } });
   }
-  /* 待参加考试：正式考试中当前可参加（可考试 / 未通过且可补考）的，按截止时间先后；练习不计 */
+  /* 待参加考试：正式考试中当前可参加（待考试 / 待补考）的，按截止时间先后；练习不计 */
   seExams()
-    .filter(r => r.examMode === '正式' && (r.status === '可考试' || r.status === '未通过且可补考') && r.remain > 0)
+    .filter(r => r.examMode === '正式' && (r.status === '待考试' || r.status === '待补考') && r.remain > 0)
     .sort((a, b) => String(a.end).localeCompare(String(b.end)))
     .forEach(r => list.push({ key: 'exam-' + r.id, type: 'exam', title: TODO_TYPE.exam.label, summary: r.title, timeLabel: '截止时间', time: r.end, action: '去考试', go: { kind: 'exam', id: r.id } }));
   /* 待参加面谈：本人未完成的面谈任务（未开始 / 进行中） */
@@ -4003,12 +4029,21 @@ const SE_EXAM_CFG = [
   { id: 101, examMode: '正式', title: '2026年Q3空调基础能力测评', paper: '空调基础-综合卷', qas: ['Q008'], start: '2026-08-10 09:00', end: '2026-08-31 18:00', dur: 60, pass: 60, maxTry: 2, status: '待阅卷', tries: 1, skills: [0.55], durs: [42], dones: ['2026-08-21 10:12'] },
   { id: 102, examMode: '正式', title: '2026年Q4商用多联机维修测评', paper: '多联机维修卷', start: '2026-10-08 09:00', end: '2026-10-18 18:00', dur: 90, pass: 65, maxTry: 1, status: '未开始', tries: 0, skills: [] },
   { id: 104, examMode: '正式', title: '2026年Q2商用多联机维修测评', paper: '多联机维修卷', start: '2026-06-10 09:00', end: '2026-06-20 18:00', dur: 90, pass: 60, maxTry: 2, status: '已通过', tries: 1, skills: [0.36], durs: [52], dones: ['2026-06-15 10:24'] },
-  { id: 106, examMode: '正式', title: '2026年Q3安全规范专项测评', paper: '安全规范卷', start: '2026-08-01 09:00', end: '2026-08-31 18:00', dur: 45, pass: 60, maxTry: 3, status: '未通过且可补考', seed: '106-19', tries: 1, skills: [0.6], durs: [26], dones: ['2026-08-12 15:40'] },
-  { id: 107, examMode: '正式', title: '2026年Q3故障诊断进阶测评', paper: '故障诊断卷', start: '2026-08-05 09:00', end: '2026-08-30 18:00', dur: 60, pass: 70, maxTry: 3, status: '未通过且可补考', tries: 2, skills: [0.165, 0.705], durs: [40, 44], dones: ['2026-08-20 09:30', '2026-08-27 14:10'] },
+  { id: 106, examMode: '正式', title: '2026年Q3安全规范专项测评', paper: '安全规范卷', start: '2026-08-01 09:00', end: '2026-09-30 18:00', dur: 45, pass: 60, maxTry: 3, status: '待补考', seed: '106-19', tries: 1, skills: [0.6], durs: [26], dones: ['2026-08-12 15:40'] },
+  { id: 107, examMode: '正式', title: '2026年Q3故障诊断进阶测评', paper: '故障诊断卷', start: '2026-08-05 09:00', end: '2026-09-25 18:00', dur: 60, pass: 70, maxTry: 3, status: '待补考', tries: 2, skills: [0.165, 0.705], durs: [40, 44], dones: ['2026-08-20 09:30', '2026-08-27 14:10'] },
   { id: 108, examMode: '正式', title: '2026年Q1新员工入职测评', paper: '综合基础卷', start: '2026-03-01 09:00', end: '2026-03-20 18:00', dur: 45, pass: 60, maxTry: 2, status: '已结束', tries: 1, skills: [0.71], durs: [30], dones: ['2026-03-10 11:20'] },
-  { id: 105, examMode: '练习', title: 'VRV专项练习', paper: '随机抽题（单选×4 · 多选×2 · 判断×2）', mode: '随机抽题', cats: [], types: { 单选: 4, 多选: 2, 判断: 2 }, start: '2026-08-20 09:00', end: '2026-08-31 18:00', dur: 30, pass: 60, maxTry: 99, status: '可考试', tries: 0, skills: [] },
+  { id: 109, examMode: '正式', title: '2026年Q2空调安装规范测评', paper: '安装规范卷', start: '2026-05-01 09:00', end: '2026-05-20 18:00', dur: 45, pass: 60, maxTry: 2, status: '已结束', tries: 0, skills: [] },
+  { id: 110, examMode: '正式', title: '2026年Q3基础理论摸底测评', paper: '基础理论卷', start: '2026-09-01 09:00', end: '2026-09-30 18:00', dur: 45, pass: 60, maxTry: 2, status: '未通过', tries: 2, skills: [0.05, 0.5], durs: [35, 41], dones: ['2026-09-05 10:15', '2026-09-11 15:32'] },
+  { id: 111, examMode: '正式', title: '2026年Q4制冷剂安全规范测评', paper: '制冷剂安全卷', start: '2026-09-10 09:00', end: '2026-10-15 18:00', dur: 60, pass: 60, maxTry: 1, status: '待考试', tries: 0, skills: [] },
 ];
-const SE_STATUS_BADGE = { '待阅卷': 'badge-amber', '可考试': 'badge-green', '未开始': 'badge-blue', '未通过且可补考': 'badge-amber', '已结束': 'badge-gray', '已通过': 'badge-green' };
+/* 我的练习：独立于正式考试状态机，仅 未完成 / 已完成 两态 */
+const SE_PRACTICES = [
+  { id: 901, title: 'VRV专项练习', mode: '随机抽题', cats: [], types: { 单选: 4, 多选: 2, 判断: 2 }, diff: { easy: 40, mid: 40, hard: 20 }, dur: 30, pass: 60, status: '已完成', createdAt: '2026-08-21 09:30', skill: 0.72, doneAt: '2026-08-21 09:58' },
+  { id: 902, title: '故障诊断提分练习', mode: '固定选题', qids: ['Q001', 'Q005'], dur: 20, pass: 60, status: '未完成', createdAt: '2026-09-10 14:20', sel: { 0: [0] }, cur: 1 },
+];
+const SE_STATUS_BADGE = { '待阅卷': 'badge-amber', '待考试': 'badge-green', '未开始': 'badge-blue', '待补考': 'badge-amber', '未通过': 'badge-red', '缺考': 'badge-red', '已结束': 'badge-gray', '已通过': 'badge-green' };
+const SE_DONE_STATUS = ['待阅卷', '已通过', '未通过', '已结束', '缺考'];
+function seDT(s) { return s ? new Date(String(s).replace(' ', 'T')).getTime() : 0; }
 function seExams() {
   return SE_EXAM_CFG.map(c => {
     const qs = planQuestions(c);
@@ -4028,43 +4063,94 @@ function seExams() {
     const tries = attempts.length;
     const passed = tries > 0 && best >= passLine;
     const pending = c.status === '待阅卷';
-    let status = c.status;
-    if (!pending && passed) status = '已通过';
-    else if (!pending && tries > 0 && (status === '可考试' || status === '未开始') && tries < c.maxTry) status = '未通过且可补考';
+    const started = Date.now() >= seDT(c.start);
+    const ended = c.status === '已结束' || (seDT(c.end) > 0 && Date.now() >= seDT(c.end));
+    // 状态推导：待阅卷 → 已通过 → 无作答（未开始/缺考/待考试）→ 有作答未通过（已结束/待补考/未通过）
+    let status;
+    if (pending) status = '待阅卷';
+    else if (passed) status = '已通过';
+    else if (tries === 0) status = !started ? '未开始' : (ended ? '缺考' : '待考试');
+    else if (ended) status = '已结束';
+    else if (tries < c.maxTry) status = '待补考';
+    else status = '未通过';
     const remain = Math.max(0, c.maxTry - tries);
-    return { ...c, qs, total, passLine, attempts, best, bestTry, tries, remain, passed: pending ? false : passed, status };
+    return { ...c, qs, total, passLine, attempts, best, bestTry, tries, remain, passed: pending ? false : passed, started, ended, status };
   });
 }
 
+/* 练习题集与自动判分结果：已完成取交卷时的判分明细，种子练习按技能系数模拟作答 */
+function pracInfo(p) {
+  const qs = planQuestions(p);
+  const autoTotal = qs.reduce((s, q) => s + q.score, 0);
+  let detail = p.detail;
+  if (!detail) detail = qs.map(q => {   /* 种子练习：逐题独立模拟作答 */
+    const ok = srand(p.id, q.id, 'pm') < (p.skill || 0.7);
+    const wrong = q.opts.map((_, j) => j).filter(j => q.ans.indexOf(j) < 0);
+    return { given: ok ? q.ans.slice() : [wrong.length ? wrong[0] : 0], ok, gain: ok ? q.score : 0 };
+  });
+  const autoScore = detail.reduce((s, d) => s + d.gain, 0);
+  return { qs, detail, autoTotal, autoScore };
+}
+
 function vExamSE(el) {
-  const list = seExams();
-  const tab = APP.tab.examSE === '已完成' ? '已完成' : '待参加';
-  const pending = list.filter(r => !r.passed && r.status !== '待阅卷');            // 待参加：尚未通过（含可补考 / 已结束），待阅卷不计入
-  const done = list.filter(r => r.tries > 0);             // 已完成：已有作答记录（含待阅卷）
-  const passedCnt = list.filter(r => r.passed).length;
-  const canTakeCnt = pending.filter(r => r.status === '可考试' || r.status === '未通过且可补考').length;
+  const exams = seExams().filter(r => r.examMode === '正式');
+  const pracs = SE_PRACTICES;
+  const lv = APP.tab.examSE === '正式考试' ? '正式考试' : '我的练习';   // 一级Tab：我的练习在前
+  const sub = APP.tab.examSE2 === '已完成' ? '已完成' : '待参加';        // 正式考试二级Tab
+  const pend = exams.filter(r => !SE_DONE_STATUS.includes(r.status));
+  const done = exams.filter(r => SE_DONE_STATUS.includes(r.status));
+  const subTabs = `<div class="tabs">${['待参加', '已完成'].map(x => `<span class="tab${sub === x ? ' active' : ''}" data-act="view-tab" data-key="examSE2" data-tab="${x}">${x}（${x === '待参加' ? pend.length : done.length}）</span>`).join('')}</div>`;
+  const body = lv === '我的练习' ? seePracticeCards(pracs)
+    : `${subTabs}<div style="margin-top:14px">${sub === '待参加' ? seeExamPending(pend) : seeExamDone(done)}</div>`;
   el.innerHTML = `
   ${pageHead('我的考试', '', '<button class="btn btn-primary" data-act="se-prac-new"><i class="ri-add-line"></i>创建练习</button>')}
   <div class="card">
-    <div class="tabs">${['待参加', '已完成'].map(x => `<span class="tab${tab === x ? ' active' : ''}" data-act="view-tab" data-key="examSE" data-tab="${x}">${x}${x === '待参加' ? `（${pending.length}）` : `（${done.length}）`}</span>`).join('')}</div>
-    <div style="margin-top:14px">${tab === '待参加' ? seePendingCards(pending) : seeDoneCards(done)}</div>
+    <div class="tabs">${['我的练习', '正式考试'].map(x => `<span class="tab${lv === x ? ' active' : ''}" data-act="view-tab" data-key="examSE" data-tab="${x}">${x}（${x === '我的练习' ? pracs.length : exams.length}）</span>`).join('')}</div>
+    <div style="margin-top:14px">${body}</div>
   </div>`;
 }
 
-function seePendingCards(list) {
+/* 我的练习卡片：练习名称 / 创建时间 / 题目数量 / 自动判分成绩 / 状态 / 操作 */
+function seePracticeCards(list) {
+  if (!list.length) return `<div class="empty"><i class="ri-inbox-line"></i><div>暂无练习，点击右上角「创建练习」生成练习</div></div>`;
+  return `<div class="grid grid-2">${list.map(p => {
+    const info = pracInfo(p);
+    const done = p.status === '已完成';
+    return `<div class="card" style="box-shadow:none;border:1px solid var(--g200);display:flex;flex-direction:column;gap:11px">
+      <div style="display:flex;align-items:flex-start;gap:8px">
+        <div style="flex:1;font-size:14.5px;font-weight:700;color:var(--g900);line-height:1.5">${esc(p.title)}</div>
+        <span class="badge ${done ? 'badge-green' : 'badge-amber'}">${p.status}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:12.5px;color:var(--g600);line-height:1.7">
+        <div><i class="ri-calendar-line" style="color:var(--g400)"></i> 创建于 ${p.createdAt}</div>
+        <div><i class="ri-file-list-2-line" style="color:var(--g400)"></i> 题目 ${info.qs.length} 题</div>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span style="font-size:12.5px;color:var(--g500)">自动判分成绩：</span>
+        <span style="font-size:24px;font-weight:800;color:${done ? 'var(--e600)' : 'var(--g400)'}">${done ? info.autoScore : '—'}</span>
+        <span style="font-size:13px;color:var(--g500)">/ ${info.autoTotal} 分</span>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:2px">
+        ${done ? `<button class="btn btn-outline btn-sm" data-act="exam-prac-view" data-id="${p.id}"><i class="ri-file-list-2-line"></i>查看详情</button>`
+               : `<button class="btn btn-primary btn-sm" data-act="exam-prac-start" data-id="${p.id}"><i class="ri-play-line"></i>继续练习</button>`}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+/* 正式考试 · 待参加：未开始（按钮置灰，到时自动可考）/ 待考试 / 待补考 */
+function seeExamPending(list) {
   if (!list.length) return `<div class="empty"><i class="ri-inbox-line"></i><div>暂无待参加的考试</div></div>`;
   return `<div class="grid grid-2">${list.map(r => {
-    const tag = r.examMode === '练习' ? '练习' : '考试';
     let btn;
-    if (r.status === '可考试') btn = `<button class="btn btn-primary btn-sm" data-act="exam-se-take" data-id="${r.id}"><i class="ri-play-line"></i>开始考试</button>`;
-    else if (r.status === '未通过且可补考') btn = `<button class="btn btn-primary btn-sm" data-act="exam-se-take" data-id="${r.id}"><i class="ri-refresh-line"></i>再次${tag}</button>`;
-    else if (r.status === '未开始') btn = `<button class="btn btn-sm" disabled><i class="ri-lock-line"></i>未开始</button>`;
+    if (r.status === '待考试') btn = `<button class="btn btn-primary btn-sm" data-act="exam-se-take" data-id="${r.id}"><i class="ri-play-line"></i>开始考试</button>`;
+    else if (r.status === '待补考') btn = `<button class="btn btn-primary btn-sm" data-act="exam-se-take" data-id="${r.id}"><i class="ri-refresh-line"></i>开始补考</button>`;
+    else if (r.status === '未开始') btn = `<button class="btn btn-sm" disabled title="到达开始时间后可考试"><i class="ri-lock-line"></i>开始考试</button>`;
     else btn = '<span style="color:var(--g400);font-size:13px">-</span>';
     return `<div class="card" style="box-shadow:none;border:1px solid var(--g200);display:flex;flex-direction:column;gap:11px">
       <div style="display:flex;align-items:flex-start;gap:8px">
         <div style="flex:1;font-size:14.5px;font-weight:700;color:var(--g900);line-height:1.5">${esc(r.title)}</div>
-        ${r.examMode === '练习' ? '<span class="badge badge-amber">练习</span>' : ''}
-        <span class="badge ${SE_STATUS_BADGE[r.status]}">${r.status === '可考试' ? '待考试' : r.status}</span>
+        <span class="badge ${SE_STATUS_BADGE[r.status]}">${r.status}</span>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:12.5px;color:var(--g600);line-height:1.7">
         <div><i class="ri-play-circle-line" style="color:var(--g400)"></i> 开始 ${r.start.slice(5)}</div>
@@ -4079,29 +4165,36 @@ function seePendingCards(list) {
   }).join('')}</div>`;
 }
 
-function seeDoneCards(list) {
+/* 正式考试 · 已完成：待阅卷 / 已通过 / 未通过 / 已结束（查看考卷+考试记录）/ 缺考（无操作） */
+function seeExamDone(list) {
   if (!list.length) return `<div class="empty"><i class="ri-inbox-line"></i><div>暂无已完成的考试</div></div>`;
   return `<div class="grid grid-2">${list.map(r => {
     const best = r.attempts.find(a => a.t === r.bestTry) || r.attempts[r.attempts.length - 1];
-    const passed = r.passed || r.status === '已通过';
+    const absent = r.status === '缺考';
+    let btns = '';
+    if (r.status === '待阅卷' || r.status === '已通过' || r.status === '未通过') btns = `<button class="btn btn-outline btn-sm" data-act="exam-se-sheet" data-id="${r.id}"><i class="ri-file-list-2-line"></i>查看考卷</button>`;
+    else if (r.status === '已结束') btns = `<button class="btn btn-outline btn-sm" data-act="exam-se-sheet" data-id="${r.id}"><i class="ri-file-list-2-line"></i>查看考卷</button><button class="btn btn-sm" data-act="exam-se-record" data-id="${r.id}"><i class="ri-history-line"></i>考试记录</button>`;
     return `<div class="card" style="box-shadow:none;border:1px solid var(--g200);display:flex;flex-direction:column;gap:11px">
       <div style="display:flex;align-items:flex-start;gap:8px">
         <div style="flex:1;font-size:14.5px;font-weight:700;color:var(--g900);line-height:1.5">${esc(r.title)}</div>
-        ${r.examMode === '练习' ? '<span class="badge badge-amber">练习</span>' : ''}
-        <span class="badge ${r.status === '待阅卷' ? 'badge-amber' : (passed ? 'badge-green' : 'badge-red')}">${r.status === '待阅卷' ? '待阅卷' : (passed ? '通过' : '未通过')}</span>
+        <span class="badge ${SE_STATUS_BADGE[r.status]}">${r.status}</span>
       </div>
-      <div style="display:flex;align-items:baseline;gap:6px">
-        <span style="font-size:30px;font-weight:800;color:var(--g400)">-</span>
+      ${absent
+        ? `<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:24px;font-weight:800;color:var(--g400)">—</span><span style="font-size:13px;color:var(--g500)">未产生有效答卷</span></div>`
+        : `<div style="display:flex;align-items:baseline;gap:6px">
+        <span style="font-size:30px;font-weight:800;color:${r.status === '待阅卷' ? 'var(--g400)' : (r.passed ? 'var(--e600)' : 'var(--a600)')}">${r.status === '待阅卷' ? '-' : r.best}</span>
         <span style="font-size:14px;color:var(--g500)">/ ${r.total} 分</span>
         <span style="font-size:12px;color:var(--g400);margin-left:6px">及格线 ${r.passLine}</span>
-      </div>
+      </div>`}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:12.5px;color:var(--g600);line-height:1.7">
-        <div><i class="ri-time-line" style="color:var(--g400)"></i> 用时 ${best.dur} 分钟</div>
-        <div><i class="ri-repeat-line" style="color:var(--g400)"></i> ${r.examMode === '练习' ? '练习' : '考试'} ${r.tries} 次</div>
-        <div style="grid-column:1/3"><i class="ri-calendar-check-line" style="color:var(--g400)"></i> 完成于 ${best.done || '—'}</div>
+        ${absent
+          ? `<div style="grid-column:1/3"><i class="ri-calendar-close-line" style="color:var(--g400)"></i> 截止 ${r.end.slice(5)} 未交卷</div>`
+          : `<div><i class="ri-time-line" style="color:var(--g400)"></i> 用时 ${best.dur} 分钟</div>
+        <div><i class="ri-repeat-line" style="color:var(--g400)"></i> 考试 ${r.tries} 次</div>
+        <div style="grid-column:1/3"><i class="ri-calendar-check-line" style="color:var(--g400)"></i> 完成于 ${best.done || '—'}</div>`}
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:2px">
-        ${passed ? `<button class="btn btn-outline btn-sm" data-act="exam-se-sheet" data-id="${r.id}"><i class="ri-file-list-2-line"></i>查看答卷</button>` : '<span style="color:var(--g400);font-size:13px">-</span>'}
+        ${btns || '<span style="color:var(--g400);font-size:13px">-</span>'}
       </div>
     </div>`;
   }).join('')}</div>`;
@@ -4109,7 +4202,7 @@ function seeDoneCards(list) {
 
 /* ============ 工程师端：我的考试 · 创建练习（个人练习，自动为练习模式） ============ */
 function sePracNewDraft() {
-  return { title: '', mode: '随机抽题', cats: [], qids: [], types: { 单选: 5, 多选: 2, 判断: 3 }, diff: { easy: 40, mid: 40, hard: 20 }, dur: 30, pass: 60, start: '', end: '', pf: {}, picking: false };
+  return { title: '', mode: '随机抽题', cats: [], qids: [], types: { 单选: 5, 多选: 2, 判断: 3 }, diff: { easy: 40, mid: 40, hard: 20 }, dur: 30, pass: 60, pf: {}, picking: false };
 }
 function openSEPracticeNew() {
   window.__sePrac = sePracNewDraft();
@@ -4152,8 +4245,6 @@ function renderSEPracticeNew() {
       <div class="form-sec-title">练习设置</div>
       <div class="form-grid">
         <div class="field2 full"><label><span class="req">*</span>练习名称</label><input class="input" id="sp-title" value="${esc(d.title)}" placeholder="如：VRV专项练习"></div>
-        <div class="field2"><label>开始时间</label><input class="input" id="sp-start" value="${esc(d.start)}" placeholder="2026-08-20 09:00"></div>
-        <div class="field2"><label>结束时间</label><input class="input" id="sp-end" value="${esc(d.end)}" placeholder="2026-08-31 18:00"></div>
       </div>
       <div class="form-sec-title mt16">组卷方式</div>
       <div style="display:flex;gap:10px;margin-bottom:12px">
@@ -4168,14 +4259,12 @@ function renderSEPracticeNew() {
       </div>
     </div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
-      <button class="btn btn-primary" data-act="se-prac-save"><i class="ri-save-line"></i>保存练习</button></div>`);
+      <button class="btn btn-primary" data-act="se-prac-save"><i class="ri-check-line"></i>创建练习</button></div>`);
   ['sp-d-easy', 'sp-d-mid', 'sp-d-hard'].forEach(id => { const e = $('#' + id); if (e) e.addEventListener('input', () => { const s = ['easy', 'mid', 'hard'].reduce((a, k) => a + (+(($('#sp-d-' + k) || {}).value) || 0), 0); const h = $('#sp-diff-hint'); if (h) { if (s === 100) h.textContent = '简单 / 中等 / 困难 占比合计应为 100%'; else h.innerHTML = `当前合计 <b style="color:var(--r500)">${s}%</b>，请调整至 100%`; } }); });
 }
 function sePracPull() {
   const d = window.__sePrac; if (!d) return;
   d.title = ($('#sp-title') || { value: '' }).value.trim();
-  d.start = ($('#sp-start') || { value: '' }).value.trim();
-  d.end = ($('#sp-end') || { value: '' }).value.trim();
   d.dur = +($('#sp-dur') || { value: d.dur }).value || 30;
   d.pass = +($('#sp-pass') || { value: d.pass }).value || 60;
   if (d.mode === '随机抽题') d.types = { 单选: +($('#sp-t-single') || { value: d.types.单选 }).value || 0, 多选: +($('#sp-t-multi') || { value: d.types.多选 }).value || 0, 判断: +($('#sp-t-judge') || { value: d.types.判断 }).value || 0 };
@@ -4188,17 +4277,17 @@ function doSEPracticeSave() {
   if (d.pass <= 0 || d.pass > 100) { toast('及格分数线须在 1~100 之间', 'error'); return; }
   if (d.mode === '固定选题' && !d.qids.length) { toast('请选择练习题目', 'error'); return; }
   if (d.mode === '随机抽题' && !(d.types.单选 + d.types.多选 + d.types.判断)) { toast('请设置题型数量', 'error'); return; }
-  const label = d.mode === '固定选题'
-    ? `固定选题（${d.qids.length} 题）`
-    : `随机抽题（单选×${d.types.单选} · 多选×${d.types.多选} · 判断×${d.types.判断}）`;
-  const id = Math.max(200, ...SE_EXAM_CFG.map(c => +c.id)) + 1;
-  SE_EXAM_CFG.push({
-    id, examMode: '练习', title: d.title, paper: label, mode: d.mode, cats: d.cats.slice(), qids: d.qids.slice(),
-    types: Object.assign({}, d.types), diff: Object.assign({}, d.diff), start: d.start, end: d.end, dur: d.dur, pass: d.pass, maxTry: 99, status: '可考试', tries: 0, skills: [],
+  const id = Math.max(900, ...SE_PRACTICES.map(p => +p.id)) + 1;
+  /* 创建后仅生成「未完成」练习记录并返回列表，答题入口由「继续练习」触发 */
+  SE_PRACTICES.unshift({
+    id, title: d.title, mode: d.mode, cats: d.cats.slice(), qids: d.qids.slice(),
+    types: Object.assign({}, d.types), diff: Object.assign({}, d.diff), dur: d.dur, pass: d.pass,
+    status: '未完成', createdAt: seNowStamp(), sel: {}, cur: 0,
   });
   window.__sePrac = null;
   closeModal();
-  toast('练习已创建，仅本人可见，可重复练习');
+  APP.tab.examSE = '我的练习';
+  toast('练习已创建，可随时从「我的练习」进入答题，进度自动保存');
   renderView(APP.view);
 }
 function sePracPickRows() {
@@ -4257,7 +4346,7 @@ function vDefenseSE(el) {
   /* 任务详情内联视图 */
   if (APP.defSeTaskId != null) {
     const t = defSeMyTasks().find(x => x.id === APP.defSeTaskId);
-    if (t) { el.innerHTML = (t.status === '已完成' || t.status === '审批中') ? defSeResultDetail(t) : defSeTaskDetail(t); return; }
+    if (t) { el.innerHTML = t.status === '已完成' ? defSeResultDetail(t) : defSeTaskDetail(t); return; }
     APP.defSeTaskId = null;
   }
   if (APP.defSeResultId != null) {
@@ -4282,9 +4371,7 @@ function defSeCards(list, mode) {
   return `<div class="grid grid-2" style="gap:14px">${list.map(t => {
     const act = mode === 'done'
       ? `<button class="btn btn-sm" data-act="defse-ropen" data-id="${t.id}"><i class="ri-eye-line"></i>查看结果</button>`
-      : (t.status === '审批中' ?
-         `<button class="btn btn-sm" data-act="defse-ropen" data-id="${t.id}"><i class="ri-eye-line"></i>查看结果</button>` :
-         `<button class="btn btn-sm" data-act="defse-open" data-id="${t.id}"><i class="ri-eye-line"></i>查看</button>`);
+      : `<button class="btn btn-sm" data-act="defse-open" data-id="${t.id}"><i class="ri-eye-line"></i>查看</button>`;
     return `<div style="border:1px solid var(--g100);border-radius:12px;padding:16px 18px;background:#fff">
       <div class="flex" style="justify-content:space-between;align-items:flex-start;margin-bottom:10px">
         <div style="font-weight:700;color:var(--g800);font-size:14px">${esc(t.title)}</div>
@@ -4331,7 +4418,7 @@ function defSeResultDetail(t) {
       <div class="kv"><span class="k">面谈/答辩时间</span><span class="v">${t.date} ${t.start}</span></div>
       <div class="kv"><span class="k">当前等级</span><span class="v"><span class="badge ${LV_BADGE[t.level] || 'badge-gray'}">${esc(t.level || '—')}</span></span></div>
       <div class="kv"><span class="k">形式</span><span class="v">${t.formType === '答辩' ? '<span class="badge badge-purple">答辩</span>' : '<span class="badge badge-cyan">面谈</span>'}</span></div>
-      <div class="kv"><span class="k">状态</span><span class="v"><span class="badge ${DEF_STATUS[t.status]}">${t.status}</span>${t.status === '审批中' ? '<span style="color:var(--a600);font-size:12px;margin-left:8px">⏳ 等待审批确认</span>' : ''}</span></div>
+      <div class="kv"><span class="k">状态</span><span class="v"><span class="badge ${DEF_STATUS[t.status]}">${t.status}</span></span></div>
     </div>
   </div>
   <div class="card mt16"><div class="card-title"><i class="ri-medal-line" style="color:var(--e500)"></i>最终结果</div>
@@ -6639,7 +6726,13 @@ function examBank() {
       <button class="btn" data-act="q-reset">重置</button>
     </div>
     <div style="display:flex;gap:8px;margin:0 0 12px;justify-content:flex-end">
-      <button class="btn" data-act="import-qbank"><i class="ri-file-excel-2-line"></i>批量导入</button>
+      <div class="dropdown" id="qi-entry-drop">
+        <button class="btn" data-act="qi-entry-menu"><i class="ri-upload-2-line"></i>批量导入<i class="ri-arrow-down-s-line" style="margin-left:2px;font-size:14px"></i></button>
+        <div class="dd-menu" id="qi-entry-menu">
+          <div class="dd-item" data-act="qi-entry" data-mode="excel"><i class="ri-file-excel-2-line" style="color:var(--e600)"></i>导入 Excel</div>
+          <div class="dd-item" data-act="qi-entry" data-mode="word"><i class="ri-file-word-2-line" style="color:var(--a500)"></i>导入 Word</div>
+        </div>
+      </div>
       <button class="btn btn-primary" data-act="q-add"><i class="ri-add-line"></i>新增试题</button></div>
     <table class="tbl">
       <tr><th style="width:40%">题目内容</th><th>题型</th><th>一级分类</th><th>二级分类</th><th>难度</th><th class="right">分值</th><th>状态</th><th>创建时间</th><th class="right">操作</th></tr>
@@ -6697,10 +6790,10 @@ function examPlan() {
 }
 function planOps(p) {
   const btn = (act, txt, cls) => `<button class="btn btn-sm${cls ? ' ' + cls : ''}" data-act="${act}" data-id="${p.id}">${txt}</button>`;
-  if (p.status === '草稿') return btn('plan-edit', '编辑') + btn('plan-publish', '发布', 'btn-primary') + btn('plan-del', '删除');
-  if (p.status === '未开始') return btn('plan-link', '考试链接') + btn('plan-end', '结束') + btn('plan-del', '删除');
-  if (p.status === '进行中') return btn('stats', '成绩') + btn('plan-link', '考试链接');
-  if (p.status === '已结束') return btn('plan-link', '考试链接') + btn('plan-republish', '重新发布', 'btn-primary') + btn('plan-del', '删除');
+  if (p.status === '草稿') return btn('plan-edit', '编辑') + btn('plan-del', '删除') + btn('plan-publish', '发布', 'btn-primary');
+  if (p.status === '未开始') return btn('plan-link', '考试链接');
+  if (p.status === '进行中') return btn('plan-link', '考试链接') + btn('stats', '成绩');
+  if (p.status === '已结束') return p.endOnly ? btn('plan-end', '结束') : btn('plan-republish', '重新发布', 'btn-primary') + btn('plan-end', '结束');
   return btn('plan-del', '删除');
 }
 
@@ -6793,7 +6886,7 @@ function openPerfOrder(mid, idx, qkey) {
 /* --- 答辩/面谈辅助 --- */
 const DEF_STATUS = {
   '草稿': 'badge-gray', '待进行': 'badge-blue',
-  '评分中': 'badge-purple', '审批中': 'badge-amber',
+  '评分中': 'badge-purple',
   '已驳回': 'badge-red', '已完成': 'badge-green',
 };
 const DEF_STATUS_DESC = {
@@ -6865,16 +6958,19 @@ function defTaskTab() {
   if (q.se) list = list.filter(t => defSeOf(t.seId).name.includes(q.se));
   if (q.form && q.form !== '全部') list = list.filter(t => t.formType === q.form);
   if (q.status && q.status !== '全部') list = list.filter(t => t.status === q.status);
-  if (q.date) list = list.filter(t => (t.date || '').includes(q.date));
+  if (q.dateStart) list = list.filter(t => (t.date || '') >= q.dateStart);
+  if (q.dateEnd) list = list.filter(t => (t.date || '') <= q.dateEnd);
   const formOpts = ['全部', '面谈', '答辩'];
-  const statusOpts = ['全部', '草稿', '待进行', '评分中', '审批中', '已完成'];
+  const statusOpts = ['全部', '草稿', '待进行', '评分中', '已完成'];
   return `
   <div class="filter-bar">
     <input class="input" id="df-name" placeholder="任务名称" value="${esc(q.name || '')}" style="width:160px">
     <input class="input" id="df-se" placeholder="人员姓名" value="${esc(q.se || '')}" style="width:120px">
     <select class="select" id="df-form" style="width:100px">${formOpts.map(x => `<option${(q.form || '全部') === x ? ' selected' : ''}>${x}</option>`).join('')}</select>
     <select class="select" id="df-status" style="width:110px">${statusOpts.map(x => `<option${(q.status || '全部') === x ? ' selected' : ''}>${x}</option>`).join('')}</select>
-    <input class="input" id="df-date" placeholder="面谈·答辩时间" value="${esc(q.date || '')}" style="width:160px">
+    <input type="date" class="input" id="df-date-start" value="${esc(q.dateStart || '')}" style="width:140px" title="开始日期">
+    <span style="color:var(--g400)">至</span>
+    <input type="date" class="input" id="df-date-end" value="${esc(q.dateEnd || '')}" style="width:140px" title="结束日期">
     <button class="btn btn-primary btn-sm" data-act="def-search"><i class="ri-search-line"></i>查询</button>
     <button class="btn btn-sm" data-act="def-reset">重置</button>
   </div>
@@ -6897,9 +6993,21 @@ function defTaskTab() {
     </table>
   </div>`;
 }
+/* 当前登录的事务所管理员是否可对该任务评分（是评分人 + 本人未提交 + 评分中） */
+function defCanScore(t) {
+  if (!defIsOffice() || t.status !== '评分中') return false;
+  const p = t.participants.find(x => x.name === (APP.user && APP.user.name));
+  return !!(p && !p.submitted);
+}
+/* 任务最近一次评分提交时间（无任何提交返回 '—'） */
+function defLastSubmitTime(t) {
+  const ts = t.participants.filter(p => p.submitTime).map(p => p.submitTime).sort();
+  return ts.length ? ts[ts.length - 1] : '—';
+}
 function defRowActions(t) {
   const view = `<button class="btn btn-sm" data-act="def-view" data-id="${t.id}">查看</button>`;
   if (t.status === '草稿') return `${view}<button class="btn btn-sm" data-act="def-edit" data-id="${t.id}">编辑</button><button class="btn btn-sm btn-primary" data-act="def-publish" data-id="${t.id}">发布</button><button class="btn btn-sm" data-act="def-del" data-id="${t.id}">删除</button>`;
+  if (defCanScore(t)) return `<button class="btn btn-sm btn-primary" data-act="def-view" data-id="${t.id}"><i class="ri-edit-line"></i>评分</button>`;
   return view;
 }
 
@@ -6925,7 +7033,6 @@ function openDefDetailDrawer(id) {
 
   /* ——— HQ（总部管理员）详情：基本信息 → 最终结果 → 每个评分人折叠面板 ——— */
   if (isHq) {
-    const memoEditable = (t.status === '待进行' || t.status === '评分中' || t.status === '已完成');
     const hdr = t.status === '已完成' ? `${formType} · ${se.name}` : `${formType}人员评分 · ${se.name}`;
     const scorerPanels = t.participants.map((p, pi) => {
       const sc = defJudgeScore(t, p);
@@ -6956,12 +7063,12 @@ function openDefDetailDrawer(id) {
             </div>` : ''}
             ${p.comment ? `<div class="mt12"><div style="font-size:12.5px;font-weight:600;color:var(--g600);margin-bottom:4px">评分意见</div><div style="font-size:13px;color:var(--g700);line-height:1.7;background:var(--g50);padding:10px 12px;border-radius:8px">${esc(p.comment)}</div></div>` : ''}
             <div class="mt12"><div style="font-size:12.5px;font-weight:600;color:var(--g600);margin-bottom:4px">面谈纪要</div>
-              ${p.memo
-                ? `<div style="font-size:13px;color:var(--g700);line-height:1.7;white-space:pre-wrap;background:var(--g50);padding:10px 12px;border-radius:8px">${esc(p.memo)}</div>`
+              ${t.memo
+                ? `<div style="font-size:13px;color:var(--g700);line-height:1.7;white-space:pre-wrap;background:var(--g50);padding:10px 12px;border-radius:8px">${esc(t.memo)}</div>`
                 : `<div style="font-size:12.5px;color:var(--g400)">暂无纪要</div>`}
             </div>
             <div class="mt12"><div style="font-size:12.5px;font-weight:600;color:var(--g600);margin-bottom:4px">会议附件</div>
-              ${defAttachmentsBlock(p.attachments || [], t.id, pi)}
+              ${defAttachmentsBlock(t.attachments || [], t.id, null, false)}
             </div>
           </div>
         </div>
@@ -6994,34 +7101,46 @@ function openDefDetailDrawer(id) {
     return;
   }
 
-  /* ——— Office Admin 非评分人：基本信息 + 最终结果 + 附件 ——— */
+  /* ——— Office Admin 非评分人：统一五块结构，全部只读 ——— */
   if (isOffice && !isMyTask) {
+    const subParts = t.participants.filter(p => p.submitted);
     openDrawer(drawerHead(formType === '答辩' ? '答' : '谈', `任务详情 · ${esc(t.title)}`, `${formType} · ${esc(se.name)}`) + `
-    <div class="card" style="margin:0 0 12px"><div class="card-title"><i class="ri-file-info-line" style="color:var(--e500)"></i>基本信息</div>
+    <div class="card" style="margin:0"><div class="card-title"><i class="ri-file-info-line" style="color:var(--e500)"></i>基本信息</div>
       <div class="grid grid-2">
+        <div class="kv"><span class="k">任务名称</span><span class="v">${esc(t.title)}</span></div>
         <div class="kv"><span class="k">被考核人员</span><span class="v">${alInnerBadge(se.name)}${esc(se.name)} · ${esc(se.office)}</span></div>
         <div class="kv"><span class="k">当前等级</span><span class="v"><span class="badge ${LV_BADGE[t.level] || 'badge-gray'}">${esc(t.level || '—')}</span></span></div>
         <div class="kv"><span class="k">形式</span><span class="v">${formType === '答辩' ? '<span class="badge badge-purple">答辩</span>' : '<span class="badge badge-cyan">面谈</span>'}</span></div>
         <div class="kv"><span class="k">面谈/答辩时间</span><span class="v">${t.date} ${t.start}</span></div>
         <div class="kv"><span class="k">状态</span><span class="v"><span class="badge ${DEF_STATUS[t.status]}">${t.status}</span></span></div>
+        <div class="kv"><span class="k">提交时间</span><span class="v">${defLastSubmitTime(t)}</span></div>
       </div>
     </div>
-    ${t.status === '已完成' && final ? `
-    <div class="card mt16"><div class="card-title"><i class="ri-medal-line" style="color:var(--e500)"></i>最终结果</div>
-      <div class="flex gap8 wrap" style="align-items:baseline;margin-bottom:4px">
-        <div style="font-size:34px;font-weight:800;color:var(--e600);line-height:1">${final.total}</div>
-        <div style="font-size:13px;color:var(--g500)">最终得分</div>
-        <div style="flex:1"></div>
-        <span class="badge ${passed ? 'badge-green' : 'badge-amber'}" style="align-self:flex-end">${passed ? '通过' : '不通过'}</span>
-      </div>
-      <div style="font-size:13px;color:var(--g500);margin-top:4px">合格分数：${pass}分</div>
-    </div>` : ''}
-    <div class="card mt16"><div class="card-title"><i class="ri-edit-box-line" style="color:var(--e500)"></i>会议纪要
-      <div style="flex:1"></div>
-      <button class="btn btn-sm" data-act="def-score-memo-import" data-id="${t.id}"><i class="ri-upload-2-line"></i>导入纪要</button>
-      <button class="btn btn-sm btn-primary" data-act="def-score-memo-save" data-id="${t.id}"><i class="ri-save-line"></i>保存纪要</button>
+    <div class="card mt16"><div class="card-title"><i class="ri-edit-line" style="color:var(--e500)"></i>评分维度</div>
+      <table class="tbl">
+        <tr><th>评分维度</th><th class="right">得分</th></tr>
+        ${dims.map((dm, i) => {
+          const avg = subParts.length ? Math.round(subParts.reduce((s, p) => s + (p.dims ? (p.dims[i] || 0) : 0), 0) / subParts.length * 10) / 10 : null;
+          return `<tr><td>${dm.name}</td><td class="right num fw600" style="color:var(--e600)">${avg != null ? avg : '—'}</td></tr>`;
+        }).join('')}
+      </table>
+      <div style="margin-top:6px;font-size:12px;color:var(--g400)">${subParts.length ? `按已提交的 ${subParts.length}/${t.participants.length} 位评分人计算均分` : '评分尚未开始'}</div>
     </div>
-      <textarea class="textarea" id="def-score-memo" rows="4" style="width:100%" placeholder="导入或粘贴面谈纪要内容，可继续编辑...">${esc(t.memo || '')}</textarea>
+    <div class="card mt16"><div class="card-title"><i class="ri-chat-3-line" style="color:var(--e500)"></i>评分意见</div>
+      ${subParts.length ? subParts.map(p => `
+      <div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--g100);font-size:13px">
+        <span style="color:var(--g500);white-space:nowrap">${esc(p.name)}：</span>
+        <span style="color:var(--g700);line-height:1.7">${esc(p.comment || '—')}</span>
+      </div>`).join('') : `<div style="font-size:13px;color:var(--g400)">暂无评分意见</div>`}
+    </div>
+    <div class="card mt16"><div class="card-title"><i class="ri-edit-box-line" style="color:var(--e500)"></i>会议纪要</div>
+      ${t.memo ? `<div style="font-size:13px;color:var(--g700);line-height:1.85;white-space:pre-wrap">${esc(t.memo)}</div>` : `<div style="font-size:13px;color:var(--g400)">暂无会议纪要</div>`}
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 8px;background:var(--g50);border-radius:6px;font-size:12.5px">
+        <i class="ri-file-line" style="color:var(--g500)"></i>
+        <span style="flex:1;color:var(--g700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">面谈纪要_${t.id}.docx</span>
+        <span style="color:var(--g400);font-size:12px">36KB</span>
+        <button class="btn btn-xs" data-act="toast" data-msg="预览附件：面谈纪要_${t.id}.docx">查看</button>
+      </div>
     </div>
     <div class="card mt16"><div class="card-title"><i class="ri-attachment-line" style="color:var(--e500)"></i>会议附件</div>
       ${defAttachmentsBlock(t.attachments || [], t.id, null, false)}
@@ -7029,22 +7148,24 @@ function openDefDetailDrawer(id) {
     return;
   }
 
-  /* ——— Office Admin 是我的评分任务 ——— */
+  /* ——— Office Admin 是我的评分任务：按状态与提交情况控制编辑 ——— */
   if (isOffice && isMyTask) {
-    const submitted = myPart.submitted;
-    /* 未提交：评分表单 */
-    if (!submitted && t.status === '评分中') {
+    /* 评分中且本人未提交 → 评分表单（可编辑，可提交评分） */
+    if (t.status === '评分中' && !myPart.submitted) {
       const scoreKey = 'def-score-' + t.id;
       const stored = window[scoreKey] || dims.map((dm, i) => 85 + i);
       const currentTotal = Math.round(stored.reduce((s, v) => s + v, 0) / dims.length * 10) / 10;
-      openDrawer(drawerHead('评', `面谈评分 · ${esc(se.name)}`, `${t.date} ${t.start}`) + `
-      <div class="card" style="margin:0 0 12px"><div class="card-title"><i class="ri-file-info-line" style="color:var(--e500)"></i>基本信息</div>
-        <div class="grid grid-2">
-          <div class="kv"><span class="k">被考核人员</span><span class="v">${alInnerBadge(se.name)}${esc(se.name)} · ${esc(se.office)}</span></div>
-          <div class="kv"><span class="k">当前等级</span><span class="v"><span class="badge ${LV_BADGE[t.level] || 'badge-gray'}">${esc(t.level || '—')}</span></span></div>
-          <div class="kv"><span class="k">形式</span><span class="v">${formType === '答辩' ? '<span class="badge badge-purple">答辩</span>' : '<span class="badge badge-cyan">面谈</span>'}</span></div>
-          <div class="kv"><span class="k">面谈/答辩时间</span><span class="v">${t.date} ${t.start}</span></div>
-        </div>
+      openDrawer(drawerHead('评', `${formType}评分 · ${esc(se.name)}`, `${t.date} ${t.start}`) + `
+      <div class="card" style="margin:0"><div class="card-title"><i class="ri-file-info-line" style="color:var(--e500)"></i>基本信息</div>
+      <div class="grid grid-2">
+        <div class="kv"><span class="k">任务名称</span><span class="v">${esc(t.title)}</span></div>
+        <div class="kv"><span class="k">被考核人员</span><span class="v">${alInnerBadge(se.name)}${esc(se.name)} · ${esc(se.office)}</span></div>
+        <div class="kv"><span class="k">当前等级</span><span class="v"><span class="badge ${LV_BADGE[t.level] || 'badge-gray'}">${esc(t.level || '—')}</span></span></div>
+        <div class="kv"><span class="k">形式</span><span class="v">${formType === '答辩' ? '<span class="badge badge-purple">答辩</span>' : '<span class="badge badge-cyan">面谈</span>'}</span></div>
+        <div class="kv"><span class="k">面谈/答辩时间</span><span class="v">${t.date} ${t.start}</span></div>
+        <div class="kv"><span class="k">状态</span><span class="v"><span class="badge ${DEF_STATUS[t.status]}">${t.status}</span></span></div>
+        <div class="kv"><span class="k">提交时间</span><span class="v">${defLastSubmitTime(t)}</span></div>
+      </div>
       </div>
       <div class="card mt16"><div class="card-title"><i class="ri-edit-line" style="color:var(--e500)"></i>评分维度</div>
         ${dims.map((dm, i) => `<div class="score-row">
@@ -7054,48 +7175,64 @@ function openDefDetailDrawer(id) {
       </div>
       <div style="margin:12px 0;font-size:14px;font-weight:600;color:var(--g700);text-align:right">当前总分：<b id="df-cur-total" style="color:var(--e600)">${currentTotal}分</b></div>
       <div class="card mt16"><div class="card-title"><i class="ri-chat-3-line" style="color:var(--e500)"></i>评分意见</div>
-        <textarea class="textarea" id="def-score-comment" rows="3" style="width:100%" placeholder="填写对本次面谈的评价...">故障诊断能力强、流程规范。</textarea>
+        <textarea class="textarea" id="def-score-comment" rows="3" style="width:100%" placeholder="填写对本次面谈的评价...">${esc(myPart.comment || '')}</textarea>
       </div>
       <div class="card mt16"><div class="card-title"><i class="ri-edit-box-line" style="color:var(--e500)"></i>会议纪要
         <div style="flex:1"></div>
-        <button class="btn btn-sm" data-act="def-score-memo-import" data-id="${t.id}"><i class="ri-upload-2-line"></i>导入纪要</button>
+        <button class="btn btn-sm" data-act="def-score-memo-import" data-id="${t.id}"><i class="ri-upload-2-line"></i>上传会议纪要</button>
         <button class="btn btn-sm btn-primary" data-act="def-score-memo-save" data-id="${t.id}"><i class="ri-save-line"></i>保存纪要</button>
       </div>
-        <textarea class="textarea" id="def-score-memo" rows="4" style="width:100%" placeholder="导入或粘贴面谈纪要内容，可继续编辑...">${esc(t.memo || '')}</textarea>
+        <textarea class="textarea" id="def-score-memo" rows="4" style="width:100%" placeholder="上传或粘贴面谈纪要内容，可继续编辑...">${esc(t.memo || '')}</textarea>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 8px;background:var(--g50);border-radius:6px;font-size:12.5px">
+        <i class="ri-file-line" style="color:var(--g500)"></i>
+        <span style="flex:1;color:var(--g700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">面谈纪要_${t.id}.docx</span>
+        <span style="color:var(--g400);font-size:12px">36KB</span>
+        <button class="btn btn-xs" data-act="toast" data-msg="预览附件：面谈纪要_${t.id}.docx">查看</button>
+      </div>
       </div>
       <div class="card mt16"><div class="card-title"><i class="ri-attachment-line" style="color:var(--e500)"></i>会议附件</div>
-        ${defAttachmentsBlock(myPart.attachments || [], t.id, t.participants.indexOf(myPart), true)}
+        ${defAttachmentsBlock(t.attachments || [], t.id, null, true)}
       </div>
       <div class="divider"></div>
       <button class="btn btn-primary" style="width:100%" data-act="def-submit-score" data-id="${t.id}"><i class="ri-check-line"></i>提交评分</button>`);
-    } else {
-      /* 已提交：只读展示 */
-      const sc = defJudgeScore(t, myPart);
-      openDrawer(drawerHead('评', `面谈评分 · ${esc(se.name)}`, `${t.date} ${t.start}`) + `
-      <div class="card" style="margin:0 0 12px"><div class="card-title"><i class="ri-file-info-line" style="color:var(--e500)"></i>基本信息</div>
-        <div class="grid grid-2">
-          <div class="kv"><span class="k">被考核人员</span><span class="v">${alInnerBadge(se.name)}${esc(se.name)} · ${esc(se.office)}</span></div>
-          <div class="kv"><span class="k">当前等级</span><span class="v"><span class="badge ${LV_BADGE[t.level] || 'badge-gray'}">${esc(t.level || '—')}</span></span></div>
-          <div class="kv"><span class="k">形式</span><span class="v">${formType === '答辩' ? '<span class="badge badge-purple">答辩</span>' : '<span class="badge badge-cyan">面谈</span>'}</span></div>
-          <div class="kv"><span class="k">面谈/答辩时间</span><span class="v">${t.date} ${t.start}</span></div>
-        </div>
-      </div>
-      <div class="card mt16"><div class="card-title"><i class="ri-edit-line" style="color:var(--e500)"></i>我的评分</div>
-        <table class="tbl">
-          <tr><th>评分维度</th><th class="right">得分</th></tr>
-          ${dims.map((dm, i) => `<tr><td>${dm.name}</td><td class="right num fw600" style="color:var(--e600)">${myPart.dims && myPart.dims[i] != null ? myPart.dims[i] : '—'}</td></tr>`).join('')}
-        </table>
-      </div>
-      <div style="margin:12px 0;font-size:14px;font-weight:600;color:var(--g700);text-align:right">个人总分：<b style="color:var(--e600)">${sc != null ? sc : '—'}分</b></div>
-      ${myPart.comment ? `<div class="card mt16"><div class="card-title"><i class="ri-chat-3-line" style="color:var(--e500)"></i>评分意见</div>
-        <div style="font-size:13px;color:var(--g700);line-height:1.85">${esc(myPart.comment)}</div></div>` : ''}
-      ${myPart.memo ? `<div class="card mt16"><div class="card-title"><i class="ri-edit-box-line" style="color:var(--e500)"></i>我的面谈纪要</div>
-        <div style="font-size:13px;color:var(--g700);line-height:1.85;white-space:pre-wrap">${esc(myPart.memo)}</div></div>` : ''}
-      <div class="card mt16"><div class="card-title"><i class="ri-attachment-line" style="color:var(--e500)"></i>会议附件</div>
-        ${defAttachmentsBlock(myPart.attachments || [], t.id, t.participants.indexOf(myPart), false)}
-      </div>
-      <div style="margin-top:12px;font-size:12.5px;color:var(--g500);text-align:right">提交时间：${esc(myPart.submitTime || '—')}</div>`);
+      return;
     }
+    /* 待进行 / 已提交（评分中）/ 已完成 → 统一只读详情 */
+    const sc = defJudgeScore(t, myPart);
+    openDrawer(drawerHead(formType === '答辩' ? '答' : '谈', `任务详情 · ${esc(t.title)}`, `${formType} · ${esc(se.name)}`) + `
+    <div class="card" style="margin:0"><div class="card-title"><i class="ri-file-info-line" style="color:var(--e500)"></i>基本信息</div>
+      <div class="grid grid-2">
+        <div class="kv"><span class="k">任务名称</span><span class="v">${esc(t.title)}</span></div>
+        <div class="kv"><span class="k">被考核人员</span><span class="v">${alInnerBadge(se.name)}${esc(se.name)} · ${esc(se.office)}</span></div>
+        <div class="kv"><span class="k">当前等级</span><span class="v"><span class="badge ${LV_BADGE[t.level] || 'badge-gray'}">${esc(t.level || '—')}</span></span></div>
+        <div class="kv"><span class="k">形式</span><span class="v">${formType === '答辩' ? '<span class="badge badge-purple">答辩</span>' : '<span class="badge badge-cyan">面谈</span>'}</span></div>
+        <div class="kv"><span class="k">面谈/答辩时间</span><span class="v">${t.date} ${t.start}</span></div>
+        <div class="kv"><span class="k">状态</span><span class="v"><span class="badge ${DEF_STATUS[t.status]}">${t.status}</span></span></div>
+        <div class="kv"><span class="k">提交时间</span><span class="v">${defLastSubmitTime(t)}</span></div>
+      </div>
+    </div>
+    <div class="card mt16"><div class="card-title"><i class="ri-edit-line" style="color:var(--e500)"></i>评分维度</div>
+      <table class="tbl">
+        <tr><th>评分维度</th><th class="right">得分</th></tr>
+        ${dims.map((dm, i) => `<tr><td>${dm.name}</td><td class="right num fw600" style="color:var(--e600)">${myPart.dims && myPart.dims[i] != null ? myPart.dims[i] : '—'}</td></tr>`).join('')}
+      </table>
+    </div>
+    ${t.status === '待进行' ? '' : `<div style="margin:12px 0;font-size:14px;font-weight:600;color:var(--g700);text-align:right">个人总分：<b style="color:var(--e600)">${sc != null ? sc : '—'}分</b></div>`}
+    <div class="card mt16"><div class="card-title"><i class="ri-chat-3-line" style="color:var(--e500)"></i>评分意见</div>
+      ${myPart.comment ? `<div style="font-size:13px;color:var(--g700);line-height:1.85">${esc(myPart.comment)}</div>` : `<div style="font-size:13px;color:var(--g400)">暂无评分意见</div>`}
+    </div>
+    <div class="card mt16"><div class="card-title"><i class="ri-edit-box-line" style="color:var(--e500)"></i>会议纪要</div>
+      ${t.memo ? `<div style="font-size:13px;color:var(--g700);line-height:1.85;white-space:pre-wrap">${esc(t.memo)}</div>` : `<div style="font-size:13px;color:var(--g400)">暂无会议纪要</div>`}
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 8px;background:var(--g50);border-radius:6px;font-size:12.5px">
+        <i class="ri-file-line" style="color:var(--g500)"></i>
+        <span style="flex:1;color:var(--g700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">面谈纪要_${t.id}.docx</span>
+        <span style="color:var(--g400);font-size:12px">36KB</span>
+        <button class="btn btn-xs" data-act="toast" data-msg="预览附件：面谈纪要_${t.id}.docx">查看</button>
+      </div>
+    </div>
+    <div class="card mt16"><div class="card-title"><i class="ri-attachment-line" style="color:var(--e500)"></i>会议附件</div>
+      ${defAttachmentsBlock(t.attachments || [], t.id, null, false)}
+    </div>`, 'drawer-wide');
     return;
   }
 }
@@ -7182,7 +7319,7 @@ function defAttachmentsBlock(list, taskId, pIdx, editable) {
         <button class="btn btn-xs" data-act="def-att-view" data-id="${taskId}" data-idx="${pIdx == null ? '' : pIdx}" data-ai="${ai}">查看</button>
         ${editable ? `<button class="btn btn-xs" data-act="def-att-del" data-id="${taskId}" data-idx="${pIdx == null ? '' : pIdx}" data-ai="${ai}">删除</button>` : ''}
       </div>`).join('')}
-    </div>` : `<div style="font-size:12.5px;color:var(--g400)">暂无附件</div>`}
+    </div>` : `<div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--g400)"><i class="ri-attachment-line"></i>暂无附件</div>`}
   </div>`;
 }
 
@@ -7290,11 +7427,11 @@ function renderDefParticipantTable() {
   const sumOk = sum === 100;
   wrap.innerHTML = `
     <div style="font-size:13px;font-weight:700;color:var(--g700);margin-bottom:10px">
-      <i class="ri-team-line" style="color:var(--e500)"></i> ${form || '面谈/答辩'}人员配置
+      <i class="ri-team-line" style="color:var(--e500)"></i> 评分人配置
       <span style="font-weight:400;font-size:12px;color:var(--g500);margin-left:8px">权重合计: <b id="dn-weight-sum" style="${sumOk ? 'color:var(--g700)' : 'color:var(--r500)'}">${sum}%</b>${sumOk ? '' : ' <span style="color:var(--r500)">(未达100%)</span>'}</span>
     </div>
     <table class="tbl" style="margin-bottom:10px">
-      <tr><th style="width:40%">姓名</th><th style="width:25%">权重(%)</th><th style="width:35%">操作</th></tr>
+      <tr><th>姓名</th><th style="width:160px">权重(%)</th></tr>
       ${_defParticipants.map((p, i) => `
       <tr>
         <td><select class="select" style="width:100%" data-idx="${i}" onchange="_defParticipants[${i}].name=this.value;renderDefParticipantTable()">
@@ -7302,11 +7439,9 @@ function renderDefParticipantTable() {
           ${pool.map(m => `<option value="${esc(m.name)}"${p.name === m.name ? ' selected' : ''}>${esc(m.name)}</option>`).join('')}
         </select></td>
         <td><input class="input" type="number" min="0" max="100" value="${p.weight}" style="width:70px;text-align:center" data-idx="${i}" onchange="_defParticipants[${i}].weight=+this.value||0;renderDefParticipantTable()"></td>
-        <td><button class="btn btn-sm" data-act="def-remove-participant" data-idx="${i}"><i class="ri-delete-bin-line"></i>删除</button></td>
       </tr>
     `).join('')}
-    </table>
-    <button class="btn btn-sm" data-act="def-add-participant"><i class="ri-add-line"></i>添加人员</button>`;
+    </table>`;
 }
 
 function openDefNewDrawer(id) {
@@ -7622,6 +7757,7 @@ function roleEditModal(id) {
   const allData = ds === 'all';
   const selfData = ds === 'self';
   const localScope = ds === 'dept';
+  const deptSubScope = ds === 'deptSub';
 
   openDrawer(
     drawerHead('<i class="ri-shield-user-line"></i>', isEdit ? '编辑角色' : '新增角色', isEdit ? esc(role.name) : '') +
@@ -7666,6 +7802,11 @@ function roleEditModal(id) {
                 '<input type="radio" name="r-dscope" value="dept"' + (localScope ? ' checked' : '') + '>' +
                 '<span class="rd-radio"></span>' +
                 '<div><div class="rd-title">本范围</div><div class="rd-desc">仅可查看本组织数据</div></div>' +
+              '</label>' +
+              '<label class="role-dscope-card' + (deptSubScope ? ' active' : '') + '" data-value="deptSub">' +
+                '<input type="radio" name="r-dscope" value="deptSub"' + (deptSubScope ? ' checked' : '') + '>' +
+                '<span class="rd-radio"></span>' +
+                '<div><div class="rd-title">本范围及以下</div><div class="rd-desc">可查看本组织及以下组织数据</div></div>' +
               '</label>' +
             '</div>' +
             '<label class="check" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13.5px;color:var(--g700)">' +
@@ -10009,6 +10150,7 @@ const CERT_REQ_COLS = [
   { key: '4', label: '4级工程师', parent: null },
   { key: '5', label: '5级技术主任', parent: null },
 ];
+const CR_SEP_KEYS = ['1', '2-SE', '3-SE', '4', '5'];
 const CERT_REQ_DATA = [
   /* ---- 特种作业操作证 ---- */
   { cat:'通用证书', kind:'特种作业操作证', name:'制冷与空调作业', diff:'简单',
@@ -10057,16 +10199,17 @@ function paramCertRequirement() {
     const cs = firstCat ? catRowSpan(i) : 0;
     const ks = firstKind ? kindRowSpan(i) : 0;
     return `<tr>
-      ${firstCat ? `<td class="cr-l" rowspan="${cs}">${esc(r.cat)}</td>` : ''}
-      ${firstKind ? `<td class="cr-l" rowspan="${ks}">${esc(r.kind)}</td>` : ''}
-      <td class="cr-left fw600">${esc(r.name)}</td>
+      ${firstCat ? `<td class="cr-l nbl stk1" rowspan="${cs}">${esc(r.cat)}</td>` : ''}
+      ${firstKind ? `<td class="cr-l stk2" rowspan="${ks}">${esc(r.kind)}</td>` : ''}
+      <td class="cr-left fw600 stk3">${esc(r.name)}</td>
       <td class="cr-diff">${diffBadge(r.diff)}</td>
       ${CERT_REQ_COLS.map(c => {
         const checked = r.req[c.key];
+        const cls = 'cr-c' + (CR_SEP_KEYS.includes(c.key) ? ' cr-sep' : '') + (checked ? ' cr-on' : '');
         if (EDITING) {
-          return `<td class="cr-c"><span class="cr-chk${checked?' on':' off'}" data-act="certreq-toggle" data-ri="${i}" data-key="${c.key}">${checked?'<i class="ri-check-line"></i>':''}</span></td>`;
+          return `<td class="${cls}"><span class="cr-chk${checked?' on':' off'}" data-act="certreq-toggle" data-ri="${i}" data-key="${c.key}">${checked?'<i class="ri-check-line"></i>':''}</span></td>`;
         }
-        return `<td class="cr-c"><span class="cr-chk${checked?' on':''}">${checked?'<i class="ri-check-line"></i>':''}</span></td>`;
+        return `<td class="${cls}"><span class="cr-chk${checked?' on':''}">${checked?'<i class="ri-check-line"></i>':''}</span></td>`;
       }).join('')}
     </tr>`;
   }).join('');
@@ -10080,28 +10223,29 @@ function paramCertRequirement() {
       </div>`
       : `<button class="btn" data-act="certreq-edit"><i class="ri-edit-line"></i>编辑配置</button>`}
   </div>
-  <div class="cr-wrap${editingClass}">
+  <div class="cr-wrap cr-cert${editingClass}">
     <table class="tbl">
       <thead>
         <tr>
-          <th rowspan="2" style="min-width:80px">证书类型</th>
-          <th rowspan="2" style="min-width:100px">种类</th>
-          <th rowspan="2" style="min-width:120px">国家资格</th>
-          <th rowspan="2" style="min-width:60px">难易度</th>
-          <th rowspan="2" class="cr-c">1级技术员</th>
-          <th colspan="3" class="cr-mh" style="min-width:120px">2级高级技术员</th>
-          <th colspan="3" class="cr-mh" style="min-width:120px">3级技师</th>
-          <th rowspan="2" class="cr-c">4级工程师</th>
-          <th rowspan="2" class="cr-c">5级技术主任</th>
+          <th rowspan="2" class="cr-l nbl stk1">证书类型</th>
+          <th rowspan="2" class="cr-l stk2">种类</th>
+          <th rowspan="2" class="cr-l stk3">国家资格</th>
+          <th rowspan="2" class="cr-l" style="width:72px">难易度</th>
+          <th rowspan="2" class="cr-c cr-sep">1级技术员</th>
+          <th colspan="3" class="cr-mh cr-sep">2级高级技术员</th>
+          <th colspan="3" class="cr-mh cr-sep">3级技师</th>
+          <th rowspan="2" class="cr-c cr-sep">4级工程师</th>
+          <th rowspan="2" class="cr-c cr-sep">5级技术主任</th>
         </tr>
         <tr>
-          <th class="cr-subh">SE</th><th class="cr-subh">间接</th><th class="cr-subh">工事</th>
-          <th class="cr-subh">SE</th><th class="cr-subh">间接</th><th class="cr-subh">工事</th>
+          <th class="cr-subh cr-sep">SE</th><th class="cr-subh">间接</th><th class="cr-subh">工事</th>
+          <th class="cr-subh cr-sep">SE</th><th class="cr-subh">间接</th><th class="cr-subh">工事</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
     </table>
-  </div>`;
+  </div>
+  ${tlInfo('用于维护不同技术等级、技术岗位认可的资格证书范围。勾选表示该证书可计入对应等级的证书必要条件；具体需要满足的证书数量由“技术等级配置—必要条件”统一配置。')}`;
 }
 function doCertReqEdit() {
   APP.certReqDraft = JSON.parse(JSON.stringify(CERT_REQ_DATA));
@@ -10151,10 +10295,7 @@ function paramScore() {
       </tr>
     </table>
   </div>
-  <div style="margin-top:12px;padding:12px 16px;background:var(--g50);border-radius:12px;font-size:12.5px;color:var(--g600);line-height:1.7">
-    <i class="ri-information-line" style="margin-right:4px;color:var(--e500)"></i>
-    4级、5级当前年度件数和产值均无数据时，取最近一个有业绩数据年度的评分结果；当前年度存在件数或产值时，按当前年度数据计算。
-  </div>`;
+  ${tlInfo('用于配置技术等级认证中的业绩评分标准。系统根据人员年度月平均工单件数和产值是否达到配置标准，自动计算业绩得分；4级、5级当前年度件数和产值均无数据时，取最近一个有业绩数据年度的评分结果。')}`;
 }
 function doScoreRuleEdit() {
   APP.scoreRuleEditing = true;
@@ -10213,10 +10354,7 @@ function paramKpiScore() {
       ${row}
     </table>
   </div>
-  <div style="margin-top:12px;padding:12px 16px;background:var(--g50);border-radius:12px;font-size:12.5px;color:var(--g600);line-height:1.7">
-    <i class="ri-information-line" style="margin-right:4px;color:var(--e500)"></i>
-    4级、5级当前年度无有效KPI数据时，取最近一个有KPI评分数据年度的评分结果；当前年度存在有效KPI数据时，按当前年度数据计算。
-  </div>`;
+  ${tlInfo('用于配置技术等级认证中的KPI评分标准。系统根据人员年度次日内出动率、一次完成率、三日完成率与配置阈值进行达标判断，并根据达标指标数量自动计算KPI得分。')}`;
 }
 function doKpiScoreEdit() {
   APP.kpiScoreEditing = true;
@@ -10284,22 +10422,27 @@ function tlContentReq() {
   </tr>`;
   };
   const certRows = cfg.cert.map((r, i) => certRow(r, i)).join('');
+  /* 售后大学要求 / 证书必要条件 Tab 切换（默认售后大学要求） */
+  const sub = APP.tab.tlReq === 'cert' ? 'cert' : 'univ';
   return `
+  <div class="tabs">
+    <span class="tab${sub === 'univ' ? ' active' : ''}" data-act="view-tab" data-key="tlReq" data-tab="univ">售后大学要求</span>
+    <span class="tab${sub === 'cert' ? ' active' : ''}" data-act="view-tab" data-key="tlReq" data-tab="cert">证书必要条件</span>
+  </div>
+  ${sub === 'univ' ? `
   <div class="card" style="margin:0">
-    <div class="card-title" style="margin-bottom:10px"><i class="ri-school-line" style="color:var(--e500)"></i>售后大学要求</div>
     <table class="tbl">
       <tr><th style="width:120px">等级</th><th style="width:140px">名称</th><th>售后大学要求</th></tr>
       ${univRows}
     </table>
-  </div>
-  <div class="card" style="margin:12px 0 0">
-    <div class="card-title" style="margin-bottom:10px"><i class="ri-award-line" style="color:var(--e500)"></i>证书必要条件</div>
+  </div>` : `
+  <div class="card" style="margin:0">
     <table class="tbl">
       <tr><th style="width:120px">等级</th><th style="width:140px">名称</th><th style="width:120px">岗位</th><th class="right">证书要求数量</th><th class="right" style="width:110px">操作</th></tr>
       ${certRows}
     </table>
-    ${tlInfo('工事岗位证书数量要求待客户确认。')}
-  </div>`;
+  </div>
+  ${tlInfo(sub === 'univ' ? '售后大学要求用于判断人员是否完成目标技术等级对应的学习要求。' : '证书必要条件用于配置不同技术等级、技术岗位认证时要求满足的有效证书数量，可计入的证书范围由“证书要求配置”统一维护。')}`}`;
 }
 /* 2. 综合评分权重 */
 function tlContentWeight() {
@@ -10322,8 +10465,8 @@ function tlContentWeight() {
         <td class="right num fw600">${editing ? `<input class="input" id="tl-w-${r[2]}" type="number" min="0" max="100" value="${r[1]}" style="width:80px;text-align:center">` : r[1] + '%'}</td>
       </tr>`).join('')}
     </table>
-    ${tlInfo('（业绩评分 + KPI评分）× 业绩/KPI权重，默认权重 25%；总权重须等于 100%。')}
-  </div>`;
+  </div>
+  ${tlInfo('用于配置各评分项在技术等级认证综合得分中的计算权重。理论考试、实操考试、业绩/KPI、答辩/面谈按对应权重参与综合得分计算，各项权重合计须等于100%。')}`;
 }
 /* 3. 其他加扣分上限（仅配置上限） */
 function tlContentBonus() {
@@ -10341,7 +10484,8 @@ function tlContentBonus() {
       <tr><th>认定项</th><th style="width:110px">类型</th><th class="right">分值上限</th></tr>
       ${rows}
     </table>
-  </div>`;
+  </div>
+  ${tlInfo('用于设置技术等级认证过程中各其他认定项允许调整的最大加分或扣分范围。此处仅配置分值上限，不代表实际加扣分；实际调整分值在认证过程中由有权限人员填写，且不得超过配置上限。')}`;
 }
 /* 4. 等级认定标准 */
 function tlContentGrade() {
@@ -10359,25 +10503,26 @@ function tlContentGrade() {
       <tr><th style="width:120px">等级</th><th style="width:140px">名称</th><th class="right">综合得分要求</th><th class="right">答辩/面谈要求</th></tr>
       ${rows}
     </table>
-  </div>`;
+  </div>
+  ${tlInfo('用于定义各技术等级的认定门槛。人员满足对应必要条件后，系统根据综合得分及答辩/面谈要求匹配可达到的技术等级，并结合其他等级认定规则确定最终结果。')}`;
 }
 /* 5. 等级人数比例 */
 function tlContentRatio() {
   const cfg = DEMO.techLevelConfig;
   const editing = APP.tab.tlEditing === 'ratio';
   const rows = cfg.ratio.map((r, i) => `<tr>
-    <td class="fw600">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td>
+    <td class="fw600">${r[1]}</td><td>${r[2]}</td>
     <td class="right num fw600">${editing && r[4] ? `<input class="input" id="tl-r-${i}" type="number" min="0" value="${r[3]}" style="width:70px;text-align:center">` : (r[3] === null ? '不控制' : r[3] + '%')}</td>
   </tr>`).join('');
   return `
   ${tlToolbar('ratio', editing)}
   <div class="card" style="margin:0">
     <table class="tbl">
-      <tr><th style="width:110px">入社年数</th><th style="width:120px">对应等级</th><th style="width:140px">名称</th><th class="right">人数比例上限</th></tr>
+      <tr><th style="width:120px">对应等级</th><th style="width:140px">名称</th><th class="right">人数比例上限</th></tr>
       ${rows}
     </table>
-    ${tlInfo('超过对应等级人数比例上限时，按综合得分由高到低排序，超出人员自动降至下一等级，并继续参与下一等级人数比例判断。')}
-  </div>`;
+  </div>
+  ${tlInfo('用于控制年度技术等级认证中各等级可认定的人数比例上限。超过对应等级人数比例上限时，按综合得分由高到低排序，超出人员自动降至下一等级，并继续参与下一等级人数比例判断。')}`;
 }
 function techLevelContent(cur) {
   return cur === 'req' ? tlContentReq()
@@ -10468,10 +10613,7 @@ function paperContentBase() {
       ${row}
     </table>
   </div>
-  <div style="margin-top:12px;padding:12px 16px;background:var(--g50);border-radius:12px;font-size:12.5px;color:var(--g600);line-height:1.7">
-    <i class="ri-information-line" style="margin-right:4px;color:var(--e500)"></i>
-    理论考试包含空调基础、商用/多联机、VRV&冷水机、工事技能4门考试，4门均达到合格分数后，理论考试通过。
-  </div>`;
+  ${tlInfo('用于维护正式考试的默认满分、合格分数及补考次数，新增考试计划时自动带入。')}`;
 }
 /* 2. 题型默认分值 */
 function paperContentQScore() {
@@ -10488,7 +10630,8 @@ function paperContentQScore() {
       <tr><th style="width:140px">题型</th><th class="right">默认分值</th></tr>
       ${rows}
     </table>
-  </div>`;
+  </div>
+  ${tlInfo('用于维护各题型新增试题时的默认分值。新增试题时系统自动带入对应题型分值，可根据实际题目调整；修改默认分值不影响已创建的历史试题及已发布考试。')}`;
 }
 /* 3. 考试参加准则（大分类 | 二级分类 | 职级矩阵：勾选 = 必须参加，未勾选 = 可不参加） */
 const EXAM_ATTEND_CATS = ['理论考试', '综合理论'];
@@ -10505,6 +10648,7 @@ const EXAM_ATTEND_COLS = [
   { key: '4',          label: '4级工程师' },
   { key: '5',          label: '5级技术主任' },
 ];
+const ATT_SEP_KEYS = ['new', '1', '2-SE', '3-SE', '4', '5'];
 const EXAM_ATTEND_DATA = [
   { cat: '理论考试', sub: '空调基础',    req: { 'new': false, '1': false, '2-SE': false, '2-indirect': false, '2-const': false, '3-SE': false, '3-indirect': false, '3-const': false, '4': false, '5': false } },
   { cat: '理论考试', sub: '商用/多联机', req: { 'new': false, '1': true,  '2-SE': true,  '2-indirect': true,  '2-const': true,  '3-SE': true,  '3-indirect': true,  '3-const': true,  '4': true,  '5': true } },
@@ -10519,41 +10663,43 @@ function paperContentAttend() {
   const rows = data.map((r, i) => {
     const firstCat = i === 0 || r.cat !== data[i - 1].cat;
     const catCell = EDITING
-      ? `<td class="cr-l"><select class="input" id="att-cat-${i}" style="width:100%">${EXAM_ATTEND_CATS.map(c => `<option value="${esc(c)}"${c === r.cat ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></td>`
-      : (firstCat ? `<td class="cr-l" rowspan="${catRowSpan(i)}">${esc(r.cat)}</td>` : '');
+      ? `<td class="cr-l nbl stk1"><select class="input" id="att-cat-${i}" style="width:100%">${EXAM_ATTEND_CATS.map(c => `<option value="${esc(c)}"${c === r.cat ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></td>`
+      : (firstCat ? `<td class="cr-l nbl stk1" rowspan="${catRowSpan(i)}">${esc(r.cat)}</td>` : '');
     const subCell = EDITING
-      ? `<td class="cr-left"><select class="input" id="att-sub-${i}" style="width:100%">${EXAM_ATTEND_SUBS.map(s => `<option value="${esc(s)}"${s === r.sub ? ' selected' : ''}>${esc(s)}</option>`).join('')}</select></td>`
-      : `<td class="cr-left fw600">${esc(r.sub)}</td>`;
+      ? `<td class="cr-left stk2"><select class="input" id="att-sub-${i}" style="width:100%">${EXAM_ATTEND_SUBS.map(s => `<option value="${esc(s)}"${s === r.sub ? ' selected' : ''}>${esc(s)}</option>`).join('')}</select></td>`
+      : `<td class="cr-left fw600 stk2">${esc(r.sub)}</td>`;
     const marks = EXAM_ATTEND_COLS.map(c => {
       const on = r.req[c.key];
-      const cls = EDITING ? (on ? ' on' : ' off') : (on ? ' on' : '');
-      return `<td class="cr-c"><span class="cr-chk${cls}"${EDITING ? ` data-act="attend-toggle" data-ri="${i}" data-key="${c.key}"` : ''}>${on ? '<i class="ri-check-line"></i>':''}</span></td>`;
+      const chk = EDITING ? (on ? ' on' : ' off') : (on ? ' on' : '');
+      const td = 'cr-c' + (ATT_SEP_KEYS.includes(c.key) ? ' cr-sep' : '') + (on ? ' cr-on' : '');
+      return `<td class="${td}"><span class="cr-chk${chk}"${EDITING ? ` data-act="attend-toggle" data-ri="${i}" data-key="${c.key}"` : ''}>${on ? '<i class="ri-check-line"></i>':''}</span></td>`;
     }).join('');
     return `<tr>${catCell}${subCell}${marks}</tr>`;
   }).join('');
   return `
   ${paperToolbar('attend', EDITING)}
-  <div class="cr-wrap${EDITING ? ' cr-editable' : ''}">
+  <div class="cr-wrap cr-attend${EDITING ? ' cr-editable' : ''}">
     <table class="tbl">
       <thead>
         <tr>
-          <th rowspan="2" style="min-width:90px">大分类</th>
-          <th rowspan="2" style="min-width:120px">二级分类</th>
-          <th rowspan="2" class="cr-c">新人（技工）</th>
-          <th rowspan="2" class="cr-c">1级技术员</th>
-          <th colspan="3" class="cr-mh">2级高级技术员</th>
-          <th colspan="3" class="cr-mh">3级技师</th>
-          <th rowspan="2" class="cr-c">4级工程师</th>
-          <th rowspan="2" class="cr-c">5级技术主任</th>
+          <th rowspan="2" class="cr-l nbl stk1">大分类</th>
+          <th rowspan="2" class="cr-l stk2">二级分类</th>
+          <th rowspan="2" class="cr-c cr-sep">新人（技工）</th>
+          <th rowspan="2" class="cr-c cr-sep">1级技术员</th>
+          <th colspan="3" class="cr-mh cr-sep">2级高级技术员</th>
+          <th colspan="3" class="cr-mh cr-sep">3级技师</th>
+          <th rowspan="2" class="cr-c cr-sep">4级工程师</th>
+          <th rowspan="2" class="cr-c cr-sep">5级技术主任</th>
         </tr>
         <tr>
-          <th class="cr-subh">SE</th><th class="cr-subh">间接</th><th class="cr-subh">工事</th>
-          <th class="cr-subh">SE</th><th class="cr-subh">间接</th><th class="cr-subh">工事</th>
+          <th class="cr-subh cr-sep">SE</th><th class="cr-subh">间接</th><th class="cr-subh">工事</th>
+          <th class="cr-subh cr-sep">SE</th><th class="cr-subh">间接</th><th class="cr-subh">工事</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
     </table>
-  </div>`;
+  </div>
+  ${tlInfo('用于配置不同考试分类下，各技术等级及技术岗位人员的必考关系。勾选表示对应等级/岗位人员参加该类考试时，该考试属于技术等级认证必考项，其有效考试成绩可作为技术等级认证成绩来源，并按照认证规则中的对应权重参与综合得分计算。未勾选时，人员仍可通过考试计划被安排参加该类考试，但考试结果仅作为普通考试成绩保留，不纳入技术等级认证得分计算。')}`;
 }
 function doAttendToggle(ri, key) {
   if (!APP.examAttendDraft) return;
@@ -10580,8 +10726,6 @@ function paperContentGrader() {
       <td>${esc(r.position || '-')}</td>
       <td><span class="badge ${stClass}">${r.status}</span></td>
       <td class="right">
-        <button class="btn btn-sm" data-act="grader-toggle" data-idx="${i}">${r.status === '在职' ? '停用' : '启用'}</button>
-        <button class="btn btn-sm" data-act="grader-edit" data-idx="${i}">编辑</button>
         <button class="btn btn-sm" data-act="grader-del" data-idx="${i}">删除</button>
       </td>
     </tr>`;
@@ -10592,10 +10736,11 @@ function paperContentGrader() {
   </div>
   <div class="card" style="margin:0">
     <table class="tbl">
-      <tr><th>阅卷人</th><th>工号</th><th>所属组织</th><th>职务</th><th style="width:90px">状态</th><th class="right" style="width:200px">操作</th></tr>
+      <tr><th>阅卷人</th><th>工号</th><th>所属组织</th><th>职务</th><th style="width:90px">状态</th><th class="right" style="width:100px">操作</th></tr>
       ${list.length ? rows : `<tr><td colspan="6"><div class="empty"><i class="ri-inbox-line"></i>暂无阅卷人</div></td></tr>`}
     </table>
-  </div>`;
+  </div>
+  ${tlInfo('用于维护人工阅卷人员候选范围，不代表人员默认参与所有考试。正式考试包含人工评分题时，由考试计划从当前有效阅卷人员中选择本场考试阅卷人。')}`;
 }
 /* 添加/编辑阅卷人：从人员管理中选择，所属组织与职务自动带入（弹窗仅展示姓名、所属组织与职务） */
 function openGraderEdit(idx) {
@@ -10756,7 +10901,8 @@ function ivContentDims() {
       <tr><th>评分维度</th><th style="width:100px">状态</th><th style="width:140px">创建时间</th><th class="right" style="width:200px">操作</th></tr>
       ${list.length ? rows : `<tr><td colspan="4"><div class="empty"><i class="ri-inbox-line"></i>暂无评分维度</div></td></tr>`}
     </table>
-  </div>`;
+  </div>
+  ${tlInfo('用于维护面谈/答辩过程中可使用的评分维度。启用状态的评分维度可用于创建面谈/答辩任务，并作为评分人员进行评分的具体评价项。')}`;
 }
 /* 2. 合格分数配置（编辑只改数字） */
 function ivContentPass() {
@@ -10778,7 +10924,8 @@ function ivContentPass() {
       <tr><th style="width:120px">评分形式</th><th class="right" style="width:140px">合格分数</th><th class="right" style="width:120px">操作</th></tr>
       ${rows}
     </table>
-  </div>`;
+  </div>
+  ${tlInfo('用于配置不同评分形式的合格分数。所有应评分人员完成评分后，系统根据最终汇总得分与对应合格分数判断本次面谈/答辩结果。')}`;
 }
 /* 3. 评分人员规则 */
 function ivContentRule() {
@@ -10797,7 +10944,8 @@ function ivContentRule() {
       <tr><th style="width:120px">评分形式</th><th style="width:140px">默认评分人数</th><th style="width:140px">权重方式</th><th class="right" style="width:120px">操作</th></tr>
       ${rows}
     </table>
-  </div>`;
+  </div>
+  ${tlInfo('用于配置不同评分形式默认需要的评分人数及评分汇总方式。创建面谈/答辩任务时自动带入默认人数，实际评分人员由任务中选择；全部评分人员完成评分后，按配置方式汇总最终得分。')}`;
 }
 function ivContent(cur) {
   if (cur === 'dims') return ivContentDims();
@@ -10966,7 +11114,8 @@ function paramRemind() {
         ${rows}
       </table>
     </div>
-  </div>`;
+  </div>
+  ${tlInfo('本页面用于查看系统当前生效的消息提醒规则，包括提醒事项、触发时间、提醒对象及提醒内容。一期提醒规则为系统内置规则，仅支持查看，不支持页面修改。')}`;
 }
 
 /* ---------- 权限与配置 · 多语言配置（独立页面；Key 唯一，新增时可填，编辑时只读） ---------- */
@@ -11367,13 +11516,13 @@ function openExamResult() {
 /* ================= 工程师在线考试 ================= */
 let examSEState = { id: null, qs: [], sel: {}, q: 0, deadline: 0, startAt: 0 };
 
-/* 开始考试确认页：展示考试须知，点击开始才计时 */
+/* 开始考试确认页（正式考试）：展示考试须知，点击开始才计时 */
 function openSEExamStart(id) {
   const rec = seExams().find(r => r.id === id);
   if (!rec) { toast('未找到该考试', 'error'); return; }
-  if (rec.status !== '可考试' && rec.status !== '未通过且可补考') { toast('当前状态不可考试', 'error'); return; }
+  if (rec.status !== '待考试' && rec.status !== '待补考') { toast('当前状态不可考试', 'error'); return; }
   const qs = rec.qs;
-  examSEState = { id, rec, qs, sel: {}, q: 0, deadline: 0, startAt: 0 };
+  examSEState = { id, kind: '正式', rec, qs, sel: {}, q: 0, deadline: 0, startAt: 0 };
   openModal(modalHead(esc(rec.title), '') + `
     <div class="modal-body">
       <div class="alert alert-warn" style="margin-top:0"><i class="ri-alarm-warning-line"></i>点击「开始考试」后立即计时，倒计时结束或到达截止时间将自动交卷。</div>
@@ -11381,7 +11530,7 @@ function openSEExamStart(id) {
         <div class="info-row"><span>试卷</span><b>${esc(rec.paper)}</b></div>
         <div class="info-row"><span>考试时长</span><b>${rec.dur} 分钟</b></div>
         <div class="info-row"><span>及格线</span><b>${rec.passLine} / ${rec.total} 分</b></div>
-        <div class="info-row"><span>${rec.examMode === '练习' ? '练习次数' : '考试次数'}</span><b>${rec.examMode === '练习' ? (rec.tries + 1) + ' 次' : (rec.tries + 1) + ' / ' + rec.maxTry + ' 次'}</b></div>
+        <div class="info-row"><span>考试次数</span><b>${rec.tries + 1} / ${rec.maxTry} 次</b></div>
       </div>
       <div class="card" style="box-shadow:none;border:1px solid var(--g200);margin-top:2px">
         <div style="font-size:12.5px;color:var(--g600);line-height:2">
@@ -11392,9 +11541,8 @@ function openSEExamStart(id) {
       </div>
     </div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
-      <button class="btn btn-primary" data-act="exam-se-begin"><i class="ri-play-line"></i>开始${rec.examMode === '练习' ? '练习' : '考试'}</button></div>`);
+      <button class="btn btn-primary" data-act="exam-se-begin"><i class="ri-play-line"></i>开始考试</button></div>`);
 }
-
 /* 整卷倒计时：切题重渲染不重置，选答重渲染不重置 */
 function startSEExamTimer(sec) {
   clearInterval(window.__seTimer);
@@ -11416,6 +11564,7 @@ function startSEExamTimer(sec) {
 
 function openSEExamStep(startTimer) {
   const st = examSEState;
+  if (st.kind === '练习') pracPersist();   /* 练习：作答与进度自动保存 */
   const qs = st.qs;
   const q = st.q;
   const item = qs[q];
@@ -11490,6 +11639,7 @@ function confirmSESubmit() {
 
 /* 阅卷、写入本次会话记录、展示成绩 */
 function submitSEExam(auto) {
+  if (examSEState.kind === '练习') { submitSEPractice(auto); return; }   /* 练习走独立交卷逻辑 */
   clearInterval(window.__seTimer);
   const st = examSEState;
   const qs = st.qs;
@@ -11523,7 +11673,7 @@ function submitSEExam(auto) {
       <button class="btn btn-primary" data-act="exam-se-done">返回我的考试</button></div>`);
 }
 
-/* 工程师查看自己的答卷（支持多次考试切换对比） */
+/* 工程师查看考卷（支持多次考试切换对比；考试整体结束后才开放正确答案/单题得分/解析） */
 function openSEAnswerSheet(id, tryNo) {
   window.__seSheetId = id;
   const rec = seExams().find(r => r.id === id);
@@ -11534,36 +11684,154 @@ function openSEAnswerSheet(id, tryNo) {
   const oTag = i => String.fromCharCode(65 + i);
   const passed = at.score >= rec.passLine;
   const pendAt = at.detail.some(d => d.pending);
+  /* 考试整体已结束且无待阅卷题目时，才开放答案与解析 */
+  const showAns = !!rec.ended && rec.status !== '待阅卷' && !pendAt;
   const rightCnt = at.detail.filter(d => d.ok).length;
   const rows = qs.map((q, qi) => {
     const d = at.detail[qi];
     const label = arr => (arr || []).map(i => q.type === '判断' ? q.opts[i] : oTag(i) + '. ' + q.opts[i]).join('；');
     const pend = d.pending;
-    return `<div class="card" style="box-shadow:none;border:1px solid ${d.ok || pend ? 'var(--g200)' : '#fca5a5'};margin-bottom:12px;${d.ok || pend ? '' : 'background:#fef7f7'}">
+    const wrong = showAns && !d.ok && !pend;
+    return `<div class="card" style="box-shadow:none;border:1px solid ${wrong ? '#fca5a5' : 'var(--g200)'};margin-bottom:12px;${wrong ? 'background:#fef7f7' : ''}">
       <div style="display:flex;gap:8px;align-items:flex-start">
         <span class="badge ${Q_TYPE_BADGE[q.type]}">${q.type}</span>
         <div style="flex:1;font-size:13.5px;font-weight:600;color:var(--g900);line-height:1.6">${qi + 1}. ${esc(q.text)}</div>
-        ${pend ? '<span class="badge badge-amber">待阅卷</span>' : `<span class="badge ${d.ok ? 'badge-green' : 'badge-red'}">${d.ok ? '正确 +' + q.score : '错误 0'} 分</span>`}
+        ${showAns ? (pend ? '<span class="badge badge-amber">待阅卷</span>' : `<span class="badge ${d.ok ? 'badge-green' : 'badge-red'}">${d.ok ? '正确 +' + q.score : '错误 0'} 分</span>`) : ''}
       </div>
       <div style="margin-top:10px;font-size:13px;line-height:1.9;color:var(--g700)">
-        ${pend ? `<div>我的答案：<b style="color:var(--g900)">${esc((d.given || [])[0] || '未作答')}</b></div>` : `<div>我的答案：<b style="color:${d.ok ? 'var(--e600)' : 'var(--a600)'}">${label(d.given) || '未作答'}</b> ${d.ok ? '<i class="ri-check-line" style="color:var(--e600)"></i>' : '<i class="ri-close-line" style="color:var(--a600)"></i>'}</div>`}
-        ${pend ? `<div>参考答案：<b style="color:var(--e600)">${esc(q.ansText || '—')}</b></div>` : `<div>正确答案：<b style="color:var(--e600)">${label(q.ans)}</b></div>`}
-        <div style="margin-top:6px;padding:8px 11px;background:var(--g50);border-radius:8px;color:var(--g600);font-size:12.5px"><i class="ri-lightbulb-line" style="color:var(--a500)"></i> 解析：${esc(q.parse)}</div>
+        ${pend ? `<div>我的答案：<b style="color:var(--g900)">${esc((d.given || [])[0] || '未作答')}</b></div>`
+               : `<div>我的答案：<b style="color:${showAns ? (d.ok ? 'var(--e600)' : 'var(--a600)') : 'var(--g900)'}">${label(d.given) || '未作答'}</b>${showAns ? (d.ok ? ' <i class="ri-check-line" style="color:var(--e600)"></i>' : ' <i class="ri-close-line" style="color:var(--a600)"></i>') : ''}</div>`}
+        ${showAns ? (pend ? `<div>参考答案：<b style="color:var(--e600)">${esc(q.ansText || '—')}</b></div>` : `<div>正确答案：<b style="color:var(--e600)">${label(q.ans)}</b></div>`) : ''}
+        ${showAns ? `<div style="margin-top:6px;padding:8px 11px;background:var(--g50);border-radius:8px;color:var(--g600);font-size:12.5px"><i class="ri-lightbulb-line" style="color:var(--a500)"></i> 解析：${esc(q.parse)}</div>` : ''}
       </div>
     </div>`;
   }).join('');
   const finalScore = rec.attempts.reduce((m, a) => Math.max(m, a.score), 0);
   const body = `
+    ${showAns ? '' : `<div class="alert alert-warn" style="margin-top:0"><i class="ri-lock-line"></i>考试尚未结束（或阅卷未完成），暂不开放正确答案、单题得分与解析，作答内容仅供回看。</div>`}
     <div style="font-size:13.5px;color:var(--g700);line-height:2;margin:0 0 4px">
-      本次成绩：<b>${pendAt ? '待阅卷' : at.score + '/' + rec.total}</b>　结果：<b style="color:${pendAt ? 'var(--a600)' : (passed ? 'var(--e600)' : 'var(--a600)')}">${pendAt ? '待阅卷' : (passed ? '通过' : '未通过')}</b>（及格线 ${rec.passLine} 分）　答对：<b>${rightCnt}/${qs.length}</b>　用时：<b>${at.dur || '—'}</b> 分钟${rec.attempts.length > 1 ? `<br>最终成绩：<b>${finalScore} 分</b>` : ''}
+      本次成绩：<b>${pendAt ? '待阅卷' : at.score + '/' + rec.total}</b>　结果：<b style="color:${pendAt ? 'var(--a600)' : (passed ? 'var(--e600)' : 'var(--a600)')}">${pendAt ? '待阅卷' : (passed ? '通过' : '未通过')}</b>（及格线 ${rec.passLine} 分）${showAns ? `　答对：<b>${rightCnt}/${qs.length}</b>` : ''}　用时：<b>${at.dur || '—'}</b> 分钟${rec.attempts.length > 1 ? `<br>最终成绩：<b>${finalScore} 分</b>` : ''}
     </div>
     ${rec.attempts.length > 1 ? `<div class="tabs mt16">${rec.attempts.map(a => `<span class="tab${a.t === cur ? ' active' : ''}" data-act="se-sheet-try" data-try="${a.t}">第 ${a.t} 次考试（${a.score} 分）</span>`).join('')}</div>` : ''}
     <div class="card mt16"><div class="card-title">答题明细</div>
       <div style="margin-top:10px">${rows}</div>
     </div>`;
-  const head = drawerHead('', '我的答卷', esc(rec.title));
+  const head = drawerHead('', '查看考卷', esc(rec.title));
   if (tryNo && $('#drawer-body')) { updateDrawer(head + body); return; }
   openDrawer(head + body);
+}
+
+/* 练习进度自动保存：作答/切题即写回练习记录，中途退出仍保持「未完成」并可续答 */
+function pracPersist() {
+  const st = examSEState;
+  if (!st || st.kind !== '练习') return;
+  const p = SE_PRACTICES.find(x => x.id === st.id);
+  if (!p || p.status === '已完成') return;
+  p.sel = {};
+  Object.keys(st.sel).forEach(k => { p.sel[k] = st.sel[k].slice(); });
+  p.cur = st.q;
+}
+
+/* 开始/继续练习：进入答题页，从上次保存的进度继续 */
+function openPracStart(id) {
+  const p = SE_PRACTICES.find(x => x.id === id);
+  if (!p) { toast('未找到该练习', 'error'); return; }
+  if (p.status === '已完成') { openPracView(id); return; }
+  const info = pracInfo(p);
+  examSEState = {
+    id, kind: '练习',
+    rec: { title: p.title, paper: '个人练习', dur: p.dur, total: info.autoTotal, passLine: Math.ceil(p.pass / 100 * info.autoTotal), maxTry: 99, examMode: '练习' },
+    qs: info.qs, sel: Object.assign({}, p.sel || {}), q: p.cur || 0, deadline: 0, startAt: 0,
+  };
+  openSEExamStep(true);
+}
+
+/* 练习交卷：仅自动判分题型计分，提交后锁定为「已完成」 */
+function submitSEPractice(auto) {
+  clearInterval(window.__seTimer);
+  const st = examSEState;
+  if (!st || st.kind !== '练习') return;
+  const detail = st.qs.map((q, qi) => {
+    if (q.type === '简答' || q.type === '填空') return { given: (st.sel[qi] || []).slice(), ok: false, gain: 0 };   /* 人工评分题不参与练习计分 */
+    const given = (st.sel[qi] || []).slice().sort((a, b) => a - b);
+    const ok = given.length > 0 && JSON.stringify(given) === JSON.stringify(q.ans.slice().sort((a, b) => a - b));
+    return { given, ok, gain: ok ? q.score : 0 };
+  });
+  const score = detail.reduce((s, d) => s + d.gain, 0);
+  const total = st.rec.total;
+  const p = SE_PRACTICES.find(x => x.id === st.id);
+  if (p) { p.status = '已完成'; p.detail = detail; p.autoScore = score; p.doneAt = seNowStamp(); p.sel = Object.assign({}, st.sel); p.cur = st.q; }
+  openModal(modalHead(auto ? '已自动交卷' : '交卷成功', esc(st.rec.title)) + `
+    <div class="modal-body" style="text-align:center;padding:30px 22px">
+      <div style="width:88px;height:88px;border-radius:50%;background:var(--e100);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <i class="ri-checkbox-circle-line" style="font-size:40px;color:var(--e600)"></i></div>
+      <div style="font-size:15px;font-weight:700;color:var(--g800)">练习完成</div>
+      <div style="font-size:12.5px;color:var(--g500);margin-top:4px">自动判分成绩</div>
+      <div style="font-size:42px;font-weight:800;color:var(--e600);margin-top:12px">${score}<small style="font-size:16px">/ ${total}</small></div>
+      <div style="font-size:12px;color:var(--g500);margin-top:12px"><i class="ri-information-line"></i> 个人练习仅计算可自动判分题型，人工评分题不参与练习计分。</div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-act="exam-prac-view" data-id="${st.id}"><i class="ri-file-list-2-line"></i>查看详情</button>
+      <button class="btn btn-primary" data-act="exam-se-done">返回我的练习</button></div>`);
+}
+
+/* 练习详情：题目 / 本人答案 / 正确答案 / 答案解析 / 自动判分得分 */
+function openPracView(id) {
+  const p = SE_PRACTICES.find(x => x.id === id);
+  if (!p) return;
+  const info = pracInfo(p);
+  const oTag = i => String.fromCharCode(65 + i);
+  const rows = info.qs.map((q, qi) => {
+    const d = info.detail[qi] || {};
+    const label = arr => (arr || []).map(i => q.type === '判断' ? q.opts[i] : oTag(i) + '. ' + q.opts[i]).join('；');
+    return `<div class="card" style="box-shadow:none;border:1px solid ${d.ok ? 'var(--g200)' : '#fca5a5'};margin-bottom:12px;${d.ok ? '' : 'background:#fef7f7'}">
+      <div style="display:flex;gap:8px;align-items:flex-start">
+        <span class="badge ${Q_TYPE_BADGE[q.type]}">${q.type}</span>
+        <div style="flex:1;font-size:13.5px;font-weight:600;color:var(--g900);line-height:1.6">${qi + 1}. ${esc(q.text)}</div>
+        <span class="badge ${d.ok ? 'badge-green' : 'badge-red'}">${d.ok ? '正确 +' + q.score : '错误 0'} 分</span>
+      </div>
+      <div style="margin-top:10px;font-size:13px;line-height:1.9;color:var(--g700)">
+        <div>我的答案：<b style="color:${d.ok ? 'var(--e600)' : 'var(--a600)'}">${label(d.given) || '未作答'}</b></div>
+        <div>正确答案：<b style="color:var(--e600)">${label(q.ans)}</b></div>
+        <div style="margin-top:6px;padding:8px 11px;background:var(--g50);border-radius:8px;color:var(--g600);font-size:12.5px"><i class="ri-lightbulb-line" style="color:var(--a500)"></i> 解析：${esc(q.parse)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  openDrawer(drawerHead('', '练习详情', esc(p.title)) + `
+    <div style="font-size:13.5px;color:var(--g700);line-height:2;margin:0 0 4px">
+      自动判分成绩：<b>${info.autoScore} / ${info.autoTotal} 分</b>　题目数量：<b>${info.qs.length}</b> 题　创建于 ${p.createdAt}　提交于 ${p.doneAt || '—'}
+      <br><span style="font-size:12px;color:var(--g500)"><i class="ri-information-line"></i> 个人练习仅计算可自动判分题型，人工评分题不参与练习计分。</span>
+    </div>
+    <div class="card mt16"><div class="card-title">答题明细</div>
+      <div style="margin-top:10px">${rows}</div>
+    </div>`);
+}
+
+/* 考试记录（仅正式考试）：历次考试情况，顶部展示最终有效成绩 */
+function openSERecord(id) {
+  const rec = seExams().find(r => r.id === id);
+  if (!rec) return;
+  const finalScore = rec.attempts.length ? rec.attempts.reduce((m, a) => Math.max(m, a.score), 0) : null;
+  const rows = rec.attempts.map(a => {
+    const pass = a.score >= rec.passLine;
+    return `<tr>
+      <td>${a.t === 1 ? '首次考试' : '第 ' + (a.t - 1) + ' 次补考'}</td>
+      <td class="num">${a.score} / ${rec.total}</td>
+      <td><span class="badge ${pass ? 'badge-green' : 'badge-red'}">${pass ? '通过' : '未通过'}</span></td>
+      <td>${a.done || '—'}</td>
+      <td><button class="btn btn-sm" data-act="exam-se-sheet" data-id="${rec.id}" data-try="${a.t}"><i class="ri-file-list-2-line"></i>查看考卷</button></td>
+    </tr>`;
+  }).join('');
+  openDrawer(drawerHead('', '考试记录', esc(rec.title)) + `
+    <div class="card" style="box-shadow:none;border:1px solid var(--g200);display:flex;align-items:center;gap:18px;padding:14px 18px">
+      <div><div style="font-size:12px;color:var(--g500)">最终有效成绩</div><div style="font-size:26px;font-weight:800;color:${rec.passed ? 'var(--e600)' : 'var(--a600)'}">${finalScore == null ? '—' : finalScore}<small style="font-size:13px;color:var(--g500)"> / ${rec.total} 分</small></div></div>
+      <div style="font-size:12.5px;color:var(--g600);line-height:1.9">及格线 ${rec.passLine} 分<br>共考试 ${rec.attempts.length} 次</div>
+    </div>
+    <div class="card mt16"><div class="card-title">历次考试</div>
+      <table class="tbl" style="margin-top:10px">
+        <tr><th>考试次数</th><th>成绩</th><th>结果</th><th>提交时间</th><th style="width:110px">操作</th></tr>
+        ${rows || `<tr><td colspan="5"><div class="empty"><i class="ri-inbox-line"></i><div>无有效答卷</div></div></td></tr>`}
+      </table>
+    </div>`);
 }
 
 /* 会话内交卷时间戳（避免 Date 依赖，采用截止/当前描述） */
@@ -11582,16 +11850,17 @@ function openCreateExam() {
 
 /* ========== 题库：新增 / 编辑试题 ========== */
 function openQuestionEdit(id) {
-  const q = id ? DEMO.questions.find(x => x.id === id) : null;
+  const qiIdx = APP.qiDraft && APP.qiDraft.editIdx != null ? APP.qiDraft.editIdx : null;
+  const q = qiIdx != null ? APP.qiDraft.rows[qiIdx] : (id ? DEMO.questions.find(x => x.id === id) : null);
   const isEdit = !!q;
   const type = q ? q.type : '单选';
   const opts = q ? q.opts.slice() : ['', '', '', ''];
-  window.__qEdit = { id: id || null, type, opts, ans: q ? q.ans.slice() : [], ansText: q ? (q.ansText || '') : '' };
+  window.__qEdit = { id: qiIdx != null ? null : (id || null), qiIdx, type, opts, ans: q ? q.ans.slice() : [], ansText: q ? (q.ansText || '') : '' };
   openModal(modalHead(isEdit ? '编辑试题' : '新增试题', '', true) + `
     <div class="modal-body">
       <div class="form-grid">
         <div class="field2"><label><span class="req">*</span>题型</label>
-          <select class="select" id="q-f-type">${['判断', '单选', '多选', '填空', '简答'].map(t => `<option${type === t ? ' selected' : ''}>${t}</option>`).join('')}</select></div>
+          <select class="select" id="q-f-type">${(type === '待确认' ? ['待确认', '判断', '单选', '多选', '填空', '简答'] : ['判断', '单选', '多选', '填空', '简答']).map(t => `<option${type === t ? ' selected' : ''}>${t}</option>`).join('')}</select></div>
         <div class="field2" id="q-f-cat1-wrap"><label><span class="req">*</span>一级分类</label>
           <select class="select" id="q-f-cat1"><option value="">请选择</option>${(()=>{const t=DICT_TYPES.find(x=>x.id==='DT01');return t?t.categories.filter(c=>c.status==='启用').map(c=>`<option value="${esc(c.name)}"${q&&q.cat1===c.name?' selected':''}>${esc(c.name)}</option>`).join(''):''})()}</select></div>
         <div class="field2" id="q-f-cat2-wrap"><label><span class="req">*</span>二级分类</label>
@@ -11666,6 +11935,35 @@ function doQSave() {
   syncQOpts();
   const text = ($('#q-f-text').value || '').trim();
   if (!text) { toast('请填写题目内容', 'error'); return; }
+  /* 批量导入预览 · 待完善题编辑：保存回草稿行并重新校验，不直接入库 */
+  if (st.qiIdx != null) {
+    const da = APP.qiDraft; const r = da.rows[st.qiIdx]; if (!r) return;
+    const isTF = st.type === '简答' || st.type === '填空';
+    let opts = [], ans = [], ansText = '';
+    if (isTF) {
+      ansText = ($('#q-f-ans').value || '').trim();
+      if (!ansText) { toast('请填写正确答案', 'error'); return; }
+    } else {
+      opts = st.opts.map(o => o.trim()).filter(o => o !== '');
+      if (opts.length < 2) { toast('至少填写 2 个选项', 'error'); return; }
+      if (!st.ans.length) { toast('请勾选正确答案', 'error'); return; }
+      if (st.type === '单选' && st.ans.length > 1) { toast('单选题只能有一个正确答案', 'error'); return; }
+      ans = st.ans.slice().sort((a2, b2) => a2 - b2);
+    }
+    r.type = st.type; r.text = text; r.parse = ($('#q-f-parse').value || '').trim();
+    r.cat1 = ($('#q-f-cat1').value || '').trim(); r.cat2 = ($('#q-f-cat2').value || '').trim();
+    r.diff = $('#q-f-diff').value;
+    r.score = +$('#q-f-score').value || qTypeDefaultScore(st.type === '待确认' ? '单选' : st.type);
+    r.opts = opts; r.ans = ans;
+    if (isTF) r.ansText = ansText;
+    const complete = r.type !== '待确认' && (isTF ? !!r.ansText : (r.opts.length >= 2 && r.ans.length >= 1));
+    r.st = complete ? '可导入' : '待完善';
+    r.reason = complete ? '' : (r.type === '待确认' ? '题型未能识别，请人工确认' : '选项或答案不完整，请补全');
+    da.editIdx = null; window.__qEdit.qiIdx = null;
+    closeModal(); qiRender();
+    toast(complete ? '试题已补全，标记为可导入' : '已保存，仍缺少必填信息');
+    return;
+  }
   let rec;
   if (st.type === '简答' || st.type === '填空') {
     const ansText = ($('#q-f-ans').value || '').trim();
@@ -11712,9 +12010,9 @@ function doQDel(id) {
   if (i >= 0) DEMO.questions.splice(i, 1);
   closeModal(); toast('试题已删除'); renderView(APP.view);
 }
-function openQuestionView(id) {
-  const x = DEMO.questions.find(q => q.id === id); if (!x) return;
-  const isQA = x.type === '简答';
+function openQuestionView(id, row) {
+  const x = row || DEMO.questions.find(q => q.id === id); if (!x) return;
+  const isQA = x.type === '简答' || x.type === '填空';
   const ansSet = new Set(x.ans);
   const optRows = isQA ? '' : x.opts.map((o, i) => {
     const on = ansSet.has(i);
@@ -11728,61 +12026,286 @@ function openQuestionView(id) {
   openDrawer(drawerHead('', '试题详情', '') + `
     <div class="card">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px">
-        ${[['题目编号', x.id], ['题型', x.type], ['一级分类', x.cat1], ['二级分类', x.cat2], ['难度', x.diff], ['分值', x.score + ' 分'], ['状态', x.status || '启用'], ['创建人', x.creator || '张敏'], ['创建时间', x.created]].map(r =>
+        ${[['题目编号', x.id || '—'], ['题型', x.type], ['一级分类', x.cat1], ['二级分类', x.cat2], ['难度', x.diff], ['分值', x.score + ' 分'], ['状态', x.status || '启用'], ['创建人', x.creator || (row ? '本次导入' : '张敏')], ['创建时间', x.created || '导入时生成']].map(r =>
           `<div class="kv"><span class="k">${r[0]}</span><span class="v">${esc(String(r[1]))}</span></div>`).join('')}
       </div>
       <div class="kv"><span class="k">正确答案</span><span class="v" style="color:var(--e600);font-weight:600">${ansTxt}</span></div>
     </div>
     <div class="card"><div class="card-title">题干</div>
       <div style="font-size:14px;line-height:1.8;color:var(--g900);font-weight:600;${isQA ? '' : 'margin-bottom:14px'}">${esc(x.text)}</div>
+      ${x.img ? `<div style="margin:12px 0;border:1px dashed var(--g300);border-radius:8px;padding:20px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--g400);font-size:12.5px"><i class="ri-image-line"></i>题目配图 · Word 解析自动提取</div>` : ''}
+      ${x.formula ? `<div style="margin:12px 0;padding:10px 14px;background:var(--g50);border-radius:8px;font-family:Menlo,Consolas,monospace;font-size:13px;color:var(--g700)">${esc(x.formula)}</div>` : ''}
       ${optRows}
     </div>
     <div class="card" style="margin-bottom:0"><div class="card-title">答案解析</div>
       <div style="font-size:13px;line-height:1.85;color:var(--g700)">${x.parse ? esc(x.parse) : '<span style="color:var(--g400)">暂无解析</span>'}</div>
     </div>`);
 }
-function openImportQBank(uploaded) {
-  const tplCard = `
-    <div class="card" style="box-shadow:none;border:1px solid var(--g200)">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="stat-ic ic-blue"><i class="ri-file-word-2-line"></i></div>
-        <div style="flex:1"><div style="font-size:13.5px;font-weight:700;color:var(--g800)">试题批量导入模板_Word.docx</div>
-        <div style="font-size:11.5px;color:var(--g500);margin-top:2px">含题型、题目内容、正确答案、答案解析；分类与难度在上传后统一设置</div></div>
-        <button class="btn btn-outline btn-sm" data-act="toast" data-msg="Word 模板已下载，请按模板整理题目后导入"><i class="ri-download-2-line"></i>下载模板</button>
-      </div>
-      <div class="divider" style="margin:12px 0"></div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="stat-ic ic-green"><i class="ri-file-excel-2-line"></i></div>
-        <div style="flex:1"><div style="font-size:13.5px;font-weight:700;color:var(--g800)">试题批量导入模板_Excel.xlsx</div>
-        <div style="font-size:11.5px;color:var(--g500);margin-top:2px">含字段：题型 · 题目内容 · 正确答案 · 答案解析 · 一级分类 · 二级分类 · 难度 · 状态</div></div>
-        <button class="btn btn-outline btn-sm" data-act="toast" data-msg="Excel 模板已下载，请按模板整理数据"><i class="ri-download-2-line"></i>下载模板</button>
-      </div>
-    </div>`;
-  openModal(modalHead('批量导入试题', '') + `
+/* ========== 题库 · 批量导入（Excel / Word 双入口 · 三步：选择上传 → 解析预览 → 导入完成） ==========
+   解析结果为内置演示数据；仅「可导入 / 疑似重复」写入题库，校验失败 / 待完善不入库（支持部分成功） */
+const QI_POOL = [
+  { t: '单选', c1: '理论考试', c2: '空调基础', d: '简单', x: '制冷循环的四大部件不包括以下哪一项？', o: ['压缩机', '冷凝器', '膨胀阀', '分液管'], a: [3], p: '制冷循环四大部件为压缩机、冷凝器、膨胀阀、蒸发器。' },
+  { t: '单选', c1: '理论考试', c2: '空调基础', d: '中等', x: '空调制冷系统运行时，吸气压力过低最不可能的原因是？', o: ['制冷剂不足', '蒸发器结霜严重', '膨胀阀开度过大', '过滤器堵塞'], a: [2], p: '膨胀阀开度过大会导致吸气压力偏高，其余三项均会使吸气压力降低。' },
+  { t: '单选', c1: '理论考试', c2: '商用/多联机', d: '中等', x: '多联机系统中，室内机与室外机容量配比（超配率）一般不宜超过？', o: ['100%', '110%', '130%', '150%'], a: [2], p: '多联机超配率一般控制在 130% 以内，超配过大会影响制冷效果与压缩机寿命。' },
+  { t: '单选', c1: '理论考试', c2: 'VRV&冷水机', d: '困难', x: 'VRV 系统长配管安装完成后，追加冷媒量应按什么进行计算？', o: ['仅按室外机铭牌值', '液管长度 × 单位修正量', '室内机总数 × 固定值', '无需追加'], a: [1], p: '追加冷媒按液管长度与管径对应的单位修正量计算，超出内藏量的部分需追加。', formula: '追加量 = Σ(液管长度 × 单位修正量) − 出厂内藏量' },
+  { t: '多选', c1: '理论考试', c2: '工事技能', d: '中等', x: '室外机安装基础的验收要点包括？', o: ['基础水平度符合要求', '减振垫安装到位', '预留检修空间充足', '基础朝向坐北朝南'], a: [0, 1, 2], p: '基础需满足水平、减振与检修空间要求；朝向无硬性规定。' },
+  { t: '多选', c1: '理论考试', c2: '商用/多联机', d: '困难', x: '多联机调试前需要确认的项目包括？', o: ['电源电压与相序', '冷媒配管气密试验合格', '室内外机通信地址无冲突', '室外机四周全封闭'], a: [0, 1, 2], p: '调试前需确认电源、气密与地址；室外机四周需保持通风，不得全封闭。' },
+  { t: '判断', c1: '理论考试', c2: '空调基础', d: '简单', x: 'R32 冷媒属于低毒性、可燃性 A2L 级别制冷剂，施工时仍需远离火源。', o: ['正确', '错误'], a: [0], p: 'R32 为 A2L 级可燃冷媒，虽然燃烧速度低，作业时仍需严格禁火。' },
+  { t: '判断', c1: '理论考试', c2: '工事技能', d: '简单', x: '冷媒配管钎焊时，必须向管内持续充入氮气进行保护。', o: ['正确', '错误'], a: [0], p: '氮气保护钎焊可防止管内产生氧化皮，避免系统堵塞。' },
+  { t: '判断', c1: '综合理论', c2: '综合理论', d: '简单', x: '上门服务前与客户确认预约时间属于可省略的环节。', o: ['正确', '错误'], a: [1], p: '预约确认是服务规范的基本要求，不可省略。' },
+  { t: '填空', c1: '理论考试', c2: '空调基础', d: '中等', x: '标准大气压下水的沸点是____℃，常用作换热与冷凝压力的参考基准。', at: '100', p: '水在标准大气压下 100℃ 沸腾。' },
+  { t: '填空', c1: '理论考试', c2: 'VRV&冷水机', d: '困难', x: '冷水机组的能效比 COP 定义为____与压缩机功耗之比。', at: '制冷量', p: 'COP = 制冷量 ÷ 压缩机功耗。', formula: 'COP = Q / W' },
+  { t: '简答', c1: '综合理论', c2: '综合理论', d: '中等', x: '请简述客户报修"空调不制冷"时的现场排查步骤。', at: '先确认运行模式与设定温度，再检查过滤网与蒸发器是否脏堵，测量进出风温差与运行压力，最后检查冷媒是否泄漏与电气部件是否正常，逐步排除并记录。', p: '按"设置 → 空气侧 → 压力侧 → 冷媒与电气"的顺序排查。' },
+  { t: '简答', c1: '理论考试', c2: '工事技能', d: '困难', x: '简述多联机气密性试验的操作要点及合格标准。', at: '氮气加压分三段进行（低压侧、高压侧、全系统），保压 24 小时压力无下降为合格，试验时需使用氮气并做好记录。', p: '分段氮气保压 24h 无压降即合格。' },
+  { t: '单选', c1: '理论考试', c2: '工事技能', d: '中等', x: '高处作业（2 米以上）必须持有的证书是？', o: ['高处作业操作证', '电工证', '焊工证', '制冷设备维修证'], a: [0], p: '2 米以上高处作业需持应急管理部门核发的高处作业操作证。' },
+  { t: '多选', c1: '理论考试', c2: '空调基础', d: '简单', x: '以下属于空调常见故障现象的有？', o: ['不制冷', '漏水', '异音', '开不了机'], a: [0, 1, 2, 3], p: '四项均为常见故障现象。' },
+  { t: '单选', c1: '理论考试', c2: '商用/多联机', d: '简单', x: '冷媒配管穿墙孔洞封堵的主要目的是？', o: ['美观', '防止雨水与小动物进入', '降低噪音', '提高能效'], a: [1], p: '穿墙孔封堵主要防止雨水渗入及虫鼠进入损坏管线。', img: true },
+];
+function qiRow(p, extra) {
+  return Object.assign({
+    type: p.t, text: p.x, opts: (p.o || []).slice(), ans: (p.a || []).slice(),
+    ansText: p.at || '', parse: p.p || '', cat1: p.c1 || '', cat2: p.c2 || '', diff: p.d || '',
+    score: qTypeDefaultScore(p.t), img: !!p.img, formula: p.formula || '',
+    st: '可导入', reason: ''
+  }, extra || {});
+}
+/* Excel 演示集：no 与 Excel 行号一致（第 1 行为表头） */
+function qiExcelRows() {
+  const rows = QI_POOL.map((p, i) => qiRow(p, { no: i + 2 }));
+  [DEMO.questions[0], DEMO.questions[1]].forEach(q => rows.push(qiRow(
+    { t: q.type, c1: q.cat1, c2: q.cat2, d: q.diff, x: q.text, o: q.opts, a: q.ans, p: q.parse },
+    { no: rows.length + 2, st: '疑似重复', reason: '与题库已有试题题干相同' })));
+  rows.push(qiRow({ t: '单选', c1: '售后基础', c2: '服务规范', d: '简单', x: '服务完成后应请客户在什么文件上签字确认？', o: ['服务报告', '合同', '报价单', '验收单'], a: [] },
+    { no: rows.length + 2, st: '校验失败', reason: '一级分类「售后基础」不在系统字典中，请修改后重新上传' }));
+  rows.push(qiRow({ t: '多选', c1: '理论考试', c2: '空调基础', d: '中等', x: '制冷剂不足的典型表现包括？', o: ['吸气压力偏低', '过热度增大', '排气温度降低', '制冷量下降'], a: [] },
+    { no: rows.length + 2, st: '校验失败', reason: '正确答案格式错误，应为选项字母组合（如 ABC）' }));
+  return rows;
+}
+/* Word 演示集：分类/难度解析为建议值（行内下拉可改），含待确认/缺选项/缺答案 */
+function qiWordRows() {
+  const pick = [0, 2, 3, 4, 6, 8, 9, 11, 13, 14];
+  const rows = pick.map((pi, i) => qiRow(QI_POOL[pi], { no: i + 1 }));
+  const dup = DEMO.questions[2];
+  rows.push(qiRow({ t: dup.type, c1: dup.cat1, c2: dup.cat2, d: dup.diff, x: dup.text, o: dup.opts, a: dup.ans, p: dup.parse }, { no: rows.length + 1, st: '疑似重复', reason: '与题库已有试题题干相同' }));
+  rows.push(qiRow({ t: '待确认', x: '真空干燥作业中，系统真空度应保持在多少 Pa 以下？', o: ['65', '130', '500', '1000'], a: [0], p: '真空度需保持在 65Pa 以下方可判定干燥合格。' }, { no: rows.length + 1, st: '待完善', reason: '题型未能识别，请人工确认' }));
+  rows.push(qiRow({ t: '待确认', x: '冷媒追加量应根据液管长度按单位修正量进行计算。', o: [], a: [], p: '' }, { no: rows.length + 1, st: '待完善', reason: '题型未能识别，请人工确认' }));
+  rows.push(qiRow({ t: '多选', x: '气密性试验合格的判定条件包括？', o: [], a: [], p: '' }, { no: rows.length + 1, st: '待完善', reason: '未识别到选项，请补全后导入' }));
+  rows.push(qiRow({ t: '单选', x: '室外机与墙壁的最小检修间距一般为？', o: ['300mm', '500mm', '600mm', '800mm'], a: [], p: '' }, { no: rows.length + 1, st: '待完善', reason: '未识别到正确答案标记' }));
+  return rows;
+}
+function openImportQBank(mode) {
+  APP.qiDraft = { step: 1, mode: mode || 'excel', file: null, parsing: false, rows: [], imported: 0,
+    preview: false, editIdx: null };
+  qiRender();
+}
+function qiPickFile(mode) {
+  const d = APP.qiDraft;
+  d.mode = mode;
+  d.file = mode === 'excel'
+    ? { name: '空调基础题库_2026.xlsx', type: 'Excel 工作簿（.xlsx）', size: '126 KB' }
+    : { name: '空调基础试卷_2026.docx', type: 'Word 文档（.docx）', size: '2.3 MB' };
+  d.parsing = true;
+  qiRender();
+  setTimeout(function () {
+    d.parsing = false; d.step = 2; d.preview = false;
+    d.rows = mode === 'excel' ? qiExcelRows() : qiWordRows();
+    qiRender();
+  }, 800);
+}
+function qiSteps(cur) {
+  return '<div style="display:flex;gap:6px;margin-bottom:20px">' + [1, 2, 3].map(i =>
+    '<div style="flex:1;height:4px;border-radius:2px;background:' + (i <= cur ? 'var(--e500)' : 'var(--g200)') + '"></div>').join('') + '</div>';
+}
+function qiStBadge(st) {
+  const m = { '可导入': 'badge-green', '待完善': 'badge-amber', '校验失败': 'badge-red', '疑似重复': 'badge-blue' };
+  return '<span class="badge ' + (m[st] || 'badge-gray') + '">' + st + '</span>';
+}
+function qiRender() {
+  const d = APP.qiDraft; if (!d) return;
+  if (d.parsing) return qiParsing();
+  if (d.step === 1) return qiStep1();
+  if (d.step === 2) return d.preview ? qiPaper() : qiStep2();
+  return qiStep3();
+}
+/* Step 0.5：上传后正在解析 */
+function qiParsing() {
+  const d = APP.qiDraft; const f = d.file; const isX = d.mode === 'excel';
+  openModal(modalHead('批量导入试题', '第 1 步 / 3 · 上传并解析', true) + `
     <div class="modal-body">
-      ${tplCard}
-      ${uploaded ? `
-      <div class="card mt16" style="box-shadow:none;border:1px solid var(--g200);display:flex;align-items:center;gap:12px">
-        <div class="stat-ic ic-blue"><i class="ri-file-word-2-line"></i></div>
-        <div style="flex:1"><div style="font-size:13.5px;font-weight:600">空调基础题库_2026.docx</div>
-        <div style="font-size:12px;color:var(--e600)">已解析 32 道试题，分类与难度按下方选择统一应用</div></div>
-        <span class="badge badge-green">已上传</span>
-        <button class="btn btn-outline btn-sm" data-act="qi-reupload">重新上传</button>
+      ${qiSteps(1)}
+      <div class="card" style="box-shadow:none;border:1px solid var(--g200);display:flex;align-items:center;gap:12px;padding:12px 14px">
+        <div class="stat-ic ${isX ? 'ic-green' : 'ic-blue'}"><i class="${isX ? 'ri-file-excel-2-line' : 'ri-file-word-2-line'}"></i></div>
+        <div style="flex:1"><div style="font-size:13.5px;font-weight:600">${esc(f.name)}</div>
+          <div style="font-size:12px;color:var(--g500);margin-top:2px">${esc(f.type)} · ${f.size}</div></div>
+        <span class="badge badge-blue"><i class="ri-loader-4-line"></i>正在解析</span>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:16px">
-        <div class="field2"><label><span class="req">*</span>一级分类</label>
-          <select class="select" id="qi-cat1" data-change="qi-cat1-change"><option value="">请选择</option>${(() => { const t = DICT_TYPES.find(x => x.id === 'DT01'); return t ? t.categories.filter(c => c.status === '启用').map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('') : ''; })()}</select></div>
-        <div class="field2"><label><span class="req">*</span>二级分类</label>
-          <select class="select" id="qi-cat2"><option value="">请选择</option></select></div>
-        <div class="field2"><label><span class="req">*</span>难度</label>
-          <select class="select" id="qi-diff"><option value="">请选择</option><option>简单</option><option>中等</option><option>困难</option></select></div>
-      </div>` : `
-      <div class="upload-box mt16" data-act="qi-upload">
-        <i class="ri-upload-cloud-2-line"></i><div class="up-t">点击上传整理好的试题文件</div>
-        <div class="up-s">支持 .doc、.docx、.xls、.xlsx 格式，单文件 ≤ 10MB</div></div>`}
+      <div style="font-size:12.5px;color:var(--g500);margin-top:12px"><i class="ri-information-line" style="color:var(--e500);margin-right:4px"></i>文件已上传，正在解析，请稍候…</div>
     </div>
-    <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
-      <button class="btn btn-primary" data-act="save-toast" data-msg="${uploaded ? '已按所选分类与难度导入 32 道题' : '试题已导入并校验，新增 32 道题'}">导入</button></div>`);
+    <div class="modal-foot"><button class="btn" data-act="qi-restart">重新上传</button></div>`);
+}
+/* Step 1：Excel / Word 双入口 */
+function qiStep1() {
+  const d = APP.qiDraft; const isX = d.mode === 'excel';
+  openModal(modalHead('批量导入试题', '第 1 步 / 3 · 上传文件', true) + `
+    <div class="modal-body">
+      ${qiSteps(1)}
+      <div class="card" style="box-shadow:none;border:1px solid var(--g200);padding:18px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="stat-ic ${isX ? 'ic-green' : 'ic-blue'}"><i class="${isX ? 'ri-file-excel-2-line' : 'ri-file-word-2-line'}"></i></div>
+          <div style="font-size:15px;font-weight:700;color:var(--g800)">${isX ? '导入 Excel' : '导入 Word'}</div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.75;color:var(--g600)">${isX
+          ? '适用于已整理好的结构化题库，支持题型、一级分类、二级分类、难度、默认分值、题目内容、选项、正确答案、答案解析。'
+          : '适用于已有 Word 试卷，系统自动解析题目、选项、正确答案、答案解析及图片/公式；分类、难度等属性在上传后补充。'}</div>
+        <div style="font-size:11.5px;color:var(--g400)">支持格式：${isX ? '.xls / .xlsx' : '.doc / .docx'}，单文件 ≤ 10MB</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" data-act="toast" data-msg="${isX ? 'Excel 模板已下载，请按模板字段整理后导入' : 'Word 模板已下载：按试卷格式排版，答案标记 (D) / (ABC) / {70} / 解析： / 参考答案：'}"><i class="ri-download-2-line"></i>下载模板</button>
+          <button class="btn btn-primary btn-sm" data-act="qi-file" data-mode="${d.mode}"><i class="ri-upload-2-line"></i>选择文件</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button></div>`);
+}
+/* Step 2：解析预览（Word 分类/难度行内下拉可改；逐题校验，支持部分成功） */
+function qiStep2() {
+  const d = APP.qiDraft; const f = d.file; const isWord = d.mode === 'word';
+  const cnt = k => d.rows.filter(r => r.st === k).length;
+  const okCnt = cnt('可导入') + cnt('疑似重复');
+  const stat = (label, n, cls) => `<span style="font-size:12.5px;color:var(--g500)">${label} <b style="color:${cls}">${n}</b></span>`;
+  const dictC1 = DICT_TYPES.find(x => x.id === 'DT01');
+  const c1List = dictC1 ? dictC1.categories.filter(c => c.status === '启用').map(c => c.name) : [];
+  const c2List = c1 => { const o = dictC1 && dictC1.categories.find(c => c.name === c1); return o ? o.children.filter(c => c.status === '启用').map(c => c.name) : []; };
+  const cellSel = (r, i, key, names) => `<select class="select" style="width:100%;min-width:90px;padding:5px 22px 5px 8px;font-size:12.5px" data-change="qi-row-attr" data-idx="${i}" data-key="${key}"><option value="">请选择</option>${names.map(n => `<option${r[key] === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>`;
+  const rows = d.rows.map((r, i) => `<tr>
+    <td class="num">${r.no}</td>
+    <td><span class="badge ${r.type === '待确认' ? 'badge-amber' : (Q_TYPE_BADGE[r.type] || 'badge-gray')}">${r.type}</span></td>
+    <td>${isWord ? cellSel(r, i, 'cat1', c1List) : esc(r.cat1)}</td>
+    <td>${isWord ? cellSel(r, i, 'cat2', r.cat1 ? c2List(r.cat1) : []) : esc(r.cat2)}</td>
+    <td>${isWord ? cellSel(r, i, 'diff', ['简单', '中等', '困难']) : esc(r.diff)}</td>
+    <td class="right num">${r.type === '待确认' ? '—' : r.score}</td>
+    <td class="ell" style="max-width:250px" title="${esc(r.text)}">${esc(r.text.length > 26 ? r.text.slice(0, 26) + '…' : r.text)}${r.img ? ' <span class="badge badge-gray">图</span>' : ''}${r.formula ? ' <span class="badge badge-gray">公式</span>' : ''}</td>
+    <td>${qiStBadge(r.st)}</td>
+    <td style="font-size:12px;color:${r.reason ? 'var(--r500)' : 'var(--g300)'}">${r.reason ? esc(r.reason) : '—'}</td>
+  </tr>`).join('');
+  openModal(modalHead('批量导入试题', '第 2 步 / 3 · 解析预览', true) + `
+    <div class="modal-body">
+      ${qiSteps(2)}
+      <div class="card" style="box-shadow:none;border:1px solid var(--g200);display:flex;align-items:center;gap:12px;padding:10px 14px">
+        <div class="stat-ic ${isWord ? 'ic-blue' : 'ic-green'}" style="width:36px;height:36px"><i class="${isWord ? 'ri-file-word-2-line' : 'ri-file-excel-2-line'}" style="font-size:18px"></i></div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">${esc(f.name)}</div>
+          <div style="font-size:11.5px;color:var(--g500);margin-top:2px">${esc(f.type)} · ${f.size} · <span style="color:var(--e600)">解析完成，尚未正式导入题库</span></div></div>
+        <span class="badge badge-green">解析完成</span>
+        <button class="btn btn-outline btn-sm" data-act="qi-preview"><i class="ri-eye-line"></i>预览</button>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:16px;margin:14px 2px 10px;flex-wrap:wrap">
+        ${stat('共解析', d.rows.length, 'var(--g800)')}
+        ${stat('可导入', cnt('可导入'), 'var(--e600)')}
+        ${stat('待完善', cnt('待完善'), '#f59e0b')}
+        ${stat('校验失败', cnt('校验失败'), 'var(--r500)')}
+        ${stat('疑似重复', cnt('疑似重复'), 'var(--a600)')}
+        <span style="flex:1"></span>
+        <span style="font-size:12px;color:var(--g400)">仅导入校验通过的试题，失败 / 待完善试题不入库</span>
+      </div>
+      <table class="tbl">
+        <tr><th>序号</th><th>题型</th><th>一级分类</th><th>二级分类</th><th>难度</th><th class="right">分值</th><th style="width:26%">题目内容</th><th>校验状态</th><th>失败原因</th></tr>
+        ${rows}
+      </table>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-act="close-modal">取消</button>
+      <button class="btn" data-act="qi-restart">重新上传</button>
+      <button class="btn btn-primary" data-act="qi-import">导入可用试题（${okCnt}）</button>
+    </div>`);
+}
+function qiDoImport() {
+  const d = APP.qiDraft;
+  const ok = d.rows.filter(r => r.st === '可导入' || r.st === '疑似重复');
+  if (!ok.length) { toast('没有可导入的试题', 'error'); return; }
+  let n = DEMO.questions.reduce((m, x) => Math.max(m, +x.id.slice(1)), 0);
+  const today = formatTime(new Date()).slice(0, 10);
+  const who = (APP.user && APP.user.name) || '张敏';
+  const ids = [];
+  ok.forEach(r => {
+    n++;
+    const rec = {
+      id: 'Q' + String(n).padStart(3, '0'), creator: who, text: r.text, type: r.type,
+      cat1: r.cat1, cat2: r.cat2, diff: r.diff,
+      score: r.score || qTypeDefaultScore(r.type === '待确认' ? '单选' : r.type),
+      status: '启用', created: today,
+      opts: r.opts.slice(), ans: r.ans.slice(), parse: r.parse
+    };
+    if (r.ansText) rec.ansText = r.ansText;
+    DEMO.questions.push(rec);
+    ids.push(rec.id);
+  });
+  d.recIds = ids; d.imported = ok.length;
+  d.res = ok.length === d.rows.length ? '成功' : ok.length > 0 ? '部分成功' : '失败';
+  d.step = 3; qiRender();
+}
+/* Step 3：导入完成（成功 / 部分成功 / 失败 + 未导入明细） */
+function qiStep3() {
+  const d = APP.qiDraft;
+  const recs = (d.recIds || []).map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean);
+  const total = d.rows.length; const ok = recs.length; const left = total - ok;
+  const res = d.res === '成功' ? ['成功', 'ri-check-line', 'var(--e100)', 'var(--e600)']
+    : d.res === '部分成功' ? ['部分成功', 'ri-error-warning-line', '#fef3c7', '#b45309']
+    : ['失败', 'ri-close-line', '#fee2e2', '#dc2626'];
+  const trs = recs.map((q, i) => `<tr>
+    <td class="num">${i + 1}</td>
+    <td><span class="badge ${Q_TYPE_BADGE[q.type] || 'badge-gray'}">${q.type}</span></td>
+    <td>${esc(q.cat1)}</td>
+    <td>${esc(q.cat2)}</td>
+    <td class="ell" style="max-width:280px" title="${esc(q.text)}">${esc(q.text.length > 24 ? q.text.slice(0, 24) + '…' : q.text)}</td>
+    <td class="right num">${q.score}</td>
+    <td class="right"><button class="btn btn-sm" style="color:var(--r500)" data-act="qi-del" data-id="${q.id}"><i class="ri-delete-bin-line"></i>删除</button></td>
+  </tr>`).join('');
+  openModal(modalHead('导入完成', '', true) + `
+    <div class="modal-body">
+      ${qiSteps(3)}
+      <div style="text-align:center;padding:6px 0 2px">
+        <div style="width:76px;height:76px;border-radius:50%;background:${res[2]};display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+          <i class="${res[1]}" style="font-size:34px;color:${res[3]}"></i></div>
+        <div style="font-size:15px;font-weight:700;color:var(--g800)">导入${res[0]}</div>
+        <div style="font-size:12.5px;color:var(--g500);margin-top:6px">总题数 ${total} · 成功导入 ${ok} · 未导入 ${left}</div>
+      </div>
+      ${recs.length ? `
+      <div style="font-size:13px;font-weight:700;color:var(--g700);margin:16px 2px 8px">本次导入的试题<span class="sub" style="font-weight:400;margin-left:6px">共 ${ok} 题，入库后仍可删除</span></div>
+      <table class="tbl">
+        <tr><th>序号</th><th>题型</th><th>一级分类</th><th>二级分类</th><th style="width:34%">题目内容</th><th class="right">分值</th><th class="right" style="width:80px">操作</th></tr>
+        ${trs}
+      </table>` : '<div class="empty"><i class="ri-inbox-line"></i>本次导入的试题已全部删除</div>'}
+    </div>
+    <div class="modal-foot"><button class="btn" data-act="close-modal">关闭</button></div>`);
+}
+
+/* 预览：将导入的试题平铺成卷（弹窗内展示，样式同考试计划详情·考题） */
+function qiPaper() {
+  const d = APP.qiDraft;
+  const list = d.rows.filter(r => r.st === '可导入' || r.st === '疑似重复');
+  const oTag = i => String.fromCharCode(65 + i);
+  const qs = list.map((q, qi) => {
+    const optsHtml = (q.opts && q.opts.length) ? `<div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">${q.opts.map((o, i) => {
+      const right = q.ans && q.ans.indexOf(i) >= 0;
+      return `<div style="font-size:13px;line-height:1.8;color:${right ? 'var(--e600)' : 'var(--g700)'}">${right ? '<i class="ri-checkbox-circle-fill" style="color:var(--e600)"></i>' : '<i class="ri-checkbox-blank-circle-line" style="color:var(--g300)"></i>'} ${oTag(i)}. ${esc(o)}</div>`;
+    }).join('')}</div>` : '';
+    const ansTxt = (q.ans && q.ans.length) ? q.ans.map(i => oTag(i) + '. ' + (q.opts[i] || '')).join('；') : (q.ansText || '—');
+    return `<div class="card qi-paper-q" style="box-shadow:none;border:1px solid var(--g200);margin:0 0 12px;background:var(--g50)">
+      <div style="display:flex;gap:8px;align-items:flex-start">
+        <span class="badge ${Q_TYPE_BADGE[q.type] || 'badge-gray'}">${q.type}</span>
+        <div style="flex:1;font-size:13.5px;font-weight:600;color:var(--g900);line-height:1.6">${qi + 1}. ${esc(q.text)}</div>
+        <span class="badge badge-gray">本题 ${q.score} 分</span>
+      </div>
+      ${q.img ? `<div style="margin-top:8px;border:1px dashed var(--g300);border-radius:8px;padding:16px;text-align:center;font-size:12px;color:var(--g400)"><i class="ri-image-line"></i> 题目配图 · Word 解析自动提取</div>` : ''}
+      ${q.formula ? `<div style="margin-top:8px;font-family:ui-monospace,monospace;font-size:12.5px;background:#fff;border:1px solid var(--g200);border-radius:6px;padding:8px 12px;color:var(--g700)">${esc(q.formula)}</div>` : ''}
+      ${optsHtml}
+      <div style="margin-top:8px;font-size:13px;color:var(--g700)">正确答案：<b style="color:var(--e600)">${esc(ansTxt)}</b></div>
+      ${q.parse ? `<div style="margin-top:6px;padding:8px 11px;background:#fff;border-radius:8px;color:var(--g600);font-size:12.5px"><i class="ri-lightbulb-line" style="color:var(--a500)"></i> 解析：${esc(q.parse)}</div>` : ''}
+    </div>`;
+  }).join('');
+  openModal(modalHead('试题预览', `${esc(d.file ? d.file.name : '')} · 共 ${list.length} 题 · 仅展示将导入的试题`, true) + `
+    <div class="modal-body">${qs || '<div class="empty"><i class="ri-inbox-line"></i>暂无可导入的试题</div>'}</div>
+    <div class="modal-foot"><button class="btn" data-act="qi-back"><i class="ri-arrow-left-line"></i>返回</button></div>`);
 }
 
 /* ========== 考试计划：新增 / 编辑 ========== */
@@ -12224,17 +12747,10 @@ function openPlanView(id) {
     const parts = examParticipants(p);
     members = parts.map(r => Object.assign({}, r, { attempted: false }));
   }
-  const ops = [];
-  if (p.status === '草稿') { ops.push(['plan-edit', '编辑', '']); ops.push(['plan-publish', '发布', 'btn-primary']); ops.push(['plan-del', '删除', 'btn-danger']); }
-  else if (p.status === '未开始') { ops.push(['plan-link', '考试链接', '']); ops.push(['plan-del', '删除', 'btn-danger']); }
-  else if (p.status === '已结束') { ops.push(['plan-link', '考试链接', '']); ops.push(['plan-republish', '重新发布', 'btn-primary']); ops.push(['plan-del', '删除', 'btn-danger']); }
-  /* 进行中：无操作按钮 */
-  const opBtns = ops.length ? `<div style="display:flex;gap:8px;margin-bottom:14px">${ops.map(o => `<button class="btn btn-sm ${o[2]}" data-act="${o[0]}" data-id="${p.id}">${o[1]}</button>`).join('')}</div>` : '';
   const pqs = planQuestions(p);
   const tot = pqs.reduce((s, q) => s + q.score, 0);
   const cnt = t => pqs.filter(q => q.type === t).length;
   openDrawer(drawerHead('', '考试计划详情', '') + `
-    ${opBtns}
     <div class="card"><div class="card-title">考试信息</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px">
         ${[['考试名称', p.title], ['状态', p.status], ['开始时间', p.start || '—'], ['结束时间', p.end || '—'],
@@ -12250,25 +12766,55 @@ function openPlanView(id) {
       <div class="kv"><span class="k">考试说明</span><span class="v">${esc(p.desc || '—')}</span></div>
       <div class="kv" style="border-bottom:none"><span class="k">试题情况</span><span class="v">共 ${pqs.length} 题　单选 ${cnt('单选')}　多选 ${cnt('多选')}　判断 ${cnt('判断')}</span></div>
     </div>
-    <div class="card"><div class="card-title">人员明细<span class="sub">共 ${members.length} 人</span></div>
-      <div style="max-height:340px;overflow:auto;border:1px solid var(--g200);border-radius:8px">
-        <table class="tbl" style="margin:0">
-          <tr><th>SE姓名</th><th>地区</th><th>事务所</th>${started ? '<th>是否通过</th>' : '<th>状态</th>'}</tr>
-          ${members.map(r => `<tr>
-            <td class="fw600">${alInnerBadge(r.name)}${esc(r.name)}</td>
-            <td style="color:var(--g500)">${esc(r.region)}</td>
-            <td style="color:var(--g500)">${esc(r.office)}</td>
-            ${started
-              ? (r.attempted
-                  ? (r.gi && r.gi.essay && !r.gi.graded
-                      ? `<td><span class="badge badge-gray">待阅卷</span></td>`
-                      : `<td><span class="badge ${(r.gi && r.gi.essay ? r.gi.finalPass : r.pass) ? 'badge-green' : 'badge-red'}">${(r.gi && r.gi.essay ? r.gi.finalPass : r.pass) ? '通过' : '未通过'}</span></td>`)
-                  : `<td><span class="badge badge-gray">未参考</span></td>`)
-              : `<td><span class="badge badge-blue">待参考</span></td>`}
-          </tr>`).join('')}
-        </table>
+    <div class="card">
+      <div style="display:flex;gap:8px;margin-bottom:12px;border-bottom:1px solid var(--g200);padding-bottom:8px">
+        <button class="btn btn-sm btn-primary plan-tab" data-ptab="people"><i class="ri-team-line"></i>人员明细</button>
+        <button class="btn btn-sm plan-tab" data-ptab="questions"><i class="ri-file-list-3-line"></i>考题</button>
+      </div>
+      <div id="plan-people-pane">
+        <div style="max-height:340px;overflow:auto;border:1px solid var(--g200);border-radius:8px">
+          <table class="tbl" style="margin:0">
+            <tr><th>SE姓名</th><th>地区</th><th>事务所</th>${started ? '<th>是否通过</th>' : '<th>状态</th>'}</tr>
+            ${members.map(r => `<tr>
+              <td class="fw600">${alInnerBadge(r.name)}${esc(r.name)}</td>
+              <td style="color:var(--g500)">${esc(r.region)}</td>
+              <td style="color:var(--g500)">${esc(r.office)}</td>
+              ${started
+                ? (r.attempted
+                    ? (r.gi && r.gi.essay && !r.gi.graded
+                        ? `<td><span class="badge badge-gray">待阅卷</span></td>`
+                        : `<td><span class="badge ${(r.gi && r.gi.essay ? r.gi.finalPass : r.pass) ? 'badge-green' : 'badge-red'}">${(r.gi && r.gi.essay ? r.gi.finalPass : r.pass) ? '通过' : '未通过'}</span></td>`)
+                    : `<td><span class="badge badge-gray">未参考</span></td>`)
+                : `<td><span class="badge badge-blue">待参考</span></td>`}
+            </tr>`).join('')}
+          </table>
+        </div>
+      </div>
+      <div id="plan-questions-pane" style="display:none">
+        <div class="card-title" style="margin-bottom:10px">考题<span class="sub">共 ${pqs.length} 题</span></div>
+        ${pqs.length ? pqs.map((q, qi) => { const oTag = i => String.fromCharCode(65 + i); const optsHtml = (q.opts && q.opts.length) ? `<div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">${q.opts.map((o, i) => { const right = q.ans && q.ans.indexOf(i) >= 0; return `<div style="font-size:13px;line-height:1.8;color:${right ? 'var(--e600)' : 'var(--g700)'}">${right ? '<i class="ri-checkbox-circle-fill" style="color:var(--e600)"></i>' : '<i class="ri-checkbox-blank-circle-line" style="color:var(--g300)"></i>'} ${oTag(i)}. ${esc(o)}</div>`; }).join('')}</div>` : ''; const ansTxt = (q.ans && q.ans.length) ? q.ans.map(i => oTag(i) + '. ' + (q.opts[i] || '')).join('；') : (q.ansText || '—'); return `<div class="card" style="box-shadow:none;border:1px solid var(--g200);margin:0 0 12px;background:var(--g50)">
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span class="badge ${Q_TYPE_BADGE[q.type]}">${q.type}</span>
+              <div style="flex:1;font-size:13.5px;font-weight:600;color:var(--g900);line-height:1.6">${qi + 1}. ${esc(q.text)}</div>
+              <span class="badge badge-gray">本题满分 ${q.score} 分</span>
+            </div>
+            ${optsHtml}
+            <div style="margin-top:8px;font-size:13px;color:var(--g700)">正确答案：<b style="color:var(--e600)">${ansTxt}</b></div>
+            <div style="margin-top:6px;padding:8px 11px;background:#fff;border-radius:8px;color:var(--g600);font-size:12.5px"><i class="ri-lightbulb-line" style="color:var(--a500)"></i> 解析：${esc(q.parse)}</div>
+          </div>`; }).join('') : `<div class="empty"><i class="ri-inbox-line"></i>暂无考题</div>`}
       </div>
     </div>`);
+  const ptabBtns = document.querySelectorAll('.plan-tab');
+  const paneP = document.getElementById('plan-people-pane');
+  const paneQ = document.getElementById('plan-questions-pane');
+  ptabBtns.forEach(function (bt) {
+    bt.addEventListener('click', function () {
+      const k = bt.getAttribute('data-ptab');
+      ptabBtns.forEach(function (b) { b.classList.toggle('btn-primary', b === bt); });
+      if (paneP) paneP.style.display = (k === 'people') ? '' : 'none';
+      if (paneQ) paneQ.style.display = (k === 'questions') ? '' : 'none';
+    });
+  });
 }
 function openConfirmPublish(id) {
   const p = DEMO.examPlans.find(x => x.id === id); if (!p) return;
@@ -12309,7 +12855,7 @@ function doPlanRepublish(id) {
   if (se) {
     se.end = p.end;
     se.maxTry = (se.maxTry || 1) + 1;
-    se.status = '可考试';
+    se.status = '待考试';
   }
   APP.planRepublish = false;
   APP.planDraft = null;
@@ -12561,7 +13107,6 @@ function scoreDetailBody(id) {
   const q = APP.q.sdetail || {};
   const fname = (q.name || '').trim(), foff = q.office || '', fpass = q.pass || '', fgrade = q.grade || '';
   const offices = CONFIG.org.flatMap(g => g.offices.map(o => o.name));
-  const grdScore = r => r.gi && r.gi.essay ? r.gi.final : r.best;
   const grdPass = r => r.gi && r.gi.essay ? r.gi.finalPass : r.pass;
   const gradedRows = s.rows.filter(r => r.attempted && (!(r.gi && r.gi.essay) || r.gi.graded));
   const filtered = s.rows.filter(r =>
@@ -12570,12 +13115,12 @@ function scoreDetailBody(id) {
     (!fgrade || r.gi.state === fgrade) &&
     (!fpass || (r.gi.state === '待阅卷' ? false : (fpass === '已通过' ? grdPass(r) : !grdPass(r)))) &&
     r.attempted);
+  const gradedCount = gradedRows.length;
   const dist = [
-    { label: '不及格', color: '#ef4444', value: gradedRows.filter(r => !grdPass(r)).length },
-    { label: '及格', color: '#f59e0b', value: gradedRows.filter(r => grdPass(r) && grdScore(r) < s.total * 0.7).length },
-    { label: '良好', color: '#3b82f6', value: gradedRows.filter(r => grdScore(r) >= s.total * 0.7 && grdScore(r) < s.total * 0.9).length },
-    { label: '优秀', color: '#059669', value: gradedRows.filter(r => grdScore(r) >= s.total * 0.9).length },
+    { label: '不及格', color: '#ef4444', value: gradedRows.filter(r => !grdPass(r)).length, unit: ' 人' },
+    { label: '及格', color: '#059669', value: gradedRows.filter(r => grdPass(r)).length, unit: ' 人' },
   ];
+  const passPct = gradedCount ? Math.round(dist[1].value / gradedCount * 100) : 0;
   return `
     <div style="display:flex;align-items:flex-start;gap:12px;margin:0 0 16px">
       <div style="flex:1">
@@ -12587,7 +13132,7 @@ function scoreDetailBody(id) {
     </div>
     <div style="font-size:13.5px;color:var(--g700);margin:0 0 16px">应参考 <b>${s.people}</b> 人　已参考 <b>${s.done}</b> 人${s.pending ? `　待阅卷 <b style="color:var(--a600)">${s.pending}</b> 人` : ''}　平均分 <b>${s.graded ? s.avg : '—'}</b> 分　通过率 <b>${s.graded ? s.passRate + '%' : '—'}</b></div>
     <div class="card mt16"><div class="card-title">成绩分布</div>
-      ${barsHTML(dist, 140)}
+      ${donutHTML(dist, passPct + '%', '通过率')}
     </div>
     <div class="card mt16" style="margin-bottom:0"><div class="card-title">成绩明细</div>
       <div class="filter-bar">
@@ -12599,7 +13144,7 @@ function scoreDetailBody(id) {
         <button class="btn" data-act="sd-reset">重置</button>
       </div>
       <table class="tbl">
-        <tr><th class="right">排名</th><th>SE姓名</th><th>事务所</th><th class="right">考试次数</th><th class="right">用时</th><th>是否通过</th><th>阅卷状态</th><th>最后交卷时间</th><th class="right">操作</th></tr>
+        <tr><th class="right">排名</th><th>SE姓名</th><th>事务所</th><th class="right">考试次数</th><th class="right">用时</th><th>是否通过</th><th>阅卷状态</th><th>阅卷人</th><th>最后交卷时间</th><th class="right">操作</th></tr>
         ${filtered.length ? filtered.map(r => { const bt = r.attempts.find(a => a.t === r.bestTry) || {}; const pend = r.gi.essay && !r.gi.graded; return `<tr>
           <td class="right num">${r.rank}</td>
           <td class="fw600">${alInnerBadge(r.name)}${esc(r.name)}</td>
@@ -12608,9 +13153,10 @@ function scoreDetailBody(id) {
           <td class="right num">${bt.dur || '—'} 分</td>
           <td>${pend ? '<span style="color:var(--g400)">—</span>' : `<span class="badge ${(r.gi.essay ? r.gi.finalPass : r.pass) ? 'badge-green' : 'badge-red'}">${(r.gi.essay ? r.gi.finalPass : r.pass) ? '已通过' : '未通过'}</span>`}</td>
           <td>${r.gi.state === '已阅卷' ? '<span class="badge badge-green">已阅卷</span>' : r.gi.state === '待阅卷' ? '<span class="badge badge-amber">待阅卷</span>' : '<span style="color:var(--g400)">—</span>'}</td>
+          <td>${r.gi.essay ? (r.gi.grader ? esc(r.gi.grader) : '<span style="color:var(--g400)">—</span>') : '<span style="color:var(--g400)">系统判分</span>'}</td>
           <td style="color:var(--g500)">${r.lastSubmit || '—'}</td>
           <td class="right nowrap">${p.status === '已结束' ? `<button class="btn btn-sm" data-act="view-sheet" data-id="${r.sid}">查看</button>` : (r.gi.state === '待阅卷' ? `<button class="btn btn-sm btn-primary" data-act="view-sheet" data-id="${r.sid}">阅卷</button>` : `<button class="btn btn-sm" data-act="view-sheet" data-id="${r.sid}">查看</button>`)}</td></tr>`; }).join('')
-        : `<tr><td colspan="9"><div class="empty"><i class="ri-inbox-line"></i>无匹配的已参考人员</div></td></tr>`}
+        : `<tr><td colspan="10"><div class="empty"><i class="ri-inbox-line"></i>无匹配的已参考人员</div></td></tr>`}
       </table>
     </div>`;
 }
@@ -13294,7 +13840,7 @@ function alLevelApprovalHTML(itemId) {
       var optSel = bonusCats[bi][0] === selCat ? ' selected' : '';
       catOptions += '<option value="' + esc(bonusCats[bi][0]) + '"' + optSel + '>' + esc(bonusCats[bi][0]) + '</option>';
     }
-    var showScore = !!selCat && selCat !== '其他';
+    var showScore = !!selCat;
     var showReason = selCat === '其他';
     var rangeInfo = '';
     if (selCat === '三级投诉') rangeInfo = '范围 -2 ~ +2';
@@ -13307,8 +13853,8 @@ function alLevelApprovalHTML(itemId) {
     h += '<div style="display:flex;align-items:center;flex-wrap:nowrap;gap:8px;margin:8px 0 0">'
       + '<span style="font-size:12px;font-weight:600;color:var(--g800);white-space:nowrap">综合得分调整</span>'
       + '<select class="select" id="al-adjust-cat" data-change="al-adjust-cat" style="min-width:150px;flex:1">' + catOptions + '</select>';
-    if (showScore) h += '<input class="input" id="al-adjust-score" type="number" step="1" value="0" data-change="al-adjust-score" style="width:70px;text-align:center">';
     if (showReason) h += '<input class="input" id="al-adjust-reason" type="text" placeholder="请填写加扣分原因" style="min-width:160px;flex:1" value="' + esc(window.__alAdjustReason || '') + '" data-change="al-adjust-reason">';
+    if (showScore) h += '<input class="input" id="al-adjust-score" type="number" step="1" value="' + (window.__alAdjust || 0) + '" data-change="al-adjust-score" style="width:70px;text-align:center">';
     if (rangeInfo) h += '<span style="font-size:11px;color:var(--g500)">' + rangeInfo + '</span>';
     h += '</div>';
   }
