@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Excel题库导入模板</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;background:#f0f3f6;color:#1a1d2e;padding:0 0 60px}
+.top{height:46px;background:#217346;color:#fff;display:flex;align-items:center;gap:10px;padding:0 20px}
+.top .file-ic{width:22px;height:22px;border-radius:4px;background:#fff;color:#217346;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.top .t{font-size:14px;font-weight:700}
+.top .s{font-size:12px;color:rgba(255,255,255,.75);margin-left:auto}
+.sheet{max-width:1240px;margin:24px auto 0;background:#fff;border:1px solid #d5dbe3;box-shadow:0 2px 14px rgba(15,23,42,.08);border-radius:6px;overflow:hidden}
+.scroll{overflow:auto;max-height:calc(100vh - 190px)}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:1080px}
+th,td{border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;padding:8px 12px;font-size:13px;line-height:1.7;text-align:left;vertical-align:top;background:#fff;white-space:nowrap}
+th:last-child,td:last-child{border-right:none}
+/* 列字母行 */
+.cols th{background:#f8fafc;color:#94a3b8;font-size:11px;font-weight:500;text-align:center;padding:4px 0}
+/* 冻结标题行 */
+.head th{position:sticky;top:0;z-index:2;background:#edf2ee;color:#217346;font-weight:600;font-size:12.5px;border-bottom:2px solid #217346}
+/* 行号列 */
+td.rn,th.rn{background:#f8fafc;color:#94a3b8;font-size:11px;text-align:center;width:36px;min-width:36px;padding:8px 0}
+.head th.rn{z-index:3}
+th.rn{z-index:4}
+td.ans{background:#f6fbf8}
+.sheet-foot{display:flex;align-items:center;gap:0;border-top:1px solid #d5dbe3;background:#f8fafc;padding:0}
+.tab{padding:7px 18px;font-size:12.5px;color:#1a1d2e;background:#fff;border-right:1px solid #d5dbe3;border-top:2px solid #217346;font-weight:600}
+.tab-sp{flex:1}
+.tab-r{padding:0 14px;font-size:11.5px;color:#94a3b8}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="file-ic">X</div>
+  <div class="t">题库导入模板.xlsx</div>
+  <div class="s">批量导入试题 · Excel 模板</div>
+</div>
+<div class="sheet">
+  <div class="scroll">
+    <table>
+      <tr class="cols">
+        <th class="rn"></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th>
+        <th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th><th>M</th>
+      </tr>
+      <tr class="head">
+        <th class="rn"></th>
+        <th>题型</th><th>一级分类</th><th>二级分类</th><th>难度</th><th>分值</th><th style="min-width:220px">题目内容</th>
+        <th>选项1</th><th>选项2</th><th>选项3</th><th>选项4</th><th>选项5</th><th>正确答案</th><th style="min-width:200px">答案解析</th>
+      </tr>
+      <tr>
+        <td class="rn">2</td>
+        <td>单选题</td><td>理论考试</td><td>空调基础</td><td>简单</td><td>5</td>
+        <td style="min-width:220px;white-space:normal">我国的火警报警电话是？</td>
+        <td>A、110</td><td>B、120</td><td>C、119</td><td>D、911</td><td></td>
+        <td class="ans">C</td><td style="min-width:200px;white-space:normal">我国火警电话为119。</td>
+      </tr>
+      <tr>
+        <td class="rn">3</td>
+        <td>多选题</td><td>理论考试</td><td>空调基础</td><td>中等</td><td>5</td>
+        <td style="min-width:220px;white-space:normal">以下哪些属于制冷循环主要部件？</td>
+        <td>A、压缩机</td><td>B、冷凝器</td><td>C、蒸发器</td><td>D、节流装置</td><td></td>
+        <td class="ans">ABCD</td><td style="min-width:200px;white-space:normal">压缩机、冷凝器、节流装置和蒸发器属于主要部件。</td>
+      </tr>
+      <tr>
+        <td class="rn">4</td>
+        <td>判断题</td><td>理论考试</td><td>空调基础</td><td>简单</td><td>2</td>
+        <td style="min-width:220px;white-space:normal">R32制冷剂具有一定可燃性。</td>
+        <td>A、正确</td><td>B、错误</td><td></td><td></td><td></td>
+        <td class="ans">A</td><td style="min-width:200px;white-space:normal">R32属于A2L微可燃制冷剂。</td>
+      </tr>
+      <tr>
+        <td class="rn">5</td>
+        <td>填空题</td><td>理论考试</td><td>空调基础</td><td>中等</td><td>5</td>
+        <td style="min-width:220px;white-space:normal">制冷循环中的四大部件包括压缩机、冷凝器、蒸发器和______。</td>
+        <td></td><td></td><td></td><td></td><td></td>
+        <td class="ans">节流装置</td><td style="min-width:200px;white-space:normal">制冷循环主要由四大部件组成。</td>
+      </tr>
+      <tr>
+        <td class="rn">6</td>
+        <td>简答题</td><td>理论考试</td><td>空调基础</td><td>困难</td><td>10</td>
+        <td style="min-width:220px;white-space:normal">简述高压报警的常见原因及排查思路。</td>
+        <td></td><td></td><td></td><td></td><td></td>
+        <td class="ans" style="white-space:normal">冷凝器散热不良、制冷剂过充、室外风机异常等。</td>
+        <td style="min-width:200px;white-space:normal">优先检查散热、风量及制冷剂状态。</td>
+      </tr>
+    </table>
+  </div>
+  <div class="sheet-foot">
+    <div class="tab">题库导入模板</div>
+    <div class="tab-sp"></div>
+    <div class="tab-r">判断 / 填空 / 简答等题型无选项留空即可</div>
+  </div>
+</div>
+</body>
+</html>
