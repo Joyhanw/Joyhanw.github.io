@@ -153,6 +153,8 @@ body.sb-collapsed .sb-toggle{left:64px}
 @keyframes dd{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .dd-menu .dd-label{font-size:11px;color:var(--g400);padding:7px 10px 4px}
 .dd-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:8px;font-size:13px;color:var(--g700);cursor:pointer;transition:background .12s}
+.pi-link{color:#2563eb;cursor:pointer}
+.pi-link:hover{text-decoration:underline}
 .dd-item:hover{background:var(--g100)}
 .dd-item i{font-size:15px;color:var(--g500);width:17px;text-align:center}
 .dd-item.danger{color:var(--r600)}
@@ -1728,6 +1730,16 @@ function kindDifficulty(label, grade) {
   if (!k.hasGrade) return k.difficulty || '';
   return (grade && k.diffMap && k.diffMap[grade]) || '';
 }
+/* 新增/更新证书弹窗：种类切换 → 联动刷新 国家资格下拉 与 难易度 */
+function onCertKindChange(val) {
+  const k = findKind(val);
+  const wrap = $('#c-grade-wrap'), ph = $('#c-grade-placeholder'), sel = $('#c-grade'), diff = $('#c-diff');
+  const hasGrade = !!(k && k.hasGrade && k.grades);
+  if (wrap) wrap.style.display = hasGrade ? '' : 'none';
+  if (ph) ph.style.display = hasGrade ? 'none' : '';
+  if (sel) sel.innerHTML = hasGrade ? k.grades.map(g => `<option>${g}</option>`).join('') : '<option value="">—</option>';
+  if (diff) diff.textContent = kindDifficulty(val, (sel && sel.value) || '') || (k && k.difficulty) || '—';
+}
 /* 是否属于必备证书（3类作业证） */
 function isReqCert(name) { return CERT_TYPES.some(t => String(name).indexOf(t.match) >= 0); }
 /* 其他证书列表（非必备，不含历史记录） */
@@ -2479,6 +2491,8 @@ function handleAct(act, el) {
     case 'mycert-view': closeDropdowns(); openMyCertDrawer(+d.key); break;
     case 'cert-upload': closeDropdowns(); certMaintainGate(() => openCertUpload(d.idx !== undefined ? +d.idx : null, null, d.mode || '', d.type || '')); break;
     case 'cert-update': closeDropdowns(); certMaintainGate(() => openCertUpload(+d.idx, +d.key, 'update')); break;
+    case 'pi-doc': piDocView(); break;
+    case 'pi-doc-back': piConsentModal(!!window.__piCk); break;
     case 'cert-consent-agree': closeModal(); if (typeof window.__certAfterConsent === 'function') { const fn = window.__certAfterConsent; window.__certAfterConsent = null; window.__certConsented = true; fn(); } break;
     case 'cert-del': closeDropdowns(); openConfirmCertDel(+d.idx, +d.key); break;
     case 'cf-toggle': { const b = document.getElementById(d.id); if (b) b.classList.toggle('open'); break; }
@@ -2519,7 +2533,14 @@ function handleAct(act, el) {
       }
       const ccatH = $('#c-cat');
       if (ccatH) ccat = ccatH.value || ccat;
-      if (!cname) { toast('请填写证书名称', 'error'); return; }
+      // 当前表单无证书名称字段：由 种类 + 国家资格 自动生成名称与分类，不做名称校验
+      if (!cname) {
+        const kSel = $('#c-kind');
+        const k = kSel ? findKind(kSel.value) : null;
+        const gSel = $('#c-grade');
+        cname = (k && k.hasGrade && gSel && gSel.value) ? gSel.value : ((kSel && kSel.value) ? kSel.value.replace('－', '·') : '');
+        if (!catSel && !ccatH && k && k.hasGrade) ccat = '技能等级';
+      }
       const cno = $('#c-no').value.trim();
       const cissue = $('#c-issue').value;
       const cexp = $('#c-expire').value;
@@ -11254,16 +11275,35 @@ function openI18nImport(uploaded) {
 function certMaintainGate(next) {
   if (APP.role !== 'se' || window.__certConsented) { next(); return; }
   window.__certAfterConsent = next;
-  openModal(modalHead('个人信息收集、使用同意', '', '') + `
+  piConsentModal(false);
+}
+/* 个人信息使用及收集：同意弹窗（checked 用于从说明返回时保留勾选状态） */
+function piConsentModal(checked) {
+  renderModal(modalHead('个人信息使用及收集提示', '', '') + `
     <div class="modal-body">
-      <p style="font-size:13.5px;line-height:1.9;color:var(--g700)">为完成证书维护，需收集并使用您的证件影像、证书编号、发证与有效期等个人信息，用于持证状态判定与到期提醒。信息仅在授权范围内使用。</p>
-      <label style="display:flex;align-items:flex-start;gap:8px;margin-top:12px;font-size:13px;color:var(--g700);cursor:pointer">
-        <input type="checkbox" id="cert-consent-ck" style="margin-top:3px" onchange="document.getElementById('cert-consent-btn').disabled=!this.checked">
-        <span>我已阅读并同意《个人信息收集、使用说明》</span></label>
+      <p style="font-size:13.5px;line-height:1.9;color:var(--g700)">为向您提供平台相关服务，我们需要收集和使用您的必要个人信息。具体收集范围、使用目的及保护方式，请查阅《个人信息使用及收集说明》。</p>
+      <div style="display:flex;align-items:flex-start;gap:8px;margin-top:12px;font-size:13px;color:var(--g700)">
+        <input type="checkbox" id="cert-consent-ck" style="margin-top:3px;cursor:pointer" ${checked ? 'checked' : ''} onchange="document.getElementById('cert-consent-btn').disabled=!this.checked">
+        <span>我已阅读并同意<span class="pi-link" data-act="pi-doc">《个人信息使用及收集说明》</span></span>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-act="close-modal">取消</button>
-      <button class="btn btn-primary" id="cert-consent-btn" data-act="cert-consent-agree" disabled>同意并继续</button></div>`);
+      <button class="btn btn-primary" id="cert-consent-btn" data-act="cert-consent-agree" ${checked ? '' : 'disabled'}>同意并继续</button></div>`);
+}
+/* 《个人信息使用及收集说明》全文（同一弹窗内切换展示，返回保留勾选） */
+function piDocView() {
+  window.__piCk = !!($('#cert-consent-ck') || {}).checked;
+  const sec = (t, body) => `<div style="margin-top:16px"><div style="font-size:13.5px;font-weight:700;color:var(--g900)">${t}</div><div style="font-size:13px;line-height:1.9;color:var(--g600);margin-top:6px">${body}</div></div>`;
+  renderModal(modalHead('个人信息使用及收集说明', '', '') + `
+    <div class="modal-body">
+      ${sec('一、收集范围', '姓名、工号、联系方式、所属组织等基本信息；您在使用平台功能时主动提交的证照、材料及相关影像；以及为实现相应服务所必需的其他信息。')}
+      ${sec('二、使用目的', '用于账号与权限管理、资质核验与状态提醒、能力评定，以及与您所使用功能相关的业务处理。')}
+      ${sec('三、保存与保护', '上述信息仅用于本说明所列目的，按角色分级授权访问；仅在实现目的所必需的期限内保存，期满或不再必要时予以删除或匿名化处理。')}
+      ${sec('四、对外提供', '平台不会向与本业务无关的第三方提供您的个人信息；仅在法律法规要求或监管检查等法定情形下依法提供。')}
+      ${sec('五、您的权利', '您可随时查询、更正本人信息，或要求删除不再必要的材料，可联系所在组织管理员或平台管理员处理。')}
+    </div>
+    <div class="modal-foot"><button class="btn" data-act="pi-doc-back"><i class="ri-arrow-left-line"></i>返回</button></div>`);
 }
 
 /* 上传证书（管理员：列表页选 SE / 明细页锁定 SE；工程师：本人）→ OCR 辅助识别 → 人工核对保存 */
@@ -11311,7 +11351,6 @@ function openCertUpload(idx, oldKey, mode, lockType) {
       ${gradeHtml}
       <div class="field2" id="c-diff-wrap"><label>难易度</label><div class="cert-val" id="c-diff" style="color:var(--e600);font-weight:600">${diffVal || '—'}</div></div>
       <div class="divider"></div>
-      <div style="font-size:13px;font-weight:700;color:var(--g700);margin-bottom:8px"><span class="req">*</span>证书附件</div>
       <div style="font-size:13px;font-weight:700;color:var(--g700);margin-bottom:8px"><span class="req">*</span>证书附件</div>
       <div class="upload-box" id="cert-ocr">
         <i class="ri-upload-cloud-2-line"></i><div class="up-t">上传证书图片 / PDF</div>
