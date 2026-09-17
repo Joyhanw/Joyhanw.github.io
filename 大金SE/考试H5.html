@@ -41,6 +41,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .form-item label b{color:var(--danger);font-weight:400;margin-right:2px}
 .form-item input{width:100%;border:none;outline:none;font-size:16px;color:var(--text);padding:4px 0}
 .form-item input::placeholder{color:var(--text3)}
+.form-item input[readonly]{background:#f0f1f4;color:var(--text2);border-radius:8px;padding:6px 10px;margin-top:2px;font-size:15px}
 .footer-btn{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;padding:12px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(0,0,0,.05);z-index:20}
 .footer-btn .btn{width:100%}
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.78);color:#fff;padding:12px 24px;border-radius:10px;font-size:15px;z-index:999;opacity:0;pointer-events:none;transition:opacity .25s;max-width:80%;text-align:center}
@@ -197,6 +198,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
           <label><b>*</b>工号</label>
           <input type="text" id="user-id" placeholder="请输入工号" value="1234" autocomplete="off">
         </div>
+        <div class="form-item">
+          <label><b>*</b>唯一码/担当号</label>
+          <input type="text" id="user-code" placeholder="请输入唯一码/担当号" value="DK1234" autocomplete="off">
+        </div>
+        <div class="form-item">
+          <label>所属组织</label>
+          <input type="text" id="user-org" placeholder="输入姓名、工号、唯一码后自动带出" readonly>
+        </div>
       </div>
     </div>
   </div>
@@ -349,12 +358,30 @@ var EXAM = {
 
 /* 本场考试参加人员名单（正式系统从服务端获取，原型内置演示人员） */
 var STAFF = [
-  {name:'张伟', uid:'SE1001'},
-  {name:'李娜', uid:'SE1002'},
-  {name:'王强', uid:'SE1003'},
-  {name:'刘洋', uid:'SE1004'},
-  {name:'唯安', uid:'1234'}
+  {name:'张伟', uid:'SE1001', code:'DK1001', org:'上海事务所'},
+  {name:'李娜', uid:'SE1002', code:'DK1002', org:'杭州事务所'},
+  {name:'王强', uid:'SE1003', code:'DK1003', org:'南京事务所'},
+  {name:'刘洋', uid:'SE1004', code:'DK1004', org:'苏州事务所'},
+  {name:'唯安', uid:'1234',  code:'DK1234', org:'上海事务所'}
 ];
+
+/* 姓名+工号+唯一码 三项匹配，返回人员；不匹配返回 null */
+function matchStaff(){
+  var name = $('user-name').value.trim();
+  var uid = $('user-id').value.trim();
+  var code = $('user-code').value.trim();
+  if(!name || !uid || !code) return null;
+  for(var i=0;i<STAFF.length;i++){
+    var p = STAFF[i];
+    if(p.name === name && p.uid === uid && p.code === code) return p;
+  }
+  return null;
+}
+/* 输入联动：三项信息齐全且匹配时自动带出所属组织 */
+function syncOrg(){
+  var p = matchStaff();
+  $('user-org').value = p ? p.org : '';
+}
 
 var TYPE_MAP = {judge:'判断题',single:'单选题',multi:'多选题',fill:'填空题',essay:'简答题'};
 var LETTERS = ['A','B','C','D','E','F'];
@@ -442,23 +469,23 @@ function renderInfo(){
 function handleStart(){
   var name = $('user-name').value.trim();
   var uid = $('user-id').value.trim();
+  var code = $('user-code').value.trim();
   if(!name){ toast('请输入姓名'); return; }
   if(!uid){ toast('请输入工号'); return; }
+  if(!code){ toast('请输入唯一码/担当号'); return; }
 
   var now = Date.now();
   var st = parseTime(EXAM.startTime), et = parseTime(EXAM.endTime);
 
-  // 1. 姓名与工号匹配人员
-  var person = null;
-  for(var i=0;i<STAFF.length;i++){
-    if(STAFF[i].name === name && STAFF[i].uid === uid){ person = STAFF[i]; break; }
-  }
+  // 1. 姓名 + 工号 + 唯一码 三项匹配人员
+  var person = matchStaff();
   if(!person){
-    // 再单独判断姓名存在但工号不符，提示更精确
     var nameExists = STAFF.some(function(p){ return p.name === name; });
-    toast(nameExists ? '姓名与工号不匹配，请检查后重新输入。' : '姓名与工号不匹配，请检查后重新输入。');
+    toast(nameExists ? '工号或唯一码/担当号不匹配，请检查后重新输入。' : '未找到匹配的人员信息，请检查后重新输入。');
     return;
   }
+  // 匹配成功，带出所属组织
+  $('user-org').value = person.org || '';
   // 2. 人员存在但不在本场参加人员（原型：名单内默认都在场，规则保留）
   // 若未来名单增加 inExam 字段，此处判断
   if(person.inExam === false){
@@ -834,6 +861,11 @@ function escapeHtml(s){
 /* ================= 初始化 ================= */
 (function init(){
   renderInfo();
+  // 姓名/工号/唯一码 输入联动，自动带出所属组织
+  ['user-name','user-id','user-code'].forEach(function(id){
+    $(id).addEventListener('input', syncOrg);
+  });
+  syncOrg(); // 默认填充时带出
   showPage('page-info');
 })();
 </script>
