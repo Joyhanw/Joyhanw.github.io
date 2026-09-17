@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>售后大学台账导入模板</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;background:#f0f3f6;color:#1a1d2e;padding:0 0 60px}
+.top{height:46px;background:#217346;color:#fff;display:flex;align-items:center;gap:10px;padding:0 20px}
+.top .file-ic{width:22px;height:22px;border-radius:4px;background:#fff;color:#217346;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.top .t{font-size:14px;font-weight:700}
+.top .s{font-size:12px;color:rgba(255,255,255,.75);margin-left:auto}
+.sheet{max-width:1240px;margin:24px auto 0;background:#fff;border:1px solid #d5dbe3;box-shadow:0 2px 14px rgba(15,23,42,.08);border-radius:6px;overflow:hidden}
+.scroll{overflow:auto;max-height:calc(100vh - 190px)}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:980px}
+th,td{border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;padding:8px 12px;font-size:13px;line-height:1.7;text-align:left;vertical-align:top;background:#fff;white-space:nowrap}
+th:last-child,td:last-child{border-right:none}
+/* 列字母行 */
+.cols th{background:#f8fafc;color:#94a3b8;font-size:11px;font-weight:500;text-align:center;padding:4px 0}
+/* 冻结标题行 */
+.head th{position:sticky;top:0;z-index:2;background:#edf2ee;color:#217346;font-weight:600;font-size:12.5px;border-bottom:2px solid #217346}
+/* 行号列 */
+td.rn,th.rn{background:#f8fafc;color:#94a3b8;font-size:11px;text-align:center;width:36px;min-width:36px;padding:8px 0}
+.head th.rn{z-index:3}
+th.rn{z-index:4}
+.sheet-foot{display:flex;align-items:center;gap:0;border-top:1px solid #d5dbe3;background:#f8fafc;padding:0}
+.tab{padding:7px 18px;font-size:12.5px;color:#1a1d2e;background:#fff;border-right:1px solid #d5dbe3;border-top:2px solid #217346;font-weight:600}
+.tab-sp{flex:1}
+.tab-r{padding:0 14px;font-size:11.5px;color:#94a3b8}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="file-ic">X</div>
+  <div class="t">售后大学台账导入模板.xlsx</div>
+  <div class="s">售后大学学习台账 · 批量导入模板</div>
+</div>
+<div class="sheet">
+  <div class="scroll">
+    <table>
+      <tr class="cols">
+        <th class="rn"></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th>
+        <th>G</th><th>H</th><th>I</th><th>J</th>
+      </tr>
+      <tr class="head">
+        <th class="rn"></th>
+        <th>姓名</th><th>工号</th><th>大学年级</th><th>年级完成进度</th><th>课程种类</th><th>科目编号</th><th>科目名称</th><th>课时</th><th>课时进展状态</th><th>成绩</th>
+      </tr>
+      <tr>
+        <td class="rn">2</td>
+        <td>张三</td><td>SE001</td><td>一年级</td><td>已完成</td><td>理论课程</td><td>K001</td><td>空调基础</td><td>8</td><td>已完成</td><td>85</td>
+      </tr>
+      <tr>
+        <td class="rn">3</td>
+        <td>张三</td><td>SE001</td><td>一年级</td><td>已完成</td><td>理论课程</td><td>K002</td><td>制冷原理</td><td>6</td><td>已完成</td><td>90</td>
+      </tr>
+      <tr>
+        <td class="rn">4</td>
+        <td>张三</td><td>SE001</td><td>一年级</td><td>已完成</td><td>实训课程</td><td>K003</td><td>基础安装实训</td><td>10</td><td>已完成</td><td>88</td>
+      </tr>
+      <tr>
+        <td class="rn">5</td>
+        <td>张三</td><td>SE001</td><td>二年级</td><td>未完成</td><td>理论课程</td><td>K101</td><td>多联机基础</td><td>8</td><td>已完成</td><td>80</td>
+      </tr>
+      <tr>
+        <td class="rn">6</td>
+        <td>张三</td><td>SE001</td><td>二年级</td><td>未完成</td><td>实训课程</td><td>K102</td><td>多联机实训</td><td>12</td><td>进行中</td><td></td>
+      </tr>
+      <tr>
+        <td class="rn">7</td>
+        <td>李四</td><td>SE002</td><td>一年级</td><td>未完成</td><td>理论课程</td><td>K001</td><td>空调基础</td><td>8</td><td>进行中</td><td></td>
+      </tr>
+    </table>
+  </div>
+  <div class="sheet-foot">
+    <div class="tab">售后大学台账导入模板</div>
+    <div class="tab-sp"></div>
+    <div class="tab-r">课时进展状态为进行中的科目，成绩留空</div>
+  </div>
+</div>
+</body>
+</html>
