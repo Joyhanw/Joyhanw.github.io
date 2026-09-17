@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>技术力画像报告 · 张明辉</title>
+<title>综合看板报告</title>
 <style>
 *{box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f6fa;color:#1a1d2e;margin:0;padding:32px 16px}
@@ -15,7 +15,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .meta{font-size:12.5px;color:#64748b;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:16px}
 .meta b{color:#334155}
 h2{font-size:15px;color:#0f172a;margin:22px 0 10px;padding-left:9px;border-left:3px solid #10b981}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:4px 0 6px}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:4px 0 6px}
 .kpi{border:1px solid #e8ebf0;border-radius:10px;padding:14px 16px}
 .kpi .lb{font-size:12px;color:#64748b;margin-bottom:5px}
 .kpi .v{font-size:22px;font-weight:700}
@@ -70,81 +70,101 @@ th.right,td.right{text-align:right}
   </div>
   <div class="meta"><span>数据统计周期：<b>2025-01-01 ～ 2025-12-31</b></span><span>等级有效期：<b>2026-04-01 ～ 2027-03-31</b></span></div>
   
-  <div class="person-head">
-    <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#10b981,#047857);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:21px">张</div>
-    <div>
-      <div style="font-size:18px;font-weight:700;color:#0f172a">张明辉</div>
-      <div style="font-size:12.5px;color:#64748b;margin-top:4px">上海事务所 · 维修组</div>
-    </div>
-    <div class="flex1"></div>
+    
+  <div class="kpis">
+    <div class="kpi"><div class="lb">工程师总数</div><div class="v">386<small> 人</small></div></div>
+    <div class="kpi"><div class="lb">覆盖事务所数</div><div class="v">28<small> 家</small></div></div>
   </div>
-  <div class="grid2" style="grid-template-columns:260px 1fr">
-    <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:12px">
-      <div style="text-align:center">
-        <div style="font-size:12px;color:#64748b;margin-bottom:2px">综合得分</div>
-        <div style="display:flex;align-items:baseline;justify-content:center;gap:5px;line-height:1">
-          <span style="font-size:48px;font-weight:800;color:#059669">84.2</span>
-          <span style="font-size:12px;color:#94a3b8">分</span>
-        </div>
-      </div>
-      <div style="border-top:1px dashed #e2e8f0"></div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:10px">
-        <span style="font-size:12.5px;color:#64748b">当前能力等级</span>
-        <span class="badge badge-purple" style="font-size:14px;padding:6px 14px">5级技术主任</span>
+    <div class="grid2"><div class="card"><h2>地区分布</h2><div>
+    <div class="hbar">
+      <div class="hb-head"><span class="hb-nm">华东区域</span><span class="hb-meta">152 人 · 1,286 万元</span></div>
+      <div class="hb-track"><div class="hb-fill" style="width:100%"></div></div>
+    </div>
+    <div class="hbar">
+      <div class="hb-head"><span class="hb-nm">华南区域</span><span class="hb-meta">88 人 · 742 万元</span></div>
+      <div class="hb-track"><div class="hb-fill" style="width:58%"></div></div>
+    </div>
+    <div class="hbar">
+      <div class="hb-head"><span class="hb-nm">华北区域</span><span class="hb-meta">78 人 · 668 万元</span></div>
+      <div class="hb-track"><div class="hb-fill" style="width:52%"></div></div>
+    </div>
+    <div class="hbar">
+      <div class="hb-head"><span class="hb-nm">西南区域</span><span class="hb-meta">68 人 · 538 万元</span></div>
+      <div class="hb-track"><div class="hb-fill" style="width:42%"></div></div>
+    </div></div></div><div class="card"><h2>事务所排名（Top 5）</h2>
+    <table>
+      <tr><th>排名</th><th>事务所</th><th class="right">SE人数</th><th class="right">本期产值</th><th class="right">综合得分</th></tr>
+      
+        <tr>
+          <td>1</td>
+          <td class="fw600">杭州事务所</td>
+          <td class="right num">2 人</td>
+          <td class="right num">158,000 万</td>
+          <td class="right num fw600">90.8</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td class="fw600">上海事务所</td>
+          <td class="right num">5 人</td>
+          <td class="right num">229,900 万</td>
+          <td class="right num fw600">87.4</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td class="fw600">广州事务所</td>
+          <td class="right num">2 人</td>
+          <td class="right num">94,900 万</td>
+          <td class="right num fw600">82.4</td>
+        </tr>
+    </table>
+  </div></div>
+    <div class="grid2"><div class="card"><h2>技术指标表现</h2><div class="bars" style="height:160px">
+    <div class="bar-col">
+      <span class="bar-v">80.5 分</span>
+      <div class="bar-b" style="height:101px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">理论考试</span>
+    </div>
+    <div class="bar-col">
+      <span class="bar-v">81.7 分</span>
+      <div class="bar-b" style="height:103px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">实操考试</span>
+    </div>
+    <div class="bar-col">
+      <span class="bar-v">95.6 分</span>
+      <div class="bar-b" style="height:120px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">个人业绩</span>
+    </div>
+    <div class="bar-col">
+      <span class="bar-v">76.7 分</span>
+      <div class="bar-b" style="height:96px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">KPI</span>
+    </div>
+    <div class="bar-col">
+      <span class="bar-v">79.4 分</span>
+      <div class="bar-b" style="height:100px;background:linear-gradient(180deg,#34d399,#059669)"></div>
+      <span class="bar-l">面谈/答辩</span>
+    </div></div></div><div class="card"><h2>能力等级分布</h2><div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+    <div style="position:relative;width:150px;height:150px;flex:none;border-radius:50%;background:conic-gradient(#c084fc 0 22.2%,#fbbf24 22.2% 33.3%,#34d399 33.3% 55.6%,#67e8f9 55.6% 66.7%,#93c5fd 66.7% 88.9%,#d1d5db 88.9% 100%)">
+      <div style="position:absolute;inset:26px;background:#fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+        <div style="font-size:24px;font-weight:800;color:#0f172a;line-height:1">9</div>
+        <div style="font-size:11px;color:#64748b">SE 总数</div>
       </div>
     </div>
-    <div class="card"><h2>核心指标雷达图</h2>
-      <svg viewBox="0 0 300 300" style="width:100%;max-width:340px;display:block;overflow:visible">
-    <circle cx="150" cy="150" r="146" fill="#f7faf8"/><line x1="150" y1="150" x2="150.0" y2="42.0" stroke="#ececec" stroke-width="1"/><line x1="150" y1="150" x2="252.7" y2="116.6" stroke="#ececec" stroke-width="1"/><line x1="150" y1="150" x2="213.5" y2="237.4" stroke="#ececec" stroke-width="1"/><line x1="150" y1="150" x2="86.5" y2="237.4" stroke="#ececec" stroke-width="1"/><line x1="150" y1="150" x2="47.3" y2="116.6" stroke="#ececec" stroke-width="1"/><polygon points="M150.0 123.0L175.7 141.7L165.9 171.8L134.1 171.8L124.3 141.7Z" fill="none" stroke="#f0f0f0" stroke-width="1"/><polygon points="M150.0 96.0L201.4 133.3L181.7 193.7L118.3 193.7L98.6 133.3Z" fill="none" stroke="#f0f0f0" stroke-width="1"/><polygon points="M150.0 69.0L227.0 125.0L197.6 215.5L102.4 215.5L73.0 125.0Z" fill="none" stroke="#f0f0f0" stroke-width="1"/><polygon points="M150.0 42.0L252.7 116.6L213.5 237.4L86.5 237.4L47.3 116.6Z" fill="none" stroke="#f0f0f0" stroke-width="1"/><polygon points="150.0 63.6 233.5 122.9 211.2 234.2 101.4 216.8 68.8 123.6" fill="rgba(148,163,184,.12)" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/><circle cx="150.0" cy="63.6" r="3" fill="#94a3b8"/><circle cx="233.5" cy="122.9" r="3" fill="#94a3b8"/><circle cx="211.2" cy="234.2" r="3" fill="#94a3b8"/><circle cx="101.4" cy="216.8" r="3" fill="#94a3b8"/><circle cx="68.8" cy="123.6" r="3" fill="#94a3b8"/><polygon points="150.0 55.8 240.9 120.5 213.5 237.4 99.2 219.9 64.2 122.1" fill="rgba(16,185,129,.22)" stroke="#059669" stroke-width="2" stroke-linejoin="round"/><circle cx="150.0" cy="55.8" r="3" fill="#059669"/><circle cx="240.9" cy="120.5" r="3" fill="#059669"/><circle cx="213.5" cy="237.4" r="3" fill="#059669"/><circle cx="99.2" cy="219.9" r="3" fill="#059669"/><circle cx="64.2" cy="122.1" r="3" fill="#059669"/><text x="150" y="14" text-anchor="middle" font-size="12" font-weight="600" fill="#374151">理论考试<tspan fill="#059669" font-weight="700" font-size="11"> 87.2</tspan></text><text x="277" y="89" text-anchor="start" font-size="12" font-weight="600" fill="#374151">实操考试<tspan fill="#059669" font-weight="700" font-size="11"> 88.5</tspan></text><text x="237" y="267" text-anchor="start" font-size="12" font-weight="600" fill="#374151">个人业绩<tspan fill="#059669" font-weight="700" font-size="11"> 100</tspan></text><text x="63" y="267" text-anchor="end" font-size="12" font-weight="600" fill="#374151">KPI<tspan fill="#059669" font-weight="700" font-size="11"> 80</tspan></text><text x="23" y="89" text-anchor="end" font-size="12" font-weight="600" fill="#374151">面谈/答辩<tspan fill="#059669" font-weight="700" font-size="11"> 83.5</tspan></text></svg>
-    </div>
+    <div class="dist" style="flex:1;min-width:250px;grid-template-columns:repeat(3,1fr)">
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#c084fc"></span>5级技术主任</div>
+      <div class="dist-num">2<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#fbbf24"></span>4级工程师</div>
+      <div class="dist-num">1<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#34d399"></span>3级技师</div>
+      <div class="dist-num">2<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#67e8f9"></span>2级高级技术员</div>
+      <div class="dist-num">1<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#93c5fd"></span>1级技术员</div>
+      <div class="dist-num">2<small> 人</small></div></div>
+    <div class="dist-item"><div class="dist-label"><span class="dot" style="background:#d1d5db"></span>新人</div>
+      <div class="dist-num">1<small> 人</small></div></div>
   </div>
-  <div class="grid2">
-    <div>
-      <div class="card"><h2>售后大学<span class="sub">2026年度</span></h2>
-        <table>
-          <tr><th>当前大学年级</th><th>年级完成进度</th><th>状态</th></tr>
-          <tr>
-            <td class="fw600">四年级</td>
-            <td>进行中</td>
-            <td><span class="badge badge-amber">未满足</span></td>
-          </tr>
-        </table>
-      </div>
-      <div class="card"><h2>其他加扣分</h2>
-        <table>
-          <tr><th>项目</th><th style="width:80px">类型</th><th style="width:100px" class="right">分值</th></tr>
-          <tr>
-            <td>三级投诉</td>
-            <td><span class="badge badge-red">扣分</span></td>
-            <td class="right num fw600" style="color:#dc2626">-2</td>
-          </tr><tr>
-            <td>投诉件数</td>
-            <td><span class="badge badge-red">扣分</span></td>
-            <td class="right num fw600" style="color:#dc2626">-1</td>
-          </tr><tr>
-            <td>高手加分</td>
-            <td><span class="badge badge-green">加分</span></td>
-            <td class="right num fw600" style="color:#059669">+2</td>
-          </tr><tr>
-            <td>证书加分</td>
-            <td><span class="badge badge-green">加分</span></td>
-            <td class="right num fw600" style="color:#059669">+1</td>
-          </tr><tr>
-            <td>其他</td>
-            <td><span class="badge badge-red">扣分</span></td>
-            <td class="right num fw600" style="color:#dc2626">-2</td>
-          </tr>
-          <tr style="font-weight:700;background:#f8fafc"><td>加扣分合计</td><td></td>
-            <td class="right num" style="color:#dc2626">-2</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <div class="card"><h2>证书资质</h2>
-      <table>
-        <tr><th>证书名称</th><th>证书类别</th><th style="width:110px">有效期</th><th style="width:80px">状态</th></tr>
-        <tr><td class="fw600">制冷与空调作业</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">—</td><td><span class="badge badge-gray">缺失</span></td></tr><tr><td class="fw600">金属焊接切割</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">2028-06-30</td><td><span class="badge badge-green">有效</span></td></tr><tr><td class="fw600">电工证</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">2026-07-20</td><td><span class="badge badge-red">逾期</span></td></tr><tr><td class="fw600">高处作业证</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">—</td><td><span class="badge badge-gray">缺失</span></td></tr><tr><td class="fw600">制冷设备维修工1级</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">—</td><td><span class="badge badge-gray">缺失</span></td></tr><tr><td class="fw600">制冷设备维修工2级</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">—</td><td><span class="badge badge-gray">缺失</span></td></tr><tr><td class="fw600">维修电工1级</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">—</td><td><span class="badge badge-gray">缺失</span></td></tr><tr><td class="fw600">维修电工2级</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">—</td><td><span class="badge badge-gray">缺失</span></td></tr><tr><td class="fw600">特种作业操作证·高处作业</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">2026-10-12</td><td><span class="badge badge-amber">快到期</span></td></tr><tr><td class="fw600">特种作业操作证·金属焊接切割</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">2028-06-30</td><td><span class="badge badge-green">有效</span></td></tr><tr><td class="fw600">制冷设备维修工等级证</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">2026-09-02</td><td><span class="badge badge-red">逾期</span></td></tr><tr><td class="fw600">售后大学·空调基础</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">2029-12-01</td><td><span class="badge badge-green">有效</span></td></tr><tr><td class="fw600">特种作业操作证·电工证</td><td style="font-size:12px;color:#64748b">通用证书</td><td class="mono" style="font-size:12px">2026-07-20</td><td><span class="badge badge-red">逾期</span></td></tr>
-      </table>
-    </div>
-  </div>
-  </div></body></html>
+  </div></div></div>
+  
+  <div class="foot">本报告由大金SE能力指标化管理平台自动生成 · 演示数据</div>
+</div></body></html>
