@@ -850,7 +850,7 @@ body.sb-collapsed .sb-toggle{left:64px}
 .role-view-tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:7px;background:var(--g100);color:var(--g700);font-size:12px;margin:0 6px 6px 0}
 /* 证书要求配置 / 考试参加准则 矩阵（带边框网格 + 分组分隔 + 固定左列） */
 .cr-wrap{overflow-x:auto;margin-top:0;border:1px solid var(--g200);border-radius:12px;background:#fff}
-.cr-wrap .tbl{table-layout:fixed;width:max-content;border-collapse:separate;border-spacing:0}
+.cr-wrap .tbl{table-layout:auto;width:100%;border-collapse:separate;border-spacing:0}
 .cr-wrap .tbl th,.cr-wrap .tbl td{text-align:center;padding:8px 6px;white-space:nowrap}
 .cr-wrap .tbl th{font-size:12px}
 .cr-wrap .tbl th,.cr-wrap .tbl td{border-left:1px solid var(--g100)}
@@ -858,19 +858,23 @@ body.sb-collapsed .sb-toggle{left:64px}
 .cr-wrap .tbl .cr-l{text-align:left;padding-left:12px}
 .cr-wrap .tbl .cr-left{text-align:left}
 .cr-wrap .tbl .cr-diff{color:var(--g500);font-size:12px}
-.cr-wrap .tbl .cr-c{width:46px;min-width:46px}
+.cr-wrap .tbl .cr-c{min-width:46px}
 .cr-chk{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1.5px solid var(--g300);border-radius:3px;font-size:11px;color:#fff;transition:all .1s;cursor:default;background:#fff}
 .cr-chk.on{background:var(--e500);border-color:var(--e500)}
 .cr-chk i{font-size:13px}
 .cr-editable .cr-chk{cursor:pointer}
 .cr-editable .cr-chk.off:hover{border-color:var(--e400);background:var(--e50)}
+/* 查看态（非编辑）：复选框整体置灰不可操作，编辑态恢复亮色可点 */
+.cr-wrap:not(.cr-editable) .cr-chk{background:var(--g50);border-color:var(--g200);cursor:not-allowed}
+.cr-wrap:not(.cr-editable) .cr-chk.on{background:var(--g300);border-color:var(--g300)}
 /* 职级分组分隔线（信息列│矩阵、1级│2级、2级│3级、3级│4级、4级│5级） */
 .cr-wrap .tbl th.cr-sep,.cr-wrap .tbl td.cr-sep{border-left:1px solid var(--g300)}
 /* 表头两级：组名背景加深、去掉断续线，子表头浅色 */
-.cr-wrap .tbl .cr-subh{width:46px;min-width:46px;padding:4px 6px 10px;font-size:11px;color:var(--g600);font-weight:500;background:var(--g50)}
+.cr-wrap .tbl .cr-subh{min-width:46px;padding:4px 6px 10px;font-size:11px;color:var(--g600);font-weight:500;background:var(--g50)}
 .cr-wrap .tbl .cr-mh{padding:10px 6px 4px;border-bottom:none!important;background:var(--g100)}
-/* 已勾选单元格浅色底，勾选规律呈色块可读 */
+/* 已勾选单元格浅色底，勾选规律呈色块可读（查看态同步调淡） */
 .cr-wrap .tbl td.cr-on{background:#eefaf3}
+.cr-wrap:not(.cr-editable) .tbl td.cr-on{background:#f5f8f6}
 /* 左侧信息列横向滚动时固定（证书矩阵3列 / 参加准则2列） */
 .cr-cert .tbl th.stk1,.cr-cert .tbl td.stk1{position:sticky;left:0;width:88px;min-width:88px}
 .cr-cert .tbl th.stk2,.cr-cert .tbl td.stk2{position:sticky;left:88px;width:124px;min-width:124px}
@@ -1042,7 +1046,7 @@ const ALL_MENUS = [
     { id: 'sys_role',   label: '角色管理',   view: 'sys_role',   buttons: ['查看', '新增', '编辑', '停用'] },
     { id: 'sys_dict',   label: '字典配置',   view: 'sys_dict',   buttons: ['查看', '新增', '编辑', '删除', '停用'] },
     { id: 'sys_param',  label: '参数配置',   view: 'sys_param',  buttons: ['查看', '编辑'] },
-    { id: 'sys_i18n',   label: '多语言配置', view: 'sys_i18n',   buttons: ['查看', '新增', '编辑', '批量导入'] },
+    { id: 'sys_i18n',   label: '多语言配置', view: 'sys_i18n',   buttons: ['查看', '编辑'] },
   ]},
   { id: 'grp_ops', label: '系统运营', children: [
     { id: 'sys_notice', label: '系统公告',   view: 'sys_notice', buttons: ['查看', '新增', '编辑', '下架', '删除', '发布'] },
@@ -1424,7 +1428,7 @@ const DEMO = {
     { id: 'LOG20260827008', mod: '证书管理', type: '导入', op: '刘静', status: '失败', time: '2026-08-26 16:05', obj: 'SE证书台账', content: '导入证书台账文件《SE证书_2026年8月.xlsx》', fail: '导入文件缺少必填列「发证日期」，已中止导入' },
     { id: 'LOG20260827007', mod: '考试管理', type: '导出', op: '张敏', status: '成功', time: '2026-08-26 15:20', obj: '考试成绩', content: '导出「2026 Q2 商用多联机维修测评」成绩表' },
     { id: 'LOG20260827006', mod: '用户管理', type: '修改', op: '陈建国', status: '成功', time: '2026-08-26 14:02', obj: '账号 SE010 王强', content: '调整账号数据范围：华东区域 → 上海事务所' },
-    { id: 'LOG20260827005', mod: '技术力画像', type: '导入', op: '刘静', status: '成功', time: '2026-08-26 11:45', obj: '实操成绩（2026 Q2）', content: '导入实操考核成绩《实操考核_Q2.xlsx》', imp: { file: '实操考核_Q2.xlsx', dtype: '实操成绩', total: 24, succ: 24, fail: 0 } },
+    { id: 'LOG20260827005', mod: '技术力画像', type: '导入', op: '刘静', status: '部分成功', time: '2026-08-26 11:45', obj: '实操成绩（2026 Q2）', content: '导入实操考核成绩《实操考核_Q2.xlsx》', imp: { file: '实操考核_Q2.xlsx', dtype: '实操成绩', total: 24, succ: 21, fail: 3 } },
     { id: 'LOG20260827003', mod: '参数配置', type: '修改', op: '陈建国', status: '成功', time: '2026-08-26 09:30', obj: '换证规则', content: '更新换证规则「换证申请时间」为到期前 60 日' },
     { id: 'LOG20260827002', mod: '系统公告', type: '新增', op: '张敏', status: '成功', time: '2026-08-25 11:20', obj: '公告', content: '新增公告《事务所管理员数据导入操作规范（草稿）》' },
     { id: 'LOG20260827001', mod: '证书管理', type: '修改', op: '张明辉', status: '成功', time: '2026-08-25 10:18', obj: '证书《特种作业操作证·高处作业》', content: '更新本人高处作业证证书信息' },
@@ -1433,7 +1437,7 @@ const DEMO = {
     { id: 'LOG20260824016', mod: '考试管理', type: '修改', op: '张敏', status: '成功', time: '2026-08-24 14:05', obj: '试题 Q012', content: '编辑试题《制冷系统检漏方法》并启用' },
     { id: 'LOG20260824015', mod: '字典配置', type: '新增', op: '陈建国', status: '成功', time: '2026-08-24 11:30', obj: '字典项', content: '在「题目分类」下新增字典项「综合理论」' },
     { id: 'LOG20260824014', mod: '用户管理', type: '新增', op: '陈建国', status: '成功', time: '2026-08-23 10:02', obj: '账号 王强', content: '新增账号：王强（工程师 · 上海事务所）' },
-    { id: 'LOG20260822013', mod: '技术力画像', type: '导入', op: '刘静', status: '成功', time: '2026-08-22 15:48', obj: 'SE基础/年度认证（2026年度）', content: '导入SE基础数据《SE档案_2026.xlsx》', imp: { file: 'SE档案_2026.xlsx', dtype: 'SE基础/年度认证', total: 778, succ: 778, fail: 0 } },
+    { id: 'LOG20260822013', mod: '技术力画像', type: '导入', op: '刘静', status: '部分成功', time: '2026-08-22 15:48', obj: 'SE基础/年度认证（2026年度）', content: '导入SE基础数据《SE档案_2026.xlsx》', imp: { file: 'SE档案_2026.xlsx', dtype: 'SE基础/年度认证', total: 778, succ: 762, fail: 16 } },
     { id: 'LOG20260820012', mod: '考试管理', type: '新增', op: '张敏', status: '成功', time: '2026-08-20 09:25', obj: '考试计划', content: '新增考试计划《2026年Q4商用多联机维修测评》' },
     { id: 'LOG20260815011', mod: '证书管理', type: '导入', op: '刘静', status: '失败', time: '2026-08-15 17:30', obj: 'SE证书台账', content: '导入证书台账文件《SE证书_2026年8月.xlsx》', fail: '文件解析异常，文件可能已损坏' },
     { id: 'LOG20260812010', mod: '系统公告', type: '修改', op: '张敏', status: '成功', time: '2026-08-12 17:00', obj: '公告《系统升级维护通知（8月15日凌晨）》', content: '发布系统公告' },
@@ -3275,19 +3279,10 @@ function handleAct(act, el) {
     case 'dash-reset':
       /* 认证周期切换后自动刷新；查询/重置保留为空操作（无其他业务筛选） */
       renderView(APP.view); break;
-    case 'cert-prev': {
+    case 'cert-year': {
       const store = d.store || 'dash';
       const q = APP.q[store] || {};
-      APP.q[store] = { ...q, certYear: ((q.certYear || certCycleYear()) - 1) };
-      renderView(APP.view); break;
-    }
-    case 'cert-next': {
-      const store = d.store || 'dash';
-      const q = APP.q[store] || {};
-      const cur = certCycleYear();
-      const year = (q.certYear || cur) + 1;
-      if (year > cur) { toast('暂无下一周期数据', 'info'); break; }
-      APP.q[store] = { ...q, certYear: year };
+      APP.q[store] = { ...q, certYear: +el.value };
       renderView(APP.view); break;
     }
     case 'top-lang': APP.lang = el.value; break;
@@ -3524,7 +3519,7 @@ function handleAct(act, el) {
     case 'learning-tpl': toast('模板已下载，请按模板整理数据'); break;
     /* 实操台账 */
     case 'prac-search':
-      APP.q.practical = { name: ($('#prac-name') || {}).value || '', id: ($('#prac-id') || {}).value || '', item: ($('#prac-item') || {}).value || '全部项目', post: ($('#prac-post') || {}).value || '全部岗位', year: ($('#prac-year') || {}).value || '全部年度' };
+      APP.q.practical = { name: ($('#prac-name') || {}).value || '', id: ($('#prac-id') || {}).value || '', item: ($('#prac-item') || {}).value || '全部项目', post: ($('#prac-post') || {}).value || '全部技术岗位', year: ($('#prac-year') || {}).value || '全部年度' };
       renderView(APP.view); break;
     case 'prac-reset': APP.q.practical = {}; renderView(APP.view); break;
     case 'prac-del': openPracticalDeleteConfirm(+d.idx); break;
@@ -3532,7 +3527,7 @@ function handleAct(act, el) {
     case 'practical-tpl': toast('模板已下载，请按模板整理数据'); break;
     /* 业绩台账 */
     case 'perf-search':
-      APP.q.performance = { name: ($('#perf-name') || {}).value || '', id: ($('#perf-id') || {}).value || '', post: ($('#perf-post') || {}).value || '全部岗位', year: ($('#perf-year') || {}).value || '全部年度' };
+      APP.q.performance = { name: ($('#perf-name') || {}).value || '', id: ($('#perf-id') || {}).value || '', post: ($('#perf-post') || {}).value || '全部技术岗位', year: ($('#perf-year') || {}).value || '全部年度' };
       renderView(APP.view); break;
     case 'perf-reset': APP.q.performance = {}; renderView(APP.view); break;
     case 'perf-view': openPerformanceDetail(+d.idx); break;
@@ -3543,7 +3538,7 @@ function handleAct(act, el) {
     case 'perf-tpl': toast('模板已下载，请按模板整理数据'); break;
     /* KPI台账 */
     case 'kpi-search':
-      APP.q.kpi = { name: ($('#kpi-name') || {}).value || '', id: ($('#kpi-id') || {}).value || '', post: ($('#kpi-post') || {}).value || '全部岗位', year: ($('#kpi-year') || {}).value || '全部年度' };
+      APP.q.kpi = { name: ($('#kpi-name') || {}).value || '', id: ($('#kpi-id') || {}).value || '', post: ($('#kpi-post') || {}).value || '全部技术岗位', year: ($('#kpi-year') || {}).value || '全部年度' };
       renderView(APP.view); break;
     case 'kpi-reset': APP.q.kpi = {}; renderView(APP.view); break;
     case 'kpi-view': openKpiDetail(+d.idx); break;
@@ -4531,36 +4526,25 @@ function vDashHQ(el) {
   </div>
   `;
 }
-/* ================= 认证周期切换 =================
-   认证周期固定：每年 4 月 1 日 ～ 次年 3 月 31 日。仅支持切换上/下一周期，
-   不支持自由选择日期。当前周期之后无数据时，"下一周期" 按钮禁用。 */
+/* ================= 认证年度切换 =================
+   认证周期固定：每年 4 月 1 日 ～ 次年 3 月 31 日。综合看板 / 团队看板 / 我的技术力画像
+   统一用「认证年度」下拉切换，切换后自动刷新；下钻页（事务所 / 个人详情）不再展示年度查询。 */
 function certCycleYear(now) {
   now = now || new Date();
   return now.getMonth() + 1 >= 4 ? now.getFullYear() : now.getFullYear() - 1;
 }
-function certCycleRange(year) {
-  return { year, label: year + '年度认证周期', start: year + '-04-01', end: (year + 1) + '-03-31' };
-}
-/* 认证周期切换器 HTML（左右箭头 + 周期名 + 日期范围），store 为 APP.q 下的存储键 */
-function certCycleNav(store) {
+/* 认证年度下拉查询项 */
+function certYearSelect(store) {
   const cur = certCycleYear();
   const q = APP.q[store] || {};
   const year = q.certYear || cur;
-  const r = certCycleRange(year);
-  const prevDisabled = year <= cur - 20 ? 'disabled' : '';
-  const nextDisabled = year >= cur ? 'disabled' : '';
+  const years = [cur + 1, cur, cur - 1, cur - 2];
   return `
   <div style="display:flex;align-items:center;gap:8px">
-    <button class="btn btn-sm ico" data-act="cert-prev" data-store="${store}" ${prevDisabled} title="上一周期">
-      <i class="ri-arrow-left-s-line"></i>
-    </button>
-    <div style="text-align:center;min-width:180px;line-height:1.2">
-      <div style="font-size:13px;font-weight:700;color:var(--g900)">${r.label}</div>
-      <div style="font-size:11.5px;color:var(--g500);margin-top:3px">${r.start} ～ ${r.end}</div>
-    </div>
-    <button class="btn btn-sm ico" data-act="cert-next" data-store="${store}" ${nextDisabled} title="下一周期">
-      <i class="ri-arrow-right-s-line"></i>
-    </button>
+    <span style="font-size:13px;color:var(--g600)">认证年度</span>
+    <select class="select" data-change="cert-year" data-store="${store}" style="width:110px">
+      ${years.map(y => `<option value="${y}"${y === year ? ' selected' : ''}>${y}</option>`).join('')}
+    </select>
   </div>`;
 }
 /* ================= 综合看板（总部） / 团队看板（事务所） ================= */
@@ -4666,7 +4650,7 @@ function vDashComp(el) {
   ${pageHead('综合看板', '', `<button class="btn" data-act="toast" data-msg="已导出综合看板报告（演示）"><i class="ri-download-2-line"></i>导出报告</button>`)}
   <div class="dash">
   <div class="filter-bar">
-    ${certCycleNav('dash')}
+    ${certYearSelect('dash')}
   </div>
   <div class="grid grid-2 mt16">
     ${statMini('工程师总数', fmt(h.se) + '<small>人</small>')}
@@ -4822,7 +4806,7 @@ function vTeamBoard(el) {
   ${pageHead('团队看板', '', `<button class="btn" data-act="toast" data-msg="导出本所团队看板报告（演示）"><i class="ri-download-2-line"></i>导出报告</button>`)}
   <div class="dash">
   <div class="filter-bar">
-    ${certCycleNav('dash')}
+    ${certYearSelect('dash')}
   </div>
   <div class="grid grid-3 mt16">
     ${statMini('工程师总数', o.se + '<small>人</small>')}
@@ -5123,7 +5107,6 @@ function openLearningDetail(uid) {
   ensureLearningData();
   const item = LEARNING_DATA[learningKey(uid)];
   if (!item) return;
-  const st = learningProgressText(item);
   const stMap = { '已完成': 'badge-green', '学习中': 'badge-blue', '未开始': 'badge-gray' };
   const row = (k, v) => `<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`;
   /* 课程按年级分组渲染 */
@@ -5161,7 +5144,6 @@ function openLearningDetail(uid) {
     ${row('三年级', learningGradeBadge(item.g3))}
     ${row('四年级', learningGradeBadge(item.g4))}
     ${row('五年级', learningGradeBadge(item.g5))}
-    ${row('整体进度', learningGradeBadge(st))}
     <div style="font-size:13px;font-weight:700;color:var(--g700);margin:16px 0 4px;border-top:1px dashed var(--g200);padding-top:14px">课程明细</div>
     ${gradeBlocks}
   `, 'drawer-learning');
@@ -5268,7 +5250,7 @@ function performanceRows() {
   if (kw) rows = rows.filter(r => r.name.includes(kw));
   const idkw = (q.id || '').trim();
   if (idkw) rows = rows.filter(r => r.id.includes(idkw));
-  if (q.post && q.post !== '全部岗位') rows = rows.filter(r => r.post === q.post);
+  if (q.post && q.post !== '全部技术岗位') rows = rows.filter(r => r.post === q.post);
   if (q.year && q.year !== '全部年度') rows = rows.filter(r => r.year === q.year);
   rows.sort((a, b) => a.name.localeCompare(b.name, 'zh') || b.year.localeCompare(a.year));
   return rows;
@@ -5276,7 +5258,7 @@ function performanceRows() {
 function vOrderLedger(el) {
   const q = APP.q.performance || {};
   const rows = performanceRows();
-  const postSel = `<select class="select" id="perf-post" style="min-width:110px">${['全部岗位', 'SE', '间接', '工事'].map(c => `<option${(q.post || '全部岗位') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
+  const postSel = `<select class="select" id="perf-post" style="min-width:110px">${['全部技术岗位', 'SE', '间接', '工事'].map(c => `<option${(q.post || '全部技术岗位') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
   const yearSel = `<select class="select" id="perf-year" style="min-width:110px">${['全部年度', ...PERFORMANCE_YEARS].map(c => `<option${(q.year || '全部年度') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
   el.innerHTML = `
   <div class="filter-bar">
@@ -5501,7 +5483,7 @@ function kpiRows() {
   if (kw) rows = rows.filter(r => r.name.includes(kw));
   const idkw = (q.id || '').trim();
   if (idkw) rows = rows.filter(r => r.id.includes(idkw));
-  if (q.post && q.post !== '全部岗位') rows = rows.filter(r => r.post === q.post);
+  if (q.post && q.post !== '全部技术岗位') rows = rows.filter(r => r.post === q.post);
   if (q.year && q.year !== '全部年度') rows = rows.filter(r => r.year === q.year);
   rows.sort((a, b) => a.name.localeCompare(b.name, 'zh') || b.year.localeCompare(a.year));
   return rows;
@@ -5509,7 +5491,7 @@ function kpiRows() {
 function vKPILedger(el) {
   const q = APP.q.kpi || {};
   const rows = kpiRows();
-  const postSel = `<select class="select" id="kpi-post" style="min-width:110px">${['全部岗位', 'SE', '间接', '工事'].map(c => `<option${(q.post || '全部岗位') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
+  const postSel = `<select class="select" id="kpi-post" style="min-width:110px">${['全部技术岗位', 'SE', '间接', '工事'].map(c => `<option${(q.post || '全部技术岗位') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
   const yearSel = `<select class="select" id="kpi-year" style="min-width:110px">${['全部年度', ...KPI_YEARS].map(c => `<option${(q.year || '全部年度') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
   el.innerHTML = `
   <div class="filter-bar">
@@ -5695,7 +5677,7 @@ function practicalRows() {
   const idkw = (q.id || '').trim();
   if (idkw) rows = rows.filter(r => r.id.includes(idkw));
   if (q.item && q.item !== '全部项目') rows = rows.filter(r => r.item === q.item);
-  if (q.post && q.post !== '全部岗位') rows = rows.filter(r => r.post === q.post);
+  if (q.post && q.post !== '全部技术岗位') rows = rows.filter(r => r.post === q.post);
   if (q.year && q.year !== '全部年度') rows = rows.filter(r => r.year === q.year);
   return rows;
 }
@@ -5703,7 +5685,7 @@ function vPracticalLedger(el) {
   const q = APP.q.practical || {};
   const rows = practicalRows();
   const itemSel = `<select class="select" id="prac-item" style="min-width:150px">${['全部项目', ...PRACTICAL_ITEMS].map(c => `<option${(q.item || '全部项目') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
-  const postSel = `<select class="select" id="prac-post" style="min-width:110px">${['全部岗位', 'SE', '间接', '工事'].map(c => `<option${(q.post || '全部岗位') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
+  const postSel = `<select class="select" id="prac-post" style="min-width:110px">${['全部技术岗位', 'SE', '间接', '工事'].map(c => `<option${(q.post || '全部技术岗位') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
   const yearSel = `<select class="select" id="prac-year" style="min-width:110px">${['全部年度', ...PRACTICAL_YEARS].map(c => `<option${(q.year || '全部年度') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>`;
   el.innerHTML = `
   <div class="filter-bar">
@@ -5929,7 +5911,7 @@ function vSEDetail(el) {
   if (!m) { el.innerHTML = '<div class="empty"><i class="ri-user-line"></i>未找到该 SE</div>'; return; }
   const tab = ['info', 'tech'].includes(APP.tab.seDetail) ? APP.tab.seDetail : 'info';
   const tabs = [['info', '基本信息'], ['tech', '技术力画像']];
-  const nav = `<div class="tabs mt16">${tabs.map(t => `<span class="tab${tab === t[0] ? ' active' : ''}" data-act="se-detail-tab" data-tab="${t[0]}">${t[1]}</span>`).join('')}</div>`;
+  const nav = `<div class="tabs">${tabs.map(t => `<span class="tab${tab === t[0] ? ' active' : ''}" data-act="se-detail-tab" data-tab="${t[0]}">${t[1]}</span>`).join('')}</div>`;
   const typeBadge = m.type === '内' ? '<span class="badge badge-green" style="margin-left:8px">内</span>' : '<span class="badge badge-amber" style="margin-left:8px">外</span>';
   el.innerHTML = `
   ${pageHead('', '', `<button class="btn" data-act="se-detail-back"><i class="ri-arrow-left-line"></i>返回</button>
@@ -6477,7 +6459,7 @@ function vTechSE(el) {
   ${pageHead('', '', `
     <button class="btn" data-act="toast" data-msg="导出个人画像报告（演示）"><i class="ri-download-2-line"></i>导出报告</button>`)}
   <div class="filter-bar">
-    ${certCycleNav('tech')}
+    ${certYearSelect('tech')}
   </div>
   ${(() => { try { return personBody(m, office, sameOffice); } catch (e) { console.error('vTechSE:', e); return '<div class="card mt16" style="padding:40px;text-align:center;color:var(--g500)"><i class="ri-error-warning-line" style="font-size:32px"></i><div style="margin-top:8px">技术力画像数据异常</div></div>'; } })()}`;
 }
@@ -9386,18 +9368,14 @@ function positionBody(cur, side) {
       <div class="rm-cat-list">${side}</div>
     </div>
     <div class="card" style="margin:0;flex:1">
-      <div class="query-bar" style="margin-bottom:10px">
-        <input class="input" id="pq-name" placeholder="职务名称" value="${esc(q.name||'')}" style="width:150px" onkeydown="if(event.key==='Enter')document.querySelector('[data-act=pos-queryync]').click()">
+      <div class="query-bar" style="margin-bottom:12px">
+        <input class="input" id="pq-name" placeholder="职务名称" value="${esc(q.name||'')}" style="width:150px" onkeydown="if(event.key==='Enter')document.querySelector('[data-act=pos-query]').click()">
         <select class="select" id="pq-status" style="width:90px">
           <option value="">全部状态</option>
           ${['启用','停用'].map(s => '<option'+(q.status===s?' selected':'')+'>'+s+'</option>').join('')}
         </select>
         <button class="btn btn-sm btn-primary" data-act="pos-query">查询</button>
         <button class="btn btn-sm" data-act="pos-query-reset">重置</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <i class="ri-price-tag-3-line" style="color:var(--e500);font-size:14.5px"></i>
-        <span style="font-weight:700;font-size:14.5px;color:var(--g800)">${esc(cur.name)}</span>
         <div style="flex:1"></div>
         <button class="btn btn-sm btn-primary" data-act="pos-add" data-tid="${cur.id}"><i class="ri-add-line"></i>新增职务</button>
       </div>
@@ -9513,10 +9491,10 @@ function treeBody(cur, side) {
       <div class="rm-cat-list">${side}</div>
     </div>
     <div class="card" style="margin:0;flex:1">
-      <div class="card-title"><i class="ri-price-tag-3-line" style="color:var(--e500)"></i>${esc(cur.name)}
-        <div style="flex:1"></div>
-        <button class="btn btn-sm btn-primary" data-act="dict-l1-add"><i class="ri-add-line"></i>新增一级分类</button></div>
-      <table class="tbl tree-tbl" style="margin-top:4px">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+        <button class="btn btn-sm btn-primary" data-act="dict-l1-add"><i class="ri-add-line"></i>新增一级分类</button>
+      </div>
+      <table class="tbl tree-tbl" style="margin-top:0">
         <tr><th style="min-width:200px">分类名称</th><th style="width:90px">分类层级</th><th style="width:78px">状态</th><th>说明</th><th class="right">操作</th></tr>
         ${rows.join('') || `<tr><td colspan="5" style="text-align:center;color:var(--g400);padding:28px">暂无分类，点击右上角新增一级分类</td></tr>`}
       </table>
@@ -10062,6 +10040,7 @@ function vNoticeList(el) {
 const SYSLOG_MODS = [...new Set(DEMO.opLogs.map(x => x.mod))];
 const SYSLOG_TYPES = ['导入', '导出', '新增', '删除', '修改'];
 function sysLogStatusBadge(s) {
+  if (s === '部分成功') return '<span class="badge badge-amber">部分成功</span>';
   return s === '成功' ? '<span class="badge badge-green">成功</span>' : '<span class="badge badge-red">失败</span>';
 }
 function sysLogFiltered() {
@@ -10090,7 +10069,7 @@ function vSysLog(el) {
       <input class="input" id="sl-q-op" placeholder="操作人员" value="${esc(q.op || '')}" style="width:120px">
       <select class="select" id="sl-q-mod" style="width:130px">${['全部模块', ...SYSLOG_MODS].map(m => `<option${(q.mod || '全部模块') === m ? ' selected' : ''}>${m}</option>`).join('')}</select>
       <select class="select" id="sl-q-type" style="width:110px">${['全部类型', ...SYSLOG_TYPES].map(t => `<option${(q.type || '全部类型') === t ? ' selected' : ''}>${t}</option>`).join('')}</select>
-      <select class="select" id="sl-q-status" style="width:100px">${['全部状态', '成功', '失败'].map(s => `<option${(q.status || '全部状态') === s ? ' selected' : ''}>${s}</option>`).join('')}</select>
+      <select class="select" id="sl-q-status" style="width:100px">${['全部状态', '成功', '部分成功', '失败'].map(s => `<option${(q.status || '全部状态') === s ? ' selected' : ''}>${s}</option>`).join('')}</select>
       <span style="font-size:12.5px;color:var(--g500);align-self:center">操作时间</span>
       <input class="input" id="sl-q-from" type="date" value="${esc(q.dateFrom || '')}" style="width:140px">
       <span style="font-size:12.5px;color:var(--g400);align-self:center">—</span>
@@ -11189,9 +11168,6 @@ function paramI18n() {
       <button class="btn btn-primary" data-act="i18n-query"><i class="ri-search-line"></i>查询</button>
       <button class="btn" data-act="i18n-reset">重置</button>
     </div>
-    <div style="display:flex;gap:8px;margin:0 0 12px;justify-content:flex-end">
-      <button class="btn" data-act="i18n-import"><i class="ri-upload-2-line"></i>批量导入</button>
-      <button class="btn btn-primary" data-act="i18n-add"><i class="ri-add-line"></i>新增</button></div>
     <table class="tbl">
       <tr><th style="min-width:170px">Key</th><th style="width:70px">模块</th><th>中文</th><th>日文</th><th>英文</th><th style="width:140px">更新时间</th><th style="width:70px" class="right">操作</th></tr>
       ${rows || `<tr><td colspan="7"><div class="empty"><i class="ri-inbox-line"></i>没有符合条件的多语言资源</div></td></tr>`}
@@ -13024,17 +13000,26 @@ function examParticipants(p) {
     const base = 0.3 + srand(sid, 'sk') * 0.4;
     let tries = 0;
     if (attempted) { tries = 1; if (p.maxTry > 1 && srand(sid, 't2') < 0.4) tries = 2; if (p.maxTry > 2 && tries === 2 && srand(sid, 't3') < 0.25) tries = 3; }
+    /* 首次缺考场景：第1次缺考计0分，之后补考才产生成绩 */
+    const missFirst = attempted && tries >= 2 && p.maxTry > 1 && srand(sid, 'miss1') < 0.12;
+    const lastSubmit = attempted ? ((p.start || '2026-08-10 09:00').slice(0, 10) + ' ' + String(9 + (i % 8)).padStart(2, '0') + ':' + String((i * 7) % 60).padStart(2, '0')) : '';
+    const submitAt = t => {
+      if (t === tries) return lastSubmit; /* 最后一次交卷时间与列表「最后交卷时间」一致 */
+      const d = new Date((p.start || '2026-08-10').slice(0, 10) + 'T00:00:00');
+      d.setDate(d.getDate() - 7 * (tries - t) + (i % 3));
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + ' ' + String(10 + (i % 6)).padStart(2, '0') + ':' + String((i * 11 + t * 17) % 60).padStart(2, '0');
+    };
     const attempts = [];
     for (let t = 1; t <= tries; t++) {
+      const miss = missFirst && t === 1;
       const skill = Math.min(0.97, base + (t - 1) * 0.12);
-      const detail = tryAnswers(sid, t, qs, skill);
+      const detail = miss ? qs.map(() => ({ given: [], ok: false, gain: 0 })) : tryAnswers(sid, t, qs, skill);
       const score = detail.reduce((s, d) => s + d.gain, 0);
-      const dur = Math.round(p.dur * (0.45 + srand(sid, 'tm', t) * 0.5));
-      attempts.push({ t, score, dur, detail });
+      const dur = miss ? null : Math.round(p.dur * (0.45 + srand(sid, 'tm', t) * 0.5));
+      attempts.push({ t, score, dur, detail, miss, submitted: miss ? '' : submitAt(t) });
     }
     let best = 0, bestTry = 0;
     attempts.forEach(a => { if (a.score >= best) { best = a.score; bestTry = a.t; } });
-    const lastSubmit = attempted ? ((p.start || '2026-08-10 09:00').slice(0, 10) + ' ' + String(9 + (i % 8)).padStart(2, '0') + ':' + String((i * 7) % 60).padStart(2, '0')) : '';
     rows.push({ sid, name, office, region: regionOf(office), attempted, tries, attempts, best, bestTry, total, passLine, pass: attempted && best >= passLine, lastSubmit });
   }
   rows.sort((a, b) => (b.attempted - a.attempted) || (b.best - a.best) || (a.sid < b.sid ? -1 : 1));
@@ -13208,6 +13193,7 @@ function openAnswerSheet(sid, tryNo) {
   if (!r) { toast('未找到该考生记录', 'error'); return; }
   const cur = tryNo || r.bestTry || 1;
   const at = r.attempts.find(a => a.t === cur) || r.attempts[0];
+  if (!at) { toast('该考生未参加考试', 'info'); return; }
   const qs = planQuestions(p);
   const essayIdx = essayIndexes(p);
   const gi = r.gi && r.gi.essay ? r.gi : gradeInfoOf(p, r, essayIdx);
@@ -13219,6 +13205,19 @@ function openAnswerSheet(sid, tryNo) {
   const passShown = gi.essay ? (pend ? '待阅卷' : (gi.finalPass ? '通过' : '未通过')) : (r.pass ? '通过' : '未通过');
   const passColor = gi.essay ? (pend ? 'var(--g500)' : (gi.finalPass ? 'var(--e600)' : 'var(--a600)')) : (r.pass ? 'var(--e600)' : 'var(--a600)');
   const graderShown = gi.essay ? (gi.grader ? esc(gi.grader) : '<span style="color:var(--a600)">未找到可用阅卷人，请联系管理员处理</span>') : '系统自动判分';
+  const bestAt = r.attempts.find(a => a.t === r.bestTry) || at;
+  /* 各试次成绩：缺考计0分；纯客观题取卷面分；含问答题时该次阅卷完成才计入人工分，否则待阅卷 */
+  const tryScore = a => {
+    if (a.miss) return 0;
+    if (!gi.essay) return a.score;
+    const g = GRADE_STORE[r.sid];
+    if (!g || !gi.idx.every(ix => g.scores[a.t + ':' + ix] != null)) return null;
+    const obj = a.detail.reduce((s, d, ix) => s + (gi.idx.includes(ix) ? 0 : (d.gain || 0)), 0);
+    return obj + gi.idx.reduce((s, ix) => s + g.scores[a.t + ':' + ix], 0);
+  };
+  const tryLabel = a => '第' + a.t + '次考试 · ' + (tryScore(a) == null ? '待阅卷' : tryScore(a) + '分');
+  const curScore = tryScore(at);
+  const gTime = GRADE_STORE[r.sid] && GRADE_STORE[r.sid].time;
   const oTag = i => String.fromCharCode(65 + i);
   const rows2 = qs.map((q, qi) => {
     const d = at.detail[qi];
@@ -13269,12 +13268,28 @@ function openAnswerSheet(sid, tryNo) {
       </div>
     </div>`;
   }).join('');
+  const curInfo = [
+    ['本次成绩', curScore == null ? '<span style="color:var(--a600)">待阅卷</span>' : '<b>' + curScore + '</b> 分'],
+    ['本次结果', at.miss ? '<span class="badge badge-gray">缺考</span>' : curScore == null ? '<span class="badge badge-amber">待阅卷</span>' : (curScore >= r.passLine ? '<span class="badge badge-green">通过</span>' : '<span class="badge badge-red">未通过</span>')],
+    ['本次用时', at.dur != null ? at.dur + ' 分钟' : '—'],
+    ['提交时间', at.submitted || '—'],
+    ['阅卷状态', gi.essay ? (gi.state === '已阅卷' ? '<span class="badge badge-green">已阅卷</span>' : '<span class="badge badge-amber">待阅卷</span>') : '<span style="color:var(--g500)">系统自动判分</span>'],
+  ].concat(gi.essay ? [
+    ['阅卷人', graderShown],
+    ['阅卷完成时间', curScore != null && gTime ? gTime : '—'],
+  ] : []);
   const body = `
     <div style="font-size:13.5px;color:var(--g700);line-height:2;margin:0 0 4px">
-      排名：<b>${r.rank}</b>　最终成绩：<b>${scoreShown}</b>　结果：<b style="color:${passColor}">${passShown}</b>（及格线 ${r.passLine} 分）　考试次数：<b>${r.tries}</b> 次　本次用时：<b>${at.dur || '—'}</b> 分钟　阅卷人：<b>${graderShown}</b>
+      排名：<b>${r.rank}</b>　最终成绩：<b>${scoreShown}</b>　最终结果：<b style="color:${passColor}">${passShown}</b>　最终用时：<b>${pend || bestAt.dur == null ? '—' : bestAt.dur + ' 分钟'}</b>　考试次数：<b>${r.tries}</b> 次${pend ? '　阅卷状态：<span class="badge badge-amber">待阅卷</span>' : ''}
     </div>
-    ${gi.essay && gi.graded ? `<div style="font-size:12.5px;color:var(--g600);margin:0 0 4px">客观题 <b>${gi.objective}</b> 分 + 问答题 <b>${gi.essaySum}</b> 分 = 最终成绩 <b>${gi.final}</b> 分</div>` : ''}
-    ${r.tries > 1 ? `<div class="tabs mt16">${r.attempts.map(a => `<span class="tab${a.t === cur ? ' active' : ''}" data-act="sheet-try" data-try="${a.t}">第 ${a.t} 次考试（${a.score} 分）</span>`).join('')}</div>` : ''}
+    ${gi.essay && gi.graded ? `<div style="font-size:12.5px;color:var(--g600);margin:0 0 4px">客观题 <b>${gi.objective}</b> 分 + 问答题 <b>${gi.essaySum}</b> 分 = 最终成绩 <b>${gi.final}</b> 分（及格线 ${r.passLine} 分）</div>` : `<div style="font-size:12.5px;color:var(--g600);margin:0 0 4px">及格线 ${r.passLine} 分</div>`}
+    ${r.tries > 1 ? `<div class="tabs mt16">${r.attempts.map(a => `<span class="tab${a.t === cur ? ' active' : ''}" data-act="sheet-try" data-try="${a.t}">${tryLabel(a)}</span>`).join('')}</div>` : ''}
+    <div class="card mt16" style="box-shadow:none;border:1px solid var(--g200)">
+      <div class="card-title">本次考试信息</div>
+      <div class="form-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:0">
+        ${curInfo.map(f => `<div class="field2"><label>${f[0]}</label><div style="padding:7px 0;font-size:13.5px">${f[1]}</div></div>`).join('')}
+      </div>
+    </div>
     <div class="card mt16"><div class="card-title">答题明细</div>
       <div style="margin-top:10px">${rows2}</div>
     </div>
@@ -13544,7 +13559,7 @@ function createDemoCertTasks() {
     { name: '李志远', org: '上海事务所', prevLevel: '3级技师', currentLevel: '审批中', certStatus: '审批中' },
     { name: '王丽', org: '上海事务所', prevLevel: '4级工程师', currentLevel: '审批中', certStatus: '审批中' },
     { name: '陈昊', org: '上海事务所', prevLevel: '1级技术员', currentLevel: '审批中', certStatus: '审批中' },
-    { name: '赵倩', org: '上海事务所', prevLevel: '新人', currentLevel: '不达标', certStatus: '已完成' },
+    { name: '赵倩', org: '上海事务所', prevLevel: '新人', currentLevel: '审批中', certStatus: '已完成' },
     { name: '孙雷', org: '杭州事务所', prevLevel: '5级技术主任', currentLevel: '5级技术主任', certStatus: '已完成' },
     { name: '周婷', org: '杭州事务所', prevLevel: '2级高级技术员', currentLevel: '审批中', certStatus: '审批中' },
     { name: '吴刚', org: '广州事务所', prevLevel: '3级技师', currentLevel: '审批中', certStatus: '审批中' },
@@ -14214,7 +14229,7 @@ function publishCertTaskConfirm(id) {
     { name: '李志远', org: '上海事务所', prevLevel: '3级技师', currentLevel: '审批中', certStatus: '审批中' },
     { name: '王丽', org: '上海事务所', prevLevel: '4级工程师', currentLevel: '审批中', certStatus: '审批中' },
     { name: '陈昊', org: '上海事务所', prevLevel: '1级技术员', currentLevel: '审批中', certStatus: '审批中' },
-    { name: '赵倩', org: '上海事务所', prevLevel: '新人', currentLevel: '不达标', certStatus: '已完成' },
+    { name: '赵倩', org: '上海事务所', prevLevel: '新人', currentLevel: '审批中', certStatus: '已完成' },
   ];
   t.persons = demoPersons;
   t.personCount = demoPersons.length;
