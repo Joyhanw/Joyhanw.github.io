@@ -1266,11 +1266,11 @@ const DEMO = {
   ],
   certs: [
     /* 演示：制冷与空调证故意留空，用于演示"未上传 → 上传 → OCR → 保存"完整流程 */
-    { name: '特种作业操作证·高处作业',       no: 'T3104-105-20218852', cat: '安全资质', org: 'XX应急管理部门', issue: '2020-10-12', expire: '2026-10-12', status: '临期', his: ['2020-10-16 首次上传', '2023-10-16 复审上传', '2026-08-20 更新证书'] },
-    { name: '特种作业操作证·金属焊接切割',   no: 'T3104-106-20243310', cat: '安全资质', org: 'XX应急管理部门', issue: '2024-06-20', expire: '2028-06-30', status: '正常' },
-    { name: '制冷设备维修工等级证',           no: 'GD2023-4-08820117', cat: '技能等级', org: '中国就业培训技术指导中心', issue: '2023-08-15', expire: '2026-09-02', status: '临期' },
-    { name: '售后大学·空调基础',             no: 'SHC101',            cat: '厂商认证', org: '大金售后大学', issue: '2026-01-10', expire: '2029-12-01', status: '正常' },
-    { name: '特种作业操作证·电工证',         no: 'T3104-107-20200091', cat: '安全资质', org: 'XX应急管理部门', issue: '2020-07-10', expire: '2026-07-20', status: '已过期' },
+    { name: '特种作业操作证·高处作业',       no: 'T3104-105-20218852', cat: '安全资质', org: 'XX应急管理部门', issue: '2020-10-12', vstart: '2020-10-12', expire: '2026-10-12', status: '临期', his: ['2020-10-16 首次上传', '2023-10-16 复审上传', '2026-08-20 更新证书'] },
+    { name: '特种作业操作证·金属焊接切割',   no: 'T3104-106-20243310', cat: '安全资质', org: 'XX应急管理部门', issue: '2024-06-20', vstart: '2024-06-20', expire: '2028-06-30', status: '正常' },
+    { name: '制冷设备维修工等级证',           no: 'GD2023-4-08820117', cat: '技能等级', org: '中国就业培训技术指导中心', issue: '2023-08-15', vstart: '2023-08-15', expire: '永久有效' },
+    { name: '售后大学·空调基础',             no: 'SHC101',            cat: '厂商认证', org: '大金售后大学', issue: '2026-01-10', vstart: '2026-01-10', expire: '2029-12-01', status: '正常' },
+    { name: '特种作业操作证·电工证',         no: 'T3104-107-20200091', cat: '安全资质', org: 'XX应急管理部门', issue: '2020-07-10', vstart: '2020-07-10', expire: '2026-07-20', status: '已过期' },
   ],
   examList: [
     { id: 1, title: '2026年Q3空调基础能力测评', mode: '正式', status: '已发布', people: 42, done: 31, avg: 84, pass: '88%' },
@@ -1714,7 +1714,7 @@ const OTHER_CERT_TYPES = [
   { label: '消防设施操作员证',     full: '消防设施操作员证',           cat: '行业资格' },
   { label: '厂商认证证书',         full: '厂商认证证书',               cat: '厂商认证' },
 ];
-/* 证书要求配置（后台参数配置 → 证书要求配置，我的证书种类来源）：种类 → 国家资格(可选) → 难易度 */
+/* 证书要求配置（后台参数配置 → 证书要求配置，我的证书种类来源）：种类 → 难易度 */
 const CERT_KINDS = [
   { key: 'refrig_op', label: '特种作业操作证－制冷与空调作业', hasGrade: false, difficulty: '简单' },
   { key: 'weld',      label: '特种作业操作证－金属焊接切割',   hasGrade: false, difficulty: '一般' },
@@ -1728,21 +1728,32 @@ const CERT_KINDS = [
     diffMap: { '维修电工1级': '困难', '维修电工2级': '较难', '维修电工3级': '中等', '维修电工4级': '简单', '维修电工5级': '简单' } },
 ];
 function findKind(label) { return CERT_KINDS.find(k => k.label === label) || null; }
-function kindDifficulty(label, grade) {
+function kindDifficulty(label) {
   const k = findKind(label);
   if (!k) return '';
   if (!k.hasGrade) return k.difficulty || '';
-  return (grade && k.diffMap && k.diffMap[grade]) || '';
+  return k.diffMap ? (k.diffMap[k.grades[0]] || '') : '';
 }
-/* 新增/更新证书弹窗：种类切换 → 联动刷新 国家资格下拉 与 难易度 */
+/* 新增/更新证书弹窗：种类切换 → 联动刷新 难易度 */
 function onCertKindChange(val) {
   const k = findKind(val);
-  const wrap = $('#c-grade-wrap'), ph = $('#c-grade-placeholder'), sel = $('#c-grade'), diff = $('#c-diff');
-  const hasGrade = !!(k && k.hasGrade && k.grades);
-  if (wrap) wrap.style.display = hasGrade ? '' : 'none';
-  if (ph) ph.style.display = hasGrade ? 'none' : '';
-  if (sel) sel.innerHTML = hasGrade ? k.grades.map(g => `<option>${g}</option>`).join('') : '<option value="">—</option>';
-  if (diff) diff.textContent = kindDifficulty(val, (sel && sel.value) || '') || (k && k.difficulty) || '—';
+  const diff = $('#c-diff');
+  if (diff) diff.textContent = kindDifficulty(val) || '—';
+  /* 特种作业操作证：复审日期必填、有效期限为日期区间；制冷证/电工：永久有效、无复审 */
+  const perm = !!(k && k.hasGrade);
+  const vr = $('#c-vrange'), vp = $('#c-vperm');
+  if (vr) vr.style.display = perm ? 'none' : 'flex';
+  if (vp) vp.style.display = perm ? 'block' : 'none';
+  ['review', 'review1', 'review2'].forEach(id => { const f = $('#f-' + id); if (f) f.style.display = perm ? 'none' : ''; });
+  const rl = $('#c-review-label');
+  if (rl) rl.textContent = '复审日期';
+}
+/* 制冷证/电工（技能等级类）：永久有效、无复审日期 */
+function isPermanentCert(x) {
+  if (!x) return false;
+  if (x.expire === '永久有效') return true;
+  const k = findKind(x.kind || '');
+  return !!(k && k.hasGrade);
 }
 /* 是否属于必备证书（3类作业证） */
 function isReqCert(name) { return CERT_TYPES.some(t => String(name).indexOf(t.match) >= 0); }
@@ -1810,12 +1821,12 @@ function genCerts(i) {
   const org = 'XX应急管理部门';
   const near = [2, 4, 6, 8].indexOf(i) >= 0;
   const base = [
-    { name: '特种作业操作证·制冷与空调作业', no: 'T3104-10' + i + '-2024' + (4820 + i), cat: '安全资质', org, issue: '2024-03-12', expire: '2030-03-12' },
+    { name: '特种作业操作证·制冷与空调作业', no: 'T3104-10' + i + '-2024' + (4820 + i), cat: '安全资质', org, issue: '2024-03-12', vstart: '2024-03-12', expire: '2030-03-12' },
     { name: '特种作业操作证·高处作业', no: 'T3104-11' + i + '-2021' + (8850 + i), cat: '安全资质', org, issue: near ? '2020-10-12' : '2025-04-01', expire: near ? '2026-10-12' : '2031-04-01' },
-    { name: '特种作业操作证·金属焊接切割', no: 'T3104-12' + i + '-2024' + (3330 + i), cat: '安全资质', org, issue: '2024-06-20', expire: '2030-06-20' },
-    { name: '制冷设备维修工等级证', no: 'GD202' + i + '-4-088' + (100 + i), cat: '技能等级', org: '中国就业培训技术指导中心', issue: '2023-08-15', expire: '2029-08-15' },
+    { name: '特种作业操作证·金属焊接切割', no: 'T3104-12' + i + '-2024' + (3330 + i), cat: '安全资质', org, issue: '2024-06-20', vstart: '2024-06-20', expire: '2030-06-20' },
+    { name: '制冷设备维修工等级证', no: 'GD202' + i + '-4-088' + (100 + i), cat: '技能等级', org: '中国就业培训技术指导中心', issue: '2023-08-15', vstart: '2023-08-15', expire: '永久有效' },
   ];
-  if (near) base.push({ name: '特种作业操作证·电工证', no: 'T3104-13' + i + '-2020' + (900 + i), cat: '安全资质', org, issue: '2020-07-10', expire: '2026-07-20' });
+  if (near) base.push({ name: '特种作业操作证·电工证', no: 'T3104-13' + i + '-2020' + (900 + i), cat: '安全资质', org, issue: '2020-07-10', vstart: '2020-07-10', expire: '2026-07-20' });
   return base;
 }
 DEMO.members[0].certs = DEMO.certs;
@@ -2493,6 +2504,8 @@ function handleAct(act, el) {
     case 'member-tab': APP.tab.detail = d.tab; renderMemberBody(+d.idx); break;
     case 'cert-open': openCertDetailDrawer(+d.idx); break;
     case 'mycert-view': closeDropdowns(); openMyCertDrawer(+d.key); break;
+    case 'cert-preview': closeDropdowns(); openCertPreview(+d.idx, +d.key); break;
+    case 'cert-file-preview': closeDropdowns(); openCertFilePreview(); break;
     case 'cert-upload': closeDropdowns(); certMaintainGate(() => openCertUpload(d.idx !== undefined ? +d.idx : null, null, d.mode || '', d.type || '')); break;
     case 'cert-update': closeDropdowns(); certMaintainGate(() => openCertUpload(+d.idx, +d.key, 'update')); break;
     case 'pi-doc': piDocView(); break;
@@ -2521,39 +2534,28 @@ function handleAct(act, el) {
       break;
     }
     case 'cert-save': {
-      // 证书名称：必备证书 / 其他证书更新时锁定；其他证书新增支持预设类型或自定义名称
-      let cname = '';
-      const cs = $('#c-name');
-      if (cs) {
-        if (cs.tagName === 'SELECT' && cs.value === '__custom__') cname = ($('#c-name-custom') ? $('#c-name-custom').value : '').trim();
-        else cname = cs.value.trim();
-      }
-      // 证书分类：必备→安全资质；其他→预设类型自带分类；自定义→行业资格
+      // 证书名称/分类：由 种类 自动生成（有等级→技能等级，否则安全资质）
+      const kSel = $('#c-kind');
+      const k = kSel ? findKind(kSel.value) : null;
+      const cname = (k && k.hasGrade && k.grades && k.grades.length) ? k.grades[0] : ((kSel && kSel.value) ? kSel.value.replace('－', '·') : '');
       let ccat = '安全资质';
-      const catSel = $('#c-name');
-      if (catSel && catSel.tagName === 'SELECT') {
-        const opt = catSel.options[catSel.selectedIndex];
-        ccat = (opt && opt.dataset && opt.dataset.cat) ? opt.dataset.cat : (catSel.value === '__custom__' ? '行业资格' : ccat);
-      }
-      const ccatH = $('#c-cat');
-      if (ccatH) ccat = ccatH.value || ccat;
-      // 当前表单无证书名称字段：由 种类 + 国家资格 自动生成名称与分类，不做名称校验
-      if (!cname) {
-        const kSel = $('#c-kind');
-        const k = kSel ? findKind(kSel.value) : null;
-        const gSel = $('#c-grade');
-        cname = (k && k.hasGrade && gSel && gSel.value) ? gSel.value : ((kSel && kSel.value) ? kSel.value.replace('－', '·') : '');
-        if (!catSel && !ccatH && k && k.hasGrade) ccat = '技能等级';
-      }
+      if (k && k.hasGrade) ccat = '技能等级';
+      // 证书信息：姓名/证书编号/有效期限 必填；证书附件新增时必传（编辑时已有附件不强制重传）
+      const pname = $('#c-cname').value.trim();
       const cno = $('#c-no').value.trim();
-      const cissue = $('#c-issue').value;
+      const cvstart = $('#c-vstart').value;
       const cexp = $('#c-expire').value;
+      if (!pname) { toast('请填写姓名', 'error'); return; }
       if (!cno) { toast('请填写证书编号', 'error'); return; }
-      if (!cissue) { toast('请填写发证日期', 'error'); return; }
-      if (!cexp) { toast('请填写有效期至', 'error'); return; }
-      const rec = { name: cname, cat: ccat, no: cno, org: $('#c-org').value.trim(), issue: cissue, expire: cexp };
-      const cnote = $('#c-note') ? $('#c-note').value.trim() : '';
-      if (cnote) rec.note = cnote;
+      /* 制冷证/电工：有效期限=永久有效（无起止区间、无复审）；特种作业操作证：起止区间必填、复审选填 */
+      const perm = !!(k && k.hasGrade);
+      if (!perm && (!cvstart || !cexp)) { toast('请选择有效期限起止日期', 'error'); return; }
+      const mode0 = d.mode || 'create';
+      if (mode0 !== 'edit' && mode0 !== 'update' && !APP.certFileSet) { toast('请上传证书附件', 'error'); return; }
+      const rec = { name: cname, cat: ccat, kind: (kSel && kSel.value) || '', diff: kindDifficulty((kSel && kSel.value) || ''), no: cno, pname, issue: cvstart, vstart: cvstart, expire: perm ? '永久有效' : cexp };
+      if (!perm) { const rv = ($('#c-review') || {}).value || ''; if (rv) rec.review = rv; }
+      if (APP.certOcr) rec.ocr = APP.certOcr;                     // OCR 识别原值：再次编辑时用于比对红字提示
+      if (APP.certFileSet && APP.certFile) rec.file = { name: APP.certFile.name, type: APP.certFile.type, dataUrl: APP.certFile.dataUrl || '' };
       const mode = d.mode || 'create';
       const key = (d.key !== undefined && d.key !== '') ? +d.key : -1;
       let mi = (d.idx !== undefined && d.idx !== '') ? +d.idx : -1;
@@ -3478,7 +3480,7 @@ function handleAct(act, el) {
     case 'se-detail': {
       APP.seDetailIdx = +d.idx;
       APP.seDetailBack = d.back || APP.view || 'dash_comp';
-      APP.tab.seDetail = 'info';
+      APP.tab.seDetail = d.tab || 'info';
       APP.q.pse = {};              /* 业绩表现默认本期 */
       APP.tab.pp = 'model';
       APP.view = 'se_detail';
@@ -3981,13 +3983,18 @@ function vCertSE(el) {
     ${certs.length ? certs.map(o => myCertCard2(m, o)).join('') : '<div class="empty" style="grid-column:1/-1;padding:32px 20px"><i class="ri-award-line"></i>暂无证书，请点击右上角新增</div>'}
   </div>`;
 }
-/* 工程师端：统一证书卡片（种类+国家资格+难易度+编号+有效期+按钮） */
+/* 有效期限区间展示：永久有效证书直接显示「永久有效」，不拼起始日期 */
+function certRange(x) {
+  if (x.expire === '永久有效') return '永久有效';
+  const st = x.vstart || x.issue || '';
+  return st ? st + ' 至 ' + (x.expire || '—') : (x.expire || '—');
+}
+/* 工程师端：统一证书卡片（种类+难易度+证号+有效期限+按钮） */
 function myCertCard2(m, o) {
   const x = o.x, key = o.i;
   const st = certStatus(x);
   const stc = { '正常': 'st-ok', '临期': 'st-near', '已过期': 'st-exp' }[st] || 'st-ok';
   const kind = x.kind || x.name || '—';
-  const grade = x.grade || (x.hasGrade ? '—' : '-');
   const diff = x.diff || '';
   const ico = 'ri-award-line';
   return `<div class="cc ${stc}">
@@ -3995,10 +4002,9 @@ function myCertCard2(m, o) {
       ${statusBadge(st)}</div>
     <div class="cc-name" style="font-size:14px">${esc(kind)}</div>
     <div class="cc-info">
-      <div class="cc-kv"><span class="k">国家资格</span><span class="v">${esc(grade)}</span></div>
       <div class="cc-kv"><span class="k">难易度</span><span class="v">${diff || '—'}</span></div>
       <div class="cc-kv"><span class="k">证书编号</span><span class="v mono">${esc(x.no || '—')}</span></div>
-      <div class="cc-kv"><span class="k">有效期至</span><span class="v">${x.expire || '—'}</span></div>
+      <div class="cc-kv"><span class="k">有效期限</span><span class="v">${certRange(x)}</span></div>
     </div>
     <div class="cc-foot">
       <button class="btn btn-outline btn-sm" data-act="mycert-view" data-key="${key}"><i class="ri-eye-line"></i>查看</button>
@@ -4011,25 +4017,19 @@ function myCertCard2(m, o) {
 function openMyCertDrawer(key) {
   const m = DEMO.members[SE_SELF_IDX], x = m.certs[key];
   if (!x) return;
-  const st = certStatus(x), isOld = isOldCert(x.issue);
   const kind = x.kind || x.name || '—';
-  const grade = x.grade || (x.kind && findKind(x.kind) && !findKind(x.kind).hasGrade ? '-' : '—');
   const diff = x.diff || '';
-  openDrawer(drawerHead('证', esc(kind), esc(grade !== '-' ? grade : '')) + `
+  openDrawer(drawerHead('证', esc(kind), esc('')) + `
     <div style="padding:4px 24px 24px">
       <div class="d-sec">证书附件</div>
-      <div class="cf-img show" style="margin:0 0 8px"><i class="ri-file-image-line"></i><div>${esc(kind)}</div><small>附件预览（图片 / PDF）</small></div>
-      <div class="d-sec">基本信息</div>
+      <div class="cf-img show" style="margin:0 0 8px;cursor:pointer" data-act="cert-preview" data-idx="${SE_SELF_IDX}" data-key="${key}" title="点击预览"><i class="ri-file-image-line"></i><div>${esc(kind)}</div><small>点击预览附件（图片 / PDF）</small></div>
+      <div class="d-sec">证书信息</div>
       <div class="form-grid">
-        <div class="field2"><label>种类</label><div class="cert-val">${esc(kind)}</div></div>
-        <div class="field2"><label>国家资格</label><div class="cert-val">${esc(grade)}</div></div>
-        <div class="field2"><label>难易度</label><div class="cert-val">${diff || '—'}</div></div>
         <div class="field2"><label>证书编号</label><div class="cert-val mono">${esc(x.no || '—')}</div></div>
-        <div class="field2"><label>发证机构</label><div class="cert-val">${esc(x.org || '—')}</div></div>
-        <div class="field2"><label>发证日期</label><div class="cert-val">${x.issue || '—'}</div></div>
-        <div class="field2"><label>有效期至</label><div class="cert-val">${x.expire || '—'}</div></div>
-        <div class="field2"><label>当前状态</label><div class="cert-val">${statusBadge(st)}</div></div>
-        <div class="field2 full"><label>备注</label><div class="cert-val">${esc(x.note || '—')}</div></div>
+        <div class="field2"><label>姓名</label><div class="cert-val">${esc(x.pname || m.name)}</div></div>
+        ${diff ? `<div class="field2"><label>难易度</label><div class="cert-val">${esc(diff)}</div></div>` : ''}
+        <div class="field2"><label>有效期限</label><div class="cert-val">${certRange(x)}</div></div>
+        ${isPermanentCert(x) ? '' : `<div class="field2"><label>复审日期</label><div class="cert-val">${x.review || '—'}</div></div>`}
       </div>
     </div>`);
 }
@@ -4837,7 +4837,7 @@ function seRankTable(scope, back) {
     <tr><th>排名</th><th>SE姓名</th><th>能力等级</th><th class="right">综合得分</th></tr>
     ${rows.map((r, i) => { const m = r.m; return `<tr>
       <td>${i + 1}</td>
-      <td class="fw600"><a href="javascript:;" data-act="se-detail" data-idx="${r.idx}" data-back="${back}" style="color:var(--e600);text-decoration:none">${alInnerBadge(m.name)}${esc(m.name)}</a></td>
+      <td class="fw600"><a href="javascript:;" data-act="se-detail" data-idx="${r.idx}" data-back="${back}" data-tab="${back === 'team_board' ? 'tech' : 'info'}" style="color:var(--e600);text-decoration:none">${alInnerBadge(m.name)}${esc(m.name)}</a></td>
       <td><span class="badge ${LV_BADGE[m.level] || 'badge-gray'}">${m.level}</span></td>
       <td class="right num fw600">${r.score}</td></tr>`; }).join('')}
   </table>`;
@@ -4867,7 +4867,7 @@ function vOfficeDetail(el) {
       <tr><th>排名</th><th>姓名</th><th>当前能力等级</th><th class="right">综合得分</th><th class="right">理论考试</th><th class="right">实操考试</th><th class="right">个人业绩</th><th class="right">KPI</th><th class="right">面谈/答辩</th><th>证书资质</th></tr>
       ${rows.map((r, i) => { const m = r.m; return `<tr>
         <td>${i + 1}</td>
-        <td class="fw600"><a href="javascript:;" data-act="se-detail" data-idx="${r.idx}" data-back="office_detail" style="color:var(--e600);text-decoration:none"><span class="badge ${m.type === '内' ? 'badge-green' : 'badge-amber'}" style="font-size:10px;padding:1px 5px;margin-right:4px">${m.type}</span>${esc(m.name)}</a></td>
+        <td class="fw600"><a href="javascript:;" data-act="se-detail" data-idx="${r.idx}" data-back="office_detail" data-tab="tech" style="color:var(--e600);text-decoration:none"><span class="badge ${m.type === '内' ? 'badge-green' : 'badge-amber'}" style="font-size:10px;padding:1px 5px;margin-right:4px">${m.type}</span>${esc(m.name)}</a></td>
         <td><span class="badge ${LV_BADGE[m.level] || 'badge-gray'}">${m.level}</span></td>
         <td class="right num fw600">${r.score}</td>
         ${r.subs.map(v => `<td class="right num">${v}</td>`).join('')}
@@ -5817,12 +5817,12 @@ function vLedger(el) {
     </div>
     <div class="card mt16">
       <table class="tbl">
-        <tr><th>证书名称</th><th>编号</th><th>SE姓名</th><th>事务所</th><th>分类</th><th>发证机构</th><th>有效期</th><th>状态</th><th>操作</th></tr>
+        <tr><th>证书名称</th><th>编号</th><th>SE姓名</th><th>事务所</th><th>分类</th><th>发证机构</th><th>有效期限</th><th>状态</th><th>操作</th></tr>
         ${rows.length ? rows.map((r, i) => `<tr>
           <td class="fw600">${esc(r.name)}</td><td class="mono">${esc(r.no)}</td>
           <td><span style="font-weight:600">${esc(r.se)}</span></td><td>${esc(r.office)}</td>
           <td>${r.cat}</td><td style="font-size:12px;color:var(--g600)">${r.org}</td>
-          <td>${r.expire}</td><td>${statusBadge(r.status)}</td>
+          <td>${certRange(r)}</td><td>${statusBadge(r.status)}</td>
           <td><button class="btn btn-sm" data-act="lgc-order" data-idx="${i}"><i class="ri-eye-line"></i>查看</button></td></tr>`).join('')
         : '<tr><td colspan="9"><div class="empty"><i class="ri-inbox-line"></i>无符合条件的证书记录</div></td></tr>'}
       </table>
@@ -5897,7 +5897,7 @@ function openLedgerCert(idx) {
     ${row('分类', r.cat)}
     ${row('发证机构', esc(r.org))}
     ${row('发证日期', r.issue)}
-    ${row('有效期至', r.expire)}
+    ${row('有效期限', certRange(r))}
     ${row('状态', statusBadge(r.status))}
     ${r.his && r.his.length ? `<div style="font-size:13px;font-weight:700;color:var(--g700);margin:16px 0 8px;border-top:1px dashed var(--g200);padding-top:14px">操作记录</div>
     ${r.his.map(h => `<div style="font-size:12.5px;color:var(--g600);padding:4px 0;border-bottom:1px solid var(--g100)"><i class="ri-time-line" style="margin-right:6px"></i>${esc(h)}</div>`).join('')}</div>` : ''}
@@ -5932,6 +5932,7 @@ function seDetailInfo(m) {
       ${field('手机号', esc(m.phone || '-'))}
       ${field('工号', m.id)}
       ${field('SE担当号', esc(m.seDutyNo || '-'))}
+      ${field('唯一码', esc(m.uniqueCode || '-'))}
       ${field('所属组织', m.office)}
       ${field('岗位', esc(m.postNature || '-'))}
       ${field('技术岗位', esc(m.techPost || '-'))}
@@ -6023,7 +6024,7 @@ function memberBody(idx) {
     </div>`;
   if (tab === 'cert') return `
     <div class="card"><div class="card-title"><i class="ri-award-line" style="color:var(--e500)"></i>证书台账</div>
-      <table class="tbl"><tr><th>证书名称</th><th>编号</th><th>有效期至</th><th>状态</th></tr>
+      <table class="tbl"><tr><th>证书名称</th><th>证书编号</th><th>有效期至</th><th>状态</th></tr>
       ${DEMO.certs.map(c => `<tr><td>${esc(c.name)}</td><td class="mono">${esc(c.no)}</td><td>${c.expire}</td><td>${statusBadge(c.status)}</td></tr>`).join('')}</table>
     </div>`;
   if (tab === 'exam') return `
@@ -6584,7 +6585,7 @@ function personBody(m, office, sameOffice) {
     </div>
     <div class="card"><div class="card-title"><i class="ri-award-line" style="color:var(--e500)"></i>证书资质</div>
       <table class="tbl" style="margin-top:4px">
-        <tr><th>证书名称</th><th>证书类别</th><th style="width:110px">有效期</th><th style="width:80px">状态</th></tr>
+        <tr><th>证书种类</th><th>证书类别</th><th style="width:110px">有效期至</th><th style="width:80px">状态</th></tr>
         ${certRows || '<tr><td colspan="4"><div class="empty"><i class="ri-inbox-line"></i>暂无证书数据</div></td></tr>'}
       </table>
     </div>
@@ -6627,7 +6628,7 @@ function ppShortfall(m, refSub) {
     </table>
   </div>`;
 }
-/* 证书信息：证书名称｜有效期至｜状态 */
+/* 证书信息：证书种类｜有效期至｜状态 */
 function ppCert(m) {
   const badge = st => st === '正常' ? '<span class="badge badge-green">有效</span>'
     : st === '临期' ? '<span class="badge badge-amber">即将到期</span>'
@@ -6641,7 +6642,7 @@ function ppCert(m) {
   const otherRows = otherCerts(m).map(o => `<tr><td class="fw600" style="color:var(--g600)">${esc(o.x.name)}<span style="color:var(--g400);font-weight:400;margin-left:6px">（其他）</span></td>
     <td>${o.x.expire || '—'}</td><td>${badge(certStatus(o.x))}</td></tr>`).join('');
   return `<div class="card mt16"><div class="card-title"><i class="ri-award-line" style="color:var(--e500)"></i>证书信息</div>
-    <table class="tbl"><tr><th>证书名称</th><th style="width:180px">有效期至</th><th style="width:160px">状态</th></tr>${rows}${otherRows}</table>
+    <table class="tbl"><tr><th>证书种类</th><th style="width:180px">有效期至</th><th style="width:160px">状态</th></tr>${rows}${otherRows}</table>
   </div>`;
 }
 /* ================= 管理端：证书 ================= */
@@ -10229,7 +10230,7 @@ function paramCertRequirement() {
         <tr>
           <th rowspan="2" class="cr-l nbl stk1">证书类型</th>
           <th rowspan="2" class="cr-l stk2">种类</th>
-          <th rowspan="2" class="cr-l stk3">国家资格</th>
+          <th rowspan="2" class="cr-l stk3">难易度</th>
           <th rowspan="2" class="cr-l" style="width:72px">难易度</th>
           <th rowspan="2" class="cr-c cr-sep">1级技术员</th>
           <th colspan="3" class="cr-mh cr-sep">2级高级技术员</th>
@@ -11135,7 +11136,7 @@ const I18N_DATA = [
   { key: 'exam.score',     mod: '考试', zh: '考试成绩', ja: '試験成績',              en: 'Exam Score',                         time: '2026-09-04 15:48' },
   { key: 'exam.passLine',  mod: '考试', zh: '合格分数', ja: '合格基準点',            en: '',                                   time: '2026-09-06 09:10' },
   { key: 'cert.type',      mod: '认证', zh: '证书类型', ja: '証書タイプ',            en: 'Certificate Type',                   time: '2026-09-05 17:26' },
-  { key: 'cert.expiry',    mod: '认证', zh: '有效期至', ja: '有効期限',              en: 'Valid Until',                        time: '2026-09-05 17:26' },
+  { key: 'cert.expiry',    mod: '认证', zh: '有效期限', ja: '有効期限',              en: 'Valid Period',                        time: '2026-09-05 17:26' },
   { key: 'approve.submit', mod: '审批', zh: '提交审批', ja: '承認申請',              en: 'Submit for Approval',                time: '2026-09-08 10:02' },
   { key: 'approve.pass',   mod: '审批', zh: '审批通过', ja: '承認済み',              en: 'Approved',                           time: '2026-09-08 10:02' },
   { key: 'approve.reject', mod: '审批', zh: '审批驳回', ja: '',                      en: 'Rejected',                           time: '2026-09-10 13:44' },
@@ -11283,6 +11284,62 @@ function piDocView() {
 }
 
 /* 上传证书（管理员：列表页选 SE / 明细页锁定 SE；工程师：本人）→ OCR 辅助识别 → 人工核对保存 */
+/* 一期 OCR 识别项（姓名/证书编号/有效期限）与人工填写不一致 → 字段名后红字提示，不影响提交 */
+function certOcrCheck() {
+  const o = APP.certOcr;
+  [['no', 'c-no'], ['pname', 'c-cname'], ['expire', 'c-expire']].forEach(([k, id]) => {
+    const tag = $('#' + id + '-mis'), el = $('#' + id);
+    if (tag && el) tag.style.display = (o && o[k] && o[k] !== el.value) ? 'inline' : 'none';
+  });
+}
+/* 演示数据无真实附件：按证书字段生成模拟证书图（SVG） */
+function certMockImg(x) {
+  const t = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420">`
+    + `<rect width="640" height="420" fill="#fdfcf7"/><rect x="14" y="14" width="612" height="392" fill="none" stroke="#b45309" stroke-width="3"/><rect x="26" y="26" width="588" height="368" fill="none" stroke="#d97706"/>`
+    + `<text x="320" y="88" text-anchor="middle" font-size="28" font-weight="bold" fill="#78350f">${t(x.kind || x.name || '证书')}</text>`
+    + `<text x="320" y="114" text-anchor="middle" font-size="13" fill="#92400e">CERTIFICATE</text>`
+    + `<line x1="200" y1="134" x2="440" y2="134" stroke="#d97706"/>`
+    + `<text x="160" y="192" font-size="15" fill="#57534e">姓名</text><text x="250" y="192" font-size="17" font-weight="bold" fill="#1c1917">${t(x.pname || '—')}</text>`
+    + `<text x="160" y="232" font-size="15" fill="#57534e">证书编号</text><text x="250" y="232" font-size="17" font-family="monospace" fill="#1c1917">${t(x.no || '—')}</text>`
+    + `<text x="160" y="272" font-size="15" fill="#57534e">有效期限</text><text x="250" y="272" font-size="17" fill="#1c1917">${t(x.expire === '永久有效' ? '永久有效' : ((x.vstart || '') + ' 至 ' + (x.expire || '—')))}</text>`
+    + `<text x="160" y="312" font-size="15" fill="#57534e">复审日期</text><text x="250" y="312" font-size="17" fill="#1c1917">${t(isPermanentCert(x) ? '—' : (x.review || '—'))}</text>`
+    + `<text x="320" y="376" text-anchor="middle" font-size="12" fill="#a8a29e">演示用模拟证书</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+/* 证书附件预览：图片直接展示（真实上传读 dataURL，演示数据用模拟证书图），PDF 显示文件信息 */
+function openCertPreview(idx, key) {
+  const m = DEMO.members[idx];
+  const x = m && m.certs ? m.certs[key] : null;
+  if (!x) return;
+  const f = x.file || {};
+  const isPdf = f.type === 'application/pdf' || (!f.dataUrl && /\.pdf$/i.test(f.name || ''));
+  const name = f.name || ((x.kind || x.name || '证书') + (isPdf ? '.pdf' : '.jpg'));
+  openModal(modalHead('证书附件预览', esc(name)) + `
+    <div class="modal-body" style="text-align:center">
+      ${isPdf
+        ? `<div style="padding:48px 24px;color:var(--g400)"><i class="ri-file-pdf-line" style="font-size:52px;color:var(--r500)"></i><div style="margin-top:12px;font-size:13.5px;font-weight:600;color:var(--g600)">${esc(name)}</div><div style="margin-top:4px;font-size:12px">PDF 文档 · ${esc(x.pname || '')}的证书附件</div></div>`
+        : `<img src="${f.dataUrl || certMockImg(x)}" alt="证书附件" style="max-width:100%;border-radius:8px;border:1px solid var(--g200);background:#fff">`}
+    </div>
+    <div class="modal-foot"><button class="btn" data-act="close-modal">关闭</button></div>`);
+}
+/* 新增/编辑弹窗内：刚上传的真实附件预览（编辑态未重传时回退到已存证书附件） */
+function openCertFilePreview() {
+  const f = APP.certFile;
+  if (!f) {
+    const ref = APP.certEditRef;
+    if (ref) openCertPreview(ref.idx, ref.key);
+    return;
+  }
+  const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+  openModal(modalHead('证书附件预览', esc(f.name)) + `
+    <div class="modal-body" style="text-align:center">
+      ${isPdf
+        ? `<div style="padding:48px 24px;color:var(--g400)"><i class="ri-file-pdf-line" style="font-size:52px;color:var(--r500)"></i><div style="margin-top:12px;font-size:13.5px;font-weight:600;color:var(--g600)">${esc(f.name)}</div><div style="margin-top:4px;font-size:12px">PDF 文档</div></div>`
+        : `<img src="${f.dataUrl || ''}" alt="证书附件" style="max-width:100%;border-radius:8px;border:1px solid var(--g200)">`}
+    </div>
+    <div class="modal-foot"><button class="btn" data-act="close-modal">关闭</button></div>`);
+}
 function openCertUpload(idx, oldKey, mode, lockType) {
   mode = mode || 'create';
   const admin = APP.role !== 'se';
@@ -11304,11 +11361,9 @@ function openCertUpload(idx, oldKey, mode, lockType) {
   // 种类下拉（来源 CERT_KINDS）
   const kindOpts = CERT_KINDS.map(k => `<option value="${esc(k.label)}"${oldKind === k.label ? ' selected' : ''}>${esc(k.label)}</option>`).join('');
   const curKind = oldKind || CERT_KINDS[0].label;
-  // 国家资格下拉（根据当前种类联动，JS动态控制）
+  // 难易度（根据当前种类联动，JS动态控制）
   const curK = findKind(curKind);
-  const gradeOpts = (curK && curK.hasGrade && curK.grades) ? curK.grades.map(g => `<option${oldGrade === g ? ' selected' : ''}>${g}</option>`).join('') : '';
-  const showGrade = curK && curK.hasGrade;
-  const diffVal = old ? (old.diff || '') : (curK ? kindDifficulty(curKind, oldGrade) : '');
+  const diffVal = old ? (old.diff || '') : (curK ? kindDifficulty(curKind) : '');
   // 名称锁定：更新已有证书 / 必备证书卡片进入；其他证书更新时按原名称锁定
   const lockName = !!old || !!typeDef;
   // 证书类型选择区
@@ -11317,10 +11372,12 @@ function openCertUpload(idx, oldKey, mode, lockType) {
     <select class="select" id="c-kind" onchange="onCertKindChange(this.value)">
       ${CERT_KINDS.map(k => `<option value="${esc(k.label)}"${oldKind === k.label ? ' selected' : ''}>${esc(k.label)}</option>`).join('')}
     </select></div>`;
-  gradeHtml = `<div class="field2" id="c-grade-wrap" style="${showGrade ? '' : 'display:none'}"><label>国家资格</label>
-    <select class="select" id="c-grade">${gradeOpts || '<option value="">—</option>'}</select></div>
-    <div class="field2" id="c-grade-placeholder" style="${showGrade ? 'display:none' : ''}"><label>国家资格</label><div class="cert-val" style="color:var(--g400)">-</div></div>`;
-  openModal(modalHead(title, '', '') + `
+  gradeHtml = '';
+  // 证书信息：姓名默认代入当前持证人（工程师=登录本人），可修改
+  const holderName = old && old.pname ? old.pname : (m ? m.name : (!admin ? DEMO.members[SE_SELF_IDX].name : ''));
+  const vStart = old ? (old.vstart || old.issue || '') : '';
+  const namePh = admin && !m ? '选择持证人后自动带入' : '自动代入当前登录人，可修改';
+  openModal('<div data-lg></div>' + modalHead(title, '', '') + `
     <div class="modal-body">
       ${lock || seSel}
       ${kindHtml}
@@ -11331,50 +11388,96 @@ function openCertUpload(idx, oldKey, mode, lockType) {
       <div class="upload-box" id="cert-ocr">
         <i class="ri-upload-cloud-2-line"></i><div class="up-t">上传证书图片 / PDF</div>
         <div class="up-s">上传后自动 OCR 识别并回填，识别失败可手工填写 · jpg / png / pdf，单文件 ≤ 5MB</div></div>
+      <div id="cert-file-row" style="display:none;margin-top:8px;font-size:12.5px;color:var(--g600)">已上传：<b id="cert-file-name"></b> · <a data-act="cert-file-preview" style="color:var(--e600);cursor:pointer;text-decoration:underline">预览附件</a></div>
       <input type="file" id="cert-file" accept="image/*,application/pdf" style="display:none">
       <div class="divider"></div>
       <div style="font-size:13px;font-weight:700;color:var(--g700);margin-bottom:12px">证书信息<span id="ocr-state" style="font-weight:400;font-size:12px;color:var(--g400)"></span></div>
       <div class="form-grid">
-        <div class="field2"><label><span class="req">*</span>证书编号</label><input class="input" id="c-no" value="${old ? esc(old.no || '') : ''}"></div>
-        <div class="field2"><label>发证机构</label><input class="input" id="c-org" value="${old ? esc(old.org || '') : ''}"></div>
-        <div class="field2"><label><span class="req">*</span>发证日期</label><input class="input" id="c-issue" type="date" value="${old ? old.issue || '' : ''}"></div>
-        <div class="field2"><label><span class="req">*</span>有效期至</label><input class="input" id="c-expire" type="date" value="${old ? old.expire : ''}"></div>
-        <div class="field2 full"><label>备注</label><input class="input" id="c-note" placeholder="非必填" value="${old ? esc(old.note || '') : ''}"></div>
+        <div class="field2"><label><span class="req">*</span>证书编号<span id="c-no-mis" style="display:none;margin-left:6px;font-size:12px;font-weight:500;color:var(--r600)">与识别不一致</span></label><input class="input" id="c-no" placeholder="请输入证书编号" value="${old ? esc(old.no || '') : ''}"></div>
+        <div class="field2"><label><span class="req">*</span>姓名<span id="c-cname-mis" style="display:none;margin-left:6px;font-size:12px;font-weight:500;color:var(--r600)">与识别不一致</span></label><input class="input" id="c-cname" placeholder="${namePh}" value="${esc(holderName)}"></div>
+        <div class="field2"><label><span class="req">*</span>有效期限<span id="c-expire-mis" style="display:none;margin-left:6px;font-size:12px;font-weight:500;color:var(--r600)">与识别不一致</span></label>
+          <div id="c-vrange" style="display:flex;align-items:center;gap:6px">
+            <input class="input" id="c-vstart" type="date" value="${vStart}" style="flex:1;min-width:0">
+            <span style="color:var(--g400)">至</span>
+            <input class="input" id="c-expire" type="date" value="${old ? old.expire || '' : ''}" style="flex:1;min-width:0">
+          </div>
+          <div id="c-vperm" class="cert-val" style="display:none;padding:7px 0;font-weight:600;color:var(--g700)">永久有效</div></div>
+        <div class="field2" id="f-review"><label id="c-review-label">复审日期</label><input class="input" id="c-review" type="date" value="${old ? old.review || '' : ''}"></div>
       </div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-act="close-modal">取消</button>
       <button class="btn btn-primary" data-act="cert-save" data-mode="${mode}" data-idx="${admin && m ? idx : ''}" data-key="${typeof oldKey === 'number' ? oldKey : ''}">保存</button></div>`);
-  // 上传 → 模拟 OCR 回填（可人工修正）
+  // 初始按当前种类刷新 复审日期/有效期限 显隐
+  onCertKindChange(curKind);
+  // 上传 → 模拟 OCR 回填（一期识别：姓名/证书编号/有效期限，人工可修改，不一致红字提示不影响保存）；附件必填：未上传不可保存（编辑已有附件除外）
   const box = $('#cert-ocr'), file = $('#cert-file');
+  APP.certFileSet = false;
+  APP.certFile = null;
+  APP.certOcr = old && old.ocr ? old.ocr : null;      // 编辑时载入已存识别值用于比对
+  APP.certEditRef = (m && typeof oldKey === 'number') ? { idx: DEMO.members.indexOf(m), key: oldKey } : null;
+  // 编辑时已有附件：显示文件名与预览入口
+  if (old) {
+    const frw = $('#cert-file-row'), fnm = $('#cert-file-name');
+    if (frw && fnm) { fnm.textContent = (old.file && old.file.name) || ((old.kind || old.name || '证书') + '.jpg'); frw.style.display = ''; }
+  }
   if (box && file) {
     box.addEventListener('click', () => file.click());
     file.addEventListener('change', () => {
       if (!file.files.length) return;
+      APP.certFileSet = true;
+      const f = file.files[0];
+      // 记录真实文件用于预览（图片读取 dataURL）
+      APP.certFile = { name: f.name, type: f.type, dataUrl: '' };
+      if (f.type && f.type.indexOf('image') === 0) {
+        const fr = new FileReader();
+        fr.onload = () => { if (APP.certFile) APP.certFile.dataUrl = fr.result; };
+        fr.readAsDataURL(f);
+      }
+      const frw = $('#cert-file-row'), fnm = $('#cert-file-name');
+      if (frw && fnm) { fnm.textContent = f.name; frw.style.display = ''; }
       const st = $('#ocr-state');
       if (st) st.innerHTML = ' · 正在识别……';
       setTimeout(() => {
+        const rnd = () => Math.floor(1000 + Math.random() * 9000);
+        const tpls = [
+          { tag: '制冷与空调', kind: '特种作业操作证－制冷与空调作业', no: 'T3104-104-2026' + rnd(), vstart: '2026-08-01', expire: '2032-08-01' },
+          { tag: '高处作业', kind: '特种作业操作证－高处作业证', no: 'T3104-105-2020' + rnd(), vstart: '2020-08-01', expire: '2026-08-01', review: '2026-07-18' },
+          { tag: '金属焊接切割', kind: '特种作业操作证－金属焊接切割', no: 'T3104-106-2026' + rnd(), vstart: '2026-08-01', expire: '2032-08-01' },
+        ];
+        // 从指定证书卡片进入时识别对应证种，否则随机演示三类之一；其他证书用等级证模板
         const tpl = isOther
-          ? { name: OTHER_CERT_TYPES[1].full, no: 'GD20' + Math.floor(1000 + Math.random() * 9000), cat: OTHER_CERT_TYPES[1].cat, org: 'XX职业技能鉴定中心', issue: '2026-08-01', expire: '2029-08-01' }
-          : [
-              { name: '特种作业操作证·制冷与空调作业', no: 'T3104-104-2026' + Math.floor(1000 + Math.random() * 9000), cat: '安全资质', org: 'XX应急管理部门', issue: '2026-08-01', expire: '2032-08-01' },
-              { name: '特种作业操作证·高处作业', no: 'T3104-105-2020' + Math.floor(1000 + Math.random() * 9000), cat: '安全资质', org: 'XX应急管理部门', issue: '2020-08-01', expire: '2026-08-01' },
-              { name: '特种作业操作证·金属焊接切割', no: 'T3104-106-2026' + Math.floor(1000 + Math.random() * 9000), cat: '安全资质', org: 'XX应急管理部门', issue: '2026-08-01', expire: '2032-08-01' },
-            ][Math.floor(Math.random() * 3)];
-        const sel = $('#c-name');
-        // 名称已锁定（工程师从卡片进入）时不覆盖，仅回填其余字段
-        if (sel && sel.tagName === 'SELECT') {
-          if (![...sel.options].some(o => o.value === tpl.name)) sel.add(new Option(tpl.name, tpl.name));
-          sel.value = tpl.name;
-          const opt = sel.options[sel.selectedIndex];
-          if (opt && opt.dataset) opt.dataset.cat = tpl.cat || '行业资格';
+          ? { kind: '制冷证', grade: '制冷设备维修工3级', no: 'GD20' + rnd(), vstart: '2026-08-01' }
+          : (typeDef ? tpls.find(x => x.tag === typeDef.match) : tpls[Math.floor(Math.random() * tpls.length)]) || tpls[0];
+        tpl.pname = holderName;                         // 一期识别项：姓名 / 证书编号 / 有效期限
+        // 种类联动（未锁定证种时按识别结果切换，并刷新 难易度）
+        const kSel = $('#c-kind');
+        if (kSel && tpl.kind && !typeDef) {
+          kSel.value = tpl.kind;
+          onCertKindChange(tpl.kind);
         }
-        $('#c-no').value = tpl.no; $('#c-org').value = tpl.org;
-        $('#c-issue').value = tpl.issue; $('#c-expire').value = tpl.expire;
+        $('#c-no').value = tpl.no;
+        $('#c-cname').value = tpl.pname;
+        $('#c-vstart').value = tpl.vstart;
+        if (tpl.expire) $('#c-expire').value = tpl.expire;
+        const rv = $('#c-review'); if (rv) rv.value = tpl.review || '';
+        APP.certOcr = { pname: tpl.pname, no: tpl.no, expire: tpl.expire || '' };
+        certOcrCheck();
         if (st) st.innerHTML = ' · 识别成功，请核对';
       }, 900);
     });
   }
+  // 识别项（姓名/证书编号/有效期限）与人工填写实时比对，不一致红字提示
+  ['c-no', 'c-cname', 'c-expire'].forEach(id => { const el = $('#' + id); if (el) { el.addEventListener('input', certOcrCheck); el.addEventListener('change', certOcrCheck); } });
+  certOcrCheck();
+  // 管理员（列表页未锁定 SE）选择持证人 → 姓名联动带入
+  const si = $('#cert-se-input');
+  if (si) si.addEventListener('input', () => {
+    const f = DEMO.members.find(x => x.name === si.value.trim());
+    if (!f) return;
+    const cn = $('#c-cname');
+    if (cn) cn.value = f.name;
+  });
 }
 
 /* 持证人证书详情页（面包屑：首页 / 证书管理 / 姓名）：基本信息 + 身份材料 + 三张作业证折叠面板 */
@@ -11410,7 +11513,7 @@ function certDetailBody(idx, m) {
   <div class="d-sec" style="margin:0 0 10px">必备证书</div>
   ${CERT_TYPES.map(t => certBlock(m, idx, t)).join('')}
   <div class="d-sec" style="margin:18px 0 10px">其他证书</div>
-  ${others.length ? `<div class="card" style="padding:4px 20px">${others.map(o => `<div class="m-row"><div><div class="ml">${esc(o.x.name)}</div><div class="mh">编号 ${esc(o.x.no || '—')} · 有效期至 ${o.x.expire || '—'}</div></div><div>${statusBadge(certStatus(o.x))}</div></div>`).join('')}</div>` : '<div class="empty" style="padding:24px 20px"><i class="ri-award-line"></i>暂无其他证书</div>'}
+  ${others.length ? `<div class="card" style="padding:4px 20px">${others.map(o => `<div class="m-row"><div><div class="ml">${esc(o.x.name)}</div><div class="mh">证书编号 ${esc(o.x.no || '—')} · 有效期限 ${certRange(o.x)}</div></div><div>${statusBadge(certStatus(o.x))}</div></div>`).join('')}</div>` : '<div class="empty" style="padding:24px 20px"><i class="ri-award-line"></i>暂无其他证书</div>'}
   `;
 }
 
@@ -11428,14 +11531,13 @@ function certBlock(m, idx, t) {
       ${statusBadge(certStatus(x))}
     </div>
     <div class="cf-body">
-      <div class="cf-img show"><i class="ri-file-image-line"></i><div>${esc(x.name)}</div><small>证书附件（图片 / PDF）</small></div>
+      <div class="cf-img show" style="cursor:pointer" data-act="cert-preview" data-idx="${idx}" data-key="${key}" title="点击预览"><i class="ri-file-image-line"></i><div>${esc(x.name)}</div><small>点击预览附件（图片 / PDF）</small></div>
       <div class="form-grid" style="margin-top:12px">
         <div class="field2"><label>证书编号</label><div class="cert-val mono">${esc(x.no || '—')}</div></div>
-        <div class="field2"><label>发证机构</label><div class="cert-val">${esc(x.org || '—')}</div></div>
-        <div class="field2"><label>发证日期</label><div class="cert-val">${x.issue || '—'}</div></div>
-        <div class="field2"><label>有效期至</label><div class="cert-val">${x.expire || '—'}</div></div>
-        <div class="field2"><label>当前状态</label><div class="cert-val">${statusBadge(certStatus(x))}</div></div>
-        <div class="field2 full"><label>备注</label><div class="cert-val">${esc(x.note || '—')}</div></div>
+        <div class="field2"><label>姓名</label><div class="cert-val">${esc(x.pname || m.name)}</div></div>
+        <div class="field2"><label>难易度</label><div class="cert-val">${esc(x.diff || '—')}</div></div>
+        <div class="field2"><label>有效期限</label><div class="cert-val">${certRange(x)}</div></div>
+        ${isPermanentCert(x) ? '' : `<div class="field2"><label>复审日期</label><div class="cert-val">${x.review || '—'}</div></div>`}
       </div>
     </div>
   </div>`;
@@ -15364,9 +15466,9 @@ function delCertTaskConfirm(id) {
 </tr>
 </table>
 <h3 class="prd-h3"><span class="prd-num">1. 20. 3.</span> 列表</h3>
-<p>证书名称｜证书编号｜有效期至｜状态｜操作；必备证书固定展示，其他证书按已维护记录展示。</p>
+<p>证书名称｜证号｜有效期限｜状态｜操作；必备证书固定展示，其他证书按已维护记录展示。</p>
 <h3 class="prd-h3"><span class="prd-num">1. 20. 4.</span> 详情/编辑</h3>
-<p class="prd-lvl0"><span class="prd-num">1.</span> 工程师上传附件并填写证书编号、有效期等字段。</p>
+<p class="prd-lvl0"><span class="prd-num">1.</span> 工程师上传附件并填写证号、有效期限等字段。</p>
 <p class="prd-lvl0"><span class="prd-num">2.</span> 管理员当前只读，不提供新增证书按钮。</p>
 <p class="prd-lvl0"><span class="prd-num">3.</span> 换证时保留历史版本，新证书成为当前展示版本。</p>
 <h3 class="prd-h3"><span class="prd-num">1. 20. 5.</span> 状态规则</h3>
