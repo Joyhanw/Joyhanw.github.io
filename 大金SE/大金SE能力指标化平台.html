@@ -2685,7 +2685,7 @@ function handleAct(act, el) {
     case 'qi-preview': { const da = APP.qiDraft; if (da) { da.preview = true; qiRender(); } break; }
     case 'qi-back': { const da = APP.qiDraft; if (da) { da.preview = false; qiRender(); } break; }
     case 'qi-row-attr': { const da = APP.qiDraft; if (da) { const r = da.rows[+d.idx]; if (r) { r[d.key] = el.value; if (d.key === 'cat1') r.cat2 = ''; qiRender(); } } break; }
-    case 'qi-del': { const da = APP.qiDraft; if (da) { const ix = DEMO.questions.findIndex(q => q.id === d.id); if (ix >= 0) DEMO.questions.splice(ix, 1); toast('已删除该试题'); qiRender(); } break; }
+    case 'qi-row-del': { const da = APP.qiDraft; if (da) { if (da.rows.length <= 1) { toast('至少保留一条试题', 'error'); break; } da.rows.splice(+d.idx, 1); da.editIdx = null; toast('已删除该试题'); qiRender(); } break; }
     case 'plan-mode': planPull(); APP.planDraft.mode = d.mode; renderPlanEdit(); break;
     case 'plan-cat-toggle': { planPull(); const cs = APP.planDraft.cats, c = d.cat; const i = cs.indexOf(c); if (i < 0) cs.push(c); else cs.splice(i, 1); renderPlanEdit(); break; }
     case 'plan-grader-toggle': { planPull(); const gs = APP.planDraft.graders, gid = +d.gid; const i = gs.indexOf(gid); if (i < 0) gs.push(gid); else gs.splice(i, 1); renderPlanEdit(); break; }
@@ -12283,7 +12283,7 @@ function qiStep1() {
     </div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button></div>`);
 }
-/* Step 2：解析预览（Word 分类/难度行内下拉可改；逐题校验，支持部分成功） */
+/* Step 2：解析预览（Word 分类/难度行内下拉可改；逐题校验，支持部分成功；行末可直接删除） */
 function qiStep2() {
   const d = APP.qiDraft; const f = d.file; const isWord = d.mode === 'word';
   const cnt = k => d.rows.filter(r => r.st === k).length;
@@ -12303,6 +12303,7 @@ function qiStep2() {
     <td class="ell" style="max-width:250px" title="${esc(r.text)}">${esc(r.text.length > 26 ? r.text.slice(0, 26) + '…' : r.text)}${r.img ? ' <span class="badge badge-gray">图</span>' : ''}${r.formula ? ' <span class="badge badge-gray">公式</span>' : ''}</td>
     <td>${qiStBadge(r.st)}</td>
     <td style="font-size:12px;color:${r.reason ? 'var(--r500)' : 'var(--g300)'}">${r.reason ? esc(r.reason) : '—'}</td>
+    <td class="right"><button class="btn btn-sm" style="color:var(--r500)" data-act="qi-row-del" data-idx="${i}"><i class="ri-delete-bin-line"></i>删除</button></td>
   </tr>`).join('');
   openModal(modalHead('批量导入试题', '第 2 步 / 3 · 解析预览', true) + `
     <div class="modal-body">
@@ -12325,7 +12326,7 @@ function qiStep2() {
         <span style="font-size:12px;color:var(--g400)">仅导入校验通过的试题，失败 / 待完善试题不入库</span>
       </div>
       <table class="tbl">
-        <tr><th>序号</th><th>题型</th><th>一级分类</th><th>二级分类</th><th>难度</th><th class="right">分值</th><th style="width:26%">题目内容</th><th>校验状态</th><th>失败原因</th></tr>
+        <tr><th>序号</th><th>题型</th><th>一级分类</th><th>二级分类</th><th>难度</th><th class="right">分值</th><th style="width:26%">题目内容</th><th>校验状态</th><th>失败原因</th><th class="right" style="width:70px">操作</th></tr>
         ${rows}
       </table>
     </div>
@@ -12342,7 +12343,6 @@ function qiDoImport() {
   let n = DEMO.questions.reduce((m, x) => Math.max(m, +x.id.slice(1)), 0);
   const today = formatTime(new Date()).slice(0, 10);
   const who = (APP.user && APP.user.name) || '张敏';
-  const ids = [];
   ok.forEach(r => {
     n++;
     const rec = {
@@ -12354,44 +12354,34 @@ function qiDoImport() {
     };
     if (r.ansText) rec.ansText = r.ansText;
     DEMO.questions.push(rec);
-    ids.push(rec.id);
   });
-  d.recIds = ids; d.imported = ok.length;
+  d.imported = ok.length;
   d.res = ok.length === d.rows.length ? '成功' : ok.length > 0 ? '部分成功' : '失败';
   d.step = 3; qiRender();
 }
-/* Step 3：导入完成（成功 / 部分成功 / 失败 + 未导入明细） */
+/* Step 3：导入完成（仅展示结果：总题数 / 成功导入 / 未导入） */
 function qiStep3() {
   const d = APP.qiDraft;
-  const recs = (d.recIds || []).map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean);
-  const total = d.rows.length; const ok = recs.length; const left = total - ok;
+  const total = d.rows.length; const ok = d.imported; const left = total - ok;
   const res = d.res === '成功' ? ['成功', 'ri-check-line', 'var(--e100)', 'var(--e600)']
     : d.res === '部分成功' ? ['部分成功', 'ri-error-warning-line', '#fef3c7', '#b45309']
     : ['失败', 'ri-close-line', '#fee2e2', '#dc2626'];
-  const trs = recs.map((q, i) => `<tr>
-    <td class="num">${i + 1}</td>
-    <td><span class="badge ${Q_TYPE_BADGE[q.type] || 'badge-gray'}">${q.type}</span></td>
-    <td>${esc(q.cat1)}</td>
-    <td>${esc(q.cat2)}</td>
-    <td class="ell" style="max-width:280px" title="${esc(q.text)}">${esc(q.text.length > 24 ? q.text.slice(0, 24) + '…' : q.text)}</td>
-    <td class="right num">${q.score}</td>
-    <td class="right"><button class="btn btn-sm" style="color:var(--r500)" data-act="qi-del" data-id="${q.id}"><i class="ri-delete-bin-line"></i>删除</button></td>
-  </tr>`).join('');
+  const tile = (label, n, color) => `<div style="flex:1;text-align:center;padding:14px 8px;background:var(--g50);border:1px solid var(--g200);border-radius:10px">
+    <div style="font-size:24px;font-weight:800;color:${color};line-height:1.2">${n}</div>
+    <div style="font-size:12px;color:var(--g500);margin-top:4px">${label}</div></div>`;
   openModal(modalHead('导入完成', '', true) + `
     <div class="modal-body">
       ${qiSteps(3)}
-      <div style="text-align:center;padding:6px 0 2px">
+      <div style="text-align:center;padding:6px 0 14px">
         <div style="width:76px;height:76px;border-radius:50%;background:${res[2]};display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
           <i class="${res[1]}" style="font-size:34px;color:${res[3]}"></i></div>
         <div style="font-size:15px;font-weight:700;color:var(--g800)">导入${res[0]}</div>
-        <div style="font-size:12.5px;color:var(--g500);margin-top:6px">总题数 ${total} · 成功导入 ${ok} · 未导入 ${left}</div>
       </div>
-      ${recs.length ? `
-      <div style="font-size:13px;font-weight:700;color:var(--g700);margin:16px 2px 8px">本次导入的试题<span class="sub" style="font-weight:400;margin-left:6px">共 ${ok} 题，入库后仍可删除</span></div>
-      <table class="tbl">
-        <tr><th>序号</th><th>题型</th><th>一级分类</th><th>二级分类</th><th style="width:34%">题目内容</th><th class="right">分值</th><th class="right" style="width:80px">操作</th></tr>
-        ${trs}
-      </table>` : '<div class="empty"><i class="ri-inbox-line"></i>本次导入的试题已全部删除</div>'}
+      <div style="display:flex;gap:10px">
+        ${tile('总题数', total, 'var(--g800)')}
+        ${tile('成功导入', ok, 'var(--e600)')}
+        ${tile('未导入', left, left > 0 ? 'var(--r500)' : 'var(--g400)')}
+      </div>
     </div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">关闭</button></div>`);
 }
