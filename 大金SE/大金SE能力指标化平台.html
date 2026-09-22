@@ -16659,5 +16659,107 @@ document.body.appendChild(overlay);
 
 
 <datalist id="person-name-list"><option value="刘洋"><option value="吴俊"><option value="吴刚"><option value="周雪梅"><option value="孙海峰"><option value="张三"><option value="张明辉"><option value="李四"><option value="李志远"><option value="李明轩"><option value="林芳"><option value="王丽"><option value="王建国"><option value="赵丽"><option value="赵倩"><option value="郑晓东"><option value="郑琳"><option value="陈志强"><option value="陈昊"></datalist>
+<!-- ============ 访问密码锁（演示保护，插入于 </body> 前） ============ -->
+<style id="gate-style">
+#gate-mask{position:fixed;inset:0;z-index:999999;background:rgba(15,23,42,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;transition:opacity .35s}
+#gate-mask.gate-hide{opacity:0;pointer-events:none}
+#gate-mask .gt-card{width:360px;max-width:calc(100vw - 48px);background:#fff;border-radius:14px;padding:32px 30px 26px;box-shadow:0 24px 64px rgba(0,0,0,.35);text-align:center}
+#gate-mask .gt-logo{width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,#1677ff,#0958d9);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#fff;font-size:26px}
+#gate-mask .gt-title{font-size:17px;font-weight:600;color:#1f2937}
+#gate-mask .gt-sub{font-size:12.5px;color:#94a3b8;margin-top:6px;margin-bottom:20px}
+#gate-mask .gt-input{width:100%;box-sizing:border-box;height:42px;border:1.5px solid #e2e8f0;border-radius:9px;padding:0 14px;font-size:15px;letter-spacing:4px;text-align:center;outline:none;transition:border-color .2s,box-shadow .2s;color:#1f2937}
+#gate-mask .gt-input:focus{border-color:#1677ff;box-shadow:0 0 0 3px rgba(22,119,255,.14)}
+#gate-mask .gt-input.gt-err{border-color:#f5222d;box-shadow:0 0 0 3px rgba(245,34,45,.12)}
+#gate-mask .gt-btn{width:100%;height:42px;margin-top:14px;border:none;border-radius:9px;background:#1677ff;color:#fff;font-size:15px;font-weight:500;cursor:pointer;transition:background .2s}
+#gate-mask .gt-btn:hover{background:#0958d9}
+#gate-mask .gt-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+#gate-mask .gt-tip{min-height:18px;font-size:12.5px;color:#f5222d;margin-top:10px}
+@keyframes gtShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+#gate-mask .gt-shake{animation:gtShake .4s}
+</style>
+<div id="gate-mask">
+  <div class="gt-card">
+    <div class="gt-logo"><i class="ri-lock-2-line"></i></div>
+    <div class="gt-title">SE能力指标化管理平台</div>
+    <div class="gt-sub">请输入访问密码继续</div>
+    <input class="gt-input" id="gate-input" type="password" inputmode="numeric" maxlength="8" placeholder="请输入访问密码" autocomplete="off">
+    <button class="gt-btn" id="gate-btn">进 入</button>
+    <div class="gt-tip" id="gate-tip"></div>
+  </div>
+</div>
+<script id="gate-script">
+(function(){
+  /* 密码 20260410 的 djb2 散列（不直接明文比对） */
+  var GATE_HASH = 2282263220;
+  var FAIL_KEY = 'gate_fails', LOCK_KEY = 'gate_lock_until';
+  function djb2(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))>>>0;}return h;}
+  var mask = document.getElementById('gate-mask');
+  if(!mask) return;
+  function unlock(){
+    mask.classList.add('gate-hide');
+    setTimeout(function(){ if(mask.parentNode) mask.parentNode.removeChild(mask); var st=document.getElementById('gate-style'); if(st&&st.parentNode)st.parentNode.removeChild(st); }, 420);
+  }
+  document.body.style.overflow = 'hidden';
+  var input = document.getElementById('gate-input');
+  var btn = document.getElementById('gate-btn');
+  var tip = document.getElementById('gate-tip');
+  var card = mask.querySelector('.gt-card');
+  function fails(){ return parseInt(localStorage.getItem(FAIL_KEY)||'0',10); }
+  function lockRemaining(){
+    var until = parseInt(localStorage.getItem(LOCK_KEY)||'0',10);
+    return Math.max(0, Math.ceil((until - Date.now())/1000));
+  }
+  var timer = null;
+  function refreshLock(){
+    var r = lockRemaining();
+    if(r > 0){
+      input.disabled = true; btn.disabled = true;
+      tip.textContent = '尝试次数过多，请 ' + r + ' 秒后重试';
+      if(!timer) timer = setInterval(function(){
+        var rr = lockRemaining();
+        if(rr <= 0){
+          clearInterval(timer); timer = null;
+          localStorage.setItem(FAIL_KEY,'0');
+          input.disabled = false; btn.disabled = false;
+          tip.textContent = ''; input.focus();
+        } else {
+          tip.textContent = '尝试次数过多，请 ' + rr + ' 秒后重试';
+        }
+      }, 500);
+    }
+  }
+  function tryUnlock(){
+    if(lockRemaining() > 0){ refreshLock(); return; }
+    var v = input.value.trim();
+    if(!v){ tip.textContent = '请输入访问密码'; input.focus(); return; }
+    if(djb2(v) === GATE_HASH){
+      localStorage.setItem(FAIL_KEY,'0');
+      document.body.style.overflow = '';
+      unlock();
+    } else {
+      var n = fails() + 1;
+      localStorage.setItem(FAIL_KEY, String(n));
+      if(n >= 5){
+        localStorage.setItem(LOCK_KEY, String(Date.now() + 30*1000));
+        localStorage.setItem(FAIL_KEY, '0');
+        refreshLock();
+      } else {
+        tip.textContent = '密码错误（' + n + '/5）';
+      }
+      input.classList.add('gt-err');
+      card.classList.remove('gt-shake'); void card.offsetWidth; card.classList.add('gt-shake');
+      input.value = ''; input.focus();
+      setTimeout(function(){ input.classList.remove('gt-err'); }, 1200);
+    }
+  }
+  btn.addEventListener('click', tryUnlock);
+  input.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); tryUnlock(); } });
+  /* 阻止锁屏期间 Esc 等按键干扰页面 */
+  mask.addEventListener('keydown', function(e){ e.stopPropagation(); });
+  refreshLock();
+  setTimeout(function(){ input.focus(); }, 60);
+})();
+</script>
+
 </body>
 </html>
