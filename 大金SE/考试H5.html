@@ -474,9 +474,6 @@ function handleStart(){
   if(!uid){ toast('请输入工号'); return; }
   if(!code){ toast('请输入唯一码/担当号'); return; }
 
-  var now = Date.now();
-  var st = parseTime(EXAM.startTime), et = parseTime(EXAM.endTime);
-
   // 1. 姓名 + 工号 + 唯一码 三项匹配人员
   var person = matchStaff();
   if(!person){
@@ -500,10 +497,7 @@ function handleStart(){
     saveRec(rec);
   }
 
-  // 4. 未到开始时间
-  if(now < st){ toast('考试尚未开始'); return; }
-  // 5. 超过截止时间
-  if(now > et){ toast('考试已结束'); return; }
+  // 4. 原型演示：不做考试开始/截止时间校验，随时可进入答题
 
   // 6. 已提交 → 清除旧记录，允许重新答题；未提交 → 保留进度继续答题
   if(rec.submitted){
@@ -533,11 +527,9 @@ function startExamPage(){
   startTimer();
 }
 
-/* 实际结束时间 = min(开始答题+时长, 考试截止时间) */
+/* 原型演示：结束时间只按 开始答题+考试时长 计算，不受考试截止时间影响 */
 function getEndTime(){
-  var t1 = state.startTs + EXAM.duration*60*1000;
-  var t2 = parseTime(EXAM.endTime);
-  return Math.min(t1, t2);
+  return state.startTs + EXAM.duration*60*1000;
 }
 function getRemainMs(){
   return Math.max(0, getEndTime() - Date.now());
