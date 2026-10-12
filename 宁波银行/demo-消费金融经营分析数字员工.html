@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>消费金融经营分析数字员工 · 宁波银行远程银行中心</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#16324f;--blue:#2563eb;--blue-bg:#eef4ff;--ink:#1e2a36;--text2:#5a6b7d;--muted:#8a99ab;
+  --border:#e5e9f0;--bg:#f4f6fa;--card:#fff;
+  --green:#16a34a;--green-bg:#f0fdf4;--red:#dc2626;--red-bg:#fef2f2;
+  --amber:#d97706;--amber-bg:#fffbeb;
+  --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased;font-size:14px}
+
+/* ===== 顶栏 ===== */
+.topbar{height:54px;background:var(--navy);color:#fff;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.topbar .agent-ico{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:17px}
+.topbar .agent-name{font-size:15px;font-weight:700;letter-spacing:1px}
+.topbar .right{margin-left:auto;display:flex;align-items:center}
+.topbar .me{display:flex;align-items:center;gap:8px}
+.me-ava{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700}
+.me-name{font-size:13px;font-weight:600;letter-spacing:.5px}
+
+/* ===== 三栏布局 ===== */
+.shell{flex:1;display:grid;grid-template-columns:224px 1fr 268px;grid-template-rows:minmax(0,1fr);min-height:0}
+
+/* 左：对话历史 */
+.hs{background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.newchat{margin:12px 12px 4px;padding:9px 12px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.newchat:hover{background:#1e4a72}
+.hs-list{flex:1;overflow-y:auto;padding:8px 12px 14px}
+.hs-title{font-size:11px;color:var(--muted);margin:10px 4px 7px;letter-spacing:.5px}
+.hitem{padding:8px 10px;border-radius:8px;font-size:12.5px;color:var(--text2);cursor:pointer;margin-bottom:3px;line-height:1.45;display:flex;gap:7px;align-items:flex-start;border:1px solid transparent}
+.hitem:hover{background:#f4f6fa}
+.hitem.on{background:var(--blue-bg);color:var(--blue);border-color:#d4e3fa;font-weight:600}
+.hitem .hi{flex-shrink:0;font-size:13px;margin-top:1px}
+
+/* 中：对话区 */
+.chat{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;background:var(--bg)}
+.stream{flex:1;overflow-y:auto;padding:22px 24px;min-height:0}
+.stream-in{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+
+/* 欢迎屏 */
+.welcome{max-width:760px;margin:26px auto 12px;text-align:center;padding:0 12px}
+.w-ava{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#eef4ff,#f5f0ff);border:1px solid #dde5f5;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 16px;box-shadow:0 4px 16px rgba(22,50,79,.08)}
+.welcome h2{font-size:22px;font-weight:800;color:var(--navy)}
+.welcome .w-sub{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.8}
+.wcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.wcard{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:left;cursor:pointer;transition:all .15s}
+.wcard:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(22,50,79,.09);border-color:#c7d9f7}
+.wcard .wt{display:inline-block;font-size:10.5px;font-weight:700;border-radius:4px;padding:2px 8px;margin-bottom:8px}
+.wcard .wn{font-size:13.5px;font-weight:700;color:var(--navy);line-height:1.5}
+.wcard .wd{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.6}
+
+/* 消息 */
+.msg{display:flex;gap:11px;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg .mav{width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.msg.user{flex-direction:row-reverse}
+.msg.user .mav{background:var(--navy);color:#fff}
+.msg.ai .mav{background:linear-gradient(135deg,#eef4ff,#f5f0ff);border:1px solid #dbe5f5;font-size:15px}
+.msg .mb{flex:1;min-width:0;max-width:calc(100% - 42px)}
+.msg.user .mb{text-align:right}
+.u-bubble{display:inline-block;background:var(--blue);color:#fff;border-radius:13px 13px 3px 13px;padding:9px 14px;font-size:13.5px;line-height:1.6;text-align:left}
+.ai-bubble{background:#fff;border:1px solid var(--border);border-radius:3px 14px 14px 14px;padding:15px 18px;font-size:13px;line-height:1.75;color:var(--text2)}
+.ai-bubble > * + *{margin-top:13px}
+.ai-bubble p{line-height:1.8}
+.ai-bubble b{color:var(--ink)}
+.ai-bubble .rd{color:var(--red);font-weight:700}
+.ai-bubble .gn{color:var(--green);font-weight:700}
+.ai-bubble .am{color:var(--amber);font-weight:700}
+.ai-bubble .hl{color:var(--navy);font-weight:800}
+.scene{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;border-radius:6px;font-size:11.5px;font-weight:700}
+.scene.blue{background:var(--blue-bg);color:var(--blue)}
+.scene.red{background:var(--red-bg);color:var(--red)}
+.scene.green{background:var(--green-bg);color:#065f46}
+
+/* 输入区 */
+.inbar{padding:10px 24px 16px;background:var(--bg)}
+.inbar-in{max-width:920px;margin:0 auto}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;min-height:26px}
+.chip{font-size:11.5px;color:var(--text2);background:#fff;border:1px solid var(--border);border-radius:16px;padding:4px 13px;cursor:pointer;transition:all .15s}
+.chip:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+.inrow{display:flex;gap:8px}
+.inrow input{flex:1;border:1px solid var(--border);border-radius:10px;padding:11px 15px;font-size:13.5px;outline:none;font-family:var(--font);background:#fff}
+.inrow input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.inrow button{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:0 20px;font-size:13.5px;font-weight:700;cursor:pointer}
+.inrow button:hover{background:#1d4fd7}
+.typing{display:flex;gap:4px;padding:3px 0}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+/* 右：文件区 */
+.fs{background:#fff;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;min-height:0}
+.fs-sec{padding:14px 13px 4px}
+.fs-h{font-size:11.5px;font-weight:700;color:var(--text2);letter-spacing:1px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+.fitem{border:1px solid var(--border);border-radius:9px;padding:9px 11px;margin-bottom:7px;cursor:pointer;transition:all .15s;background:#fff}
+.fitem:hover{border-color:var(--blue);box-shadow:0 2px 8px rgba(37,99,235,.08)}
+.fitem.gen{border-style:dashed;background:#fbfcfe}
+.fitem .fn{font-size:12px;font-weight:600;color:var(--ink);line-height:1.45}
+.fitem .fm{font-size:10.5px;color:var(--muted);margin-top:4px;display:flex;justify-content:space-between;align-items:center}
+.tag-new{font-size:10px;color:#fff;background:var(--blue);border-radius:3px;padding:1px 7px}
+.tag-ok{font-size:10px;color:var(--green);background:var(--green-bg);border-radius:3px;padding:1px 7px}
+.tag-doc{font-size:10px;color:#7c3aed;background:#f5f0ff;border-radius:3px;padding:1px 7px}
+.fs-empty{font-size:11.5px;color:#b6c1cd;border:1px dashed #dde4ec;border-radius:9px;padding:12px;text-align:center;line-height:1.7}
+.fnote{font-size:10.5px;color:var(--muted);line-height:1.7;padding:10px 4px;margin-top:auto;border-top:1px dashed var(--border)}
+
+/* ===== 消息内组件 ===== */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:11px 13px}
+.kpi .kl{font-size:11.5px;color:var(--text2)}
+.kpi .kv{font-size:21px;font-weight:800;color:var(--navy);margin-top:5px;font-variant-numeric:tabular-nums}
+.kpi .kv small{font-size:11px;font-weight:500;color:var(--muted)}
+.kpi .kd{font-size:11px;margin-top:4px;font-weight:700}
+.kd.up{color:var(--green)} .kd.dn{color:var(--red)} .kd.warn{color:var(--amber)} .kd.flat{color:var(--muted)}
+.kpi.bad{background:linear-gradient(180deg,#fff8f8,#fff);border-color:#f5caca}
+.kpi.warnk{background:linear-gradient(180deg,#fffdf5,#fff);border-color:#f3dfae}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:#f4f6fa;text-align:left;padding:7px 9px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);font-size:11px;white-space:nowrap}
+.tbl td{padding:7px 9px;border-bottom:1px solid #eef2f7;color:var(--ink);white-space:nowrap}
+.tbl td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr:last-child td{border-bottom:none}
+.tbl .bad{color:var(--red);font-weight:700}
+.tbl .good{color:var(--green);font-weight:600}
+.tbl .sub{color:var(--muted);font-size:10.5px}
+.tblwrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff}
+.ai-note{background:linear-gradient(90deg,#f6f8ff,#f8f6ff);border:1px solid #e0e7f5;border-radius:10px;padding:11px 15px;font-size:12.6px;line-height:1.8}
+.ano{background:#fff;border:1px solid var(--border);border-left:4px solid var(--green);border-radius:10px;padding:12px 16px}
+.ano.r{border-left-color:var(--red)}
+.ano.o{border-left-color:var(--amber)}
+.ano .ah{display:flex;align-items:center;gap:9px}
+.ano .ah .lv{font-size:14px}
+.ano .ah .at{font-size:13.5px;font-weight:700;color:var(--navy)}
+.ano .ah .st{margin-left:auto;font-size:10.5px;font-weight:700;border-radius:4px;padding:2px 10px}
+.ano.r .st{background:var(--red-bg);color:var(--red)}
+.ano.o .st{background:var(--amber-bg);color:var(--amber)}
+.ano.g .st{background:var(--green-bg);color:#065f46}
+.ano .ab{font-size:12.6px;line-height:1.75;margin-top:7px}
+.ano .ab b{color:var(--ink)}
+.ano .ab .rd{color:var(--red);font-weight:700}
+.ano .ab .am{color:var(--amber);font-weight:700}
+.ano .af{margin-top:9px;display:flex;gap:8px}
+.lkbtn{font-size:12px;font-weight:600;color:var(--blue);background:var(--blue-bg);border:1px solid #c7d9f7;border-radius:6px;padding:5px 14px;cursor:pointer;transition:all .15s}
+.lkbtn:hover{background:#e0ecff}
+.lkbtn.ghost{color:var(--text2);background:#fff;border-color:var(--border)}
+.lkbtn.pri{background:var(--blue);color:#fff;border-color:var(--blue)}
+.lkbtn.pri:hover{background:#1d4fd7}
+.ano .deep{display:none;margin-top:11px;border-top:1px dashed var(--border);padding-top:11px}
+.ano .deep.on{display:block}
+
+/* 渠道条形图 */
+.bars{display:flex;flex-direction:column;gap:11px}
+.brow{display:flex;align-items:center;gap:10px}
+.brow .bn{width:58px;font-size:12px;font-weight:700;color:var(--navy);text-align:right;flex-shrink:0}
+.brow .btrack{flex:1;background:#f1f4f9;border-radius:6px;height:24px;overflow:hidden}
+.brow .bfill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:9px;color:#fff;font-size:11px;font-weight:700;min-width:50px;width:0;transition:width .8s cubic-bezier(.2,.8,.3,1)}
+.brow .bdelta{width:66px;font-size:11px;font-weight:700;flex-shrink:0}
+
+/* 执行过程块 */
+.runbox{border:1px solid #dbe5f5;background:linear-gradient(180deg,#fbfcff,#fff);border-radius:11px;overflow:hidden}
+.runbox .rh{display:flex;align-items:center;gap:9px;padding:11px 15px;border-bottom:1px solid #e8eef7;font-size:13px;font-weight:700;color:var(--navy)}
+.runbox .rh .rspin{width:15px;height:15px;border:2px solid #dbe6f5;border-top-color:var(--blue);border-radius:50%;animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.runbox .rh .rp{margin-left:auto;font-size:11px;color:var(--muted);font-family:"SF Mono",Menlo,monospace}
+.rstep{display:flex;gap:10px;padding:8px 15px;opacity:0;transform:translateY(5px);transition:all .3s}
+.rstep.show{opacity:1;transform:none}
+.rstep .eic{width:21px;height:21px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px}
+.rstep.wait .eic{border:2px solid #dde5ee}
+.rstep.run .eic{border:2px solid #dbe6f5;border-top-color:var(--blue);animation:rot .8s linear infinite}
+.rstep.ok .eic{background:var(--green-bg);color:var(--green);border:2px solid #bbf7d0}
+.rstep.warn .eic{background:var(--amber-bg);color:var(--amber);border:2px solid #fde68a}
+.rstep .etx .t1{font-size:12.8px;font-weight:600;color:var(--ink)}
+.rstep.warn .etx .t1{color:var(--amber)}
+.rstep .etx .t2{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.55}
+.rstep .ecost{margin-left:auto;font-size:10.5px;color:var(--muted);font-family:"SF Mono",Menlo,monospace;flex-shrink:0;padding-top:2px}
+
+/* 归因链分节 */
+.ph{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;color:var(--navy);padding-top:2px}
+.ph .pno{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:11.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.concl{display:flex;align-items:center;gap:9px;background:var(--red-bg);border:1px solid #f5caca;border-radius:9px;padding:9px 14px;font-size:12.6px;color:#991b1b;font-weight:600}
+.decomp{display:flex;flex-direction:column;gap:8px}
+.drow{display:flex;align-items:center;gap:10px}
+.drow .dl{width:140px;font-size:11.5px;color:var(--text2);text-align:right;flex-shrink:0}
+.drow .dtrack{flex:1;height:16px;background:#f1f4f9;border-radius:5px;position:relative;overflow:hidden}
+.drow .dfill{position:absolute;top:0;height:100%;border-radius:5px}
+.drow .dv{width:54px;font-size:11.5px;font-weight:700;flex-shrink:0}
+.judge{border:1px solid var(--border);border-radius:11px;overflow:hidden;background:#fff}
+.judge .jh{background:linear-gradient(135deg,#16324f,#1e4a72);color:#fff;padding:10px 16px;font-size:13px;font-weight:700}
+.judge .jb{padding:12px 16px;font-size:12.8px;line-height:1.9}
+.judge .jb b{color:var(--navy)}
+.judge .jb .rd{color:var(--red);font-weight:700}
+.judge .jb .am{color:var(--amber);font-weight:700}
+.sugg{border:1px solid #e3eaf3;border-radius:10px;padding:11px 15px;background:#fbfcfe}
+.sugg .sh{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:7px}
+.sugg .si{display:flex;gap:9px;padding:6px 0;border-bottom:1px dashed #e8edf4;font-size:12.3px;line-height:1.7}
+.sugg .si:last-child{border-bottom:none}
+.sugg .si .no{width:19px;height:19px;border-radius:50%;background:var(--blue-bg);color:var(--blue);font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.sugg .si b{color:var(--ink)}
+.footnote{font-size:10.5px;color:var(--muted);text-align:center}
+
+/* 图表 */
+.chartbox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.chartbox .ct{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:7px}
+.legend{display:flex;gap:14px;font-size:10.5px;color:var(--text2);margin-top:5px;flex-wrap:wrap}
+.legend .lg{display:flex;align-items:center;gap:5px}
+.legend .sw{width:15px;height:3px;border-radius:2px}
+.mini-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.mini-tbl th{background:#f0f3f8;padding:5px 8px;text-align:left;color:var(--text2);font-weight:600;border:1px solid #e5e9f0}
+.mini-tbl td{padding:5px 8px;border:1px solid #e5e9f0;font-variant-numeric:tabular-nums}
+
+/* 报告卡（消息内） */
+.rcard{border:1px solid var(--border);border-radius:11px;overflow:hidden;background:#fff}
+.rcard .rc-h{background:linear-gradient(135deg,#f6f8ff,#f8f6ff);padding:14px 18px;text-align:center;border-bottom:1px solid #eef2f7}
+.rcard .rc-h .rt{font-size:10.5px;color:var(--blue);font-weight:700;letter-spacing:2px}
+.rcard .rc-h h4{font-size:15px;color:var(--navy);font-weight:800;margin-top:6px;line-height:1.5}
+.rcard .rc-h .rs{font-size:10.5px;color:var(--muted);margin-top:4px}
+.rcard .rc-toc{padding:10px 18px}
+.rcard .rc-toc .ti{font-size:12.2px;padding:5px 0;border-bottom:1px dashed #eef2f7;display:flex;gap:7px}
+.rcard .rc-toc .ti:last-child{border-bottom:none}
+.rcard .rc-toc .ti b{color:var(--navy)}
+.rcard .rc-f{padding:0 18px 14px;display:flex;gap:8px;flex-wrap:wrap}
+
+/* ===== 弹窗/抽屉 ===== */
+.mask{position:fixed;inset:0;background:rgba(15,28,44,.45);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+.mask.on{display:flex;animation:fadeIn .2s ease}
+.modal{background:#fff;border-radius:14px;max-width:820px;width:100%;max-height:86vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.modal .mh{padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal .mh .mt{font-size:15px;font-weight:700;color:var(--navy)}
+.modal .mx{width:30px;height:30px;border-radius:8px;border:none;background:#f4f6fa;font-size:15px;cursor:pointer;color:var(--text2)}
+.modal .mb{overflow-y:auto;padding:20px 24px;font-size:13px;line-height:1.9;color:var(--text2)}
+.modal .mb h4{font-size:14px;color:var(--navy);margin:16px 0 6px}
+.modal .mb h4:first-child{margin-top:0}
+.modal .mb b{color:var(--ink)}
+.modal .mb .rd{color:var(--red);font-weight:700}
+.drawer-mask{position:fixed;inset:0;background:rgba(15,28,44,.35);z-index:200;display:none}
+.drawer-mask.on{display:block;animation:fadeIn .2s ease}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:92vw;background:#fff;z-index:201;transform:translateX(105%);transition:transform .3s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.12)}
+.drawer.on{transform:translateX(0)}
+.drawer .dh{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.drawer .dh .dt{font-size:14.5px;font-weight:700;color:var(--navy)}
+.drawer .db{flex:1;overflow-y:auto;padding:16px 20px}
+.cal-item{border:1px solid var(--border);border-radius:9px;padding:11px 14px;margin-bottom:10px}
+.cal-item .cn{font-size:13px;font-weight:700;color:var(--navy)}
+.cal-item .cv{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.7}
+.cal-item .cv code{background:#f4f6fa;border:1px solid #e8edf4;border-radius:4px;padding:1px 7px;font-size:11px;color:var(--blue)}
+.ftabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.ftab{font-size:12px;font-weight:600;color:var(--text2);background:#f4f6fa;border:1px solid var(--border);border-radius:6px;padding:5px 12px;cursor:pointer}
+.ftab.on{background:var(--blue-bg);color:var(--blue);border-color:#c7d9f7}
+.sheet{display:none}.sheet.on{display:block}
+
+@media (max-width:1080px){.shell{grid-template-columns:200px 1fr 230px}.kpis{grid-template-columns:repeat(2,1fr)}.wcards{grid-template-columns:1fr}}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#d3dbe5;border-radius:4px}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="agent-ico">🤖</div>
+  <div class="agent-name">消费金融经营分析数字员工</div>
+  <div class="right">
+    <div class="me"><div class="me-ava">安</div><span class="me-name">唯安</span></div>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- 左：对话历史 -->
+  <aside class="hs">
+    <button class="newchat" onclick="newChat()">＋ 新建对话</button>
+    <div class="hs-list">
+      <div class="hs-title">本月</div>
+      <div class="hitem on" id="hi-sep" onclick="switchChat('sep')"><span class="hi">🩺</span><span>9月渠道经营体检</span></div>
+      <div class="hs-title">历史</div>
+      <div class="hitem" id="hi-aug" onclick="switchChat('aug')"><span class="hi">🩺</span><span>8月渠道经营体检</span></div>
+      <div class="hitem" id="hi-jul" onclick="switchChat('jul')"><span class="hi">🩺</span><span>7月渠道经营体检</span></div>
+    </div>
+  </aside>
+
+  <!-- 中：对话区 -->
+  <section class="chat">
+    <div class="stream" id="stream">
+      <div class="welcome" id="welcome">
+        <div class="w-ava">🤖</div>
+        <h2>你好，我是消费金融经营分析数字员工</h2>
+        <div class="w-sub">我每月自动完成渠道经营体检：数据理解 → 指标计算 → 异常发现 → 归因分析 → 报告生成<br>也可以随时向我追问任何渠道经营问题</div>
+        <div class="wcards">
+          <div class="wcard" onclick="startCheckup()">
+            <span class="wt" style="background:var(--blue-bg);color:var(--blue)">例行月度</span>
+            <div class="wn">执行 9 月经营体检</div>
+            <div class="wd">数据文件已就绪 · 4渠道 × 6个月 × 18项指标</div>
+          </div>
+          <div class="wcard" onclick="switchChat('aug')">
+            <span class="wt" style="background:var(--amber-bg);color:var(--amber)">回顾</span>
+            <div class="wn">查看 8 月体检结果</div>
+            <div class="wd">上月体检结论与异常处理情况</div>
+          </div>
+          <div class="wcard" onclick="document.getElementById('chatInput').focus()">
+            <span class="wt" style="background:var(--green-bg);color:#065f46">自由提问</span>
+            <div class="wn">问我渠道经营问题</div>
+            <div class="wd">如：对比四个渠道的获客成本效率</div>
+          </div>
+        </div>
+      </div>
+      <div class="stream-in" id="streamIn"></div>
+    </div>
+    <div class="inbar">
+      <div class="inbar-in">
+        <div class="chips" id="chips"></div>
+        <div class="inrow">
+          <input id="chatInput" placeholder="输入问题，回车发送…（如：开始9月经营体检）" onkeydown="if(event.key==='Enter')freeAsk()">
+          <button onclick="freeAsk()">发送</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 右：文件区 -->
+  <aside class="fs">
+    <div class="fs-sec">
+      <div class="fs-h">📁 数据文件</div>
+      <div class="fitem" onclick="openFile()">
+        <div class="fn">📄 2026年9月_分渠道经营数据.xlsx</div>
+        <div class="fm"><span>4 表 · 1,152 数据点</span><span class="tag-new" id="ftag9">待处理</span></div>
+      </div>
+      <div class="fitem" style="opacity:.72;cursor:default">
+        <div class="fn">📄 2026年8月_分渠道经营数据.xlsx</div>
+        <div class="fm"><span>4 表</span><span class="tag-ok">已解析</span></div>
+      </div>
+      <div class="fitem" style="opacity:.72;cursor:default">
+        <div class="fn">📄 2026年7月_分渠道经营数据.xlsx</div>
+        <div class="fm"><span>4 表</span><span class="tag-ok">已解析</span></div>
+      </div>
+    </div>
+    <div class="fs-sec">
+      <div class="fs-h">📄 生成文件</div>
+      <div id="genFiles"><div class="fs-empty">体检与报告生成后<br>文件将出现在这里</div></div>
+    </div>
+    <div class="fnote">📁 文件区：数据文件导入后自动解析归档<br>📄 报告生成后可直接预览、导出 Word<br>点击文件名可查看数据结构</div>
+  </aside>
+
+</div>
+
+<!-- 文件预览弹窗 -->
+<div class="mask" id="mFile" onclick="closeModal('mFile')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh"><div class="mt">📄 2026年9月_分渠道经营数据.xlsx · 预览</div><button class="mx" onclick="closeModal('mFile')">✕</button></div>
+    <div class="mb">
+      <div class="ftabs">
+        <span class="ftab on" onclick="fTab(this,0)">Sheet1 渠道月度规模</span>
+        <span class="ftab" onclick="fTab(this,1)">Sheet2 转化与客群</span>
+        <span class="ftab" onclick="fTab(this,2)">Sheet3 风险表现</span>
+        <span class="ftab" onclick="fTab(this,3)">Sheet4 渠道成本</span>
+      </div>
+      <div class="sheet on">
+        <table class="tbl"><tr><th>渠道</th><th class="num">申请（万笔）</th><th class="num">授信（万户）</th><th class="num">支用（万户）</th><th class="num">放款（亿元）</th><th class="num">余额（亿元）</th></tr>
+        <tr><td>蚂蚁</td><td class="num">23.8</td><td class="num">13.28</td><td class="num">6.43</td><td class="num">12.9</td><td class="num">186.3</td></tr>
+        <tr><td>京东</td><td class="num">10.4</td><td class="num">6.29</td><td class="num">2.58</td><td class="num">6.5</td><td class="num">100.2</td></tr>
+        <tr><td>度小满</td><td class="num">6.2</td><td class="num">3.16</td><td class="num">1.38</td><td class="num">3.0</td><td class="num">58.1</td></tr>
+        <tr><td>其他（移动/携程）</td><td class="num">3.5</td><td class="num">1.74</td><td class="num">0.74</td><td class="num">2.0</td><td class="num">25.0</td></tr></table>
+      </div>
+      <div class="sheet">
+        <table class="tbl"><tr><th>渠道</th><th class="num">授信通过率</th><th class="num">支用率</th><th class="num">放款新客占比</th><th class="num">复借率</th></tr>
+        <tr><td>蚂蚁</td><td class="num">55.8%</td><td class="num">48.4%</td><td class="num">28%</td><td class="num">72%</td></tr>
+        <tr><td>京东</td><td class="num">60.5%</td><td class="num bad">41.0%</td><td class="num bad">69%</td><td class="num">31%</td></tr>
+        <tr><td>度小满</td><td class="num">51.0%</td><td class="num">43.8%</td><td class="num">31%</td><td class="num">69%</td></tr>
+        <tr><td>其他（移动/携程）</td><td class="num">49.8%</td><td class="num">42.2%</td><td class="num">27%</td><td class="num">73%</td></tr></table>
+      </div>
+      <div class="sheet">
+        <table class="tbl"><tr><th>渠道</th><th class="num">首逾率</th><th class="num">M1 逾期率</th><th class="num">新客首逾率</th><th class="num">存量首逾率</th></tr>
+        <tr><td>蚂蚁</td><td class="num">1.3%</td><td class="num">1.7%</td><td class="num">2.1%</td><td class="num">1.1%</td></tr>
+        <tr><td>京东</td><td class="num bad">3.1%</td><td class="num bad">3.6%</td><td class="num bad">4.0%</td><td class="num">1.2%</td></tr>
+        <tr><td>度小满</td><td class="num">1.5%</td><td class="num">2.2%</td><td class="num">2.2%</td><td class="num">1.3%</td></tr>
+        <tr><td>其他（移动/携程）</td><td class="num">1.4%</td><td class="num">2.0%</td><td class="num">2.0%</td><td class="num">1.2%</td></tr></table>
+      </div>
+      <div class="sheet">
+        <table class="tbl"><tr><th>渠道</th><th class="num">当月渠道费用（万元）</th><th class="num">新增放款客户（万户）</th><th class="num">单户获客成本（元）</th></tr>
+        <tr><td>蚂蚁</td><td class="num">328</td><td class="num">1.80</td><td class="num">182</td></tr>
+        <tr><td>京东</td><td class="num bad">865</td><td class="num">1.78</td><td class="num bad">486</td></tr>
+        <tr><td>度小满</td><td class="num">101</td><td class="num">0.43</td><td class="num">236</td></tr>
+        <tr><td>其他（移动/携程）</td><td class="num">42</td><td class="num">0.20</td><td class="num">208</td></tr></table>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px">注：示例为 2026年9月数据，完整文件含 2026年4月–9月逐月明细 · 本演示数据为模拟脱敏数据</div>
+    </div>
+  </div>
+</div>
+
+<!-- 完整报告弹窗 -->
+<div class="mask" id="mReport" onclick="closeModal('mReport')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh"><div class="mt">2026年9月 互联网平台信用贷渠道经营分析报告</div><button class="mx" onclick="closeModal('mReport')">✕</button></div>
+    <div class="mb">
+      <h4>一、整体经营概况</h4>
+      9月当月放款 <b>24.4 亿元</b>，环比 -0.8%；期末贷款余额 <b>369.6 亿元</b>，环比 +1.1%；加权首逾率 <b>1.8%</b>，环比 +0.2pp；放款客户新客占比 <b>38%</b>，环比 +2.8pp。整体呈<b>"余额稳增、新增承压、质量边际走弱"</b>格局。
+      <h4>二、渠道表现分析</h4>
+      <b>蚂蚁</b>：放款 12.9 亿元（+2.4%），全指标平稳，余额占比 53%，压舱石渠道。<br>
+      <b>京东</b>：申请 10.4 万笔创历史新高（+8.3%），放款 6.5 亿元环比持平；支用率 41.0%，连续 3 个月累计 -10.0pp。<br>
+      <b>度小满</b>：放款 3.0 亿元（-16.7%），申请端收缩所致，转化与风险指标平稳。<br>
+      <b>其他（移动/携程）</b>：放款 2.0 亿元（+5.3%），平稳。
+      <h4>三、重点关注：京东渠道经营质量分析</h4>
+      漏斗定位：异常锁定「授信→支用」环节（-3.6pp，显著偏离近 6 个月波动带）；客群拆解：新客支用率 36.3% 仅为存量（57.6%）的 63%，整体支用率 -3.6pp 中 <span class="rd">-2.8pp 来自新客占比从 65% 升至 78% 的结构效应</span>；风险联动：新客首逾 4.0%（存量 3.3 倍），M1 抬升与新客占比逐月同步。判断：渠道 8 月起转向"拉新冲量"策略（获客成本 +13.6% 佐证），属规模导向下的经营质量恶化信号。
+      <h4>四、风险提示与建议关注事项</h4>
+      ① 与京东渠道方核查新客引流结构与前端准入策略；② 评估拉新活动费用效率，测算量价平衡点；③ 对 8–9 月新增新客建立 M1 迁徙跟踪。
+      <h4>五、下月跟踪事项</h4>
+      ① 京东支用率是否企稳、新客占比走势；② 度小满 10 月投放恢复情况；③ 全盘加权首逾率走势。
+      <div style="font-size:11px;color:var(--muted);margin-top:14px;border-top:1px dashed var(--border);padding-top:10px">报告由消费金融经营分析数字员工自动生成 · 2026-10-10 09:32 · 指标口径见「📐 指标口径」</div>
+    </div>
+  </div>
+</div>
+
+<!-- 汇报摘要弹窗 -->
+<div class="mask" id="mBrief" onclick="closeModal('mBrief')">
+  <div class="modal" style="max-width:640px" onclick="event.stopPropagation()">
+    <div class="mh"><div class="mt">📣 汇报摘要（口头版 · 约3分钟）</div><button class="mx" onclick="closeModal('mBrief')">✕</button></div>
+    <div class="mb" style="line-height:2.1">
+      "9月我们互联网信用贷放款 24.4 亿，环比微降不到 1%，余额 369.6 亿还在稳步增长。四个渠道里，蚂蚁稳定，度小满因为渠道投放收缩掉了 17%，质量没问题。<br><br>
+      重点是<b>京东</b>：申请量连续三个月创新高，但放款一个字没涨。我们下钻后发现，支用率三个月掉了 10 个百分点，其中 8 成是新客占比飙到 78% 造成的结构问题——新客拿了额度不支用，首逾还是存量的 3.3 倍。同时获客成本涨了 13.6%。<br><br>
+      结论是京东在拉新冲量，量上来了、质在下去。建议渠道团队这个月跟京东核对引流结构和准入标准，我们持续跟踪这批新客的 M1 走势。"
+    </div>
+  </div>
+</div>
+
+<!-- 指标口径抽屉 -->
+<div class="drawer-mask" id="drawerMask" onclick="closeDrawer()"></div>
+<div class="drawer" id="calDrawer">
+  <div class="dh"><div class="dt">📐 指标口径说明</div><button class="mx" style="width:30px;height:30px;border-radius:8px;border:none;background:#f4f6fa;font-size:15px;cursor:pointer;color:var(--text2)" onclick="closeDrawer()">✕</button></div>
+  <div class="db">
+    <div class="cal-item"><div class="cn">支用率</div><div class="cv"><code>当月支用户数 ÷ 当月授信户数</code>，衡量授信客户激活为放款客户的转化</div></div>
+    <div class="cal-item"><div class="cn">首逾率（FPD）</div><div class="cv"><code>首个还款日发生逾期的放款笔数 ÷ 当月放款笔数</code>，早期风险核心指标</div></div>
+    <div class="cal-item"><div class="cn">M1 逾期率</div><div class="cv"><code>逾期 1–30 天贷款余额 ÷ 期末贷款余额</code></div></div>
+    <div class="cal-item"><div class="cn">新客 / 存量客户</div><div class="cv">新客 = 近 12 个月内无本行放款记录的客户；其余为存量客户</div></div>
+    <div class="cal-item"><div class="cn">放款新客占比</div><div class="cv"><code>当月放款客户中新客户数 ÷ 放款总户数</code></div></div>
+    <div class="cal-item"><div class="cn">单户获客成本（CAC）</div><div class="cv"><code>当月渠道费用 ÷ 新增放款客户数</code></div></div>
+    <div class="cal-item"><div class="cn">数据范围</div><div class="cv">2026年4月–9月 · 4 渠道（蚂蚁 / 京东 / 度小满 / 其他[移动·携程]）· 5 类 18 项指标</div></div>
+    <div class="cal-item"><div class="cn">数据说明</div><div class="cv">本演示为模拟脱敏数据，正式环境中按月导入渠道经营数据文件</div></div>
+  </div>
+</div>
+
+<script>
+/* ================= 基础消息 ================= */
+const streamIn = document.getElementById('streamIn');
+const streamEl = document.getElementById('stream');
+let checkupDone=false, whyDone=false, reportDone=false;
+
+function scrollBottom(){ streamEl.scrollTop = streamEl.scrollHeight; }
+function hideWelcome(){ const w=document.getElementById('welcome'); if(w) w.style.display='none'; }
+function addUserMsg(text){
+  hideWelcome();
+  if(curChat.lastIndexOf('new',0)===0){
+    const sps=document.getElementById('hi-'+curChat).querySelectorAll('span');
+    if(sps[1]&&sps[1].textContent==='新对话') sps[1].textContent=text.length>10?text.slice(0,10)+'…':text;
+  }
+  const d=document.createElement('div'); d.className='msg user';
+  d.innerHTML='<div class="mav">我</div><div class="mb"><span class="u-bubble">'+text+'</span></div>';
+  streamIn.appendChild(d); scrollBottom();
+}
+function addAiMsg(html){
+  const d=document.createElement('div'); d.className='msg ai';
+  d.innerHTML='<div class="mav">🤖</div><div class="mb"><div class="ai-bubble">'+html+'</div></div>';
+  streamIn.appendChild(d); scrollBottom(); return d.querySelector('.ai-bubble');
+}
+function typingThen(fn){
+  const d=document.createElement('div'); d.className='msg ai';
+  d.innerHTML='<div class="mav">🤖</div><div class="mb"><div class="ai-bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>';
+  streamIn.appendChild(d); scrollBottom();
+  setTimeout(()=>{ d.remove(); fn(); }, 650+Math.random()*350);
+}
+
+/* ================= 快捷问题 chips ================= */
+function setChips(list){
+  const box=document.getElementById('chips'); box.innerHTML='';
+  list.forEach(c=>{
+    const s=document.createElement('span'); s.className='chip'; s.textContent=c.t;
+    s.onclick=c.fn; box.appendChild(s);
+  });
+}
+const CHIPS_HOME=[{t:'🩺 执行9月经营体检',fn:()=>startCheckup()},{t:'对比四渠道获客成本效率',fn:()=>askQA(4)}];
+const CHIPS_AFTER_CHECK=[
+  {t:'🔍 京东经营质量为什么恶化？',fn:()=>askWhy()},
+  {t:'📄 生成经营报告',fn:()=>genReport()},
+  {t:'对比四渠道获客成本效率',fn:()=>askQA(4)}];
+const CHIPS_AFTER_WHY=[
+  {t:'京东新客的首逾率是多少？',fn:()=>askQA(1)},
+  {t:'支用率回到6月能多放多少款？',fn:()=>askQA(2)},
+  {t:'度小满10月会恢复吗？',fn:()=>askQA(3)},
+  {t:'📄 生成经营报告',fn:()=>genReport()}];
+setChips(CHIPS_HOME);
+
+/* ================= 9月经营体检 ================= */
+const RUN_STEPS=[
+  {t:'读取数据文件',d:'识别 4 个数据表：渠道月度规模 / 转化与客群 / 风险表现 / 渠道成本',c:'1.2s',at:250},
+  {t:'数据校验',d:'扫描 1,152 个数据点，2 处缺失值按口径补齐，无口径冲突',c:'0.8s',at:1350},
+  {t:'指标计算',d:'计算规模、转化、客群、风险、成本 5 类 18 项指标及环比',c:'1.5s',at:2350},
+  {t:'经营体检',d:'与近 6 个月基线逐项比对，按波动带阈值判定异常',c:'1.8s',at:3900},
+  {t:'发现 3 项需关注事项',d:'🔴 京东（高关注）· 🟠 度小满（观察）· 🟢 蚂蚁（平稳）',c:'0.6s',at:5800,warn:true},
+  {t:'异常归因与结论生成',d:'自动对京东渠道执行漏斗下钻、客群拆解与风险联动验证',c:'2.0s',at:6500},
+];
+function startCheckup(){
+  if(checkupDone){ addUserMsg('执行9月经营体检'); typingThen(()=>addAiMsg('<p>9月体检已完成 ✅ '+(curChat==='sep'?'结果就在上面，可以继续追问，或 <b>生成经营报告</b>。':'结果已保存在左侧「9月渠道经营体检」对话中，可切换查看，也可以直接在这里继续追问。')+'</p>')); return; }
+  addUserMsg('执行9月经营体检');
+  setChips([]);
+  typingThen(()=>{
+    const bubble=addAiMsg('<div class="runbox"><div class="rh"><span class="rspin" id="rspin"></span>正在执行 · 9月渠道经营月度体检<span class="rp" id="rpct">0%</span></div><div id="rsteps"></div></div>');
+    const box=bubble.querySelector('#rsteps');
+    const total=RUN_STEPS.length;
+    RUN_STEPS.forEach((s,i)=>{
+      const div=document.createElement('div'); div.className='rstep wait';
+      div.innerHTML='<div class="eic"></div><div class="etx"><div class="t1">'+s.t+'</div><div class="t2">'+s.d+'</div></div><div class="ecost">'+s.c+'</div>';
+      box.appendChild(div);
+      setTimeout(()=>{ div.classList.add('show'); div.classList.remove('wait'); div.classList.add('run'); bubble.querySelector('#rpct').textContent=Math.round(i/total*100)+'%'; scrollBottom(); }, s.at);
+      setTimeout(()=>{ div.classList.remove('run'); div.classList.add(s.warn?'warn':'ok'); div.querySelector('.eic').textContent=s.warn?'⚠':'✓'; bubble.querySelector('#rpct').textContent=Math.round((i+1)/total*100)+'%'; }, s.at+800);
+    });
+    setTimeout(()=>{
+      bubble.querySelector('#rspin').style.display='none';
+      bubble.querySelector('#rpct').textContent='100%';
+      const done=document.createElement('div'); done.className='rstep ok show';
+      done.innerHTML='<div class="eic">✓</div><div class="etx"><div class="t1">体检完成 · 用时 7.9 秒</div></div>';
+      box.appendChild(done);
+      document.getElementById('ftag9').textContent='已解析';
+      document.getElementById('ftag9').className='tag-ok';
+      checkupDone=true;
+    }, 8600);
+    setTimeout(()=>{ showCheckupResult(); setChips(CHIPS_AFTER_CHECK); }, 9400);
+  });
+}
+function showCheckupResult(){
+  const bubble=addAiMsg(
+    '<span class="scene blue">🩺 2026年9月 · 经营体检结果</span>'
+    +'<div class="kpis">'
+    +'<div class="kpi"><div class="kl">当月放款</div><div class="kv">24.4<small> 亿元</small></div><div class="kd dn">▼ 0.8% 环比</div></div>'
+    +'<div class="kpi"><div class="kl">贷款余额</div><div class="kv">369.6<small> 亿元</small></div><div class="kd up">▲ 1.1% 环比</div></div>'
+    +'<div class="kpi bad"><div class="kl">加权首逾率</div><div class="kv">1.8<small> %</small></div><div class="kd dn">▲ 0.2pp 上升</div></div>'
+    +'<div class="kpi warnk"><div class="kl">放款新客占比</div><div class="kv">38<small> %</small></div><div class="kd warn">▲ 2.8pp 环比</div></div>'
+    +'</div>'
+    +'<div><div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:9px">渠道放款对比（亿元）</div><div class="bars" id="chbars"></div></div>'
+    +'<div><div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:9px">AI 异常清单 · 3 项需关注</div>'
+    +'<div style="display:flex;flex-direction:column;gap:10px">'
+    +'<div class="ano r"><div class="ah"><span class="lv">🔴</span><span class="at">京东渠道 · 经营质量持续恶化</span><span class="st">高关注</span></div>'
+    +'<div class="ab">申请量连续 3 个月创历史新高（9月 <b>10.4 万笔</b>，环比 <b>+8.3%</b>），但当月放款环比持平——增长未转化为放款。支用率降至 <span class="rd">41.0%</span>（连续 3 个月累计 <span class="rd">-10.0pp</span>），放款新客占比升至 <span class="rd">69%</span>，首逾率 <span class="rd">3.1%</span> 为全渠道最高。</div>'
+    +'<div class="af"><button class="lkbtn" onclick="askWhy()">查看原因 · 归因链分析 →</button></div></div>'
+    +'<div class="ano o"><div class="ah"><span class="lv">🟠</span><span class="at">度小满渠道 · 放款环比下降</span><span class="st">观察</span></div>'
+    +'<div class="ab">9月放款 <b>3.0 亿元</b>（环比 <span class="am">-16.7%</span>），主因申请端收缩（申请量 7.0→6.2 万笔）；<b>通过率、支用率、首逾率均平稳</b>——判断为渠道投放节奏调整，非质量恶化。</div>'
+    +'<div class="af"><button class="lkbtn ghost" onclick="toggleDeep(this)">展开轻量归因 ▾</button></div>'
+    +'<div class="deep"><div class="tblwrap"><table class="tbl"><tr><th>指标</th><th class="num">8月</th><th class="num">9月</th><th class="num">环比</th><th>判断</th></tr>'
+    +'<tr><td>申请量（万笔）</td><td class="num">7.0</td><td class="num">6.2</td><td class="num bad">-11.4%</td><td>渠道 9 月中旬起缩减信息流投放（渠道费用环比 -18% 佐证）</td></tr>'
+    +'<tr><td>授信通过率</td><td class="num">52.0%</td><td class="num">51.0%</td><td class="num">-1.0pp</td><td>正常波动</td></tr>'
+    +'<tr><td>支用率</td><td class="num">43.9%</td><td class="num">43.8%</td><td class="num">-0.1pp</td><td class="good">平稳</td></tr>'
+    +'<tr><td>首逾率</td><td class="num">1.5%</td><td class="num">1.5%</td><td class="num">持平</td><td class="good">平稳</td></tr></table></div>'
+    +'<div class="ai-note" style="margin-top:9px">结论：属<b>量的收缩而非质的恶化</b>，暂无需深度归因。建议观察 10 月投放恢复情况，若连续两月未恢复再升级处理。</div></div></div>'
+    +'<div class="ano g"><div class="ah"><span class="lv">🟢</span><span class="at">蚂蚁渠道 · 经营平稳</span><span class="st">无需处理</span></div>'
+    +'<div class="ab">放款 12.9 亿元（环比 +2.4%），余额占比 53%；通过率、支用率、新客占比、首逾率全部处于近 6 个月基线区间——<b>压舱石渠道，保持例行监测</b>。</div></div>'
+    +'</div></div>'
+  );
+  renderBars(bubble.querySelector('#chbars'));
+}
+const CH_BARS=[
+  {n:'蚂蚁',v:12.9,d:'+2.4%',c:'linear-gradient(90deg,#1d4ed8,#3b82f6)'},
+  {n:'京东',v:6.5,d:'0.0%',c:'linear-gradient(90deg,#b91c1c,#ef4444)'},
+  {n:'度小满',v:3.0,d:'-16.7%',c:'linear-gradient(90deg,#b45309,#f59e0b)'},
+  {n:'其他',v:2.0,d:'+5.3%',c:'linear-gradient(90deg,#0f766e,#14b8a6)'},
+];
+function renderBars(box){
+  const max=Math.max(...CH_BARS.map(x=>x.v));
+  CH_BARS.forEach((c,i)=>{
+    const row=document.createElement('div'); row.className='brow';
+    const dir=c.d.startsWith('-')?'dn':(c.d==='0.0%'?'flat':'up');
+    row.innerHTML='<span class="bn">'+c.n+'</span><div class="btrack"><div class="bfill" style="background:'+c.c+'">'+c.v+'</div></div><span class="bdelta kd '+dir+'">'+(dir==='dn'?'▼ ':(dir==='up'?'▲ ':''))+c.d+'</span>';
+    box.appendChild(row);
+    setTimeout(()=>{ row.querySelector('.bfill').style.width=Math.max(c.v/max*100,20)+'%'; }, 150+i*130);
+  });
+}
+function toggleDeep(btn){
+  const d=btn.closest('.ano').querySelector('.deep');
+  d.classList.toggle('on');
+  btn.textContent=d.classList.contains('on')?'收起轻量归因 ▴':'展开轻量归因 ▾';
+}
+
+/* ================= 归因链 ================= */
+function askWhy(){
+  if(!checkupDone){ addUserMsg('京东经营质量为什么恶化？'); typingThen(()=>addAiMsg('<p>请先执行 9 月经营体检，我再基于体检结果做归因分析 😊</p>')); return; }
+  addUserMsg('京东渠道经营质量为什么恶化？');
+  typingThen(()=>{
+    whyDone=true; setChips(CHIPS_AFTER_WHY);
+    const uid1='svgt'+Date.now(), uid2='svgd'+Date.now();
+    const bubble=addAiMsg(
+      '<span class="scene red">🔍 京东渠道 · 归因链分析</span>'
+      /* ① */
+      +'<div><div class="ph"><span class="pno">1</span>发生了什么</div>'
+      +'<div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-top:9px">'
+      +'<div class="kpi"><div class="kl">申请量</div><div class="kv">10.4<small> 万笔</small></div><div class="kd up">▲ 8.3% · 历史新高</div></div>'
+      +'<div class="kpi"><div class="kl">当月放款</div><div class="kv">6.5<small> 亿元</small></div><div class="kd flat">— 环比持平</div></div>'
+      +'<div class="kpi bad"><div class="kl">支用率</div><div class="kv">41.0<small> %</small></div><div class="kd dn">▼ 3.6pp · 3月累计 -10.0pp</div></div>'
+      +'</div>'
+      +'<div class="chartbox" style="margin-top:10px"><div class="ct">支用率走势（2026年4月–9月）</div><svg id="'+uid1+'" width="100%" height="150" viewBox="0 0 640 150" preserveAspectRatio="none"></svg></div>'
+      +'<div class="ai-note">申请量连续三个月创新高，但放款始终停在 6.5 亿——<b>增长没有转化为放款</b>，剪刀差自 7 月起持续扩大，问题出在<b>转化链路</b>而非获客端。</div></div>'
+      /* ② */
+      +'<div><div class="ph"><span class="pno">2</span>异常环节定位</div><div style="margin-top:9px">'
+      +'<div class="tblwrap"><table class="tbl"><tr><th>漏斗环节</th><th class="num">8月</th><th class="num">9月</th><th class="num">环比</th><th>判定</th></tr>'
+      +'<tr><td>申请（万笔）</td><td class="num">9.6</td><td class="num">10.4</td><td class="num">+8.3%</td><td class="good">获客正常</td></tr>'
+      +'<tr><td>申请→授信 通过率</td><td class="num">60.9%</td><td class="num">60.5%</td><td class="num">-0.4pp</td><td class="good">正常波动</td></tr>'
+      +'<tr><td><b>授信→支用 支用率</b></td><td class="num">44.6%</td><td class="num bad">41.0%</td><td class="num bad">-3.6pp</td><td class="bad">⚠ 显著偏离波动带（±1.5pp）</td></tr>'
+      +'<tr><td>支用→放款 件均（万元）</td><td class="num">2.49</td><td class="num">2.52</td><td class="num">+1.2%</td><td class="good">正常</td></tr></table></div>'
+      +'<div class="concl">🔍 异常锁定「授信 → 支用」环节：授信户数还在涨，支用户数反而掉了——客户拿到了额度却不用</div>'
+      +'</div></div>'
+      /* ③ */
+      +'<div><div class="ph"><span class="pno">3</span>客群结构拆解</div><div style="margin-top:9px">'
+      +'<div class="tblwrap"><table class="tbl"><tr><th>客群</th><th class="num">授信户数</th><th class="num">占比</th><th class="num">支用率</th><th class="num">环比</th><th class="num">首逾率</th></tr>'
+      +'<tr><td><b>新客</b> <span class="sub">近12月无放款记录</span></td><td class="num">4.91 万</td><td class="num">78%</td><td class="num bad">36.3%</td><td class="num">-0.7pp</td><td class="num bad">4.0%</td></tr>'
+      +'<tr><td><b>存量客户</b></td><td class="num">1.38 万</td><td class="num">22%</td><td class="num">57.6%</td><td class="num">-1.1pp</td><td class="num good">1.2%</td></tr>'
+      +'<tr><td><b>整体</b></td><td class="num">6.29 万</td><td class="num">100%</td><td class="num bad">41.0%</td><td class="num bad">-3.6pp</td><td class="num bad">3.1%</td></tr></table></div>'
+      +'<div style="margin-top:11px"><div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px">整体支用率环比变动拆解（-3.6pp）</div><div class="decomp">'
+      +'<div class="drow"><span class="dl">客群结构变化</span><div class="dtrack"><div class="dfill" style="width:78%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div><span class="dv" style="color:var(--red)">-2.8pp</span></div>'
+      +'<div class="drow"><span class="dl">各客群支用率变化</span><div class="dtrack"><div class="dfill" style="width:22%;background:#f59e0b"></div></div><span class="dv" style="color:var(--amber)">-0.8pp</span></div>'
+      +'</div></div>'
+      +'<div class="ai-note">新客支用率 36.3% 仅为存量（57.6%）的 <b>63%</b>。支用率下滑主因<b>不是客户不支用了</b>（各客群仅 -0.7~-1.1pp），而是<b>新客授信占比从 65% 升至 78%</b>——<span class="rd">是"新客太多了"，结构性稀释了整体支用率。</span></div>'
+      +'</div></div>'
+      /* ④ */
+      +'<div><div class="ph"><span class="pno">4</span>风险联动验证</div>'
+      +'<div class="chartbox" style="margin-top:9px"><div class="ct">新客占比 × 首逾率（4月–9月）——风险抬升与拉新节奏逐月同步</div><svg id="'+uid2+'" width="100%" height="160" viewBox="0 0 640 160" preserveAspectRatio="none"></svg>'
+      +'<div class="legend"><span class="lg"><span class="sw" style="background:#dc2626"></span>放款新客占比（%）</span><span class="lg"><span class="sw" style="background:#2563eb"></span>首逾率（%）</span></div></div>'
+      +'<div class="tblwrap" style="margin-top:10px"><table class="tbl"><tr><th>客群</th><th class="num">首逾率</th><th class="num">M1 逾期率</th><th>说明</th></tr>'
+      +'<tr><td><b>新客</b></td><td class="num bad">4.0%</td><td class="num bad">4.4%</td><td>首逾为存量的 3.3 倍</td></tr>'
+      +'<tr><td><b>存量客户</b></td><td class="num good">1.2%</td><td class="num good">1.8%</td><td>持续平稳</td></tr>'
+      +'<tr><td><b>整体</b></td><td class="num bad">3.1%</td><td class="num bad">3.6%</td><td>环比均 +0.4pp</td></tr></table></div>'
+      +'<div class="ai-note">首逾（2.2%→2.7%→3.1%）与 M1（2.8%→3.2%→3.6%）的抬升节奏，和新客占比（44%→54%→69%）<b>逐月同步</b>；存量客户始终平稳。<span class="rd">风险问题与转化问题同源——都来自新客结构。</span></div></div>'
+      /* ⑤ */
+      +'<div><div class="ph"><span class="pno">5</span>综合判断与建议</div><div style="margin-top:9px">'
+      +'<div class="judge"><div class="jh">🤖 AI 综合判断</div><div class="jb">京东渠道自 8 月起明显转向<b>「拉新冲量」策略</b>：申请连续创新高、新客授信占比升至 78%，单户获客成本环比 <span class="am">+13.6%</span>（428→486 元/户）佐证投放加码。新客结构性涌入带来三个同步后果：<b>支用率被稀释</b>（结构效应 -2.8pp）、<b>早期风险被推高</b>（新客首逾 4.0%，为存量 3.3 倍）、<b>费用效率下降</b>。属"规模导向"下的<b>经营质量恶化信号</b>——若延续，Q4 资产质量与费用效率压力将进一步显现。</div>'
+      +'<div style="padding:0 15px 13px"><div class="sugg"><div class="sh">建议关注</div>'
+      +'<div class="si"><span class="no">1</span><div><b>核查引流结构</b>：与渠道方核查新客引流结构与前端准入策略，评估是否收紧新客推荐标准</div></div>'
+      +'<div class="si"><span class="no">2</span><div><b>评估费用效率</b>：单户获客成本环比 +13.6%，建议测算拉新活动的量价平衡点</div></div>'
+      +'<div class="si"><span class="no">3</span><div><b>跟踪风险迁徙</b>：对 8–9 月新增新客建立 M1 迁徙跟踪，预判 Q4 资产质量走势</div></div>'
+      +'</div><div class="footnote">以上为 AI 分析建议，供业务参考，不替代业务决策</div></div></div>'
+      +'</div></div>'
+    );
+    requestAnimationFrame(()=>{ drawTrend(document.getElementById(uid1)); drawDual(document.getElementById(uid2)); });
+  });
+}
+
+/* ================= SVG 绘制 ================= */
+function drawTrend(svg){
+  const W=640,H=150,padL=42,padR=16,padT=16,padB=26;
+  const ms=['4月','5月','6月','7月','8月','9月'], v=[52.3,51.8,51.0,48.0,44.6,41.0];
+  const y0=35,y1=55;
+  const X=i=>padL+(W-padL-padR)*i/(ms.length-1);
+  const Y=val=>padT+(H-padT-padB)*(1-(val-y0)/(y1-y0));
+  let g='';
+  for(let gv=y0;gv<=y1;gv+=5){ g+='<line x1="'+padL+'" y1="'+Y(gv)+'" x2="'+(W-padR)+'" y2="'+Y(gv)+'" stroke="#eef2f7"/><text x="'+(padL-7)+'" y="'+(Y(gv)+3.5)+'" text-anchor="end" font-size="10" fill="#8a99ab">'+gv+'%</text>'; }
+  ms.forEach((m,i)=>{ g+='<text x="'+X(i)+'" y="'+(H-7)+'" text-anchor="middle" font-size="10.5" fill="#5a6b7d">'+m+'</text>'; });
+  let path='';
+  v.forEach((val,i)=>{ path+=(i?'L':'M')+X(i)+' '+Y(val); });
+  g+='<path d="'+path+' L'+X(v.length-1)+' '+(H-padB)+' L'+X(0)+' '+(H-padB)+' Z" fill="rgba(220,38,38,.08)"/>';
+  g+='<path d="'+path+'" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>';
+  v.forEach((val,i)=>{ g+='<circle cx="'+X(i)+'" cy="'+Y(val)+'" r="3.8" fill="#fff" stroke="#dc2626" stroke-width="2"/><text x="'+X(i)+'" y="'+(Y(val)-9)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#dc2626">'+val+'%</text>'; });
+  svg.innerHTML=g;
+}
+function drawDual(svg){
+  const W=640,H=160,padL=42,padR=42,padT=14,padB=26;
+  const ms=['4月','5月','6月','7月','8月','9月'];
+  const nw=[30,33,38,44,54,69], fp=[1.7,1.8,1.9,2.2,2.7,3.1];
+  const X=i=>padL+(W-padL-padR)*i/(ms.length-1);
+  const Yn=v=>padT+(H-padT-padB)*(1-(v-25)/(75-25));
+  const Yf=v=>padT+(H-padT-padB)*(1-(v-1.5)/(3.5-1.5));
+  let g='';
+  for(let i=25;i<=75;i+=25){ g+='<line x1="'+padL+'" y1="'+Yn(i)+'" x2="'+(W-padR)+'" y2="'+Yn(i)+'" stroke="#eef2f7"/><text x="'+(padL-7)+'" y="'+(Yn(i)+3.5)+'" text-anchor="end" font-size="10" fill="#dc2626">'+i+'%</text>'; }
+  [2,3].forEach(i=>{ g+='<text x="'+(W-padR+7)+'" y="'+(Yf(i)+3.5)+'" text-anchor="start" font-size="10" fill="#2563eb">'+i+'%</text>'; });
+  ms.forEach((m,i)=>{ g+='<text x="'+X(i)+'" y="'+(H-7)+'" text-anchor="middle" font-size="10.5" fill="#5a6b7d">'+m+'</text>'; });
+  let p1='',p2='';
+  nw.forEach((v,i)=>{ p1+=(i?'L':'M')+X(i)+' '+Yn(v); });
+  fp.forEach((v,i)=>{ p2+=(i?'L':'M')+X(i)+' '+Yf(v); });
+  g+='<path d="'+p1+'" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>';
+  g+='<path d="'+p2+'" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>';
+  nw.forEach((v,i)=>{ g+='<circle cx="'+X(i)+'" cy="'+Yn(v)+'" r="3.8" fill="#fff" stroke="#dc2626" stroke-width="2"/><text x="'+X(i)+'" y="'+(Yn(v)-8)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#dc2626">'+v+'%</text>'; });
+  fp.forEach((v,i)=>{ g+='<circle cx="'+X(i)+'" cy="'+Yf(v)+'" r="3.8" fill="#fff" stroke="#2563eb" stroke-width="2"/><text x="'+X(i)+'" y="'+(Yf(v)+16)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#2563eb">'+v+'%</text>'; });
+  svg.innerHTML=g;
+}
+
+/* ================= 追问 QA ================= */
+const QA={
+  1:{q:'京东新客的首逾率是多少？',a:'<p>京东渠道 9 月分客群早期风险表现：</p><table class="mini-tbl"><tr><th>客群</th><th>首逾率</th><th>M1 逾期率</th></tr><tr><td><b>新客</b></td><td style="color:#dc2626;font-weight:700">4.0%</td><td style="color:#dc2626;font-weight:700">4.4%</td></tr><tr><td><b>存量客户</b></td><td style="color:#16a34a">1.2%</td><td style="color:#16a34a">1.8%</td></tr><tr><td><b>整体</b></td><td>3.1%</td><td>3.6%</td></tr></table><p>新客首逾为存量的 <span class="rd">3.3 倍</span>。整体首逾从 2.7% 升至 3.1%，基本全部由新客占比上升推动——存量客户风险一直平稳。</p>'},
+  2:{q:'支用率若回到6月水平，能多放多少款？',a:'<p>敏感性测算（假设授信户数与件均不变）：</p><table class="mini-tbl"><tr><th>情形</th><th>支用率</th><th>支用户数</th><th>当月放款</th></tr><tr><td>9月实际</td><td>41.0%</td><td>2.58 万户</td><td>6.5 亿元</td></tr><tr><td><b>回到6月水平</b></td><td>51.0%</td><td>3.21 万户</td><td><b style="color:#16a34a">8.1 亿元</b></td></tr></table><p>支用率回到 6 月的 51.0%，月放款可多 <span class="gn">约 1.6 亿元</span>（+24%）——这就是当前"申请创新高、放款不涨"的剪刀差代价。当然，前提是新客结构与质量回到 6 月水平。</p>'},
+  3:{q:'度小满10月会恢复吗？',a:'<p>基于现有数据的谨慎判断：<b>存在不确定性</b>。</p><p>① 渠道费用 9 月环比 <span class="am">-18%</span>，说明投放收缩在 9 月中旬仍在进行，10 月上半月大概率延续低位；<br>② 质量指标（支用率 43.8%、首逾 1.5%）全程平稳，渠道合作本身无异常信号；<br>③ 该渠道历史上未出现过连续 3 个月以上的投放收缩。</p><p>建议：向渠道方确认 Q4 排期；若 10 月申请量仍低于 6 万笔，再纳入重点观察。当前<b>无需干预</b>。</p>'},
+  4:{q:'对比四个渠道的获客成本效率',a:'<p>9 月四渠道获客成本 × 质量对照：</p><table class="mini-tbl"><tr><th>渠道</th><th>单户获客成本</th><th>首逾率</th><th>支用率</th></tr><tr><td>蚂蚁</td><td style="color:#16a34a;font-weight:700">182 元</td><td>1.3%</td><td>48.4%</td></tr><tr><td>其他</td><td>208 元</td><td>1.4%</td><td>42.2%</td></tr><tr><td>度小满</td><td>236 元</td><td>1.5%</td><td>43.8%</td></tr><tr><td><b>京东</b></td><td style="color:#dc2626;font-weight:700">486 元</td><td style="color:#dc2626;font-weight:700">3.1%</td><td style="color:#dc2626">41.0%</td></tr></table><p>京东获客成本为蚂蚁的 <span class="rd">2.7 倍</span>，同时首逾率最高、支用率最低——<b>当前量、价、质均处于最差象限</b>，是四渠道中费用效率问题最突出的一个。</p>'},
+};
+function askQA(id){ addUserMsg(QA[id].q); typingThen(()=>addAiMsg(QA[id].a)); }
+
+/* ================= 生成报告 ================= */
+function genReport(){
+  if(!checkupDone){ addUserMsg('生成经营报告'); typingThen(()=>addAiMsg('<p>请先执行 9 月经营体检，我再基于结果生成报告 😊</p>')); return; }
+  addUserMsg('生成9月渠道经营分析报告');
+  typingThen(()=>{
+    reportDone=true;
+    addAiMsg(
+      '<p>📄 报告已生成：<b>《2026年9月 互联网平台信用贷渠道经营分析报告》</b>，已存入右侧文件区。</p>'
+      +'<div class="rcard"><div class="rc-h"><div class="rt">月 度 经 营 分 析</div><h4>2026年9月 互联网平台信用贷<br>渠道经营分析报告</h4><div class="rs">生成于 2026-10-10 09:32 · 数据范围 2026年4月–9月 · 4 渠道</div></div>'
+      +'<div class="rc-toc"><div class="ti"><b>一、</b>整体经营概况</div><div class="ti"><b>二、</b>渠道表现分析（蚂蚁 / 京东 / 度小满 / 其他）</div><div class="ti"><b>三、</b>重点关注：京东渠道经营质量分析</div><div class="ti"><b>四、</b>风险提示与建议关注事项</div><div class="ti"><b>五、</b>下月跟踪事项</div></div>'
+      +'<div class="rc-f"><button class="lkbtn" onclick="openModal(\'mReport\')">查看完整报告</button><button class="lkbtn ghost" onclick="downloadReport()">⬇ 导出 Word</button><button class="lkbtn ghost" onclick="openModal(\'mBrief\')">📣 汇报摘要</button></div></div>'
+    );
+    const gf=document.getElementById('genFiles');
+    gf.innerHTML='<div class="fitem gen" onclick="openModal(\'mReport\')"><div class="fn">📄 2026年9月_渠道经营分析报告.docx</div><div class="fm"><span>09:32 生成 · 5 章节</span><span class="tag-doc">可预览/导出</span></div></div>'
+      +'<div style="display:flex;gap:6px;margin-top:2px"><button class="lkbtn ghost" style="flex:1;font-size:11px;padding:4px 8px" onclick="downloadReport()">⬇ 下载</button><button class="lkbtn ghost" style="flex:1;font-size:11px;padding:4px 8px" onclick="openModal(\'mBrief\')">📣 摘要</button></div>';
+    setChips([{t:'京东新客的首逾率是多少？',fn:()=>askQA(1)},{t:'对比四渠道获客成本效率',fn:()=>askQA(4)}]);
+  });
+}
+
+/* ================= 自由输入 ================= */
+function freeAsk(){
+  const inp=document.getElementById('chatInput');
+  const q=inp.value.trim(); if(!q) return;
+  inp.value='';
+  if(/体检|开始|执行/.test(q) && !checkupDone){ startCheckup(); return; }
+  if(/为什么|原因|恶化/.test(q)){ askWhy(); return; }
+  if(/报告/.test(q)){ genReport(); return; }
+  if(/新客|首逾/.test(q)){ addUserMsg(QA[1].q); typingThen(()=>addAiMsg(QA[1].a)); return; }
+  if(/支用|回到|多放|测算/.test(q)){ addUserMsg(QA[2].q); typingThen(()=>addAiMsg(QA[2].a)); return; }
+  if(/度小满|10月|恢复/.test(q)){ addUserMsg(QA[3].q); typingThen(()=>addAiMsg(QA[3].a)); return; }
+  if(/成本|获客|效率|对比/.test(q)){ addUserMsg(QA[4].q); typingThen(()=>addAiMsg(QA[4].a)); return; }
+  addUserMsg(q);
+  typingThen(()=>addAiMsg('<p>这个问题超出当前演示数据范围 😊 本次演示聚焦 9 月渠道经营体检。可以试试：</p><p>· 开始9月经营体检<br>· 京东经营质量为什么恶化？<br>· 对比四个渠道的获客成本效率</p>'));
+}
+
+/* ================= 对话切换（历史） ================= */
+const savedHtml={}; let curChat='sep';
+function buildAug(){
+  return '<div class="msg ai"><div class="mav">🤖</div><div class="mb"><div class="ai-bubble">'
+  +'<span class="scene green">🩺 2026年8月 · 经营体检结果（已完成）</span>'
+  +'<div class="kpis">'
+  +'<div class="kpi"><div class="kl">当月放款</div><div class="kv">24.6<small> 亿元</small></div><div class="kd up">▲ 1.2% 环比</div></div>'
+  +'<div class="kpi"><div class="kl">贷款余额</div><div class="kv">365.7<small> 亿元</small></div><div class="kd up">▲ 1.4% 环比</div></div>'
+  +'<div class="kpi warnk"><div class="kl">加权首逾率</div><div class="kv">1.7<small> %</small></div><div class="kd warn">▲ 0.1pp</div></div>'
+  +'<div class="kpi warnk"><div class="kl">放款新客占比</div><div class="kv">35<small> %</small></div><div class="kd warn">▲ 2.6pp</div></div></div>'
+  +'<div><div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:9px">AI 异常清单 · 1 项需关注</div>'
+  +'<div class="ano o"><div class="ah"><span class="lv">🟠</span><span class="at">京东渠道 · 支用率连续下滑</span><span class="st">观察</span></div>'
+  +'<div class="ab">支用率 48.0% → 44.6%（连续 2 个月下滑），放款新客占比升至 54%，首逾率升至 <span class="am">2.7%</span>。已列入观察名单，建议下月体检重点跟踪。</div></div>'
+  +'<div class="ai-note" style="margin-top:10px">📌 该观察事项已在 <b>9 月体检中升级为高关注</b>（支用率进一步降至 41.0%），归因分析见 9 月对话。</div></div>'
+  +'<div class="footnote">📄 8月渠道经营分析报告已归档</div>'
+  +'</div></div></div>';
+}
+function buildJul(){
+  return '<div class="msg ai"><div class="mav">🤖</div><div class="mb"><div class="ai-bubble">'
+  +'<span class="scene green">🩺 2026年7月 · 经营体检结果（已完成）</span>'
+  +'<p>全盘经营平稳：当月放款 24.7 亿元（环比 +2.1%），加权首逾率 1.5%，无高关注异常。</p>'
+  +'<div class="ano o"><div class="ah"><span class="lv">🟠</span><span class="at">京东渠道 · 支用率出现回落</span><span class="st">提示</span></div>'
+  +'<div class="ab">支用率 51.0% → 48.0%（首次回落，超出单月波动带），放款新客占比升至 44%。已记录，待下月观察是否延续。</div></div>'
+  +'<div class="footnote">📄 7月渠道经营分析报告已归档</div>'
+  +'</div></div></div>';
+}
+function switchChat(t){
+  if(t===curChat) return;
+  document.querySelectorAll('.hitem').forEach(h=>h.classList.remove('on'));
+  document.getElementById('hi-'+t).classList.add('on');
+  if(curChat==='sep'){ savedHtml.sep=document.getElementById('streamIn').innerHTML; }
+  else { savedHtml[curChat]=document.getElementById('streamIn').innerHTML; }
+  curChat=t;
+  let html=(t in savedHtml)?savedHtml[t]:(t==='aug'?buildAug():buildJul());
+  savedHtml[t]=html;
+  document.getElementById('streamIn').innerHTML=html;
+  document.getElementById('welcome').style.display=html?'none':'block';
+  setChips(reportDone?[{t:'京东新客的首逾率是多少？',fn:()=>askQA(1)},{t:'对比四渠道获客成本效率',fn:()=>askQA(4)}]:(whyDone?CHIPS_AFTER_WHY:(checkupDone?CHIPS_AFTER_CHECK:CHIPS_HOME)));
+  streamEl.scrollTop = t==='sep' ? streamEl.scrollHeight : 0;
+}
+let newChatSeq=0;
+function newChat(){
+  savedHtml[curChat]=document.getElementById('streamIn').innerHTML;
+  document.querySelectorAll('.hitem').forEach(h=>h.classList.remove('on'));
+  newChatSeq++;
+  const id='new'+newChatSeq;
+  savedHtml[id]='';
+  const item=document.createElement('div');
+  item.className='hitem on'; item.id='hi-'+id;
+  item.innerHTML='<span class="hi">💬</span><span>新对话</span>';
+  item.onclick=()=>switchChat(id);
+  const sep=document.getElementById('hi-sep');
+  sep.parentElement.insertBefore(item,sep);
+  curChat=id;
+  document.getElementById('streamIn').innerHTML='';
+  document.getElementById('welcome').style.display='block';
+  setChips(reportDone?[{t:'京东新客的首逾率是多少？',fn:()=>askQA(1)},{t:'对比四渠道获客成本效率',fn:()=>askQA(4)}]:(whyDone?CHIPS_AFTER_WHY:(checkupDone?CHIPS_AFTER_CHECK:CHIPS_HOME)));
+}
+
+/* ================= 弹窗 / 抽屉 / 下载 ================= */
+function openModal(id){ document.getElementById(id).classList.add('on'); }
+function closeModal(id){ document.getElementById(id).classList.remove('on'); }
+function openDrawer(){ document.getElementById('calDrawer').classList.add('on'); document.getElementById('drawerMask').classList.add('on'); }
+function closeDrawer(){ document.getElementById('calDrawer').classList.remove('on'); document.getElementById('drawerMask').classList.remove('on'); }
+function openFile(){ openModal('mFile'); }
+function fTab(el,i){
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.sheet').forEach((s,j)=>s.classList.toggle('on', j===i));
+}
+function downloadReport(){
+  const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><title>2026年9月渠道经营分析报告</title></head><body style="font-family:\'PingFang SC\',\'Microsoft YaHei\',sans-serif;line-height:1.9">'
+  +'<h1 style="text-align:center">2026年9月 互联网平台信用贷渠道经营分析报告</h1>'
+  +'<p style="text-align:center;color:#888;font-size:12px">消费金融经营分析数字员工 自动生成 · 2026-10-10</p>'
+  +'<h2>一、整体经营概况</h2><p>9月当月放款 24.4 亿元，环比 -0.8%；期末贷款余额 369.6 亿元，环比 +1.1%；加权首逾率 1.8%，环比 +0.2pp；放款客户新客占比 38%，环比 +2.8pp。整体呈"余额稳增、新增承压、质量边际走弱"格局。</p>'
+  +'<h2>二、渠道表现分析</h2><p><b>蚂蚁</b>：放款 12.9 亿元（+2.4%），全指标平稳，余额占比 53%。<br><b>京东</b>：申请 10.4 万笔创历史新高（+8.3%），放款 6.5 亿元环比持平；支用率 41.0%，连续 3 个月累计 -10.0pp。<br><b>度小满</b>：放款 3.0 亿元（-16.7%），申请端收缩所致，质量平稳。<br><b>其他（移动/携程）</b>：放款 2.0 亿元（+5.3%），平稳。</p>'
+  +'<h2>三、重点关注：京东渠道经营质量分析</h2><p>漏斗定位：异常锁定「授信→支用」环节（-3.6pp，显著偏离近 6 个月波动带）。客群拆解：新客支用率 36.3% 仅为存量（57.6%）的 63%；整体支用率 -3.6pp 中 -2.8pp 来自新客占比从 65% 升至 78% 的结构效应。风险联动：新客首逾 4.0%（存量 3.3 倍），M1 抬升与新客占比逐月同步。综合判断：渠道 8 月起转向"拉新冲量"策略（获客成本环比 +13.6% 佐证），属规模导向下的经营质量恶化信号。</p>'
+  +'<h2>四、风险提示与建议关注事项</h2><p>1. 与京东渠道方核查新客引流结构与前端准入策略；<br>2. 评估拉新活动费用效率，测算量价平衡点；<br>3. 对 8–9 月新增新客建立 M1 迁徙跟踪，预判 Q4 资产质量走势。</p>'
+  +'<h2>五、下月跟踪事项</h2><p>1. 京东支用率是否企稳、新客占比走势；<br>2. 度小满 10 月投放恢复情况；<br>3. 全盘加权首逾率走势。</p>'
+  +'<p style="color:#888;font-size:11px">以上为 AI 分析建议，供业务参考，不替代业务决策。</p></body></html>';
+  const blob=new Blob(['﻿'+html],{type:'application/msword'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='2026年9月_互联网平台信用贷渠道经营分析报告.doc';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+</script>
+</body>
+</html>
