@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宁波银行 - 内部演示系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0d1117; /* GitHub 暗色主题背景 */
+            color: #c9d1d9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 密码验证界面样式 */
+        #login-container {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        #login-container h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #58a6ff;
+        }
+
+        #login-container p {
+            font-size: 14px;
+            color: #8b949e;
+            margin-bottom: 25px;
+        }
+
+        #password-input {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            font-size: 16px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #password-input:focus {
+            border-color: #58a6ff;
+        }
+
+        #login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #238636;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #login-btn:hover {
+            background-color: #2ea043;
+        }
+
+        #error-msg {
+            color: #f85149;
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* 内容界面样式 */
+        #content-container {
+            display: none; /* 默认隐藏 */
+            width: 100vw;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            color: #c9d1d9;
+            font-weight: 500;
+        }
+
+        .header h1 span {
+            color: #58a6ff;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background-color: #30363d;
+        }
+
+        .tab-btn.active {
+            background-color: #1f6feb;
+            border-color: #1f6feb;
+            color: #ffffff;
+        }
+
+        .iframe-wrapper {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            position: relative;
+        }
+
+        .iframe-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 密码验证界面 -->
+    <div id="login-container">
+        <h2>🔒 内部演示系统</h2>
+        <p>请输入访问密码以查看宁波银行 AI 业务场景</p>
+        <input type="password" id="password-input" placeholder="请输入密码..." autocomplete="off">
+        <button id="login-btn" onclick="checkPassword()">进入系统</button>
+        <div id="error-msg">密码错误，请重新输入！</div>
+    </div>
+
+    <!-- 主内容界面 -->
+    <div id="content-container">
+        <div class="header">
+            <h1><span>宁波银行</span>AI 业务场景全景演示</h1>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('remote', this)">远程银行中心全景</button>
+                <button class="tab-btn" onclick="switchTab('demo1', this)">合作机构材料审核</button>
+                <button class="tab-btn" onclick="switchTab('demo2', this)">消费金融经营分析</button>
+            </div>
+        </div>
+        <div class="iframe-wrapper" id="iframe-wrapper">
+            <!-- iframe 内容会由 JavaScript 动态加载 -->
+        </div>
+    </div>
+
+    <script>
+        // 设置密码
+        const CORRECT_PASSWORD = "20260410";
+        
+        // 定义三个页面的路径 (与 index.html 同级)
+        const PAGES = {
+            remote: "远程银行中心AI业务场景全景.html",
+            demo1: "demo-合作机构材料审核数字员工.html",
+            demo2: "demo-消费金融经营分析数字员工.html"
+        };
+
+        // 检查密码
+        function checkPassword() {
+            const input = document.getElementById('password-input').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            if (input === CORRECT_PASSWORD) {
+                // 密码正确，隐藏登录框，显示内容
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('content-container').style.display = 'flex';
+                // 默认加载第一个页面
+                switchTab('remote');
+            } else {
+                // 密码错误
+                errorMsg.style.display = 'block';
+                document.getElementById('password-input').value = '';
+                document.getElementById('password-input').focus();
+            }
+        }
+
+        // 监听回车键
+        document.getElementById('password-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // 切换标签页并加载 iframe
+        function switchTab(tabId, btnElement) {
+            // 更新按钮激活状态
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // 如果传入了按钮元素则更新，否则根据tabId查找（用于初始加载）
+            if (btnElement) {
+                btnElement.classList.add('active');
+            } else {
+                // 默认激活第一个
+                buttons[0].classList.add('active');
+            }
+
+            // 动态加载 iframe，替换掉原有内容（确保嵌套的是独立的HTML页面）
+            const wrapper = document.getElementById('iframe-wrapper');
+            wrapper.innerHTML = `<iframe src="${PAGES[tabId]}" frameborder="0" allowfullscreen></iframe>`;
+        }
+    </script>
+</body>
+</html>
