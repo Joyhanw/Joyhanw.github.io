@@ -3,245 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>宁波银行 - 内部演示系统</title>
+    <title>宁波银行-AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
-
         body {
-            background-color: #0d1117; /* GitHub 暗色主题背景 */
-            color: #c9d1d9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f0f2f5;
+            color: #1a1d2e;
             min-height: 100vh;
-            overflow: hidden;
-        }
-
-        /* 密码验证界面样式 */
-        #login-container {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 40px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        #login-container h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #58a6ff;
-        }
-
-        #login-container p {
-            font-size: 14px;
-            color: #8b949e;
-            margin-bottom: 25px;
-        }
-
-        #password-input {
-            width: 100%;
-            padding: 12px 16px;
-            background-color: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            color: #c9d1d9;
-            font-size: 16px;
-            margin-bottom: 20px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        #password-input:focus {
-            border-color: #58a6ff;
-        }
-
-        #login-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #238636;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        #login-btn:hover {
-            background-color: #2ea043;
-        }
-
-        #error-msg {
-            color: #f85149;
-            font-size: 14px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        /* 内容界面样式 */
-        #content-container {
-            display: none; /* 默认隐藏 */
-            width: 100vw;
-            height: 100vh;
-            flex-direction: column;
         }
 
         .header {
-            background-color: #161b22;
-            border-bottom: 1px solid #30363d;
-            padding: 15px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 10;
+            background: linear-gradient(135deg, #0f111e, #1a1d2e);
+            padding: 48px 0 40px;
+            color: #fff;
+            text-align: center;
         }
-
         .header h1 {
-            font-size: 18px;
-            color: #c9d1d9;
-            font-weight: 500;
-        }
-
-        .header h1 span {
-            color: #58a6ff;
+            font-size: 30px;
             font-weight: 700;
-            margin-right: 10px;
+            letter-spacing: 0.5px;
         }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-        }
-
-        .tab-btn {
-            padding: 8px 16px;
-            background-color: #21262d;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            color: #c9d1d9;
-            cursor: pointer;
+        .header .subtitle {
             font-size: 14px;
-            transition: all 0.2s;
+            opacity: 0.7;
+            margin-top: 8px;
         }
 
-        .tab-btn:hover {
-            background-color: #30363d;
+        .container {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 40px 20px;
         }
 
-        .tab-btn.active {
-            background-color: #1f6feb;
-            border-color: #1f6feb;
-            color: #ffffff;
+        .card-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
 
-        .iframe-wrapper {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            position: relative;
+        .card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 28px 24px;
+            border: 1px solid #e8eaef;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+        .card:hover {
+            border-color: #4f6ef7;
+            box-shadow: 0 8px 30px rgba(79, 110, 247, 0.13);
+            transform: translateY(-3px);
+        }
+        .card .icon {
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+        .card .name {
+            font-size: 17px;
+            font-weight: 600;
+            color: #0f111e;
+            line-height: 1.4;
+        }
+        .card .desc {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 6px;
+        }
+        .card .tag {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 11px;
+            padding: 2px 14px;
+            border-radius: 12px;
+        }
+        .card .tag-blue {
+            background: #eef1ff;
+            color: #4f6ef7;
         }
 
-        .iframe-wrapper iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            position: absolute;
+        /* ===== 密码锁遮罩层 ===== */
+        #lockOverlay {
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 17, 30, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.5s ease;
+        }
+        #lockOverlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .lock-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px 36px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+        }
+        .lock-box .lock-icon {
+            font-size: 48px;
+            color: #4f6ef7;
+            margin-bottom: 16px;
+        }
+        .lock-box h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #0f111e;
+        }
+        .lock-box p {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        .lock-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .lock-box input:focus {
+            border-color: #4f6ef7;
+            box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.1);
+        }
+        .lock-box .error-msg {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 8px;
+            min-height: 20px;
+        }
+        .lock-box button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #4f6ef7, #6c5ce7);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .lock-box button:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 20px 16px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- 密码验证界面 -->
-    <div id="login-container">
-        <h2>🔒 内部演示系统</h2>
-        <p>请输入访问密码以查看宁波银行 AI 业务场景</p>
-        <input type="password" id="password-input" placeholder="请输入密码..." autocomplete="off">
-        <button id="login-btn" onclick="checkPassword()">进入系统</button>
-        <div id="error-msg">密码错误，请重新输入！</div>
+    <!-- ===== 密码锁遮罩 ===== -->
+    <div id="lockOverlay">
+        <div class="lock-box">
+            <div class="lock-icon"><i class="fas fa-lock"></i></div>
+            <h2>请输入访问密码</h2>
+            <p>宁波银行 · AI 项目内部资料</p>
+            <input type="password" id="passwordInput" placeholder="请输入密码" onkeydown="if(event.key==='Enter') verifyPassword()">
+            <div class="error-msg" id="errorMsg"></div>
+            <button onclick="verifyPassword()"><i class="fas fa-unlock"></i> 解锁</button>
+        </div>
     </div>
 
-    <!-- 主内容界面 -->
-    <div id="content-container">
+    <!-- ===== 主内容 ===== -->
+    <div id="mainContent" style="display:none;">
         <div class="header">
-            <h1><span>宁波银行</span>AI 业务场景全景演示</h1>
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('remote', this)">远程银行中心全景</button>
-                <button class="tab-btn" onclick="switchTab('demo1', this)">合作机构材料审核</button>
-                <button class="tab-btn" onclick="switchTab('demo2', this)">消费金融经营分析</button>
-            </div>
+            <h1>🏦 宁波银行 - AI</h1>
+            <div class="subtitle">AI 业务场景全景演示</div>
         </div>
-        <div class="iframe-wrapper" id="iframe-wrapper">
-            <!-- iframe 内容会由 JavaScript 动态加载 -->
+
+        <div class="container">
+            <div class="card-grid">
+
+                <!-- 卡片1：远程银行中心AI业务场景全景 -->
+                <a href="远程银行中心AI业务场景全景.html" class="card">
+                    <div class="icon" style="color:#4f6ef7;"><i class="fas fa-diagram-project"></i></div>
+                    <div class="name">远程银行中心 AI 业务场景全景</div>
+                    <div class="desc">远程银行中心智能化全景展示</div>
+                    <span class="tag tag-blue"><i class="fas fa-map"></i> 全景图</span>
+                </a>
+
+                <!-- 卡片2：合作机构材料审核数字员工 -->
+                <a href="demo-合作机构材料审核数字员工.html" class="card">
+                    <div class="icon" style="color:#10b981;"><i class="fas fa-file-signature"></i></div>
+                    <div class="name">合作机构材料审核数字员工</div>
+                    <div class="desc">AI 数字员工辅助材料智能审核</div>
+                    <span class="tag tag-blue" style="background:#e6f9f0; color:#10b981;"><i class="fas fa-robot"></i> Demo</span>
+                </a>
+
+                <!-- 卡片3：消费金融经营分析数字员工 -->
+                <a href="demo-消费金融经营分析数字员工.html" class="card">
+                    <div class="icon" style="color:#f59e0b;"><i class="fas fa-chart-line"></i></div>
+                    <div class="name">消费金融经营分析数字员工</div>
+                    <div class="desc">AI 数字员工驱动经营数据分析</div>
+                    <span class="tag tag-blue" style="background:#fef3c7; color:#f59e0b;"><i class="fas fa-robot"></i> Demo</span>
+                </a>
+
+            </div>
         </div>
     </div>
 
     <script>
-        // 设置密码
-        const CORRECT_PASSWORD = "20260410";
-        
-        // 定义三个页面的路径 (与 index.html 同级)
-        const PAGES = {
-            remote: "远程银行中心AI业务场景全景.html",
-            demo1: "demo-合作机构材料审核数字员工.html",
-            demo2: "demo-消费金融经营分析数字员工.html"
-        };
+        // ===== 密码验证逻辑 =====
+        // 🔑 修改这里设置您的密码
+        const CORRECT_PASSWORD = '20260410';
 
-        // 检查密码
-        function checkPassword() {
-            const input = document.getElementById('password-input').value;
-            const errorMsg = document.getElementById('error-msg');
+        function verifyPassword() {
+            const input = document.getElementById('passwordInput');
+            const errorMsg = document.getElementById('errorMsg');
+            const entered = input.value.trim();
 
-            if (input === CORRECT_PASSWORD) {
-                // 密码正确，隐藏登录框，显示内容
-                document.getElementById('login-container').style.display = 'none';
-                document.getElementById('content-container').style.display = 'flex';
-                // 默认加载第一个页面
-                switchTab('remote');
+            if (entered === CORRECT_PASSWORD) {
+                document.getElementById('lockOverlay').classList.add('hidden');
+                document.getElementById('mainContent').style.display = 'block';
+                errorMsg.textContent = '';
+                input.value = '';
             } else {
-                // 密码错误
-                errorMsg.style.display = 'block';
-                document.getElementById('password-input').value = '';
-                document.getElementById('password-input').focus();
+                errorMsg.textContent = '❌ 密码错误，请重新输入';
+                input.value = '';
+                input.focus();
             }
-        }
-
-        // 监听回车键
-        document.getElementById('password-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkPassword();
-            }
-        });
-
-        // 切换标签页并加载 iframe
-        function switchTab(tabId, btnElement) {
-            // 更新按钮激活状态
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            // 如果传入了按钮元素则更新，否则根据tabId查找（用于初始加载）
-            if (btnElement) {
-                btnElement.classList.add('active');
-            } else {
-                // 默认激活第一个
-                buttons[0].classList.add('active');
-            }
-
-            // 动态加载 iframe，替换掉原有内容（确保嵌套的是独立的HTML页面）
-            const wrapper = document.getElementById('iframe-wrapper');
-            wrapper.innerHTML = `<iframe src="${PAGES[tabId]}" frameborder="0" allowfullscreen></iframe>`;
         }
     </script>
+
 </body>
 </html>
