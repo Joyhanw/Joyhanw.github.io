@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宁波银行 · 远程银行中心 AI 业务场景全景</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#16324f;--ink:#1e2a36;--text2:#5a6b7d;--muted:#8a99ab;
+  --border:#e2e8f0;--bg:#f4f7fa;--line:#b9c6d4;
+  --c1:#2563eb;--c2:#7c3aed;--c3:#d97706;--c4:#dc2626;--c5:#0891b2;--c6:#16a34a;--c7:#334155;
+  --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;padding:34px 26px 40px}
+.page{max-width:1400px;margin:0 auto}
+
+/* 头部 */
+.head{text-align:center;margin-bottom:6px}
+.head h1{font-size:28px;font-weight:700;color:var(--navy);letter-spacing:1.5px}
+.head .route{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.head .route span{font-size:11.5px;color:var(--text2);background:#fff;border:1px solid var(--border);border-radius:20px;padding:4px 14px;letter-spacing:.5px;font-weight:600}
+.head .route i{color:#b9c6d4;font-style:normal;font-size:11px}
+
+/* 主线：竖线 + 胶囊标签 */
+.trunk{display:flex;flex-direction:column;align-items:center}
+.vline{width:2px;height:16px;background:var(--line)}
+.vlabel{font-size:12.5px;color:var(--text2);background:#fff;border:1px solid var(--border);border-radius:20px;padding:5px 20px;font-weight:600;letter-spacing:1px}
+
+/* 已知业务 */
+.known-row{display:flex;justify-content:center;gap:180px}
+.kcard{width:400px;background:linear-gradient(135deg,#16324f,#1e4a72);color:#fff;border-radius:10px;padding:13px 18px;box-shadow:0 2px 10px rgba(22,50,79,.18)}
+.kcard .t{font-size:15.5px;font-weight:700;letter-spacing:.5px}
+.kcard .s1{font-size:11.5px;color:rgba(255,255,255,.75);margin-top:5px;letter-spacing:.3px}
+.kcard .s2{font-size:10.5px;color:rgba(255,255,255,.5);margin-top:3px;letter-spacing:.3px}
+
+.bracket{width:580px;height:14px;margin:0 auto;border-left:2px solid var(--line);border-right:2px solid var(--line);border-bottom:2px solid var(--line);border-radius:0 0 12px 12px}
+.drop{width:2px;height:13px;background:var(--line);margin:0 auto}
+
+/* 岗位总线 */
+.roles{position:relative;display:flex;justify-content:space-between;align-items:flex-start;padding:0 30px;max-width:1240px;margin:0 auto}
+.bus{position:absolute;top:15px;left:52px;right:52px;height:2px;background:var(--line)}
+.role{display:flex;flex-direction:column;align-items:center;position:relative;z-index:1}
+.rnode{background:#fff;border:1.5px solid #9fb3c8;border-radius:999px;padding:7px 15px;font-size:12.5px;font-weight:700;color:var(--navy);letter-spacing:.5px;box-shadow:0 1px 5px rgba(22,50,79,.08)}
+.rduty{font-size:10.5px;color:var(--text2);margin-top:6px;letter-spacing:.2px;white-space:nowrap}
+.rduty b{color:var(--navy);font-weight:600;margin-right:3px}
+.rfocus{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.2px;white-space:nowrap}
+.rfocus b{color:var(--text2);font-weight:600;margin-right:3px}
+
+/* 四大业务板块 */
+.domains{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.domain{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.05);overflow:hidden;display:flex;flex-direction:column}
+.d-head{background:var(--navy);color:#fff;padding:9px 14px}
+.d-head .nm{font-size:13.5px;font-weight:700;letter-spacing:.5px}
+
+/* 场景块 */
+.d-body{padding:10px;display:flex;flex-direction:column;gap:10px;flex:1}
+.sblock{background:#f8fafc;border:1px solid #e6ebf2;border-radius:9px;padding:9px 11px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.sblock .nm{font-size:13.5px;font-weight:700;color:var(--navy);letter-spacing:.5px}
+.sblock .sub{font-size:10.8px;color:var(--muted);margin:3px 0 8px;letter-spacing:.3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #dde5ee;border-radius:6px;padding:3px 9px;font-size:11.5px;color:#253247;font-weight:500;letter-spacing:.3px;transition:border-color .15s}
+.chip:hover{border-color:#9fb3c8}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.c1{background:var(--c1)}.c2{background:var(--c2)}.c3{background:var(--c3)}.c4{background:var(--c4)}.c5{background:var(--c5)}.c6{background:var(--c6)}.c7{background:var(--c7)}
+
+/* 图例 */
+.legend{display:flex;justify-content:center;gap:12px;margin:10px 0 14px;flex-wrap:wrap}
+.lg{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 12px}
+.lg .nm{font-size:12px;font-weight:700;color:var(--ink)}
+.lg .ex{font-size:10.5px;color:var(--muted)}
+
+/* 段落统计行 */
+.statsline{text-align:center;font-size:13.5px;font-weight:700;color:var(--navy);letter-spacing:1.5px;margin-top:2px}
+.statsline span{color:#2563eb}
+
+/* 分阶段：三环流程 */
+.stageflow{display:flex;justify-content:center;align-items:flex-start;gap:0;margin-top:2px}
+.sflow{display:flex;flex-direction:column;align-items:center;width:30%}
+.sflow .circ{width:96px;height:96px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:3px solid;padding:8px}
+.sflow .circ .cn{font-size:10.5px;font-weight:600;opacity:.75;letter-spacing:1px}
+.sflow .circ .nm{font-size:13.5px;font-weight:800;line-height:1.35;margin-top:3px}
+.sflow.st1 .circ{border-color:var(--c1);background:#eef4ff;color:var(--c1)}
+.sflow.st2 .circ{border-color:var(--c2);background:#f5f0ff;color:var(--c2)}
+.sflow.st3 .circ{border-color:var(--c7);background:#f1f5f9;color:var(--c7)}
+.sflow ul{list-style:none;margin-top:10px;width:88%;display:flex;flex-direction:column;gap:5px}
+.sflow li{display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;font-size:12px;color:var(--text2);background:#fff;border:1px solid var(--border);border-radius:6px;padding:4px 10px;text-align:center;line-height:1.5}
+.sflow li b{color:var(--navy)}
+.sarrow{font-size:22px;color:#b9c6d4;font-weight:700;margin-top:36px;padding:0 12px;flex-shrink:0}
+
+/* 候选场景 */
+.crits{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:2px 0 12px}
+.crit{font-size:11px;color:var(--text2);background:#fff;border:1px solid var(--border);border-radius:20px;padding:4px 12px;letter-spacing:.3px}
+.crit b{color:var(--navy);margin-right:5px}
+.cands{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ccard{background:#fff;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:10px;padding:13px 16px;position:relative}
+.ccard .nm{font-size:14px;font-weight:700;color:var(--navy);letter-spacing:.3px;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.ccard .stb{font-size:10px;font-weight:700;color:var(--c1);background:#eef4ff;border-radius:4px;padding:1px 7px;letter-spacing:.5px}
+.ccard .aipts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ccard .aipts .chip{font-size:11px;padding:2px 8px}
+.ccard .fl{font-size:12px;color:var(--text2);line-height:1.75;margin-top:7px}
+.ccard .fl b{color:var(--ink)}
+.ccard .demobtn{margin-top:11px;display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;font-size:11.5px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;letter-spacing:.5px;border:none}
+.ccard .demobtn:hover{background:#1e4a72}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="head">
+    <h1>宁波银行 · 远程银行中心 AI 业务场景全景</h1>
+    <div class="route"><span>核心业务</span><i>→</i><span>岗位角色</span><i>→</i><span>业务场景 × AI</span><i>→</i><span>分阶段建设</span><i>→</i><span>候选场景</span></div>
+  </div>
+
+  <!-- 主线：当前已知核心业务 -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">当前已知核心业务</div><div class="vline"></div></div>
+
+  <div class="known-row">
+    <div class="kcard">
+      <div class="t">互联网平台个人信用贷</div>
+      <div class="s1">蚂蚁 · 京东 · 度小满 等平台合作开展个人信用贷款</div>
+      <div class="s2">合作渠道 · 产品运营 · 贷款运营 · 贷后管理</div>
+    </div>
+    <div class="kcard">
+      <div class="t">汽车消费贷款</div>
+      <div class="s1">与车贷公司合作开展个人汽车消费贷款</div>
+      <div class="s2">合作机构 · 产品运营 · 贷款服务 · 贷后管理</div>
+    </div>
+  </div>
+  <div class="bracket"></div>
+  <div class="drop"></div>
+
+  <!-- 主线：相关岗位角色（总线） -->
+  <div class="trunk"><div class="vlabel">相关岗位角色</div><div class="vline"></div></div>
+  <div class="roles">
+    <div class="bus"></div>
+    <div class="role">
+      <span class="rnode">合作渠道运营</span>
+      <span class="rduty"><b>职责</b>渠道对接与运营管理</span>
+      <span class="rfocus"><b>关注</b>规模 · 转化 · 渠道质量</span>
+    </div>
+    <div class="role">
+      <span class="rnode">贷款产品运营</span>
+      <span class="rduty"><b>职责</b>产品运营与活动策略</span>
+      <span class="rfocus"><b>关注</b>申请量 · 通过率 · 放款</span>
+    </div>
+    <div class="role">
+      <span class="rnode">贷后运营</span>
+      <span class="rduty"><b>职责</b>还款服务与逾期管理</span>
+      <span class="rfocus"><b>关注</b>逾期 · 迁徙 · 资产质量</span>
+    </div>
+    <div class="role">
+      <span class="rnode">委外管理</span>
+      <span class="rduty"><b>职责</b>委外机构与催收作业管理</span>
+      <span class="rfocus"><b>关注</b>回收 · 触达 · 合规</span>
+    </div>
+    <div class="role">
+      <span class="rnode">客户运营</span>
+      <span class="rduty"><b>职责</b>客群经营与精准触达</span>
+      <span class="rfocus"><b>关注</b>触达 · 转化 · 留存</span>
+    </div>
+    <div class="role">
+      <span class="rnode">远程服务坐席</span>
+      <span class="rduty"><b>职责</b>呼入呼出与业务办理</span>
+      <span class="rfocus"><b>关注</b>效率 · 一次解决 · 满意度</span>
+    </div>
+    <div class="role">
+      <span class="rnode">质量与合规</span>
+      <span class="rduty"><b>职责</b>质检合规与整改跟踪</span>
+      <span class="rfocus"><b>关注</b>服务质量 · 违规 · 整改</span>
+    </div>
+    <div class="role">
+      <span class="rnode">经营管理</span>
+      <span class="rduty"><b>职责</b>经营分析与资源统筹</span>
+      <span class="rfocus"><b>关注</b>规模 · 收益 · 成本</span>
+    </div>
+  </div>
+
+  <!-- 主线：业务场景 × AI -->
+  <div class="trunk" style="margin-top:12px"><div class="vline"></div><div class="vlabel">业务场景 × AI 机会</div><div class="vline"></div></div>
+  <div class="statsline">4 大业务板块 · 15 个业务场景 · <span>64 个 AI 应用点</span></div>
+
+  <!-- 七类 AI 能力图例 -->
+  <div class="legend">
+    <div class="lg"><span class="dot c1"></span><span class="nm">智能服务</span><span class="ex">客服 · 坐席 · 外呼</span></div>
+    <div class="lg"><span class="dot c2"></span><span class="nm">智能分析</span><span class="ex">经营 · 归因 · 分层</span></div>
+    <div class="lg"><span class="dot c3"></span><span class="nm">智能审核</span><span class="ex">材料 · 合同 · 校验</span></div>
+    <div class="lg"><span class="dot c4"></span><span class="nm">风险与合规</span><span class="ex">质检 · 风险 · 消保</span></div>
+    <div class="lg"><span class="dot c5"></span><span class="nm">知识助手</span><span class="ex">问答 · 制度 · 培训</span></div>
+    <div class="lg"><span class="dot c6"></span><span class="nm">智能生成</span><span class="ex">报告 · 摘要 · 内容</span></div>
+    <div class="lg"><span class="dot c7"></span><span class="nm">数字员工</span><span class="ex">工单 · 报表 · 跨系统</span></div>
+  </div>
+
+  <div class="domains">
+
+    <!-- 一 合作渠道与产品运营 -->
+    <div class="domain">
+      <div class="d-head"><span class="nm">合作渠道与产品运营</span></div>
+      <div class="d-body">
+        <div class="sblock">
+          <div class="nm">合作机构管理</div>
+          <div class="sub">准入 · 分级考核 · 费用结算 · 退出</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c3"></span>准入材料审核</span>
+            <span class="chip"><span class="dot c2"></span>合作机构评价</span>
+            <span class="chip"><span class="dot c3"></span>结算费用核验</span>
+            <span class="chip"><span class="dot c4"></span>合作风险监测</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">渠道经营分析</div>
+          <div class="sub">渠道对比 · 获客质量 · 转化表现 · 风险表现</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c2"></span>渠道经营诊断</span>
+            <span class="chip"><span class="dot c2"></span>渠道对比分析</span>
+            <span class="chip"><span class="dot c2"></span>获客质量分析</span>
+            <span class="chip"><span class="dot c2"></span>异常归因分析</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">消费金融产品运营</div>
+          <div class="sub">产品上线 · 转化运营 · 产品经营 · 规则管理</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c2"></span>产品经营分析</span>
+            <span class="chip"><span class="dot c2"></span>转化漏斗分析</span>
+            <span class="chip"><span class="dot c5"></span>产品规则助手</span>
+            <span class="chip"><span class="dot c2"></span>竞品监测</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 二 贷款业务与贷后运营 -->
+    <div class="domain">
+      <div class="d-head"><span class="nm">贷款业务与贷后运营</span></div>
+      <div class="d-body">
+        <div class="sblock">
+          <div class="nm">贷款业务运营</div>
+          <div class="sub">申请受理 · 远程办理 · 异常处理 · 进度服务</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c3"></span>材料核验</span>
+            <span class="chip"><span class="dot c1"></span>远程办理助手</span>
+            <span class="chip"><span class="dot c1"></span>业务进度助手</span>
+            <span class="chip"><span class="dot c2"></span>异常业务分析</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">远程签约与存证</div>
+          <div class="sub">电子合同 · 电子回单 · 业务存证</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c3"></span>合同核验</span>
+            <span class="chip"><span class="dot c7"></span>存证信息查询</span>
+            <span class="chip"><span class="dot c4"></span>签约风险提示</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">贷后运营管理</div>
+          <div class="sub">还款服务 · 提醒触达 · 逾期监测 · 风险分析</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c1"></span>还款服务助手</span>
+            <span class="chip"><span class="dot c1"></span>还款提醒外呼</span>
+            <span class="chip"><span class="dot c2"></span>异常还款分析</span>
+            <span class="chip"><span class="dot c2"></span>贷后风险分析</span>
+            <span class="chip"><span class="dot c6"></span>贷后报告</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">委外催收管理</div>
+          <div class="sub">机构管理 · 分案管理 · 过程监督 · 回收跟踪 · 机构评价</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c2"></span>委外机构评价</span>
+            <span class="chip"><span class="dot c4"></span>催收质检</span>
+            <span class="chip"><span class="dot c4"></span>催收合规检查</span>
+            <span class="chip"><span class="dot c2"></span>委外数据分析</span>
+            <span class="chip"><span class="dot c6"></span>催收运营报告</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 三 远程客户服务与经营 -->
+    <div class="domain">
+      <div class="d-head"><span class="nm">远程客户服务与经营</span></div>
+      <div class="d-body">
+        <div class="sblock">
+          <div class="nm">远程客户服务</div>
+          <div class="sub">电话 · 在线 · 视频 · 业务办理 · 投诉受理</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c1"></span>智能客服</span>
+            <span class="chip"><span class="dot c1"></span>坐席助手</span>
+            <span class="chip"><span class="dot c6"></span>服务摘要</span>
+            <span class="chip"><span class="dot c7"></span>智能工单</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">客户营销经营</div>
+          <div class="sub">客户分层 · 客群圈选 · 营销触达 · 存量经营</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c2"></span>客群分层分析</span>
+            <span class="chip"><span class="dot c2"></span>自然语言圈客</span>
+            <span class="chip"><span class="dot c1"></span>智能外呼</span>
+            <span class="chip"><span class="dot c6"></span>营销内容生成</span>
+            <span class="chip"><span class="dot c2"></span>营销效果分析</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">客户体验管理</div>
+          <div class="sub">客户评价 · 服务反馈 · 投诉 · VOC</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c2"></span>客户反馈分析</span>
+            <span class="chip"><span class="dot c2"></span>投诉归因分析</span>
+            <span class="chip"><span class="dot c2"></span>情绪与诉求识别</span>
+            <span class="chip"><span class="dot c2"></span>VOC 客户之声</span>
+            <span class="chip"><span class="dot c6"></span>体验诊断报告</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">服务质量管理</div>
+          <div class="sub">服务质检 · 话术规范 · 服务整改</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c4"></span>智能质检</span>
+            <span class="chip"><span class="dot c4"></span>话术合规检查</span>
+            <span class="chip"><span class="dot c2"></span>服务改进分析</span>
+            <span class="chip"><span class="dot c7"></span>整改跟踪</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 四 经营管理与公共支撑 -->
+    <div class="domain">
+      <div class="d-head"><span class="nm">经营管理与公共支撑</span></div>
+      <div class="d-body">
+        <div class="sblock">
+          <div class="nm">经营分析</div>
+          <div class="sub">渠道 · 产品 · 客户 · 贷后 · 趋势 · 目标</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c2"></span>智能问数</span>
+            <span class="chip"><span class="dot c2"></span>经营归因分析</span>
+            <span class="chip"><span class="dot c2"></span>异常识别</span>
+            <span class="chip"><span class="dot c2"></span>经营诊断</span>
+            <span class="chip"><span class="dot c6"></span>经营报告</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">业务合规管理</div>
+          <div class="sub">身份核验 · 业务规则 · 风险异常 · 消保</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c3"></span>身份核验辅助</span>
+            <span class="chip"><span class="dot c2"></span>业务异常识别</span>
+            <span class="chip"><span class="dot c4"></span>规则合规检查</span>
+            <span class="chip"><span class="dot c4"></span>消保检查</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">数据与报表</div>
+          <div class="sub">数据查询 · 数据整理 · 报表 · 汇报</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c7"></span>智能数据查询</span>
+            <span class="chip"><span class="dot c7"></span>报表自动生成</span>
+            <span class="chip"><span class="dot c3"></span>数据校验</span>
+            <span class="chip"><span class="dot c6"></span>汇报材料生成</span>
+          </div>
+        </div>
+        <div class="sblock">
+          <div class="nm">知识与协同</div>
+          <div class="sub">制度 · 产品知识 · 培训 · 会议 · 跨系统协同</div>
+          <div class="chips">
+            <span class="chip"><span class="dot c5"></span>知识助手</span>
+            <span class="chip"><span class="dot c5"></span>培训陪练</span>
+            <span class="chip"><span class="dot c6"></span>会议助手</span>
+            <span class="chip"><span class="dot c7"></span>跨系统数字员工</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 主线：AI 场景分阶段建设路径 -->
+  <div class="trunk" style="margin-top:16px"><div class="vline"></div><div class="vlabel">AI 场景分阶段建设路径</div><div class="vline"></div></div>
+  <div class="stageflow">
+    <div class="sflow st1">
+      <div class="circ"><span class="cn">第一阶段</span><span class="nm">重点场景<br>快速验证</span></div>
+      <ul>
+        <li><b>消费金融经营分析数字员工</b><span class="dot c2"></span>渠道经营诊断 <span class="dot c2"></span>异常归因分析 <span class="dot c2"></span>产品经营分析 <span class="dot c2"></span>转化漏斗分析 <span class="dot c6"></span>经营报告</li>
+        <li><b>委外运营管理数字员工</b><span class="dot c2"></span>委外机构评价 <span class="dot c4"></span>催收质检 <span class="dot c2"></span>委外数据分析 <span class="dot c6"></span>催收运营报告</li>
+        <li><b>业务知识助手（共同底座）</b><span class="dot c5"></span>知识助手 <span class="dot c5"></span>产品规则助手</li>
+      </ul>
+    </div>
+    <div class="sarrow">→</div>
+    <div class="sflow st2">
+      <div class="circ"><span class="cn">第二阶段</span><span class="nm">核心业务<br>深度融合</span></div>
+      <ul>
+        <li><span class="dot c1"></span>坐席助手 <span class="dot c4"></span>智能质检 <span class="dot c1"></span>还款提醒外呼 <span class="dot c7"></span>智能工单</li>
+        <li><span class="dot c2"></span>智能问数 <span class="dot c2"></span>贷后风险分析 <span class="dot c2"></span>客群分层分析</li>
+        <li><span class="dot c2"></span>委外机构评价（平台化） <span class="dot c4"></span>催收合规检查</li>
+      </ul>
+    </div>
+    <div class="sarrow">→</div>
+    <div class="sflow st3">
+      <div class="circ"><span class="cn">第三阶段</span><span class="nm">智能运营与<br>数字员工</span></div>
+      <ul>
+        <li><span class="dot c7"></span>智能工单（闭环） <span class="dot c7"></span>整改跟踪</li>
+        <li><span class="dot c7"></span>报表自动生成 <span class="dot c7"></span>智能数据查询</li>
+        <li><span class="dot c7"></span>跨系统数字员工 <span class="dot c2"></span>异常识别（主动预警）</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 主线：候选场景 -->
+  <div class="trunk" style="margin-top:16px"><div class="vline"></div><div class="vlabel">候选场景</div><div class="vline"></div></div>
+  <div class="crits">
+    <span class="crit"><b>业务价值</b>远程银行真实高频工作</span>
+    <span class="crit"><b>AI 价值</b>传统系统难以解决</span>
+    <span class="crit"><b>业务特色</b>区别于通用大模型</span>
+    <span class="crit"><b>实施依赖</b>文件导入即可启动</span>
+    <span class="crit"><b>效果可见</b>10 分钟看懂变化</span>
+  </div>
+  <div class="cands">
+    <div class="ccard">
+      <div class="nm">消费金融经营分析数字员工<span class="stb">一期主推</span></div>
+      <div class="aipts"><span class="chip"><span class="dot c2"></span>渠道经营诊断</span><span class="chip"><span class="dot c2"></span>异常归因分析</span><span class="chip"><span class="dot c2"></span>产品经营分析</span><span class="chip"><span class="dot c2"></span>转化漏斗分析</span><span class="chip"><span class="dot c2"></span>获客质量分析</span><span class="chip"><span class="dot c2"></span>贷后风险分析</span><span class="chip"><span class="dot c6"></span>经营报告</span></div>
+      <div class="fl">上传渠道经营数据 → <b>数字员工主动体检</b>（执行过程可视 · 异常清单 · 漏斗归因 · 风险联动）→ 对话追问 → 一键生成渠道经营分析报告</div>
+      <button class="demobtn" onclick="window.open('demo-消费金融经营分析数字员工.html','_blank')">进入演示 →</button>
+    </div>
+    <div class="ccard">
+      <div class="nm">委外运营管理数字员工<span class="stb">一期主推</span></div>
+      <div class="aipts"><span class="chip"><span class="dot c2"></span>委外机构评价</span><span class="chip"><span class="dot c4"></span>催收质检</span><span class="chip"><span class="dot c4"></span>催收合规检查</span><span class="chip"><span class="dot c2"></span>委外数据分析</span><span class="chip"><span class="dot c6"></span>催收运营报告</span></div>
+      <div class="fl">上传机构运营与质检投诉数据 → <b>机构画像与横向排名 · 风险提示</b> → 一键生成月度评价报告</div>
+    </div>
+    <div class="ccard">
+      <div class="nm">业务知识助手<span class="stb">共同底座</span></div>
+      <div class="aipts"><span class="chip"><span class="dot c5"></span>知识助手</span><span class="chip"><span class="dot c5"></span>产品规则助手</span><span class="chip"><span class="dot c5"></span>培训陪练</span></div>
+      <div class="fl">制度 / 产品 / 指标口径 / 合作规则统一知识底座，为两个数字员工提供<b>业务知识与规则支撑</b></div>
+    </div>
+    <div class="ccard">
+      <div class="nm">智能质检 · 合作机构准入助手<span class="stb">待确认</span></div>
+      <div class="aipts"><span class="chip"><span class="dot c4"></span>智能质检</span><span class="chip"><span class="dot c4"></span>话术合规检查</span><span class="chip"><span class="dot c3"></span>准入材料审核</span><span class="chip"><span class="dot c3"></span>合同核验</span></div>
+      <div class="fl">录音文本质检 · 机构材料审核——<b>待确认现有系统覆盖与实际职责边界</b>后纳入一期</div>
+      <button class="demobtn" onclick="window.open('demo-合作机构材料审核数字员工.html','_blank')">进入演示 →</button>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
