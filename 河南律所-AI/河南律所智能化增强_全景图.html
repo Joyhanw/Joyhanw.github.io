@@ -85,6 +85,59 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font
 .endline span{color:var(--gold)}
 .legend{display:flex;justify-content:center;align-items:center;gap:18px;margin:14px auto 0;font-size:12px;color:var(--text2);flex-wrap:wrap}
 .legend .lg{display:flex;align-items:center;gap:6px}
+
+/* 侧边抽屉：点击矩阵能力查看详细说明 */
+.matrix-hint{text-align:center;font-size:12px;color:var(--muted);margin-top:9px}
+.cell[data-cap],.mrow[data-cap]{cursor:pointer;transition:box-shadow .15s,border-radius .15s}
+.cell[data-cap]:hover,.mrow[data-cap]:hover{box-shadow:inset 0 0 0 2px var(--gold);border-radius:4px}
+.cell.multi{flex-direction:column;gap:3px;padding:4px 2px}
+.mrow{display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;line-height:1.35;padding:2px 3px;width:100%}
+.dmask{position:fixed;inset:0;background:rgba(15,43,70,.38);opacity:0;pointer-events:none;transition:opacity .25s;z-index:90}
+.dmask.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(540px,94vw);background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.18);transform:translateX(105%);transition:transform .28s ease;z-index:100;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.d-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.d-tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.db{color:#fff;font-size:11px;font-weight:600;border-radius:5px;padding:2px 9px;letter-spacing:.5px}
+.db.form{background:#fff;color:var(--text2);border:1px solid var(--border)}
+.db.loc{background:#fff;border:1px solid;border-radius:5px;padding:1px 9px;font-weight:600}
+.d-x{margin-left:auto;border:none;background:#f1f5f9;border-radius:6px;width:26px;height:26px;cursor:pointer;color:var(--text2);font-size:13px;line-height:1}
+.d-x:hover{background:#e2e8f0;color:var(--navy)}
+.d-name{font-size:19px;font-weight:800;color:var(--navy);margin-top:10px;line-height:1.35}
+.d-env{font-size:12px;color:var(--muted);margin-top:3px}
+.d-body{overflow-y:auto;padding:18px 22px 30px;flex:1}
+.d-pitch{background:var(--gold-pale);border-left:4px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:13.5px;font-weight:600;color:#7a5a1e;line-height:1.7}
+.d-sec{margin-top:14px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:11px 14px}
+.d-sec.ai{background:#eef4ff;border-color:#c9dcff}
+.d-sec.ex{background:#fffdf5;border:1px dashed var(--gold)}
+.d-lb{font-size:11.5px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
+.lb-now{color:var(--text2)}.lb-ai{color:var(--c1)}.lb-ex{color:#b45309}
+.d-sec p,.d-sec li{font-size:12.8px;line-height:1.75;color:var(--text)}
+.d-sec p+p{margin-top:6px}
+.d-arrow{text-align:center;font-size:12px;font-weight:700;color:var(--c1);margin-top:10px;letter-spacing:1px}
+.d-flow{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.d-note{margin-top:10px;font-size:11.5px;color:#b45309;line-height:1.65;background:#fff;border:1px dashed #e4c98f;border-radius:6px;padding:6px 10px}
+.d-split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.d-split>div{background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 12px}
+.d-split b{display:block;font-size:12px;margin-bottom:5px}
+.d-split .sys b{color:var(--text2)}.d-split .dig b{color:var(--c1)}
+.d-split span{display:block;font-size:11.8px;color:var(--text2);line-height:1.6;padding:1px 0}
+.d-vs{width:100%;border-collapse:collapse;margin-top:12px;font-size:11.5px;background:#fff}
+.d-vs th,.d-vs td{border:1px solid var(--border);padding:5px 8px;text-align:left;line-height:1.55}
+.d-vs th{background:var(--navy);color:#fff;font-size:11px;font-weight:600}
+.d-vs td:first-child{font-weight:700;color:var(--navy);background:#f8fafc;width:72px}
+.d-steps{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.dst{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:8px;padding:7px 10px}
+.dst i{font-style:normal;font-size:10.5px;font-weight:700;color:#fff;background:var(--c3);border-radius:4px;padding:1px 7px;flex-shrink:0;margin-top:2px}
+.dst span{font-size:11.8px;color:var(--text);line-height:1.65}
+.d-meta{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.d-chips{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.d-chips em,.d-use em,.d-val em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--text2);margin-right:6px}
+.d-chips span{font-size:11px;color:var(--navy);background:#eef4ff;border-radius:12px;padding:2px 9px;border:1px solid #d7e6ff}
+.d-use{font-size:12.3px;line-height:1.7;color:var(--text)}
+.d-val{font-size:12.3px;line-height:1.7;color:#0a6b48;background:#f0faf5;border-radius:8px;padding:7px 10px}
+.d-val em{color:#0a6b48}
+@media print{.dmask,.drawer{display:none}}
 </style>
 </head>
 <body>
@@ -111,15 +164,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font
       <span class="chain-node">评价</span>
     </div>
     <div class="chain-todo">
-      <span class="todo-chip"><em>既定未开发</em>统计分析</span>
-      <span class="todo-chip"><em>既定未开发</em>嵌入核心系统 7-8 页</span>
-      <span class="todo-chip"><em>既定对接</em>采购 · 财务 · 数据中台 · 钉钉</span>
+      <span class="todo-chip">统计分析</span>
+      <span class="todo-chip"><em>对接</em>核心系统 · 采购 · 财务 · 数据中台</span>
     </div>
   </div>
 
   <div class="trunk">
     <div class="vline"></div>
-    <div class="vlabel">② 业务场景地图：9 个业务环节 × 5 类 AI 能力</div>
+    <div class="vlabel">② 业务场景地图：9 个业务环节 + 法律合规拓展域 × 5 类 AI 能力</div>
   </div>
 
   <!-- ② 场景矩阵 -->
@@ -135,66 +187,66 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font
       </tr>
       <tr>
         <td class="node">机构与律师</td>
-        <td><div class="cell"><span class="s s1">①</span>证照 OCR</div></td>
+        <td><div class="cell" data-cap="ocr"><span class="s s1">①</span>证照 OCR</div></td>
         <td><div class="cell empty">—</div></td>
-        <td><div class="cell"><span class="s s3">③</span>画像参考</div></td>
+        <td><div class="cell" data-cap="profile"><span class="s s3">③</span>画像参考</div></td>
         <td><div class="cell empty">—</div></td>
         <td><div class="cell empty">—</div></td>
       </tr>
       <tr>
         <td class="node">法律服务</td>
-        <td><div class="cell"><span class="s s2">②</span>材料识别</div></td>
-        <td><div class="cell"><span class="s s2">②</span>服务摘要</div></td>
-        <td><div class="cell"><span class="s s3">③</span>选聘参考信息</div></td>
-        <td><div class="cell"><span class="s s2">②</span>历史合作查询</div></td>
+        <td><div class="cell" data-cap="lsRec"><span class="s s2">②</span>材料识别</div></td>
+        <td><div class="cell" data-cap="lsSum"><span class="s s2">②</span>服务摘要</div></td>
+        <td><div class="cell" data-cap="hireRef"><span class="s s3">③</span>选聘参考信息</div></td>
+        <td><div class="cell" data-cap="lsQA"><span class="s s2">②</span>历史合作查询</div></td>
         <td><div class="cell empty">—</div></td>
       </tr>
       <tr>
         <td class="node">案件录入</td>
-        <td><div class="cell p1"><span class="s s1">①</span>起诉/受理材料识别</div></td>
-        <td><div class="cell p1"><span class="s s1">①</span>案件信息草稿</div></td>
+        <td><div class="cell p1" data-cap="caseRec"><span class="s s1">①</span>起诉/受理材料识别</div></td>
+        <td><div class="cell p1" data-cap="caseDraft"><span class="s s1">①</span>案件信息草稿</div></td>
         <td><div class="cell empty">—</div></td>
         <td><div class="cell empty">—</div></td>
         <td><div class="cell empty">—</div></td>
       </tr>
       <tr>
         <td class="node">司法办理</td>
-        <td><div class="cell p1"><span class="s s1">①</span>司法文书识别</div></td>
-        <td><div class="cell p1"><span class="s s1">①</span>进展生成</div></td>
-        <td><div class="cell"><span class="s s2">②</span>上诉期限等时点风险</div></td>
+        <td><div class="cell p1" data-cap="docRec"><span class="s s1">①</span>司法文书识别</div></td>
+        <td><div class="cell p1" data-cap="progGen"><span class="s s1">①</span>进展生成</div></td>
+        <td><div class="cell multi"><div class="mrow" data-cap="verify"><span class="s s1">①</span>报送进展智能复核</div><div class="mrow" data-cap="ddl"><span class="s s2">②</span>时效事项管理</div></div></td>
         <td><div class="cell empty">—</div></td>
         <td><div class="cell empty">—</div></td>
       </tr>
       <tr>
         <td class="node">案件跟进</td>
         <td><div class="cell empty">—</div></td>
-        <td><div class="cell p1"><span class="s s1">①</span>一句话整理进展</div></td>
-        <td><div class="cell"><span class="s s2">②</span>超期未更新识别</div></td>
+        <td><div class="cell p1" data-cap="quickProg"><span class="s s1">①</span>一句话整理进展</div></td>
+        <td><div class="cell" data-cap="overdue"><span class="s s2">②</span>超期未更新识别</div></td>
         <td><div class="cell empty">—</div></td>
-        <td><div class="cell"><span class="s s3">③</span>督办催办</div></td>
+        <td><div class="cell" data-cap="supervise"><span class="s s3">③</span>进展督办数字员工</div></td>
       </tr>
       <tr>
         <td class="node">案件监管</td>
         <td><div class="cell empty">—</div></td>
-        <td><div class="cell p1"><span class="s s1">①</span>案件一页通</div></td>
-        <td><div class="cell"><span class="s s2">②</span>风险提示</div></td>
-        <td><div class="cell p1"><span class="s s1">①</span>一页通追问</div></td>
-        <td><div class="cell empty">—</div></td>
+        <td><div class="cell p1" data-cap="onePage"><span class="s s1">①</span>案件一页通</div></td>
+        <td><div class="cell" data-cap="debtorRisk"><span class="s s2">②</span>债务主体风险监测</div></td>
+        <td><div class="cell p1" data-cap="onePageQA"><span class="s s1">①</span>一页通追问</div></td>
+        <td><div class="cell" data-cap="debtorAgent"><span class="s s3">③</span>债务主体监测数字员工</div></td>
       </tr>
       <tr>
         <td class="node">专项法律服务</td>
         <td><div class="cell empty">—</div></td>
-        <td><div class="cell"><span class="s s2">②</span>工作汇报草稿</div></td>
-        <td><div class="cell"><span class="s s2">②</span>多律师问题聚类 · 风险归纳</div></td>
-        <td><div class="cell"><span class="s s2">②</span>专项服务情况查询</div></td>
-        <td><div class="cell"><span class="s s3">③</span>到期提醒 · 汇报催收</div></td>
+        <td><div class="cell" data-cap="reportDraft"><span class="s s2">②</span>工作汇报智能生成</div></td>
+        <td><div class="cell" data-cap="cluster"><span class="s s2">②</span>多律师问题聚类 · 风险归纳</div></td>
+        <td><div class="cell" data-cap="specQA"><span class="s s2">②</span>专项服务情况查询</div></td>
+        <td><div class="cell" data-cap="collect"><span class="s s3">③</span>汇报催收数字员工</div></td>
       </tr>
       <tr>
         <td class="node">统计与汇报</td>
         <td><div class="cell empty">—</div></td>
-        <td><div class="cell"><span class="s s2">②</span>周报/月报/复盘</div></td>
-        <td><div class="cell"><span class="s s2">②</span>归因 · 异常识别</div></td>
-        <td><div class="cell"><span class="s s2">②</span>一句话问数</div></td>
+        <td><div class="cell" data-cap="reportGen"><span class="s s2">②</span>周报/月报/复盘</div></td>
+        <td><div class="cell" data-cap="attr"><span class="s s2">②</span>归因 · 异常识别</div></td>
+        <td><div class="cell" data-cap="askBI"><span class="s s2">②</span>一句话问数</div></td>
         <td><div class="cell empty">—</div></td>
       </tr>
       <tr>
@@ -202,8 +254,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font
         <td><div class="cell empty">—</div></td>
         <td><div class="cell empty">—</div></td>
         <td><div class="cell empty">—</div></td>
-        <td><div class="cell"><span class="s s3">③</span>跨系统问答</div></td>
-        <td><div class="cell"><span class="s s3">③</span>数字员工办事</div></td>
+        <td><div class="cell" data-cap="crossQA"><span class="s s3">③</span>跨系统问答</div></td>
+        <td><div class="cell" data-cap="agent"><span class="s s3">③</span>数字员工办事</div></td>
+      </tr>
+      <tr>
+        <td class="node">法律合规拓展</td>
+        <td><div class="cell" data-cap="contractReview"><span class="s s1">①</span>合同智能审查助手</div></td>
+        <td><div class="cell empty">—</div></td>
+        <td><div class="cell empty">—</div></td>
+        <td><div class="cell empty">—</div></td>
+        <td><div class="cell" data-cap="regWatch"><span class="s s1">①</span>法规与监管动态智能监测</div></td>
       </tr>
     </table>
   </div>
@@ -219,22 +279,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font
       <div class="sflow st1">
         <div class="circ"><span class="cn">① 第一阶段</span><span class="nm">AI 辅助</span></div>
         <ul>
-          <li>司法文书识别</li>
-          <li>案件一页通</li>
+          <li>司法文书 OCR 识别</li>
           <li>进展生成</li>
+          <li>报送进展智能复核</li>
+          <li>案件一页通</li>
+          <li>法规与监管动态监测 · 合同智能审查</li>
         </ul>
-        <div class="note">小闭环 · AI 草稿 + 人工确认<br>不改主流程</div>
       </div>
       <div class="sarrow">→</div>
       <div class="sflow st2">
         <div class="circ"><span class="cn">② 第二阶段</span><span class="nm">AI 分析与<br>管理增强</span></div>
         <ul>
-          <li>一句话问数</li>
-          <li>风险案件识别</li>
+          <li>工作汇报智能生成</li>
+          <li>债务主体风险监测</li>
           <li>报告一键生成</li>
-          <li>专项问题归纳</li>
+          <li>一句话问数</li>
         </ul>
-        <div class="note">依托既定统计模块建设</div>
       </div>
       <div class="sarrow">→</div>
       <div class="sflow st3">
@@ -250,7 +310,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font
 
   <div class="trunk">
     <div class="vline gold"></div>
-    <div class="vlabel">④ 候选场景 · 从中选定第一阶段落地范围</div>
+    <div class="vlabel">④ 候选场景</div>
   </div>
 
   <!-- ④ 场景 -->
@@ -262,24 +322,24 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font
   </div>
   <div class="cands">
     <div class="ccard">
-      <div class="nm">S1 司法文书智能识别 + 进展生成<span class="s s1">①</span><span class="cap">识别+生成</span></div>
-      <div class="pain">解决：看材料、填字段、写进展</div>
-      <div class="fl"><b>AI 后：上传判决书/裁定书 → 自动识别文书类型、抽取案号/法院/金额/结果 → 预填司法程序表单 → 生成进展草稿 → 律师确认入库</b></div>
+      <div class="nm">S1 司法文书 OCR 识别 + 进展生成 + 智能复核<span class="s s1">①</span><span class="cap">识别+生成+复核</span></div>
+      <div class="pain">解决：看材料、填字段、写进展，报送内容缺复核</div>
+      <div class="fl"><b>AI 后：上传判决书/裁定书 → 自动识别文书类型、抽取案号/法院/金额/结果 → 预填司法程序表单 → 生成进展草稿 → 律师确认入库；AI 同步复核律师报送进展与文书字段的一致性，标记差异项（金额/日期/程序状态）供人工确认——从律师效率工具延伸到河南资产监管复核</b></div>
     </div>
     <div class="ccard">
-      <div class="nm">S2 AI 案件一页通<span class="s s1">①</span><span class="cap">生成+问答</span></div>
-      <div class="pain">解决：信息分散在 10+ 页签，看案件慢</div>
-      <div class="fl"><b>AI 后：详情页顶部摘要卡（状态/结果/最新进展/下一步/风险），可直接追问「换过律师吗」「回款到哪了」</b></div>
+      <div class="nm">S2 法规与监管动态智能监测<span class="s s1">①</span><span class="cap">执行</span></div>
+      <div class="pain">解决：新法规、监管政策与处罚靠人工盯，业务影响靠人工研判</div>
+      <div class="fl"><b>AI 后：定期获取新增法规/监管处罚 → 识别新增与修订 → 要点摘要 → 结合河南资产业务领域生成「可能影响事项」 → 形成日报/周报/专题简报供法律合规复核</b></div>
     </div>
     <div class="ccard">
-      <div class="nm">S3 智能统计 + 报告生成<span class="s s2">②</span><span class="cap">分析+问答</span></div>
-      <div class="pain">解决：做报表、做汇报耗时</div>
-      <div class="fl"><b>AI 后：一句话问数「哪些律所超 30 天未更新的案件最多？」→ 数据+图表+明细+AI 结论；月报/复盘报告一键生成</b></div>
+      <div class="nm">S3 合同智能审查助手<span class="s s1">①</span><span class="cap">识别</span></div>
+      <div class="pain">解决：合同逐条比对模板、查相对方风险、手写初审意见耗时</div>
+      <div class="fl"><b>AI 后：上传待审合同 → 匹配标准模板条款级比对 → 标识偏离条款 → 按审查规则识别重点风险 → 查相对方信用/司法风险 → 生成初步审查意见，法律人员复核</b></div>
     </div>
     <div class="ccard">
-      <div class="nm">S4 案件督办数字员工<span class="s s3">③</span><span class="cap">执行</span></div>
-      <div class="pain">解决：管理人员持续盯案件、催律师</div>
-      <div class="fl"><b>AI 后：自动识别无进展/期限临近案件 → 主动催办 → 识别律师回复生成进展草稿 → 确认更新</b></div>
+      <div class="nm">S4 工作汇报智能生成<span class="s s2">②</span><span class="cap">生成</span></div>
+      <div class="pain">解决：日志→周报→季报重复整理、重复写作</div>
+      <div class="fl"><b>AI 后：日志自动归纳周报草稿 → 多期周报归纳季度/半年度报告草稿 → 律师确认提交——不改变现有报告机制，只消除重复劳动</b></div>
     </div>
   </div>
 
@@ -290,5 +350,316 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font
   </div>
 
 </div>
+
+<!-- 侧边抽屉：能力详细说明 -->
+<div class="dmask" id="dmask"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="d-head" id="dHead"></div>
+  <div class="d-body" id="dBody"></div>
+</aside>
+
+<script>
+(function(){
+/* 26 个 AI 能力点详细说明：name=抽屉标题 env=业务环节 col=能力类型 rec识别/gen生成/ana分析/qa问答/exe执行
+   form=技术形态 st=阶段1/2/3 pitch=一句话定位 now=现在怎么做
+   ai/aiSteps=AI升级后 example=举例 needs=依赖 usage=用户怎么用 value=价值
+   sys+aiResp=系统/数字人职责分工 vs=普通功能对比 steps=V1V2V3演进 note=边界说明 */
+const CAPS={
+ocr:{name:"证照 OCR",env:"机构与律师",col:"rec",form:"AI嵌入页面",st:1,
+pitch:"证照上的信息本来就印着，AI 把“人工抄录”变成“上传即识别”。",
+now:"机构注册、律师新增时，人工录入机构名称、统一社会信用代码、法定代表人、地址、律师姓名、执业证号、执业机构、资质文件等十余个字段——这些信息全部印在营业执照、律师执业证等材料上。",
+ai:"上传营业执照 / 执业证 → OCR 识别 → 判断证照类型 → 提取关键字段 → 自动填充系统表单 → 用户校验后保存。",
+example:"上传律师执业证后自动识别：\n姓名：张三\n执业证号：1410120XXXXXXXX\n执业机构：河南XX律师事务所\n执业类别：专职律师\n用户只需要校验确认。",
+needs:["证照 OCR 模型","证照字段模板"],
+usage:"上传后确认即可，不改变现有录入流程。",
+value:"减少基础资料录入成本。定位为“顺带复用”型基础效率场景，不夸大 AI 价值。"},
+profile:{name:"机构 / 律师画像",env:"机构与律师",col:"ana",form:"AI数据分析",st:3,
+pitch:"把分散在各模块的历史数据，汇总成有数据依据的选聘参考——AI 只做参考，不替代人的判断。",
+now:"机构信息、专业领域、历史法律服务、承办案件、案件类型、办结情况、进展时效、服务评价分散在不同模块；机构选聘、律师分配时主要靠印象和名字。",
+ai:"AI 汇总系统逐渐沉淀的历史数据，生成机构 / 律师“业务画像”。",
+example:"王律师\n主要承办：金融借款纠纷、执行案件\n历史承办：32 件｜当前在办：7 件\n平均进展更新周期：12 天\n主要服务项目：不良债权执行\n历史合作机构：……",
+needs:["机构、案件、服务、评价数据打通"],
+usage:"机构选聘、律师分配时作为辅助参考卡片。",
+value:"给管理人员提供有数据依据的辅助参考——强调“参考”，不是 AI 自动判断哪个律师好。"},
+lsRec:{name:"法律服务材料识别",env:"法律服务",col:"rec",form:"AI嵌入页面",st:2,
+pitch:"结构化数据走接口，非结构化材料走 AI——AI 不抢接口的活。",
+now:"采购结果、盖章协议、服务期限、承办机构、服务类型等信息，部分来源于外部系统接口，部分靠人工阅读 PDF 协议、盖章材料、补充文件逐项录入。",
+ai:"采购系统接口已有的结构化字段，优先直接用接口，不上 AI；AI 只负责处理 PDF 协议、盖章材料等非结构化材料：识别服务机构、合同编号、服务开始/结束日期、服务范围，自动填充法律服务表单。",
+example:"上传盖章服务协议 → 自动提取：\n服务机构：河南XX律师事务所\n合同编号、服务期限（2026.3 – 2027.3）、服务范围",
+needs:["OCR + 文档理解","采购系统接口"],
+usage:"上传协议后自动填充表单，人工确认。",
+value:"AI 与接口分工边界清晰——技术上和产品上都站得住。"},
+lsSum:{name:"法律服务摘要",env:"法律服务",col:"gen",form:"AI嵌入页面",st:2,
+pitch:"把一项法律服务从“多个字段”变成“一个可读结论”。",
+now:"服务详情包含项目、机构、律师、服务期限、关联案件、协议、历史变更、共享/替换关系，业务人员要翻多个区域才能搞清一项服务。",
+ai:"在法律服务详情顶部生成 AI 服务摘要。",
+example:"本法律服务由河南XX律师事务所承办，服务期 2026年3月至2027年3月，当前关联 4 件案件：3 件办理中、1 件已办结。7月新增XX律师作为协助律师，目前存在 1 件案件超过 15 天未更新。",
+needs:["法律服务全量数据"],
+usage:"详情页顶部常驻摘要卡，无需操作。",
+value:"快速掌握服务全貌，异常情况（如超期未更新）一并带出。"},
+hireRef:{name:"选聘参考信息",env:"法律服务",col:"ana",form:"AI数据分析",st:3,
+pitch:"从人工翻机构资料，变成系统自动提供决策参考——不做“AI 推荐律所”，人做决定。",
+now:"业务人员选机构时，人工翻合作关系、专业领域、同类案件承办情况、当前案件负荷、历史服务记录。",
+ai:"用户选择某类法律服务时，系统查询历史数据：哪些机构做过类似项目、哪些律师办过类似案件、历史案件数量、当前在办量、服务区域、专业标签——整理成候选参考卡片。",
+example:"河南A律所：历史承办金融借款案件 28 件，目前在办 6 件。\n河南B律所：历史承办同类案件 15 件，曾参与该项目历史案件处理。",
+needs:["历史服务与案件数据","机构专业标签"],
+usage:"选聘时弹出参考卡片，人最终决定。",
+value:"选聘从凭印象变成有依据。"},
+lsQA:{name:"历史合作查询",env:"法律服务",col:"qa",form:"AI数据分析",st:2,
+pitch:"自然语言查询业务数据库——不是传统知识库问答。",
+now:"“这家律所以前跟我们合作过什么？”“这个项目以前是哪家律所做的？”——要人工去机构、服务、案件多个模块翻记录。",
+ai:"自然语言理解 → 转成查询条件 → 查询服务 / 案件数据 → 返回摘要 + 明细。",
+example:"问：“河南XX律所过去两年承办过哪些执行案件？”\n答：返回执行案件汇总与明细清单。",
+needs:["NL2Query 能力","服务 / 案件数据与权限"],
+usage:"对话框直接提问。",
+value:"管理类问题秒答，不依赖人工记忆和翻查。"},
+caseRec:{name:"起诉 / 受理材料识别",env:"案件录入",col:"rec",form:"AI嵌入页面",st:1,
+pitch:"案件信息早就写在起诉状里，AI 把它读出来。",
+now:"建案时要填案件名称、案由、原告、被告、法院、法律地位、诉讼标的等——大量内容在起诉状、受理通知书、法院材料里已有。",
+ai:"上传起诉状 / 受理通知书 → 识别案件名称、案号、法院、原告、被告、第三人、案由、标的金额 → 形成案件录入草稿（不直接建案）→ 用户确认后保存。",
+example:"上传受理通知书 → 自动填入：\n案号：(2026)豫01执XX号\n法院：郑州市中级人民法院\n案由：金融借款纠纷\n标的金额：500 万\n用户只需校验确认。",
+needs:["法律文书 OCR","字段抽取模板"],
+usage:"上传材料 → 确认草稿 → 保存。",
+value:"建案录入时间大幅缩短，第一阶段高价值场景。"},
+caseDraft:{name:"案件信息草稿",env:"案件录入",col:"gen",form:"AI嵌入页面",st:1,
+pitch:"材料识别负责“读出来”，信息草稿负责“合并填进去”。",
+now:"识别出的多份材料信息，要人工对照着分别抄进同一张案件表单。",
+ai:"AI 合并多份材料的信息：起诉状（原告、被告、诉求）+ 受理通知书（案号、法院）+ 财产保全材料（保全情况）→ 生成一份完整的案件基础信息草稿。",
+example:"上传 3 份材料后生成完整草稿：原告、被告、案号、法院、标的、保全情况全部就位，用户整体确认一次即可。",
+needs:["与材料识别共用抽取能力"],
+usage:"上传材料 → 自动生成案件草稿 → 确认。",
+value:"“上传材料 → 自动建立案件草稿”是直观的 AI 演示链路。"},
+docRec:{name:"司法文书识别",env:"司法办理",col:"rec",form:"AI嵌入页面",st:1,
+pitch:"先认出是什么文书，再按“文书类型 → 业务字段模板”抽字段——不是所有文书抽一样的字段。",
+now:"判决书、裁定书、调解书、执行通知、执行裁定、受理通知等司法文书，全部人工阅读、人工填写司法程序信息。",
+ai:"第一步：识别文书类型（如执行裁定书）；第二步：按该类型的字段模板抽取——执行裁定书抽：案号、法院、裁定日期、执行标的、被执行人、裁定结果；判决书抽：判决结果、判决金额、是否支持诉请、判决日期。",
+example:"上传执行裁定书 → 类型：执行裁定书 → 自动填入：\n案号、法院、裁定日期 2026-9-18\n被执行人：XX公司\n裁定结果：查封资产",
+needs:["文书分类模型","按类型的字段模板库（后续 AI 能力设计的重要基础）"],
+usage:"上传后确认预填结果。",
+value:"司法办理是本项目 AI 价值最高的区域之一，本场景前后变化最直观。"},
+verify:{name:"司法文书与案件进展智能复核",env:"司法办理",col:"ana",form:"AI嵌入页面",st:1,
+pitch:"AI 不仅帮律师填进展，也帮河南资产核验“律师报送内容与司法文书是否一致”——从提效延伸到监管质量。",
+now:"律师上传判决书、裁定书、执行通知等文书的同时填报司法程序与案件进展；材料与进展虽都沉淀在系统里，但两者主要靠人工核对——管理人员要自己阅读文书，再判断律师填报的案号、日期、金额、裁判结果、程序状态是否准确、完整。",
+aiSteps:["上传司法文书，AI 识别文书类型及关键字段","获取律师当前报送的司法程序与案件进展","关键事实逐项比对","标记一致项 / 差异项 / 缺失项","提示律师或管理人员复核","人工确认后调整系统数据"],
+example:"执行裁定书识别：执行标的 1,260 万元；律师进展填报：1,620 万元。\n\nAI 提示：金额存在差异——司法文书载明执行标的 1,260 万元，当前进展填报 1,620 万元，请核实。\n同时文书显示“终结本次执行程序”，而当前司法程序仍记录为“执行中”，建议确认是否需要更新司法程序状态。",
+note:"AI 负责发现事实性差异，不判断律师法律意见是否正确；正式案件信息仍由人员复核确认。",
+needs:["司法文书识别结果","司法程序结构化字段","律师报送进展","字段比对规则"],
+usage:"律师提交进展时自动校验；河南资产查看案件时直接看到“AI 复核结果”，无需额外操作。",
+value:"既减少律师人工录入，又增加一道自动复核机制——把 AI 价值从“律师效率工具”延伸到“河南资产的监管质量”。"},
+progGen:{name:"进展生成",env:"司法办理",col:"gen",form:"AI嵌入页面",st:1,
+pitch:"文书 → 字段 → 司法程序 → 案件进展，一条链闭环。",
+now:"律师收到法院文书后，要自己手写“进展内容”和“下一步安排”。",
+ai:"文书识别完成后，AI 自动生成适合系统格式的案件进展草稿，律师可编辑 → 确认 → 保存。",
+example:"AI 生成进展：\n“2026年9月18日收到郑州市中级人民法院执行裁定书，法院裁定查封被执行人名下XX资产，目前等待法院后续评估处置。”\n下一步安排：“跟进法院资产评估及拍卖进度。”",
+needs:["司法文书识别结果","进展写作模板"],
+usage:"查看 AI 建议进展 → 编辑 → 确认保存。",
+value:"与文书识别捆绑，是第一阶段最适合演示的闭环。"},
+ddl:{name:"诉讼时效事项管理",env:"司法办理",col:"ana",form:"规则 + AI → 数字员工",st:2,
+pitch:"系统解决“什么时候提醒”，数字人解决“提醒之后这件事怎么继续办下去”。",
+now:"查封到期、上诉截止、开庭日等关键时点，由系统按固定规则分别发送单条提醒，到点即止；事项是否在办、办得怎样，要管理人员逐条人工确认。",
+aiSteps:["系统规则负责日期计算与阈值判断（固定、确定、可配置的提醒仍由业务系统负责）","数字人定时巡检，汇总近期到期事项","结合案件材料与进展，判断每个事项的当前处理状态","形成“今日 / 本周重点诉讼时效事项”清单","提醒管理人员逐条确认，直接收集反馈","识别反馈：无需跟踪的记录结论；需办理的推动下一步或生成待更新内容"],
+example:"数字人每天早上生成：\n1. XX案件：10月16日上诉期限到期，当前未发现上诉材料，请确认是否决定上诉。\n2. XX案件：查封将于10月28日到期，系统尚未记录续封申请，请确认办理情况。\n3. XX案件：10月14日开庭（14:30），案件材料已齐备。\n\n业务人员直接回复：“第一个不上诉，第二个已经申请续封了。”\n数字人识别后：第一个记录“无需继续跟踪”；第二个要求补充续封材料或生成待更新内容。",
+sys:["日期计算","阈值判断","状态判断","消息触发"],
+aiResp:["多事项汇总","上下文判断","收集反馈","推动闭环"],
+steps:[["V1","定时巡检 + 汇总清单 + 状态判断，生成重点时效事项日报"],["V2","提醒确认 + 收集反馈 + 记录办理结论"],["V3","持续跟踪未完成事项，向管理人员输出时效事项管理周报"]],
+note:"数字人不替代系统已有的规则提醒——固定、确定、可配置的提醒仍由业务系统负责。",
+needs:["关键日期规则库","案件上下文数据","消息通道"],
+usage:"每天 / 每周自动生成清单，回复即可办理。",
+value:"从“分别发 3 条提醒的提醒系统”，升级为“帮管理人员管理一批时效事项”——每个提醒都带着案件状态和下一步，而不是一句到点通知。"},
+quickProg:{name:"一句话整理进展",env:"案件跟进",col:"gen",form:"AI嵌入页面",st:1,
+pitch:"律师说一句大白话，AI 整理成标准进展——降低填报阻力。",
+now:"案件没有新文书，但律师确实做了工作（联系法官、约评估），仍要按系统格式手动整理进展和下一步安排。",
+ai:"律师输入一句自然语言 → AI 规范化生成“进展内容” + “下一步安排”，确认后保存。",
+example:"输入：“今天跟法官沟通过，评估结果预计下周出。”\n生成进展：“已与承办法官沟通，目前资产评估工作正在进行，预计下周形成评估结果。”\n下一步：“获取评估结果后跟进法院启动后续拍卖程序。”",
+needs:["进展规范化模板"],
+usage:"输入一句话 → 确认生成内容。可延伸至手机端 / WorkBuddy。",
+value:"律师少写系统语言，填报不再拖延。"},
+overdue:{name:"超期未更新识别",env:"案件跟进",col:"ana",form:"规则 + AI",st:2,
+pitch:"15 天规则的发现与提醒由系统负责，AI 负责判断“哪些案件真正需要关注”。",
+now:"固定规则：15 天无进展即红色提醒——只看天数、不看案情，提醒多而准的少，容易造成提醒疲劳。",
+ai:"AI 综合最新进展、下一步安排、关键日期、案件阶段、是否有新材料、更新时间，形成案件关注优先级，而不是把系统提醒再发一遍。",
+example:"A 案件 20 天未更新，但最新进展写着“等待法院 30 日公告期结束”→ 属正常等待，不异常。\nB 案件仅 12 天未更新，但上诉截止日只剩 2 天 → 应优先关注。",
+note:"系统已有的 15 天提醒不重复建设；AI 的输出同时是督办数字人“该催谁、为什么催”的判断输入。",
+needs:["案件全景数据","关键日期规则"],
+usage:"管理端按关注优先级排序查看。",
+value:"让提醒变少变准，避免提醒疲劳，聚焦真正的风险案件。"},
+supervise:{name:"案件进展智能督办数字员工",env:"案件跟进",col:"exe",form:"AI数字员工",st:3,
+pitch:"系统负责发现，数字人负责处理——从“系统告诉你有问题”，升级为“数字人帮你把问题跟到底”。",
+now:"系统按 15 天无进展规则发固定通知（“XX案件15天未更新，请及时更新”），内容统一、单向、发完即止；律师常忽略，管理人员要自己盯、自己催、自己收回复、自己整理。",
+aiSteps:["发现异常：复用系统 15 天无进展规则，不重复建设","读取案件上下文：司法程序、最近进展、下一步安排、材料情况","针对性生成催办内容——不是统一模板","发送督办，收集律师回复","AI 理解回复，整理成进展草稿","律师确认后写回系统","未回复自动二次提醒，办结后向管理人员汇总"],
+sys:["日期计算、阈值判断","状态判断","消息触发","权限与数据保存"],
+aiResp:["理解案件上下文","生成沟通内容","理解律师回复","判断下一步动作，推动闭环"],
+vs:[["触发","固定规则","固定规则 / 动态条件"],["内容","固定模板","结合案件上下文生成"],["交互","单向通知","可持续对话"],["回复处理","人工阅读","AI 理解并整理"],["后续动作","用户自己操作","自动推进下一步"],["工作范围","一个节点","一段业务闭环"]],
+steps:[["V1","系统自动发现 + AI 生成催办内容，人工点击发送"],["V2","数字人自动督办 + 人工确认结果：自动发送、AI 生成进展草稿、律师确认"],["V3","持续跟踪闭环：未回复自动二次提醒、自动判断任务是否结束，向管理人员输出“本周督办 20 件，已更新 15 件，待回复 3 件，持续跟进 2 件”"]],
+note:"数字人不替代系统已有的规则提醒——提醒只是触发点，AI 价值在“发现之后持续完成一段跨步骤、带上下文、需要判断和交互的工作闭环”。",
+example:"数字人发现 XX 案件 18 天未更新，读取上下文：司法程序为执行，最近进展为“等待法院出具评估报告”，下一步安排为“预计 10 月 8 日前获取评估结果”——已超计划 5 天且无新增材料。\n\n数字人催办：“XX案件上次记录为等待法院评估报告，原计划 10 月 8 日前获取结果，目前已超过计划 5 天且暂无新增进展。请确认评估结果是否已出，如有最新材料可同步上传。”\n\n律师回复：“法院说还没出，预计下周。”\n\n数字人整理为进展草稿——进展内容：已向法院核实，当前评估报告尚未出具；下一步安排：持续跟进法院，预计下周再次确认评估进度。律师确认后写回系统。",
+needs:["案件上下文数据","消息通道","回复理解","系统写回接口"],
+usage:"自动运行；律师只需回复消息并确认草稿，管理人员看督办汇总。",
+value:"案件督办不是因为最需要 AI，而是最适合作为数字员工的第一个闭环：风险可控、人可确认、数据已存在、频率高、效果可量化。验证的是可复用的数字员工工作机制（定时发现 → 读数据 → 懂上下文 → 沟通 → 调系统 → 闭环），后续可扩展到材料补充、办结跟进、跨系统数据核对。"},
+onePage:{name:"AI 案件一页通",env:"案件监管",col:"gen",form:"AI嵌入页面",st:1,
+pitch:"跨多个业务模块的数据聚合摘要——不是简单总结一段文本。",
+now:"案件详情包含基础信息、资产、承办机构、司法程序、进展、材料、回款、操作历史，管理人员要翻 10+ 页签自己拼出案件现状。",
+ai:"AI 读取案件全部相关数据，生成固定结构摘要：案件当前状态 / 当前司法阶段 / 最新有效进展 / 下一步计划 / 标的与回款 / 关键风险 / 待关注事项。",
+example:"详情页顶部一页通：\n当前阶段：执行\n最新进展：等待法院评估报告\n标的 500 万 / 已回款 120 万\n关键风险：查封 10 月 28 日到期，尚未记录续封申请",
+needs:["案件全域数据聚合"],
+usage:"案件详情页顶部常驻，无需操作。",
+value:"直接解决“看案件太慢”——管理人员感知最强的场景。"},
+debtorRisk:{name:"债务主体风险监测",env:"案件监管",col:"ana",form:"规则 + AI",st:2,
+pitch:"不是等业务人员去查风险，而是主动汇总债务主体的“系统内部异常 + 外部司法变化”。",
+now:"内部风险（长期未更新、时效临近、材料缺失、已回款未办结）靠管理人员从各页签自己找；债务人、担保人的涉诉、执行、司法拍卖等外部信息分散在外部渠道，人工按需查询，难以持续跟踪主体新增风险。",
+aiSteps:["系统内部风险：长期未更新、关键时效临近、材料缺失、下一步安排逾期、已回款但未办结","外部司法风险：债务人/担保人新增涉诉、新增被执行、新增司法拍卖、破产/执行等重大变化","关联我司项目、债权资产与案件，形成风险清单与影响摘要"],
+example:"内部——“该案件 9 月已回款 120 万，案件状态仍为‘办理中’，请确认是否具备办结条件。”\n外部——“债务人 XX 公司新增一宗司法拍卖（起拍价 3,200 万元），关联我司处于执行阶段的 XX 案件，建议关注与本案的关系。”",
+note:"外部信息的覆盖范围取决于最终确定的数据源与授权方式。",
+needs:["案件全景数据","外部涉诉 / 执行 / 司法拍卖数据源","项目 / 资产 / 案件关联数据"],
+usage:"随一页通与监管列表自动展示。",
+value:"风险提示从“系统内部异常”扩展到“债务主体外部变化”，河南资产的监管视角完整。"},
+debtorAgent:{name:"债务主体风险监测数字员工",env:"案件监管",col:"exe",form:"AI数字员工",st:3,
+pitch:"围绕我司债权资产，数字员工定时监测债务主体的新变化并推送到人——从“人找风险”变成“风险找人”。",
+now:"业务人员根据案件需要人工查询债务人 / 担保人外部涉诉、执行、拍卖信息，查过一次难有持续跟踪，主体新增风险容易漏。",
+aiSteps:["从债权资产读取债务人 / 担保人名单","定时查询外部涉诉 / 执行 / 拍卖信息","主体匹配与去重","与历史监测结果比对，识别新增事件","关联当前项目 / 债权资产 / 案件","AI 生成风险摘要与待关注事项","推送相关业务人员，跟踪确认"],
+sys:["名单管理","任务调度","数据保存"],
+aiResp:["外部信息查询","主体匹配去重","影响总结","推送与跟踪"],
+example:"监测发现 XX 公司新增一宗司法拍卖：郑州市XX区工业厂房，起拍价 3,200 万元。\n系统关联：该公司为我司 XX 项目债务人，当前案件处于执行阶段。\n\nAI 提示：建议关注该拍卖事项与我司执行案件的关系，确认是否需要参与分配或采取其他措施。",
+note:"落地节奏与数据覆盖范围取决于外部数据源与授权方式；AI 输出统一为“建议关注 / 待确认”，不给法律结论。",
+needs:["外部涉诉 / 执行 / 司法拍卖数据源","主体唯一识别","项目 / 资产 / 案件关联数据","定时任务能力"],
+usage:"自动运行；业务人员接收推送、确认关注事项。",
+value:"持续、主动、带业务关联的债务主体监测，弥补人工“查一次就忘”的缺口。"},
+onePageQA:{name:"一页通追问",env:"案件监管",col:"qa",form:"AI嵌入页面",st:1,
+pitch:"基于当前案件上下文的问答——不是全局聊天机器人。",
+now:"追问“这个案件换过律师吗”“现在回款多少”，要分别翻变更记录、财务页签。",
+ai:"在一页通内直接提问 → 系统带着案件上下文查询对应模块 → 直接回答，可连续追问。",
+example:"问：“这个案件换过律师吗？”\n答：“该案件共发生 1 次主责律师调整，2026年6月由张三调整为李四，原因为律师转所。”\n再问：“现在回款多少？” → 查询财务 / 回款数据回答。",
+needs:["案件上下文","各模块数据查询"],
+usage:"一页通内对话框提问。",
+value:"不换页面、不用学系统，追问即答。"},
+reportDraft:{name:"工作汇报智能生成",env:"专项法律服务",col:"gen",form:"AI嵌入页面",st:2,
+pitch:"已有的日志 / 周报 / 季报功能不重复建设，AI 负责把已有工作记录逐级归纳成可提交的汇报草稿。",
+now:"系统已支持工作日志及周期性汇报，但律师要根据每日记录重新整理周报，再根据多期周报整理季度 / 半年度 / 年度报告——重复阅读、重复汇总、重复写作。",
+aiSteps:["日志 / 工作记录 → 自动提取本周完成事项、重大问题、风险与下一步","生成周报草稿 → 律师确认","基于多期已确认周报 → 生成季度 / 半年度报告草稿","律师确认提交"],
+example:"本周 12 条工作日志 → 周报草稿：完成事项 5 项、进行中 4 项、重大问题 1 项、下周计划 3 项。\n季度报告自动引用本季度 13 期已确认周报汇总生成。",
+needs:["工作日志与汇报数据","归纳模板"],
+usage:"周期末一键生成 → 编辑确认提交。",
+value:"不改变现有报告机制，只消除“从已有记录再写一遍报告”的重复劳动——日志 → 周报 → 季报逐级归纳。"},
+cluster:{name:"多律师问题聚类 · 风险归纳",env:"专项法律服务",col:"ana",form:"AI数据分析",st:2,
+pitch:"从“收集问题”升级到“企业法律管理洞察”。",
+now:"50 名驻场律师分别提交问题描述 + 改进建议，合计约 100 条，人工逐条阅读耗时且难有全局结论。",
+ai:"AI 自动完成：相似问题聚类 → 主题分类 → 出现频次 → 典型问题 → 共性建议。",
+example:"共收到 82 条问题：\n合同管理类 26 条、流程协同类 18 条、诉讼管理类 15 条、制度规范类 13 条、其他 10 条。\n自动归纳：“本季度高频问题主要集中在合同管理和流程协同……”",
+needs:["问题文本库","聚类与归纳能力"],
+usage:"自动生成归纳报告，管理人员直接使用。",
+value:"从问题台账变成管理洞察——汇报亮点。"},
+specQA:{name:"专项服务情况查询",env:"专项法律服务",col:"qa",form:"AI数据分析",st:2,
+pitch:"结构化业务数据的自然语言查询——与历史合作查询同一能力，换到专项服务数据域。",
+now:"“今年驻场律师提交了多少次工作汇报？”“哪些专项服务还没交半年度报告？”要人工查列表核对。",
+ai:"自然语言 → 查询专项服务数据 → 返回数字与明细。",
+example:"“张律师负责哪些专项服务？”\n“哪些专项服务今年还没提交半年度报告？”→ 即问即答。",
+needs:["专项服务数据","NL2Query"],
+usage:"对话框直接提问。",
+value:"管理查询零门槛。"},
+collect:{name:"专项汇报催收数字员工",env:"专项法律服务",col:"exe",form:"AI数字员工",st:3,
+pitch:"到期提醒是系统固定功能，数字员工负责“提醒之后”：谁没交、定向催、收回来、更新状态。",
+now:"专项服务到期前 30 / 10 / 当天，系统按固定规则发提醒；谁交了谁没交要人工核对，没交的要人工逐个催。",
+aiSteps:["判断哪些专项服务 / 哪些律师还未提交汇报","定向提醒到人，而非群发","收到提交后自动更新状态","未提交人员继续跟踪","向管理人员汇总提交情况"],
+sys:["到期日计算","提醒触发","状态保存"],
+aiResp:["判断谁未提交","定向生成提醒","识别提交结果","汇总反馈"],
+steps:[["V1","到期提醒 + 未提交清单，人工确认发送"],["V2","自动定向催收 + 收到提交自动更新状态"],["V3","持续跟踪未提交人员，输出提交情况周报"]],
+note:"数字人不替代系统已有的到期提醒——固定提醒仍由业务系统负责，数字员工负责之后的定向催收与闭环。",
+example:"“张律师负责的XX专项服务半年度汇报还差 3 天到期、尚未提交，已定向提醒；李律师服务已到期 5 天未提交，已第二次提醒并抄送项目负责人。”",
+needs:["专项服务数据","消息通道"],
+usage:"自动运行，管理人员看提交情况汇总。",
+value:"逻辑最简单的数字员工闭环，比案件督办更适合作为 POC 第一步——用最小场景先验证“发现 → 催办 → 收集 → 更新 → 汇总”的工作机制。"},
+reportGen:{name:"周报 / 月报 / 复盘生成",env:"统计与汇报",col:"gen",form:"AI数据分析",st:2,
+pitch:"报表负责展示数字，AI 把数字变成报告。",
+now:"统计模块产出案件数、办结量、在办量、进展时效、机构分布、回款等数字，汇报材料仍要人工撰写。",
+ai:"一键生成报告：总体概况、新增、办结、在办、执行回款、长期无进展、重点案件、下月重点。",
+example:"生成“9 月案件管理月报”：数字 + 趋势 + 重点案件说明 + 下月重点，可直接用于内部汇报。",
+needs:["统计模块数据（既定未开发，需先建数据基础）"],
+usage:"选择周期一键生成 → 编辑确认。",
+value:"第二阶段核心场景：统计数字直接变成可交付的汇报材料。"},
+attr:{name:"归因 · 异常识别",env:"统计与汇报",col:"ana",form:"AI数据分析",st:2,
+pitch:"从“告诉你发生了什么”升级为“告诉你为什么”。",
+now:"报表呈现结果，异常原因靠人工逐层下钻分析。",
+ai:"AI 基于系统已有数据对统计异常做归因归纳——AI 给出的“原因”必须基于数据归纳，不主观猜测。",
+example:"“本月案件更新及时率下降，主要集中于 3 家律所，其中 A 律所 12 件在办案件中 5 件超过 30 天未更新。”\n“本月回款明显增加，主要来源于 3 件执行案件。”",
+needs:["指标口径","明细下钻数据"],
+usage:"随统计报表自动给出异常说明。",
+value:"报表从“数字展示”升级为“结论输出”。"},
+askBI:{name:"一句话问数",env:"统计与汇报",col:"qa",form:"AI数据分析",st:2,
+pitch:"对话式 BI——用户最好理解的一类 AI。",
+now:"查数要懂菜单路径、懂筛选条件，换个问法就要重新查。",
+ai:"一句话生成查询 → 返回数字 + 图表 + 明细 → 追问继承上下文继续分析。",
+example:"“统计今年各律所办理案件数量。”→ 数字+图表+明细\n“只看执行案件。”→ 自动继承上下文\n“哪几家超过 30 天没更新最多？”→ 继续下钻分析",
+needs:["业务数据模型","指标口径","LLM"],
+usage:"随统计模块一起设计，对话框提问。",
+value:"不用学系统、不用等报表，随问随答。"},
+crossQA:{name:"跨系统问答",env:"跨系统协同",col:"qa",form:"WorkBuddy",st:3,
+pitch:"用户不需要知道该去哪个系统查。",
+now:"河南资产的信息分布在核心业务系统、采购、财务、数据中台、钉钉——跨系统问题要人工多处查询再人工汇总。",
+ai:"WorkBuddy 识别问题 → 调用多个系统 → 合并结果 → 统一回答。",
+example:"“XX项目现在投入多少，已回款多少，还有哪些诉讼案件？”\n→ 核心系统（项目数据）+ 财务（回款）+ 律所系统（案件）合并回答。",
+needs:["核心业务 / 采购 / 财务 / 数据中台 / 钉钉接口","统一权限"],
+usage:"WorkBuddy 对话框提问。",
+value:"跨系统信息一体获取——第三阶段与公司数字员工产品最直接的连接点。"},
+agent:{name:"数字员工办事",env:"跨系统协同",col:"exe",form:"WorkBuddy",st:3,
+pitch:"从“问答案”走向“执行任务”。",
+now:"查到问题之后，所有跟进动作仍由人工完成。",
+ai:"用户一句话下达任务 → 数字员工查询案件 → 找主责律师 → 生成催办内容 → 调用消息能力发送 → 跟踪反馈。",
+example:"不说“哪些案件超期？”，而是说：“把这些超期案件都催一下。”\n→ 数字员工自动完成整段催办工作并回报结果。",
+needs:["AI + 工作流 + 系统接口 + 权限"],
+usage:"一句话下达任务，数字员工执行并汇报。",
+value:"数字员工的终态：不只是告诉你结果，还能调用系统完成任务。"},
+regWatch:{name:"法规与监管动态智能监测",env:"法律合规拓展",col:"exe",form:"AI数字员工",st:1,
+pitch:"从“人去找新法规”升级为“系统持续关注变化，把与河南资产业务相关的内容送到人面前”。",
+now:"新法律法规、监管政策与监管处罚发布后，靠法律合规人员人工关注、筛选、阅读，再结合公司业务判断哪些内容值得进一步关注。",
+aiSteps:["按设定的信息来源，定期获取新增法规 / 监管处罚","识别新增与修订内容，提取核心变化、适用范围、实施时间","AI 形成要点摘要","结合预设的公司业务领域，生成“可能影响事项”","形成日报 / 周报 / 专题简报，供法律合规人员复核"],
+example:"本周新增 5 项法律监管动态，其中 2 项与不良资产处置相关。\n\nXX规定\n主要变化：……\n可能影响：涉及资产处置XX环节，建议法律合规部关注现有XX流程是否需要进一步核实。",
+note:"AI 负责信息获取、分类、摘要与影响线索识别，不替代法律合规人员正式的法律适用与合规判断；措辞统一为“可能影响 / 建议关注 / 待人工确认”。",
+needs:["法规 / 处罚信息源","公司业务领域标签","摘要与影响识别能力"],
+usage:"主动查看“本周法律监管动态”，或订阅特定主题由数字员工定期推送。",
+value:"减少信息搜集和初筛成本，让法务人员把时间放在真正需要专业判断的事项上。"},
+contractReview:{name:"合同智能审查助手",env:"法律合规拓展",col:"rec",form:"AI嵌入页面",st:1,
+pitch:"以公司标准合同 / 审查规则为基线，AI 先完成“找偏离、找风险、写初审意见”，法律人员最终复核。",
+now:"业务报审合同后，法律人员逐条与公司模板比对识别条款修改，再查询相对方风险信息，最后手工整理初步审查意见。",
+aiSteps:["上传待审合同，识别合同类型","匹配公司标准模板，条款级比对，标识新增 / 删除 / 修改条款","基于合同审查规则识别重点风险","查询相对方信用 / 司法风险","自动生成初步审查意见","法律人员复核确认"],
+example:"付款条款偏离——标准模板：付款条件为XX；报审合同：修改为XX；风险提示：付款前置条件减少；AI 初审建议：建议进一步确认……\n\n相对方风险——XX公司存在新增被执行信息 2 条，请审查人员关注履约能力。",
+note:"落地前需确认标准合同模板库、合同审查规则与外部信用数据源；AI 负责初审，法律人员最终复核。",
+needs:["标准合同模板库","合同条款结构化","合同审查规则","外部信用 / 司法数据","合同审批系统接口"],
+usage:"报审合同时自动生成初审意见，法律人员复核后进入审批。",
+value:"初审中“找偏离、找风险”的机械部分交给 AI，法律人员聚焦专业判断。"}
+};
+const COLS={rec:["识别型","#2563eb"],gen:["生成型","#7c3aed"],ana:["分析型","#b45309"],qa:["问答型","#059669"],exe:["执行型","#dc2626"]};
+const STG={1:["第一阶段 · AI 辅助","#2563eb"],2:["第二阶段 · 分析与管理增强","#8b5cf6"],3:["第三阶段 · 数字员工","#c8963e"]};
+const drawer=document.getElementById("drawer"),mask=document.getElementById("dmask"),head=document.getElementById("dHead"),body=document.getElementById("dBody");
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const para=s=>esc(s).split(/\n\n+/).map(p=>"<p>"+p.replace(/\n/g,"<br>")+"</p>").join("");
+const badge=(t,c)=>'<span class="db" style="background:'+c+'">'+esc(t)+"</span>";
+const LOCS={crossQA:"跨系统拓展",agent:"跨系统拓展",verify:"现有系统增强",debtorRisk:"依赖外部数据",debtorAgent:"依赖外部数据",regWatch:"依赖外部数据",contractReview:"跨系统拓展"};
+const LOC_C={"现有系统增强":"#0a7a52","依赖外部数据":"#b45309","跨系统拓展":"#8b5cf6"};
+function openCap(id){
+  const c=CAPS[id];if(!c)return;
+  const tn=COLS[c.col][0],tc=COLS[c.col][1];
+  const loc=LOCS[id]||"现有系统增强";
+  const locTag='<span class="db loc" style="border-color:'+LOC_C[loc]+';color:'+LOC_C[loc]+'">'+esc(loc)+'</span>';
+  head.innerHTML='<div class="d-tags">'+badge(STG[c.st][0],STG[c.st][1])+badge(tn,tc)+locTag+'<button class="d-x" title="关闭" onclick="closeCap()">✕</button></div><div class="d-name">'+esc(c.name)+'</div><div class="d-env">'+esc(c.env)+" · "+esc(tn)+" · 建议阶段 "+(c.st===1?"①":c.st===2?"②":"③")+"</div>";
+  let h='<div class="d-pitch">'+esc(c.pitch)+"</div>";
+  h+='<div class="d-sec"><div class="d-lb lb-now">现在怎么做</div>'+para(c.now)+"</div>";
+  h+='<div class="d-arrow">↓ AI 升级</div>';
+  h+='<div class="d-sec ai"><div class="d-lb lb-ai">AI 升级后怎么做</div>'+(c.aiSteps?'<ol class="d-flow">'+c.aiSteps.map(s=>"<li>"+esc(s)+"</li>").join("")+"</ol>":para(c.ai))+"</div>";
+  if(c.note)h+='<div class="d-note">※ '+esc(c.note)+"</div>";
+  if(c.sys)h+='<div class="d-split"><div class="sys"><b>系统负责（确定性能力）</b>'+c.sys.map(s=>"<span>"+esc(s)+"</span>").join("")+'</div><div class="dig"><b>数字人负责（非确定处理）</b>'+c.aiResp.map(s=>"<span>"+esc(s)+"</span>").join("")+"</div></div>";
+  if(c.vs)h+='<table class="d-vs"><tr><th></th><th>普通系统功能</th><th>AI 数字人</th></tr>'+c.vs.map(r=>"<tr><td>"+esc(r[0])+"</td><td>"+esc(r[1])+"</td><td>"+esc(r[2])+"</td></tr>").join("")+"</table>";
+  if(c.steps)h+='<div class="d-steps">'+c.steps.map(s=>'<div class="dst"><i>'+esc(s[0])+"</i><span>"+esc(s[1])+"</span></div>").join("")+"</div>";
+  h+='<div class="d-sec ex"><div class="d-lb lb-ex">💬 举个例子</div>'+para(c.example)+"</div>";
+  h+='<div class="d-meta"><div class="d-chips"><em>依赖</em>'+c.needs.map(n=>"<span>"+esc(n)+"</span>").join("")+'</div><div class="d-use"><em>用户怎么用</em>'+esc(c.usage)+'</div><div class="d-val"><em>带来的变化</em>'+esc(c.value)+"</div></div>";
+  body.innerHTML=h;body.scrollTop=0;
+  drawer.classList.add("on");mask.classList.add("on");drawer.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+}
+function closeCap(){drawer.classList.remove("on");mask.classList.remove("on");drawer.setAttribute("aria-hidden","true");document.body.style.overflow="";}
+window.closeCap=closeCap;
+document.querySelector(".matrix").addEventListener("click",e=>{const t=e.target.closest("[data-cap]");if(t)openCap(t.dataset.cap)});
+mask.addEventListener("click",closeCap);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCap()});
+})();
+</script>
 </body>
 </html>
