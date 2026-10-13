@@ -61,6 +61,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #dde5ee;border-radius:6px;padding:3px 9px;font-size:11.5px;color:#253247;font-weight:500;letter-spacing:.3px;transition:border-color .15s}
 .chip:hover{border-color:#9fb3c8}
+.sblock.dim .chip{color:var(--muted)}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .c1{background:var(--c1)}.c2{background:var(--c2)}.c3{background:var(--c3)}.c4{background:var(--c4)}.c5{background:var(--c5)}.c6{background:var(--c6)}.c7{background:var(--c7)}
 
@@ -102,6 +103,34 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
 .ccard .fl b{color:var(--ink)}
 .ccard .demobtn{margin-top:11px;display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;font-size:11.5px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;letter-spacing:.5px;border:none}
 .ccard .demobtn:hover{background:#1e4a72}
+/* 侧边抽屉：点击 AI 应用点查看详细说明 */
+.chip[data-cap]{cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
+.chip[data-cap]:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(22,50,79,.16);border-color:#9fb3c8}
+.dmask{position:fixed;inset:0;background:rgba(15,43,70,.38);opacity:0;pointer-events:none;transition:opacity .25s;z-index:90}
+.dmask.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(560px,94vw);background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.18);transform:translateX(105%);transition:transform .28s ease;z-index:100;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.d-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.d-tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.db{color:#fff;font-size:11px;font-weight:600;border-radius:5px;padding:2px 9px;letter-spacing:.5px}
+.d-x{margin-left:auto;border:none;background:#f1f5f9;border-radius:6px;width:26px;height:26px;cursor:pointer;color:var(--text2);font-size:13px;line-height:1}
+.d-x:hover{background:#e2e8f0;color:var(--navy)}
+.d-name{font-size:19px;font-weight:800;color:var(--navy);margin-top:10px;line-height:1.35}
+.d-env{font-size:12px;color:var(--muted);margin-top:3px}
+.d-post{font-size:11.5px;color:var(--text2);margin-top:5px}
+.d-body{overflow-y:auto;padding:18px 22px 30px;flex:1}
+.d-pitch{background:#eef2f7;border-left:4px solid var(--navy);border-radius:0 8px 8px 0;padding:10px 14px;font-size:13px;font-weight:600;color:var(--navy);line-height:1.7}
+.d-sec{margin-top:14px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:11px 14px}
+.d-sec.ai{background:#eef4ff;border-color:#c9dcff}
+.d-sec.fut{background:#f1f5f9;border-color:#dbe3ec}
+.d-lb{font-size:11.5px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
+.lb-now{color:var(--text2)}.lb-ai{color:var(--c1)}.lb-fut{color:var(--c7)}
+.d-sec p{font-size:12.8px;line-height:1.75;color:var(--ink)}
+.d-arrow{text-align:center;font-size:12px;font-weight:700;color:var(--c1);margin-top:10px;letter-spacing:1px}
+.d-arrow.fut{color:var(--c7)}
+.d-val{margin-top:14px;font-size:12.5px;line-height:1.75;color:#0a6b48;background:#f0faf5;border-radius:8px;padding:9px 12px}
+.d-val em{font-style:normal;font-weight:700;margin-right:6px}
+@media print{.dmask,.drawer{display:none}}
 </style>
 </head>
 <body>
@@ -201,30 +230,30 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
           <div class="nm">合作机构管理</div>
           <div class="sub">准入 · 分级考核 · 费用结算 · 退出</div>
           <div class="chips">
-            <span class="chip"><span class="dot c3"></span>准入材料审核</span>
-            <span class="chip"><span class="dot c2"></span>合作机构评价</span>
-            <span class="chip"><span class="dot c3"></span>结算费用核验</span>
-            <span class="chip"><span class="dot c4"></span>合作风险监测</span>
+            <span class="chip" data-cap="zscl"><span class="dot c3"></span>准入材料审核</span>
+            <span class="chip" data-cap="hzpj"><span class="dot c2"></span>合作机构评价</span>
+            <span class="chip" data-cap="jsfy"><span class="dot c3"></span>结算费用核验</span>
+            <span class="chip" data-cap="hzfx"><span class="dot c4"></span>合作风险监测</span>
           </div>
         </div>
         <div class="sblock">
           <div class="nm">渠道经营分析</div>
           <div class="sub">渠道对比 · 获客质量 · 转化表现 · 风险表现</div>
           <div class="chips">
-            <span class="chip"><span class="dot c2"></span>渠道经营诊断</span>
-            <span class="chip"><span class="dot c2"></span>渠道对比分析</span>
-            <span class="chip"><span class="dot c2"></span>获客质量分析</span>
-            <span class="chip"><span class="dot c2"></span>异常归因分析</span>
+            <span class="chip" data-cap="qdzd"><span class="dot c2"></span>渠道经营诊断</span>
+            <span class="chip" data-cap="qddb"><span class="dot c2"></span>渠道对比分析</span>
+            <span class="chip" data-cap="hkzl"><span class="dot c2"></span>获客质量分析</span>
+            <span class="chip" data-cap="ycgy"><span class="dot c2"></span>异常归因分析</span>
           </div>
         </div>
         <div class="sblock">
           <div class="nm">消费金融产品运营</div>
           <div class="sub">产品上线 · 转化运营 · 产品经营 · 规则管理</div>
           <div class="chips">
-            <span class="chip"><span class="dot c2"></span>产品经营分析</span>
-            <span class="chip"><span class="dot c2"></span>转化漏斗分析</span>
-            <span class="chip"><span class="dot c5"></span>产品规则助手</span>
-            <span class="chip"><span class="dot c2"></span>竞品监测</span>
+            <span class="chip" data-cap="cpjy"><span class="dot c2"></span>产品经营分析</span>
+            <span class="chip" data-cap="zhld"><span class="dot c2"></span>转化漏斗分析</span>
+            <span class="chip" data-cap="cpgz"><span class="dot c5"></span>产品规则助手</span>
+            <span class="chip" data-cap="jpjc"><span class="dot c2"></span>竞品监测</span>
           </div>
         </div>
       </div>
@@ -238,41 +267,41 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
           <div class="nm">贷款业务运营</div>
           <div class="sub">申请受理 · 远程办理 · 异常处理 · 进度服务</div>
           <div class="chips">
-            <span class="chip"><span class="dot c3"></span>材料核验</span>
-            <span class="chip"><span class="dot c1"></span>远程办理助手</span>
-            <span class="chip"><span class="dot c1"></span>业务进度助手</span>
-            <span class="chip"><span class="dot c2"></span>异常业务分析</span>
+            <span class="chip" data-cap="clhy"><span class="dot c3"></span>材料核验</span>
+            <span class="chip" data-cap="ycbl"><span class="dot c1"></span>远程办理助手</span>
+            <span class="chip" data-cap="ywjd"><span class="dot c1"></span>业务进度助手</span>
+            <span class="chip" data-cap="ycyw"><span class="dot c2"></span>异常业务分析</span>
           </div>
         </div>
         <div class="sblock">
           <div class="nm">远程签约与存证</div>
           <div class="sub">电子合同 · 电子回单 · 业务存证</div>
           <div class="chips">
-            <span class="chip"><span class="dot c3"></span>合同核验</span>
-            <span class="chip"><span class="dot c7"></span>存证信息查询</span>
-            <span class="chip"><span class="dot c4"></span>签约风险提示</span>
+            <span class="chip" data-cap="hthy"><span class="dot c3"></span>合同核验</span>
+            <span class="chip" data-cap="czcx"><span class="dot c7"></span>存证信息查询</span>
+            <span class="chip" data-cap="qyfx"><span class="dot c4"></span>签约风险提示</span>
           </div>
         </div>
         <div class="sblock">
           <div class="nm">贷后运营管理</div>
           <div class="sub">还款服务 · 提醒触达 · 逾期监测 · 风险分析</div>
           <div class="chips">
-            <span class="chip"><span class="dot c1"></span>还款服务助手</span>
-            <span class="chip"><span class="dot c1"></span>还款提醒外呼</span>
-            <span class="chip"><span class="dot c2"></span>异常还款分析</span>
-            <span class="chip"><span class="dot c2"></span>贷后风险分析</span>
-            <span class="chip"><span class="dot c6"></span>贷后报告</span>
+            <span class="chip" data-cap="fkfw"><span class="dot c1"></span>还款服务助手</span>
+            <span class="chip" data-cap="fktx"><span class="dot c1"></span>还款提醒外呼</span>
+            <span class="chip" data-cap="ychk"><span class="dot c2"></span>异常还款分析</span>
+            <span class="chip" data-cap="dhfx"><span class="dot c2"></span>贷后风险分析</span>
+            <span class="chip" data-cap="dhbg"><span class="dot c6"></span>贷后报告</span>
           </div>
         </div>
         <div class="sblock">
           <div class="nm">委外催收管理</div>
           <div class="sub">机构管理 · 分案管理 · 过程监督 · 回收跟踪 · 机构评价</div>
           <div class="chips">
-            <span class="chip"><span class="dot c2"></span>委外机构评价</span>
-            <span class="chip"><span class="dot c4"></span>催收质检</span>
-            <span class="chip"><span class="dot c4"></span>催收合规检查</span>
-            <span class="chip"><span class="dot c2"></span>委外数据分析</span>
-            <span class="chip"><span class="dot c6"></span>催收运营报告</span>
+            <span class="chip" data-cap="wwpj"><span class="dot c2"></span>委外机构评价</span>
+            <span class="chip" data-cap="cszc"><span class="dot c4"></span>催收质检</span>
+            <span class="chip" data-cap="cshg"><span class="dot c4"></span>催收合规检查</span>
+            <span class="chip" data-cap="wwsj"><span class="dot c2"></span>委外数据分析</span>
+            <span class="chip" data-cap="csbg"><span class="dot c6"></span>催收运营报告</span>
           </div>
         </div>
       </div>
@@ -282,46 +311,46 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
     <div class="domain">
       <div class="d-head"><span class="nm">远程客户服务与经营</span></div>
       <div class="d-body">
-        <div class="sblock">
+        <div class="sblock dim">
           <div class="nm">远程客户服务</div>
           <div class="sub">电话 · 在线 · 视频 · 业务办理 · 投诉受理</div>
           <div class="chips">
-            <span class="chip"><span class="dot c1"></span>智能客服</span>
-            <span class="chip"><span class="dot c1"></span>坐席助手</span>
-            <span class="chip"><span class="dot c6"></span>服务摘要</span>
-            <span class="chip"><span class="dot c7"></span>智能工单</span>
+            <span class="chip" data-cap="znkf"><span class="dot c1"></span>智能客服</span>
+            <span class="chip" data-cap="zxzs"><span class="dot c1"></span>坐席助手</span>
+            <span class="chip" data-cap="fwzy"><span class="dot c6"></span>服务摘要</span>
+            <span class="chip" data-cap="zngd"><span class="dot c7"></span>智能工单</span>
           </div>
         </div>
         <div class="sblock">
           <div class="nm">客户营销经营</div>
           <div class="sub">客户分层 · 客群圈选 · 营销触达 · 存量经营</div>
           <div class="chips">
-            <span class="chip"><span class="dot c2"></span>客群分层分析</span>
-            <span class="chip"><span class="dot c2"></span>自然语言圈客</span>
-            <span class="chip"><span class="dot c1"></span>智能外呼</span>
-            <span class="chip"><span class="dot c6"></span>营销内容生成</span>
-            <span class="chip"><span class="dot c2"></span>营销效果分析</span>
+            <span class="chip" data-cap="kqfc"><span class="dot c2"></span>客群分层分析</span>
+            <span class="chip" data-cap="zrqk"><span class="dot c2"></span>自然语言圈客</span>
+            <span class="chip" data-cap="znwh"><span class="dot c1"></span>智能外呼</span>
+            <span class="chip" data-cap="yxnr"><span class="dot c6"></span>营销内容生成</span>
+            <span class="chip" data-cap="yxsg"><span class="dot c2"></span>营销效果分析</span>
           </div>
         </div>
-        <div class="sblock">
+        <div class="sblock dim">
           <div class="nm">客户体验管理</div>
           <div class="sub">客户评价 · 服务反馈 · 投诉 · VOC</div>
           <div class="chips">
-            <span class="chip"><span class="dot c2"></span>客户反馈分析</span>
-            <span class="chip"><span class="dot c2"></span>投诉归因分析</span>
-            <span class="chip"><span class="dot c2"></span>情绪与诉求识别</span>
-            <span class="chip"><span class="dot c2"></span>VOC 客户之声</span>
-            <span class="chip"><span class="dot c6"></span>体验诊断报告</span>
+            <span class="chip" data-cap="khfk"><span class="dot c2"></span>客户反馈分析</span>
+            <span class="chip" data-cap="tsgy"><span class="dot c2"></span>投诉归因分析</span>
+            <span class="chip" data-cap="qxsq"><span class="dot c2"></span>情绪与诉求识别</span>
+            <span class="chip" data-cap="voc"><span class="dot c2"></span>VOC 客户之声</span>
+            <span class="chip" data-cap="tyzd"><span class="dot c6"></span>体验诊断报告</span>
           </div>
         </div>
-        <div class="sblock">
+        <div class="sblock dim">
           <div class="nm">服务质量管理</div>
           <div class="sub">服务质检 · 话术规范 · 服务整改</div>
           <div class="chips">
-            <span class="chip"><span class="dot c4"></span>智能质检</span>
-            <span class="chip"><span class="dot c4"></span>话术合规检查</span>
-            <span class="chip"><span class="dot c2"></span>服务改进分析</span>
-            <span class="chip"><span class="dot c7"></span>整改跟踪</span>
+            <span class="chip" data-cap="znzj"><span class="dot c4"></span>智能质检</span>
+            <span class="chip" data-cap="hshg"><span class="dot c4"></span>话术合规检查</span>
+            <span class="chip" data-cap="fwgj"><span class="dot c2"></span>服务改进分析</span>
+            <span class="chip" data-cap="zggz"><span class="dot c7"></span>整改跟踪</span>
           </div>
         </div>
       </div>
@@ -335,41 +364,41 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
           <div class="nm">经营分析</div>
           <div class="sub">渠道 · 产品 · 客户 · 贷后 · 趋势 · 目标</div>
           <div class="chips">
-            <span class="chip"><span class="dot c2"></span>智能问数</span>
-            <span class="chip"><span class="dot c2"></span>经营归因分析</span>
-            <span class="chip"><span class="dot c2"></span>异常识别</span>
-            <span class="chip"><span class="dot c2"></span>经营诊断</span>
-            <span class="chip"><span class="dot c6"></span>经营报告</span>
+            <span class="chip" data-cap="znws"><span class="dot c2"></span>智能问数</span>
+            <span class="chip" data-cap="jygy"><span class="dot c2"></span>经营归因分析</span>
+            <span class="chip" data-cap="ycsb"><span class="dot c2"></span>异常识别</span>
+            <span class="chip" data-cap="jyzd"><span class="dot c2"></span>经营诊断</span>
+            <span class="chip" data-cap="jybg"><span class="dot c6"></span>经营报告</span>
           </div>
         </div>
         <div class="sblock">
           <div class="nm">业务合规管理</div>
           <div class="sub">身份核验 · 业务规则 · 风险异常 · 消保</div>
           <div class="chips">
-            <span class="chip"><span class="dot c3"></span>身份核验辅助</span>
-            <span class="chip"><span class="dot c2"></span>业务异常识别</span>
-            <span class="chip"><span class="dot c4"></span>规则合规检查</span>
-            <span class="chip"><span class="dot c4"></span>消保检查</span>
+            <span class="chip" data-cap="sfhy"><span class="dot c3"></span>身份核验辅助</span>
+            <span class="chip" data-cap="ywcs"><span class="dot c2"></span>业务异常识别</span>
+            <span class="chip" data-cap="gzhg"><span class="dot c4"></span>规则合规检查</span>
+            <span class="chip" data-cap="xbjc"><span class="dot c4"></span>消保检查</span>
           </div>
         </div>
         <div class="sblock">
           <div class="nm">数据与报表</div>
           <div class="sub">数据查询 · 数据整理 · 报表 · 汇报</div>
           <div class="chips">
-            <span class="chip"><span class="dot c7"></span>智能数据查询</span>
-            <span class="chip"><span class="dot c7"></span>报表自动生成</span>
-            <span class="chip"><span class="dot c3"></span>数据校验</span>
-            <span class="chip"><span class="dot c6"></span>汇报材料生成</span>
+            <span class="chip" data-cap="znsj"><span class="dot c7"></span>智能数据查询</span>
+            <span class="chip" data-cap="bbzd"><span class="dot c7"></span>报表自动生成</span>
+            <span class="chip" data-cap="sdjy"><span class="dot c3"></span>数据校验</span>
+            <span class="chip" data-cap="hbcl"><span class="dot c6"></span>汇报材料生成</span>
           </div>
         </div>
         <div class="sblock">
           <div class="nm">知识与协同</div>
           <div class="sub">制度 · 产品知识 · 培训 · 会议 · 跨系统协同</div>
           <div class="chips">
-            <span class="chip"><span class="dot c5"></span>知识助手</span>
-            <span class="chip"><span class="dot c5"></span>培训陪练</span>
-            <span class="chip"><span class="dot c6"></span>会议助手</span>
-            <span class="chip"><span class="dot c7"></span>跨系统数字员工</span>
+            <span class="chip" data-cap="zszs"><span class="dot c5"></span>知识助手</span>
+            <span class="chip" data-cap="pxpl"><span class="dot c5"></span>培训陪练</span>
+            <span class="chip" data-cap="hyzs"><span class="dot c6"></span>会议助手</span>
+            <span class="chip" data-cap="kxt"><span class="dot c7"></span>跨系统数字员工</span>
           </div>
         </div>
       </div>
@@ -384,23 +413,26 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
       <div class="circ"><span class="cn">第一阶段</span><span class="nm">重点场景<br>快速验证</span></div>
       <ul>
         <li><b>消费金融经营分析数字员工</b><span class="dot c2"></span>渠道经营诊断 <span class="dot c2"></span>异常归因分析 <span class="dot c2"></span>产品经营分析 <span class="dot c2"></span>转化漏斗分析 <span class="dot c6"></span>经营报告</li>
-        <li><b>委外运营管理数字员工</b><span class="dot c2"></span>委外机构评价 <span class="dot c4"></span>催收质检 <span class="dot c2"></span>委外数据分析 <span class="dot c6"></span>催收运营报告</li>
+        <li><b>AI精准营销与客群经营数字员工</b><span class="dot c2"></span>客群分层分析 <span class="dot c2"></span>自然语言圈客 <span class="dot c6"></span>营销内容生成 <span class="dot c2"></span>营销效果分析</li>
         <li><b>业务知识助手（共同底座）</b><span class="dot c5"></span>知识助手 <span class="dot c5"></span>产品规则助手</li>
+        <li><b>智能质检 · 合作机构准入助手</b><span class="dot c4"></span>智能质检 <span class="dot c4"></span>话术合规检查 <span class="dot c3"></span>准入材料审核 <span class="dot c3"></span>合同核验</li>
       </ul>
     </div>
     <div class="sarrow">→</div>
     <div class="sflow st2">
       <div class="circ"><span class="cn">第二阶段</span><span class="nm">核心业务<br>深度融合</span></div>
       <ul>
-        <li><span class="dot c1"></span>坐席助手 <span class="dot c4"></span>智能质检 <span class="dot c1"></span>还款提醒外呼 <span class="dot c7"></span>智能工单</li>
-        <li><span class="dot c2"></span>智能问数 <span class="dot c2"></span>贷后风险分析 <span class="dot c2"></span>客群分层分析</li>
-        <li><span class="dot c2"></span>委外机构评价（平台化） <span class="dot c4"></span>催收合规检查</li>
+        <li><span class="dot c1"></span>坐席助手 <span class="dot c1"></span>还款提醒外呼 <span class="dot c7"></span>智能工单</li>
+        <li><span class="dot c1"></span>智能外呼 · 营销任务流转 · 效果回传与持续分析</li>
+        <li><span class="dot c2"></span>智能问数 <span class="dot c2"></span>贷后风险分析</li>
+        <li>按需建设：<span class="dot c2"></span>委外机构评价 <span class="dot c4"></span>催收质检 <span class="dot c4"></span>催收合规检查</li>
       </ul>
     </div>
     <div class="sarrow">→</div>
     <div class="sflow st3">
       <div class="circ"><span class="cn">第三阶段</span><span class="nm">智能运营与<br>数字员工</span></div>
       <ul>
+        <li><b>营销经营闭环</b>机会识别 → 待审批任务 → 合规触达 → 结果回传 → 策略优化</li>
         <li><span class="dot c7"></span>智能工单（闭环） <span class="dot c7"></span>整改跟踪</li>
         <li><span class="dot c7"></span>报表自动生成 <span class="dot c7"></span>智能数据查询</li>
         <li><span class="dot c7"></span>跨系统数字员工 <span class="dot c2"></span>异常识别（主动预警）</li>
@@ -420,28 +452,459 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
   <div class="cands">
     <div class="ccard">
       <div class="nm">消费金融经营分析数字员工<span class="stb">一期主推</span></div>
-      <div class="aipts"><span class="chip"><span class="dot c2"></span>渠道经营诊断</span><span class="chip"><span class="dot c2"></span>异常归因分析</span><span class="chip"><span class="dot c2"></span>产品经营分析</span><span class="chip"><span class="dot c2"></span>转化漏斗分析</span><span class="chip"><span class="dot c2"></span>获客质量分析</span><span class="chip"><span class="dot c2"></span>贷后风险分析</span><span class="chip"><span class="dot c6"></span>经营报告</span></div>
+      <div class="aipts"><span class="chip" data-cap="qdzd"><span class="dot c2"></span>渠道经营诊断</span><span class="chip" data-cap="ycgy"><span class="dot c2"></span>异常归因分析</span><span class="chip" data-cap="cpjy"><span class="dot c2"></span>产品经营分析</span><span class="chip" data-cap="zhld"><span class="dot c2"></span>转化漏斗分析</span><span class="chip" data-cap="hkzl"><span class="dot c2"></span>获客质量分析</span><span class="chip" data-cap="dhfx"><span class="dot c2"></span>贷后风险分析</span><span class="chip" data-cap="jybg"><span class="dot c6"></span>经营报告</span></div>
       <div class="fl">上传渠道经营数据 → <b>数字员工主动体检</b>（执行过程可视 · 异常清单 · 漏斗归因 · 风险联动）→ 对话追问 → 一键生成渠道经营分析报告</div>
       <button class="demobtn" onclick="window.open('demo-消费金融经营分析数字员工.html','_blank')">进入演示 →</button>
     </div>
     <div class="ccard">
-      <div class="nm">委外运营管理数字员工<span class="stb">一期主推</span></div>
-      <div class="aipts"><span class="chip"><span class="dot c2"></span>委外机构评价</span><span class="chip"><span class="dot c4"></span>催收质检</span><span class="chip"><span class="dot c4"></span>催收合规检查</span><span class="chip"><span class="dot c2"></span>委外数据分析</span><span class="chip"><span class="dot c6"></span>催收运营报告</span></div>
-      <div class="fl">上传机构运营与质检投诉数据 → <b>机构画像与横向排名 · 风险提示</b> → 一键生成月度评价报告</div>
+      <div class="nm">AI精准营销与客群经营数字员工<span class="stb">一期主推</span></div>
+      <div class="aipts"><span class="chip" data-cap="kqfc"><span class="dot c2"></span>客群分层分析</span><span class="chip" data-cap="zrqk"><span class="dot c2"></span>自然语言圈客</span><span class="chip" data-cap="yxnr"><span class="dot c6"></span>营销内容生成</span><span class="chip" data-cap="yxsg"><span class="dot c2"></span>营销效果分析</span></div>
+      <div class="fl">一句话圈选客群（筛选条件透明可核对）→ 分客群生成营销内容草稿 → 模拟触达与效果分析 → <b>人工审核后执行</b>；一期基于脱敏 / 模拟数据验证，不直接向真实客户发送营销信息</div>
+      <button class="demobtn" onclick="window.open('demo-AI精准营销与客群经营数字员工.html','_blank')">进入演示 →</button>
     </div>
     <div class="ccard">
       <div class="nm">业务知识助手<span class="stb">共同底座</span></div>
-      <div class="aipts"><span class="chip"><span class="dot c5"></span>知识助手</span><span class="chip"><span class="dot c5"></span>产品规则助手</span><span class="chip"><span class="dot c5"></span>培训陪练</span></div>
+      <div class="aipts"><span class="chip" data-cap="zszs"><span class="dot c5"></span>知识助手</span><span class="chip" data-cap="cpgz"><span class="dot c5"></span>产品规则助手</span><span class="chip" data-cap="pxpl"><span class="dot c5"></span>培训陪练</span></div>
       <div class="fl">制度 / 产品 / 指标口径 / 合作规则统一知识底座，为两个数字员工提供<b>业务知识与规则支撑</b></div>
     </div>
     <div class="ccard">
-      <div class="nm">智能质检 · 合作机构准入助手<span class="stb">待确认</span></div>
-      <div class="aipts"><span class="chip"><span class="dot c4"></span>智能质检</span><span class="chip"><span class="dot c4"></span>话术合规检查</span><span class="chip"><span class="dot c3"></span>准入材料审核</span><span class="chip"><span class="dot c3"></span>合同核验</span></div>
-      <div class="fl">录音文本质检 · 机构材料审核——<b>待确认现有系统覆盖与实际职责边界</b>后纳入一期</div>
+      <div class="nm">智能质检 · 合作机构准入助手<span class="stb">一期主推</span></div>
+      <div class="aipts"><span class="chip" data-cap="znzj"><span class="dot c4"></span>智能质检</span><span class="chip" data-cap="hshg"><span class="dot c4"></span>话术合规检查</span><span class="chip" data-cap="zscl"><span class="dot c3"></span>准入材料审核</span><span class="chip" data-cap="hthy"><span class="dot c3"></span>合同核验</span></div>
+      <div class="fl">录音 / 对话文本质检 · 准入材料与合同核验 → <b>带证据的疑点清单</b> → 人工复核确认；一期基于脱敏 / 模拟材料验证</div>
       <button class="demobtn" onclick="window.open('demo-合作机构材料审核数字员工.html','_blank')">进入演示 →</button>
     </div>
   </div>
 
 </div>
+<div class="dmask" id="dmask"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="d-head" id="dHead"></div>
+  <div class="d-body" id="dBody"></div>
+</aside>
+
+<script>
+(function(){
+/* 64 个 AI 应用点详细说明：env=板块·场景 col=c1~c7 能力类型 post=适用岗位
+   now=现在怎么做 p1=一期AI怎么做 fut=未来升级怎么做 val=预期成果与价值
+   st=建议阶段(仅分阶段路径覆盖的点标注) pitch=场景定位(营销类等有明确定位的展示) */
+const CAPS={
+zscl:{name:"准入材料审核",env:"合作渠道与产品运营 · 合作机构管理",col:"c3",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",st:1,
+now:"收集合作方资质、申请表、协议等文件，逐份核对清单和主体信息。",
+p1:"上传材料包及审核清单；自动分类、提取主体信息、检查缺件及跨文件矛盾，输出附证据的问题清单。",
+fut:"连接机构管理及审批流程，自动获取最新材料、发起补件、跟踪复核和归档。",
+val:"材料初审摘要、缺失与疑点清单、补件通知；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"中心负责准入还是续约/日常核查；现有材料清单和规则是否可提供。"},
+hzpj:{name:"合作机构评价",env:"合作渠道与产品运营 · 合作机构管理",col:"c2",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",
+now:"人工汇总机构规模、转化、服务、风险等表现，按周期制作评价表。",
+p1:"上传机构经营表与评价模板，核对口径、计算可比指标并生成评价草稿。",
+fut:"接入机构管理及经营数据，周期性评价、趋势跟踪并推送待核查问题。",
+val:"机构评价卡、指标对比、评价报告；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"评价对象、维度、权重和机构之间的可比条件。"},
+jsfy:{name:"结算费用核验",env:"合作渠道与产品运营 · 合作机构管理",col:"c3",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",
+now:"人工对照合同计费条款、渠道对账单及业务台账核对金额。",
+p1:"上传合同条款、费用明细和业务汇总表，识别计费规则、复算并标记差异。",
+fut:"连接合同、交易、财务系统，实现自动对账与异常流转。",
+val:"差异明细、核算依据、待确认对账单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"中心是否负责结算；费用口径及审批权限。"},
+hzfx:{name:"合作风险监测",env:"合作渠道与产品运营 · 合作机构管理",col:"c4",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",
+now:"定期查看合作方运营、投诉、合规及履约信息，人工记录异常。",
+p1:"上传机构经营与事件台账，按预设阈值识别异常趋势并生成关注清单。",
+fut:"接入监测数据与事件系统，持续预警、跟踪处置进度。",
+val:"风险关注清单、趋势摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"风险监测归属、数据范围和预警阈值。"},
+qdzd:{name:"渠道经营诊断",env:"合作渠道与产品运营 · 渠道经营分析",col:"c2",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",st:1,
+now:"按渠道汇总申请、授信、支用、放款等指标，人工分析变化。",
+p1:"上传脱敏渠道经营Excel，自动算指标、找异常、下钻漏斗并生成诊断。",
+fut:"连接经营数据集市，自动运行周期体检和预警。",
+val:"渠道诊断卡、原因线索、经营报告；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"渠道口径、分析频率和可用维度。"},
+qddb:{name:"渠道对比分析",env:"合作渠道与产品运营 · 渠道经营分析",col:"c2",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",
+now:"人工将多个渠道报表合并，比较规模、转化、成本和风险。",
+p1:"导入统一口径数据，自动形成渠道对比、排名及差异解释。",
+fut:"实时获取渠道数据，支持按产品、客群、周期交叉比较。",
+val:"渠道对比表、趋势图、差异摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"哪些渠道可直接比较；风险和成本口径。"},
+hkzl:{name:"获客质量分析",env:"合作渠道与产品运营 · 渠道经营分析",col:"c2",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",
+now:"人工比较不同渠道新客规模、转化及早期资产表现。",
+p1:"导入渠道与客群汇总表，分析新客占比、转化、首逾等并提示结构变化。",
+fut:"关联渠道投放与贷后表现，持续跟踪客群质量。",
+val:"获客质量画像、异常客群清单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"新客定义、归因周期、风险指标是否可关联。"},
+ycgy:{name:"异常归因分析",env:"合作渠道与产品运营 · 渠道经营分析",col:"c2",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",st:1,
+now:"发现指标波动后逐张表筛选渠道、产品、客群寻找原因。",
+p1:"输入异常指标或上传经营表，自动拆解维度并区分已证实事实与待验证假设。",
+fut:"接入多源数据与业务事件，联动规则变更、投放事件辅助归因。",
+val:"归因路径、证据指标、核查建议；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"可提供的维度、事件日志与归因规则。"},
+cpjy:{name:"产品经营分析",env:"合作渠道与产品运营 · 消费金融产品运营",col:"c2",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",st:1,
+now:"按产品人工统计申请、授信、支用、放款及风险表现。",
+p1:"上传产品月报，自动分析规模、转化与风险，形成产品经营简报。",
+fut:"连接产品及经营系统，监测产品表现并支持策略评估。",
+val:"产品经营体检、重点问题摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"产品归属、指标定义和分析粒度。"},
+zhld:{name:"转化漏斗分析",env:"合作渠道与产品运营 · 消费金融产品运营",col:"c2",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",st:1,
+now:"人工汇总申请、授信、支用、放款节点并计算转化率。",
+p1:"导入各节点人数或笔数，自动校验分母、绘制漏斗并定位流失环节。",
+fut:"连接流程事件明细，按渠道、产品、客群持续监测漏斗。",
+val:"漏斗图、环节变化及待核查原因；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"各节点是否同一批客户；统计时间窗。"},
+cpgz:{name:"产品规则助手",env:"合作渠道与产品运营 · 消费金融产品运营",col:"c5",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",st:1,
+now:"业务人员翻阅产品制度、操作指引确认适用规则。",
+p1:"上传经确认的产品规则文档，支持问答、版本提示及原文定位。",
+fut:"连接产品规则管理，自动同步版本并按岗位权限回答。",
+val:"带来源的规则答复、操作提示；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"正式规则来源、更新机制及权限。"},
+jpjc:{name:"竞品监测",env:"合作渠道与产品运营 · 消费金融产品运营",col:"c2",post:"合作渠道运营 · 贷款产品运营（具体职责待确认）",
+now:"人工搜集公开产品信息，整理利率、期限、客群及营销变化。",
+p1:"导入合法获取的公开竞品资料，抽取变化点并生成对比摘要。",
+fut:"连接合规的信息采集渠道，定期更新并提醒重要变化。",
+val:"竞品变化简报、差异对照；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"可使用的数据来源及合规采集范围。"},
+clhy:{name:"材料核验",env:"贷款业务与贷后运营 · 贷款业务运营",col:"c3",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"业务人员逐项查看贷款申请材料及字段完整性。",
+p1:"上传脱敏申请材料与核验清单，提取字段、检查缺失和前后矛盾。",
+fut:"连接申请流程及影像系统，自动预审并流转人工确认。",
+val:"材料问题清单、字段核验摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"中心是否承担材料核验；规则与客户信息权限。"},
+ycbl:{name:"远程办理助手",env:"贷款业务与贷后运营 · 贷款业务运营",col:"c1",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"坐席按操作手册指导客户办理并在多个页面查步骤。",
+p1:"基于脱敏模拟业务和操作指引，提示办理步骤、所需材料及常见异常。",
+fut:"接入业务系统与身份权限，在人工确认下辅助办理和留痕。",
+val:"步骤指引、办理记录摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"中心实际办理事项及可执行边界。"},
+ywjd:{name:"业务进度助手",env:"贷款业务与贷后运营 · 贷款业务运营",col:"c1",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"人工查询多个业务节点并向客户解释进度。",
+p1:"导入模拟进度台账，按申请编号查询状态并生成标准化说明。",
+fut:"连接业务流程系统，实时查询进度并触发授权范围内提醒。",
+val:"进度摘要、待办事项；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"中心可查哪些状态；客户告知口径。"},
+ycyw:{name:"异常业务分析",env:"贷款业务与贷后运营 · 贷款业务运营",col:"c2",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"业务人员从异常清单中人工归类失败原因并统计影响。",
+p1:"上传异常业务台账，聚类失败类型、识别高发环节并生成排查建议。",
+fut:"连接异常事件与工单系统，持续监测、派发和闭环。",
+val:"异常分类、趋势和排查清单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"异常代码、责任部门及处置流程。"},
+hthy:{name:"合同核验",env:"贷款业务与贷后运营 · 远程签约与存证",col:"c3",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",st:1,
+now:"人工查看合同主体、关键条款、金额及版本是否一致。",
+p1:"上传合同和确认的核验清单，抽取关键条款、比对材料并标记差异。",
+fut:"连接合同模板与签约系统，自动校验版本和签署前关键字段。",
+val:"合同差异清单、证据定位；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"合同审核职责、模板与法律复核边界。"},
+czcx:{name:"存证信息查询",env:"贷款业务与贷后运营 · 远程签约与存证",col:"c7",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"人工在档案或业务系统中检索电子合同、回单等材料。",
+p1:"上传模拟存证目录及文件，支持按业务编号查询、核对文件清单。",
+fut:"对接电子签约与存证平台，查询授权范围内凭证及状态。",
+val:"存证目录、凭证查询结果；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"存证平台归属、检索权限和真伪校验方式。"},
+qyfx:{name:"签约风险提示",env:"贷款业务与贷后运营 · 远程签约与存证",col:"c4",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"人工检查签约流程是否缺件、字段冲突或节点异常。",
+p1:"基于签约清单和模拟日志，提示未完成步骤、字段冲突及待确认事项。",
+fut:"接入签约事件与身份核验结果，实时提示异常并转人工处理。",
+val:"签约异常提示、核查依据；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"可用事件数据、提示规则及签约职责。"},
+fkfw:{name:"还款服务助手",env:"贷款业务与贷后运营 · 贷后运营管理",col:"c1",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"坐席查看还款规则和客户咨询内容，解释还款方式与常见问题。",
+p1:"导入还款产品规则与模拟账单，生成带来源的服务答复。",
+fut:"在授权下查询实时账单、还款计划及处理进度。",
+val:"还款说明、办理指引；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"中心服务范围及客户数据授权。"},
+fktx:{name:"还款提醒外呼",env:"贷款业务与贷后运营 · 贷后运营管理",col:"c1",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",st:2,
+now:"人工制定提醒名单、编写话术并跟踪触达结果。",
+p1:"基于模拟名单和已审话术，生成提醒脚本、分组建议和外呼记录摘要。",
+fut:"对接外呼平台与授权偏好，按审批策略执行提醒并记录结果。",
+val:"提醒方案、话术草稿、触达汇总；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"中心是否负责提醒；频次、时段、同意及合规限制。"},
+ychk:{name:"异常还款分析",env:"贷款业务与贷后运营 · 贷后运营管理",col:"c2",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"人工统计扣款失败、延迟还款等异常并排查原因。",
+p1:"上传异常还款汇总表，识别异常类型、时段及渠道集中度。",
+fut:"接入交易与事件系统，自动预警并联动业务工单。",
+val:"异常还款分析、排查清单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"异常分类及可用交易事件。"},
+dhfx:{name:"贷后风险分析",env:"贷款业务与贷后运营 · 贷后运营管理",col:"c2",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",st:2,
+now:"人工汇总逾期、首逾、迁徙等数据分析资产表现。",
+p1:"导入脱敏贷后汇总数据，按确认口径展示趋势、分层与异常提示。",
+fut:"接入贷后数据集市，持续跟踪风险指标和客群变化。",
+val:"风险观察报告、异常指标；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"风险指标口径、模型边界及风险部门职责。"},
+dhbg:{name:"贷后报告",env:"贷款业务与贷后运营 · 贷后运营管理",col:"c6",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"人工汇总多张贷后报表，撰写月度资产质量说明。",
+p1:"上传贷后经营表与报告模板，自动计算、校验并生成报告草稿。",
+fut:"自动取数、定期成稿，进入人工审核及归档流程。",
+val:"贷后月报、指标附表；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"报告模板、数据口径及审批要求。"},
+wwpj:{name:"委外机构评价",env:"贷款业务与贷后运营 · 委外催收管理",col:"c2",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",st:2,
+now:"人工汇总委外机构回收、触达、投诉和质检数据并考核。",
+p1:"上传脱敏委外台账与评价规则，计算可比指标、标记异常并生成评价草稿。",
+fut:"连接委外管理与质检系统，周期性评价和整改跟踪。",
+val:"机构评价报告、问题清单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"中心是否负责评价；案件账龄与分案结构如何校正。"},
+cszc:{name:"催收质检",env:"贷款业务与贷后运营 · 委外催收管理",col:"c4",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",st:2,
+now:"人工抽听录音、查看文本并记录服务质量问题。",
+p1:"上传模拟对话文本和确认的质检标准，定位疑点话术、生成复核清单。",
+fut:"接入录音转写与质检平台，扩大覆盖并形成复核闭环。",
+val:"带原文证据的质检疑点单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"录音权限、质检规则、已有系统能力。"},
+cshg:{name:"催收合规检查",env:"贷款业务与贷后运营 · 委外催收管理",col:"c4",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",st:2,
+now:"人工对照催收规范核对作业记录及争议内容。",
+p1:"上传脱敏对话和正式提供的规则，识别疑似风险、引用规则并交人工判定。",
+fut:"接入催收过程数据、规则库和合规复核流程。",
+val:"合规疑点、证据片段、复核建议；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"正式规则来源、复核责任及个人信息处理要求。"},
+wwsj:{name:"委外数据分析",env:"贷款业务与贷后运营 · 委外催收管理",col:"c2",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"人工整合机构分案、回收、触达等报表并分析差异。",
+p1:"上传多机构脱敏Excel，统一字段、校验数据并分析机构运营表现。",
+fut:"接入委外平台，自动对账、趋势分析及异常跟踪。",
+val:"委外运营对比、异常明细；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"数据字段、委案口径及机构可比性。"},
+csbg:{name:"催收运营报告",env:"贷款业务与贷后运营 · 委外催收管理",col:"c6",post:"贷款产品运营 · 贷后运营 · 委外管理（按具体场景）（具体职责待确认）",
+now:"人工汇总委外与催收经营数据、质检和投诉情况。",
+p1:"上传月度台账及模板，生成经指标校验的运营报告草稿。",
+fut:"自动汇聚业务与质检数据，定期成稿并经人工审核分发。",
+val:"催收运营月报、重点关注事项；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"报告范围、合规披露和审核流程。"},
+znkf:{name:"智能客服",env:"远程客户服务与经营 · 远程客户服务",col:"c1",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",
+now:"人工处理重复咨询、检索制度并回复客户。",
+p1:"基于公开或授权知识文档搭建模拟问答，引用来源并提示无法回答的问题。",
+fut:"对接在线客服、身份核验及业务查询，实现受控业务服务。",
+val:"标准答复、转人工提示；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"中心是否承担客服；已有机器人能力及服务范围。"},
+zxzs:{name:"坐席助手",env:"远程客户服务与经营 · 远程客户服务",col:"c1",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",st:2,
+now:"坐席边通话边检索知识、记录重点和选择流程。",
+p1:"基于模拟会话实时推荐知识、流程步骤并生成摘要。",
+fut:"接入语音转写、CRM及工单，在坐席确认下辅助操作。",
+val:"知识推荐、通话摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"坐席业务范围、现有平台与实时性要求。"},
+fwzy:{name:"服务摘要",env:"远程客户服务与经营 · 远程客户服务",col:"c6",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",
+now:"坐席结束服务后人工整理沟通内容和处理结果。",
+p1:"上传脱敏对话文本，抽取诉求、已处理事项和待办，生成可编辑摘要。",
+fut:"嵌入坐席工作台，自动带入工单并由坐席确认。",
+val:"结构化服务摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"摘要字段、录音授权及留存要求。"},
+zngd:{name:"智能工单",env:"远程客户服务与经营 · 远程客户服务",col:"c7",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",st:2,
+now:"人工识别客户诉求、填写工单字段并分派部门。",
+p1:"从模拟会话提取诉求、分类、生成工单草稿及推荐处理部门。",
+fut:"接入工单平台，按规则分派、跟踪SLA并提醒处理。",
+val:"工单草稿、分类和流转建议；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"工单分类、路由规则与人工审核节点。"},
+kqfc:{name:"客群分层分析",env:"远程客户服务与经营 · 客户营销经营",col:"c2",post:"客户运营 · 贷款产品运营 · 经营管理（实际营销职责待确认）",st:1,
+pitch:"围绕互联网个人信用贷等存量客户经营，对符合授权与业务范围的客户做可解释的分群分析，为后续营销任务提供客群基础。",
+now:"业务人员从客户经营报表中按授信、支用、活跃度、历史触达等维度筛选，手工汇总不同群体的规模与表现。",
+p1:"导入脱敏模拟客户经营Excel，自动识别字段、清洗并按“已授信未支用”“近期有意向但未转化”等示例规则分群；展示每群人数、行为特征和数据依据，剔除无营销授权及其他不应触达的记录。",
+fut:"对接授权范围内的客户标签及经营数据，动态更新客群、识别变化，并将待确认的客群建议交给营销任务流程。",
+val:"客群画像、规模分布、特征解释、推荐经营方向；减少人工整理和粗放式群发。",
+chk:"中心能否使用客户级数据；存量客户经营范围；客户营销授权、排除名单及客群定义。"},
+zrqk:{name:"自然语言圈客",env:"远程客户服务与经营 · 客户营销经营",col:"c2",post:"客户运营 · 贷款产品运营",st:1,
+pitch:"第一阶段营销数字员工的核心入口：业务人员用一句话描述营销目标，AI转换为可核对的客群筛选条件。",
+now:"运营人员向数据人员描述筛选需求，反复沟通字段、时间范围和筛选口径，再手工导出名单。",
+p1:"输入“找出本月已授信未支用、近期有服务互动且具备营销授权的存量客户”；AI解析条件、展示字段映射及排除条件，执行模拟数据筛选，并返回人数、占比、客群特征及可编辑的筛选逻辑。",
+fut:"接入权限受控的客户标签平台，支持保存客群模板、定期刷新与人工审批后生成营销任务。",
+val:"自然语言筛选、透明筛选条件、客群清单与汇总及条件解释；缩短业务与数据团队沟通链路。",
+chk:"是否已有客群圈选平台；字段权限与营销授权状态能否获取；名单是否允许导出。"},
+znwh:{name:"智能外呼",env:"远程客户服务与经营 · 客户营销经营",col:"c1",post:"客户运营 · 远程服务坐席 · 质量与合规",st:2,
+pitch:"面向经批准的客户服务或营销触达任务，以智能外呼辅助话术执行、结果记录和后续跟进；不作为第一阶段必须上线的能力。",
+now:"坐席按活动名单和审批话术外呼，记录接通、客户意向、拒绝及后续安排。",
+p1:"仅做模拟外呼：输入经过人工确认的营销客群和批准话术，在虚拟对话中演示意图识别、异议应答建议及通话摘要，不真实拨号、不向真实客户发送内容。",
+fut:"在营销授权、外呼合规、呼叫系统与人工监督条件具备后，对接任务分发、外呼执行、结果回传和质检；高风险对话转人工。",
+val:"模拟通话记录、意向标签、后续跟进任务；减少坐席记录工作量，辅助触达一致性。",
+chk:"营销外呼是否由中心负责；现有呼叫平台、频次与时间限制、授权及话术审批流程。"},
+yxnr:{name:"营销内容生成",env:"远程客户服务与经营 · 客户营销经营",col:"c6",post:"客户运营 · 贷款产品运营 · 质量与合规",st:1,
+pitch:"第一阶段营销数字员工的内容生成环节，为不同客群生成有差异、可审核的服务提醒或营销沟通草稿。",
+now:"运营人员参照产品说明和历史活动手工编写短信、APP消息、坐席话术，提交业务及合规审核。",
+p1:"读取已确认的产品信息、示例营销规范和客群画像，为不同客群生成短信/APP消息/坐席话术草稿；展示引用依据、敏感表达提示及人工审核状态，不直接触达客户。",
+fut:"连接正式产品知识、合规话术库和营销审批系统，支持版本管理、多版本测试及经审批后投放。",
+val:"分客群沟通内容、依据说明、待审核内容包；提高策划效率与内容一致性。",
+chk:"实际可营销产品、宣传表述规范、审批部门、可使用的触达渠道。"},
+yxsg:{name:"营销效果分析",env:"远程客户服务与经营 · 客户营销经营",col:"c2",post:"客户运营 · 经营管理 · 贷款产品运营",st:1,
+pitch:"第一阶段营销数字员工的效果闭环，评估不同客群与内容方案的表现，而不是仅统计发送数量。",
+now:"活动结束后人工合并触达台账、响应记录和业务结果，制作营销复盘表。",
+p1:"导入模拟触达与转化数据，按客群/渠道/内容版本统计可触达、送达、响应、支用转化等指标，标明分母和观察周期；输出差异与后续优化建议，不把相关性直接写成因果结论。",
+fut:"对接营销平台和授权的业务结果数据，自动回传指标、开展受控对照试验、形成持续优化建议。",
+val:"营销效果看板、客群对比、活动复盘报告及下一轮优化建议；帮助业务衡量实际经营价值。",
+chk:"活动效果口径、触达结果回传渠道、支用归因窗口、可否做对照组。"},
+khfk:{name:"客户反馈分析",env:"远程客户服务与经营 · 客户体验管理",col:"c2",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",
+now:"人工阅读评价、咨询及投诉文本并分类统计。",
+p1:"上传脱敏反馈文本，按主题归类、提炼高频诉求和典型证据。",
+fut:"连接多渠道反馈，持续跟踪主题变化与处理结果。",
+val:"反馈主题图谱、问题摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"反馈渠道、脱敏要求及分类标准。"},
+tsgy:{name:"投诉归因分析",env:"远程客户服务与经营 · 客户体验管理",col:"c2",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",
+now:"人工逐条查看投诉记录，分析问题类型及责任环节。",
+p1:"导入脱敏投诉台账，聚类诉求并区分事实、可能原因和待核查项。",
+fut:"关联工单、流程事件与处理结果，辅助定位共性问题。",
+val:"投诉原因线索、改进建议；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"投诉定性权限、根因证据及消保规则。"},
+qxsq:{name:"情绪与诉求识别",env:"远程客户服务与经营 · 客户体验管理",col:"c2",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",
+now:"人工从通话或文本判断客户主要诉求和沟通状态。",
+p1:"上传模拟对话，抽取诉求、情绪变化线索并提示人工关注。",
+fut:"接入实时服务会话，辅助坐席识别升级服务需求。",
+val:"诉求摘要、情绪线索；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"识别用途、误判处置与隐私保护。"},
+voc:{name:"VOC 客户之声",env:"远程客户服务与经营 · 客户体验管理",col:"c2",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",
+now:"人工汇集多个渠道客户反馈，形成客户声音简报。",
+p1:"导入多渠道脱敏反馈，统一主题分类、趋势分析及原文追溯。",
+fut:"连接客服、投诉、调研等渠道，形成持续VOC看板。",
+val:"VOC主题报告、典型案例；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"反馈来源、分类体系及部门归属。"},
+tyzd:{name:"体验诊断报告",env:"远程客户服务与经营 · 客户体验管理",col:"c6",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",
+now:"人工汇总满意度、投诉、服务反馈并撰写体验分析。",
+p1:"上传体验指标和反馈摘要，识别突出问题并生成报告。",
+fut:"连接服务质量与整改数据，持续评价改善成效。",
+val:"客户体验诊断报告；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"体验指标定义和改进责任部门。"},
+znzj:{name:"智能质检",env:"远程客户服务与经营 · 服务质量管理",col:"c4",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",st:1,
+now:"人工抽检坐席服务记录，按评分表记录问题。",
+p1:"上传模拟会话和质检规则，辅助识别服务质量疑点并定位证据。",
+fut:"接入语音质检平台，扩展覆盖率并与人工复核协同。",
+val:"质检初筛清单、证据定位；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"已有质检系统、评分规则及复核要求。"},
+hshg:{name:"话术合规检查",env:"远程客户服务与经营 · 服务质量管理",col:"c4",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",st:1,
+now:"人工检查服务或营销话术是否符合审定规范。",
+p1:"上传审定话术库和脱敏会话，识别偏离规范的表达并提示复核。",
+fut:"嵌入实时服务与质检系统，按版本化规则提示。",
+val:"话术疑点、规则依据；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"话术规则、场景差异及合规复核边界。"},
+fwgj:{name:"服务改进分析",env:"远程客户服务与经营 · 服务质量管理",col:"c2",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",
+now:"人工汇总质检、投诉、满意度问题，寻找改进重点。",
+p1:"上传服务质量汇总表，聚合高频问题并提出可验证改进措施。",
+fut:"关联培训、整改和后续质检结果，衡量改善效果。",
+val:"服务改进清单、趋势对比；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"改进归属、衡量指标与跟踪周期。"},
+zggz:{name:"整改跟踪",env:"远程客户服务与经营 · 服务质量管理",col:"c7",post:"远程服务 · 客户运营 · 质量与合规（按具体场景）（具体职责待确认）",st:3,
+now:"人工通过Excel或工单登记整改责任人和完成情况。",
+p1:"导入问题清单，生成整改台账、到期提醒建议及复核要点。",
+fut:"对接工单与质检系统，自动提醒、收集证据并支持人工验收。",
+val:"整改台账、逾期清单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"整改流程、权限和验收标准。"},
+znws:{name:"智能问数",env:"经营管理与公共支撑 · 经营分析",col:"c2",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",st:2,
+now:"经营人员向数据人员提需求或手工筛选报表。",
+p1:"上传经确认的指标数据，使用自然语言查询并返回计算过程。",
+fut:"连接受控语义指标层和数据平台，按权限查询。",
+val:"指标答复、计算口径；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"指标口径、数据权限与问数边界。"},
+jygy:{name:"经营归因分析",env:"经营管理与公共支撑 · 经营分析",col:"c2",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"人工跨渠道、产品、客群数据排查经营变化原因。",
+p1:"上传多维经营表，拆解波动贡献并列出有证据的原因线索。",
+fut:"连接经营指标和业务事件，形成多维归因与持续验证。",
+val:"归因树、证据链、核查清单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"可用维度和是否具备事件证据。"},
+ycsb:{name:"异常识别",env:"经营管理与公共支撑 · 经营分析",col:"c2",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",st:3,
+now:"人工定期检查报表并发现超阈值或突变指标。",
+p1:"上传历史经营表，按阈值和趋势识别异常并标注影响范围。",
+fut:"接入数据集市，按任务定期监测和提醒。",
+val:"异常清单、指标变化图；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"异常阈值、季节性及告警责任。"},
+jyzd:{name:"经营诊断",env:"经营管理与公共支撑 · 经营分析",col:"c2",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"人工综合经营指标、转化与风险形成判断。",
+p1:"上传渠道、产品、风险汇总数据，生成规模-转化-风险综合体检。",
+fut:"接入跨域数据，支持持续经营诊断与任务协同。",
+val:"经营体检、优先关注事项；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"经营目标、数据口径和分析边界。"},
+jybg:{name:"经营报告",env:"经营管理与公共支撑 · 经营分析",col:"c6",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",st:1,
+now:"人工取数、制图、写结论和管理汇报。",
+p1:"上传经营Excel和报告模板，自动校验指标并生成可编辑报告。",
+fut:"自动取数、定时成稿、审批后分发和归档。",
+val:"经营日报/月报、管理摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"报告模板、数据口径及审批要求。"},
+sfhy:{name:"身份核验辅助",env:"经营管理与公共支撑 · 业务合规管理",col:"c3",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"坐席按规定步骤核对身份信息并记录核验结果。",
+p1:"使用模拟核验清单提示应核对项目，生成操作记录草稿。",
+fut:"接入银行正式身份核验服务，在授权流程中辅助提醒。",
+val:"核验步骤提示、待确认事项；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"正式核验系统、隐私权限及人工责任。"},
+ywcs:{name:"业务异常识别",env:"经营管理与公共支撑 · 业务合规管理",col:"c2",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"人工检查业务日志、异常交易或流程事件并分类处理。",
+p1:"上传脱敏异常事件台账，按规则分类、识别集中性问题。",
+fut:"连接业务监测与工单系统，持续预警和分派。",
+val:"异常事件清单、排查建议；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"监测职责、事件类型及处置权限。"},
+gzhg:{name:"规则合规检查",env:"经营管理与公共支撑 · 业务合规管理",col:"c4",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"人工对照制度和业务记录逐项检查。",
+p1:"上传正式提供的规则及模拟业务记录，逐条匹配并标记疑点。",
+fut:"连接规则版本库与业务流程，提供实时提示和人工复核留痕。",
+val:"规则检查清单、证据定位；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"适用制度、版本、复核权责。"},
+xbjc:{name:"消保检查",env:"经营管理与公共支撑 · 业务合规管理",col:"c4",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"人工核对客户告知、投诉处理、营销宣传等消保要求。",
+p1:"基于提供的消保检查清单和脱敏材料，辅助识别缺项和疑点。",
+fut:"连接投诉、营销、服务流程，支持持续检查与整改。",
+val:"消保疑点清单、检查摘要；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"消保规则、正式认定主体及客户信息保护。"},
+znsj:{name:"智能数据查询",env:"经营管理与公共支撑 · 数据与报表",col:"c7",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",st:3,
+now:"业务人员在多个报表中筛选、导出所需数据。",
+p1:"导入授权脱敏数据文件，支持自然语言筛选、汇总和导出。",
+fut:"连接权限受控的数据服务，实现跨表查询与审计。",
+val:"查询结果、筛选说明；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"数据范围、敏感字段和权限。"},
+bbzd:{name:"报表自动生成",env:"经营管理与公共支撑 · 数据与报表",col:"c7",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",st:3,
+now:"人工复制数据、套模板、校验指标并定期发送。",
+p1:"上传源表与报表模板，自动填报、计算及标记异常。",
+fut:"连接数据源和报表审批流程，定时生成与分发。",
+val:"标准报表、校验记录；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"报表模板、数据刷新频率与审核要求。"},
+sdjy:{name:"数据校验",env:"经营管理与公共支撑 · 数据与报表",col:"c3",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"人工核对多份报表字段、汇总值和缺失项。",
+p1:"上传多表与校验规则，检查空值、重复、格式及勾稽差异。",
+fut:"嵌入数据处理链路，自动质检并生成问题工单。",
+val:"数据质量报告、差异清单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"数据质量规则、主数据口径和修正责任。"},
+hbcl:{name:"汇报材料生成",env:"经营管理与公共支撑 · 数据与报表",col:"c6",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"人工将经营报告整理成领导汇报提纲和PPT文案。",
+p1:"上传审定数据及报告，按模板生成汇报提纲、摘要与图表建议。",
+fut:"对接报告库和审批流程，形成可复用汇报生产链。",
+val:"汇报摘要、PPT大纲；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"汇报对象、模板与审核要求。"},
+zszs:{name:"知识助手",env:"经营管理与公共支撑 · 知识与协同",col:"c5",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",st:1,
+now:"员工在制度、手册、FAQ中检索并咨询同事。",
+p1:"上传授权知识文档，按问题检索、引用来源并提示版本。",
+fut:"对接知识平台，自动同步、权限隔离和反馈纠错。",
+val:"带出处的知识答复；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"知识来源、更新负责人和权限。"},
+pxpl:{name:"培训陪练",env:"经营管理与公共支撑 · 知识与协同",col:"c5",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"培训人员人工设计案例、组织演练并点评。",
+p1:"基于审定业务手册生成模拟对话、情景问答与反馈。",
+fut:"对接培训平台，按岗位生成练习与能力评估。",
+val:"模拟演练、练习反馈；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"岗位培训目标及评分标准。"},
+hyzs:{name:"会议助手",env:"经营管理与公共支撑 · 知识与协同",col:"c6",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",
+now:"人工记录会议、整理结论并跟踪待办。",
+p1:"上传授权会议文本，生成纪要、决策事项和待办草稿。",
+fut:"对接会议和任务系统，经确认后创建待办并跟踪。",
+val:"会议纪要、待办清单；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"录音同意、敏感信息及任务权限。"},
+kxt:{name:"跨系统数字员工",env:"经营管理与公共支撑 · 知识与协同",col:"c7",post:"经营管理 · 质量与合规及相关业务岗位（具体职责待确认）",st:3,
+now:"员工在多个系统间重复查询、录入、核对并汇总。",
+p1:"先用模拟文件和受控任务编排演示多步骤处理、人工确认。",
+fut:"通过授权API/RPA连接系统，按审批节点执行任务并审计。",
+val:"任务执行记录、处理成果；减少重复整理和核对，提高问题发现与成果形成效率。",
+chk:"优先业务流程、接口、权限和失败回滚机制。"}
+};
+const TYPES={c1:["智能服务","#2563eb"],c2:["智能分析","#7c3aed"],c3:["智能审核","#d97706"],c4:["风险与合规","#dc2626"],c5:["知识助手","#0891b2"],c6:["智能生成","#16a34a"],c7:["数字员工","#334155"]};
+const STG={1:["第一阶段 · 快速验证","#2563eb"],2:["第二阶段 · 深度融合","#7c3aed"],3:["第三阶段 · 数字员工","#334155"]};
+const drawer=document.getElementById("drawer"),mask=document.getElementById("dmask"),head=document.getElementById("dHead"),body=document.getElementById("dBody");
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function openCap(id){
+  const c=CAPS[id];if(!c)return;
+  const t=TYPES[c.col];
+  let tags='<span class="db" style="background:'+t[1]+'">'+t[0]+"</span>";
+  if(c.st)tags+='<span class="db" style="background:'+STG[c.st][1]+'">'+STG[c.st][0]+"</span>";
+  head.innerHTML='<div class="d-tags">'+tags+'<button class="d-x" title="关闭" onclick="closeCap()">✕</button></div><div class="d-name">'+esc(c.name)+'</div><div class="d-env">'+esc(c.env)+" · "+t[0]+'</div><div class="d-post">适用岗位：'+esc(c.post)+"</div>";
+  let h="";
+  if(c.pitch)h+='<div class="d-pitch">'+esc(c.pitch)+"</div>";
+  h+='<div class="d-sec"><div class="d-lb lb-now">现在怎么做</div><p>'+esc(c.now)+"</p></div>";
+  h+='<div class="d-arrow">↓ 一期 AI 验证</div>';
+  h+='<div class="d-sec ai"><div class="d-lb lb-ai">一期 AI 怎么做</div><p>'+esc(c.p1)+"</p></div>";
+  h+='<div class="d-arrow fut">↓ 未来升级</div>';
+  h+='<div class="d-sec fut"><div class="d-lb lb-fut">未来升级怎么做</div><p>'+esc(c.fut)+"</p></div>";
+  h+='<div class="d-val"><em>预期成果与价值</em>'+esc(c.val)+"</div>";
+  body.innerHTML=h;body.scrollTop=0;
+  drawer.classList.add("on");mask.classList.add("on");drawer.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+}
+function closeCap(){drawer.classList.remove("on");mask.classList.remove("on");drawer.setAttribute("aria-hidden","true");document.body.style.overflow="";}
+window.closeCap=closeCap;
+document.addEventListener("click",e=>{const t=e.target.closest("[data-cap]");if(t)openCap(t.dataset.cap)});
+mask.addEventListener("click",closeCap);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCap()});
+})();
+</script>
 </body>
 </html>
