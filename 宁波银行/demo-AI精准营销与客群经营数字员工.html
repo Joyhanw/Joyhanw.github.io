@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI精准营销与客群经营数字员工 · 宁波银行远程银行中心</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#16324f;--blue:#2563eb;--blue-bg:#eef4ff;--ink:#1e2a36;--text2:#5a6b7d;--muted:#8a99ab;
+  --border:#e5e9f0;--bg:#f4f6fa;--card:#fff;
+  --green:#16a34a;--green-bg:#f0fdf4;--red:#dc2626;--red-bg:#fef2f2;
+  --amber:#d97706;--amber-bg:#fffbeb;--gray:#64748b;--gray-bg:#f1f5f9;
+  --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased;font-size:14px}
+
+/* ===== 顶栏 ===== */
+.topbar{height:54px;background:var(--navy);color:#fff;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.topbar .agent-ico{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:17px}
+.topbar .agent-name{font-size:15px;font-weight:700;letter-spacing:1px}
+.topbar .right{margin-left:auto;display:flex;align-items:center}
+.topbar .me{display:flex;align-items:center;gap:8px}
+.me-ava{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700}
+.me-name{font-size:13px;font-weight:600;letter-spacing:.5px}
+
+/* ===== 三栏布局 ===== */
+.shell{flex:1;display:grid;grid-template-columns:224px 1fr 268px;grid-template-rows:minmax(0,1fr);min-height:0}
+
+/* 左：任务历史 */
+.hs{background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.newchat{margin:12px 12px 4px;padding:9px 12px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.newchat:hover{background:#1e4a72}
+.hs-list{flex:1;overflow-y:auto;padding:8px 12px 14px}
+.hs-title{font-size:11px;color:var(--muted);margin:10px 4px 7px;letter-spacing:.5px}
+.hitem{padding:8px 10px;border-radius:8px;font-size:12.5px;color:var(--text2);cursor:pointer;margin-bottom:3px;line-height:1.45;display:flex;gap:7px;align-items:flex-start;border:1px solid transparent}
+.hitem:hover{background:#f4f6fa}
+.hitem.on{background:var(--blue-bg);color:var(--blue);border-color:#d4e3fa;font-weight:600}
+.hitem .hi{flex-shrink:0;font-size:13px;margin-top:1px}
+
+/* 中：对话区 */
+.chat{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;background:var(--bg)}
+.stream{flex:1;overflow-y:auto;padding:22px 24px;min-height:0}
+.stream-in{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+
+/* 欢迎屏 */
+.welcome{max-width:760px;margin:26px auto 12px;text-align:center;padding:0 12px}
+.w-ava{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#eef4ff,#f5f0ff);border:1px solid #dde5f5;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 16px;box-shadow:0 4px 16px rgba(22,50,79,.08)}
+.welcome h2{font-size:22px;font-weight:800;color:var(--navy)}
+.welcome .w-sub{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.8}
+.wcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.wcard{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:left;cursor:pointer;transition:all .15s}
+.wcard:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(22,50,79,.09);border-color:#c7d9f7}
+.wcard .wt{display:inline-block;font-size:10.5px;font-weight:700;border-radius:4px;padding:2px 8px;margin-bottom:8px}
+.wcard .wn{font-size:13.5px;font-weight:700;color:var(--navy);line-height:1.5}
+.wcard .wd{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.6}
+
+/* 消息 */
+.msg{display:flex;gap:11px;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg .mav{width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.msg.user{flex-direction:row-reverse}
+.msg.user .mav{background:var(--navy);color:#fff}
+.msg.ai .mav{background:linear-gradient(135deg,#eef4ff,#f5f0ff);border:1px solid #dbe5f5;font-size:15px}
+.msg .mb{flex:1;min-width:0;max-width:calc(100% - 42px)}
+.msg.user .mb{text-align:right}
+.u-bubble{display:inline-block;background:var(--blue);color:#fff;border-radius:13px 13px 3px 13px;padding:9px 14px;font-size:13.5px;line-height:1.6;text-align:left}
+.ai-bubble{background:#fff;border:1px solid var(--border);border-radius:3px 14px 14px 14px;padding:15px 18px;font-size:13px;line-height:1.75;color:var(--text2)}
+.ai-bubble > * + *{margin-top:13px}
+.ai-bubble p{line-height:1.8}
+.ai-bubble b{color:var(--ink)}
+.ai-bubble .rd{color:var(--red);font-weight:700}
+.ai-bubble .gn{color:var(--green);font-weight:700}
+.ai-bubble .am{color:var(--amber);font-weight:700}
+.ai-bubble .hl{color:var(--navy);font-weight:800}
+.scene{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;border-radius:6px;font-size:11.5px;font-weight:700}
+.scene.blue{background:var(--blue-bg);color:var(--blue)}
+.scene.red{background:var(--red-bg);color:var(--red)}
+.scene.green{background:var(--green-bg);color:#065f46}
+.scene.amber{background:var(--amber-bg);color:var(--amber)}
+
+/* 输入区 */
+.inbar{padding:10px 24px 16px;background:var(--bg)}
+.inbar-in{max-width:920px;margin:0 auto}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;min-height:26px}
+.chip{font-size:11.5px;color:var(--text2);background:#fff;border:1px solid var(--border);border-radius:16px;padding:4px 13px;cursor:pointer;transition:all .15s}
+.chip:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+.inrow{display:flex;gap:8px}
+.inrow input{flex:1;border:1px solid var(--border);border-radius:10px;padding:11px 15px;font-size:13.5px;outline:none;font-family:var(--font);background:#fff}
+.inrow input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.inrow button{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:0 20px;font-size:13.5px;font-weight:700;cursor:pointer}
+.inrow button:hover{background:#1d4fd7}
+.typing{display:flex;gap:4px;padding:3px 0}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+/* 右：文件区 */
+.fs{background:#fff;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;min-height:0}
+.fs-sec{padding:14px 13px 4px}
+.fs-h{font-size:11.5px;font-weight:700;color:var(--text2);letter-spacing:1px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+.fitem{border:1px solid var(--border);border-radius:9px;padding:9px 11px;margin-bottom:7px;cursor:pointer;transition:all .15s;background:#fff}
+.fitem:hover{border-color:var(--blue);box-shadow:0 2px 8px rgba(37,99,235,.08)}
+.fitem.gen{border-style:dashed;background:#fbfcfe}
+.fitem .fn{font-size:12px;font-weight:600;color:var(--ink);line-height:1.45}
+.fitem .fm{font-size:10.5px;color:var(--muted);margin-top:4px;display:flex;justify-content:space-between;align-items:center}
+.tag-new{font-size:10px;color:#fff;background:var(--blue);border-radius:3px;padding:1px 7px}
+.tag-ok{font-size:10px;color:var(--green);background:var(--green-bg);border-radius:3px;padding:1px 7px}
+.tag-doc{font-size:10px;color:#7c3aed;background:#f5f0ff;border-radius:3px;padding:1px 7px}
+.fs-empty{font-size:11.5px;color:#b6c1cd;border:1px dashed #dde4ec;border-radius:9px;padding:12px;text-align:center;line-height:1.7}
+.fnote{font-size:10.5px;color:var(--muted);line-height:1.7;padding:10px 4px;margin-top:auto;border-top:1px dashed var(--border)}
+
+/* ===== 消息内组件 ===== */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:11px 13px}
+.kpi .kl{font-size:11.5px;color:var(--text2)}
+.kpi .kv{font-size:21px;font-weight:800;color:var(--navy);margin-top:5px;font-variant-numeric:tabular-nums}
+.kpi .kv small{font-size:11px;font-weight:500;color:var(--muted)}
+.kpi .kd{font-size:11px;margin-top:4px;font-weight:700}
+.kd.up{color:var(--green)} .kd.dn{color:var(--red)} .kd.warn{color:var(--amber)} .kd.flat{color:var(--muted)}
+.kpi.bad{background:linear-gradient(180deg,#fff8f8,#fff);border-color:#f5caca}
+.kpi.warnk{background:linear-gradient(180deg,#fffdf5,#fff);border-color:#f3dfae}
+.kpi.grayk{background:#fbfcfe;border-style:dashed}
+.kpi.grayk .kv{color:var(--gray)}
+.kpi.goodk{background:linear-gradient(180deg,#f4fdf7,#fff);border-color:#bce8cd}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:#f4f6fa;text-align:left;padding:7px 9px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);font-size:11px;white-space:nowrap}
+.tbl td{padding:7px 9px;border-bottom:1px solid #eef2f7;color:var(--ink);white-space:nowrap}
+.tbl td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr:last-child td{border-bottom:none}
+.tbl .bad{color:var(--red);font-weight:700}
+.tbl .good{color:var(--green);font-weight:600}
+.tbl .sub{color:var(--muted);font-size:10.5px}
+.tblwrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff}
+.tblwrap .twh{padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--navy);background:#fbfcfe}
+.ai-note{background:linear-gradient(90deg,#f6f8ff,#f8f6ff);border:1px solid #e0e7f5;border-radius:10px;padding:11px 15px;font-size:12.6px;line-height:1.8}
+.ano{background:#fff;border:1px solid var(--border);border-left:4px solid var(--green);border-radius:10px;padding:12px 16px}
+.ano.r{border-left-color:var(--red)}
+.ano.o{border-left-color:var(--amber)}
+.ano.d{border-left-color:#94a3b8;border-style:dashed}
+.ano .ah{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.ano .ah .lv{font-size:14px}
+.ano .ah .at{font-size:13.5px;font-weight:700;color:var(--navy)}
+.ano .ah .st{margin-left:auto;font-size:10.5px;font-weight:700;border-radius:4px;padding:2px 10px}
+.ano.r .st{background:var(--red-bg);color:var(--red)}
+.ano.o .st{background:var(--amber-bg);color:var(--amber)}
+.ano.g .st{background:var(--green-bg);color:#065f46}
+.ano.d .st{background:var(--gray-bg);color:var(--gray)}
+.ano .ab{font-size:12.6px;line-height:1.75;margin-top:7px}
+.ano .ab b{color:var(--ink)}
+.ano .ab .rd{color:var(--red);font-weight:700}
+.ano .ab .am{color:var(--amber);font-weight:700}
+.ano .af{margin-top:9px;display:flex;gap:8px}
+.rno{font-size:10.5px;background:#f4f6fa;border:1px solid #e2e8f0;color:var(--blue);border-radius:4px;padding:1px 7px;font-family:"SF Mono",Menlo,monospace;font-weight:600}
+.lkbtn{font-size:12px;font-weight:600;color:var(--blue);background:var(--blue-bg);border:1px solid #c7d9f7;border-radius:6px;padding:5px 14px;cursor:pointer;transition:all .15s}
+.lkbtn:hover{background:#e0ecff}
+.lkbtn.ghost{color:var(--text2);background:#fff;border-color:var(--border)}
+.lkbtn.pri{background:var(--blue);color:#fff;border-color:var(--blue)}
+.lkbtn.pri:hover{background:#1d4fd7}
+.lkbtn.warn{color:var(--amber);background:var(--amber-bg);border-color:#f3dfae}
+.lkbtn.danger{color:var(--red);background:var(--red-bg);border-color:#f5caca}
+.lkbtn.danger:hover{background:#fee2e2}
+
+/* 执行过程块 */
+.runbox{border:1px solid #dbe5f5;background:linear-gradient(180deg,#fbfcff,#fff);border-radius:11px;overflow:hidden}
+.runbox .rh{display:flex;align-items:center;gap:9px;padding:11px 15px;border-bottom:1px solid #e8eef7;font-size:13px;font-weight:700;color:var(--navy)}
+.runbox .rh .rspin{width:15px;height:15px;border:2px solid #dbe6f5;border-top-color:var(--blue);border-radius:50%;animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.runbox .rh .rp{margin-left:auto;font-size:11px;color:var(--muted);font-family:"SF Mono",Menlo,monospace}
+.rstep{display:flex;gap:10px;padding:8px 15px;opacity:0;transform:translateY(5px);transition:all .3s}
+.rstep.show{opacity:1;transform:none}
+.rstep .eic{width:21px;height:21px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px}
+.rstep.wait .eic{border:2px solid #dde5ee}
+.rstep.run .eic{border:2px solid #dbe6f5;border-top-color:var(--blue);animation:rot .8s linear infinite}
+.rstep.ok .eic{background:var(--green-bg);color:var(--green);border:2px solid #bbf7d0}
+.rstep.warn .eic{background:var(--amber-bg);color:var(--amber);border:2px solid #fde68a}
+.rstep .etx .t1{font-size:12.8px;font-weight:600;color:var(--ink)}
+.rstep.warn .etx .t1{color:var(--amber)}
+.rstep .etx .t2{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.55}
+.rstep .ecost{margin-left:auto;font-size:10.5px;color:var(--muted);font-family:"SF Mono",Menlo,monospace;flex-shrink:0;padding-top:2px}
+
+/* 分节标题 */
+.ph{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;color:var(--navy);padding-top:2px}
+.ph .pno{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:11.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.judge{border:1px solid var(--border);border-radius:11px;overflow:hidden;background:#fff}
+.judge .jh{background:linear-gradient(135deg,#16324f,#1e4a72);color:#fff;padding:10px 16px;font-size:13px;font-weight:700}
+.judge .jb{padding:12px 16px;font-size:12.8px;line-height:1.9}
+.judge .jb b{color:var(--navy)}
+.judge .jb .rd{color:var(--red);font-weight:700}
+.judge .jb .am{color:var(--amber);font-weight:700}
+.sugg{border:1px solid #e3eaf3;border-radius:10px;padding:11px 15px;background:#fbfcfe}
+.sugg .sh{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:7px}
+.sugg .si{display:flex;gap:9px;padding:6px 0;border-bottom:1px dashed #e8edf4;font-size:12.3px;line-height:1.7}
+.sugg .si:last-child{border-bottom:none}
+.sugg .si .no{width:19px;height:19px;border-radius:50%;background:var(--blue-bg);color:var(--blue);font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.sugg .si b{color:var(--ink)}
+.footnote{font-size:10.5px;color:var(--muted);text-align:center}
+.mini-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.mini-tbl th{background:#f0f3f8;padding:5px 8px;text-align:left;color:var(--text2);font-weight:600;border:1px solid #e5e9f0}
+.mini-tbl td{padding:5px 8px;border:1px solid #e5e9f0;font-variant-numeric:tabular-nums}
+
+/* 图表 */
+.chartbox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.chartbox .ct{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:7px}
+.legend{display:flex;gap:14px;font-size:10.5px;color:var(--text2);margin-top:5px;flex-wrap:wrap}
+.legend .lg{display:flex;align-items:center;gap:5px}
+.legend .sw{width:15px;height:3px;border-radius:2px}
+
+/* 内容 Tabs */
+.ctabs{display:flex;gap:6px;flex-wrap:wrap}
+.ctab{font-size:12px;font-weight:600;color:var(--text2);background:#fff;border:1px solid var(--border);border-radius:7px;padding:5px 14px;cursor:pointer;transition:all .15s}
+.ctab:hover{border-color:var(--blue);color:var(--blue)}
+.ctab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.cpane{display:none}
+.cpane.on{display:block}
+.cgrp{font-size:12px;font-weight:700;color:var(--navy);margin:12px 0 6px;display:flex;align-items:center;gap:7px}
+.cgrp:first-child{margin-top:0}
+.copybox{background:#fbfcfe;border:1px dashed #c9d6e8;border-radius:9px;padding:10px 13px;font-size:12.6px;line-height:1.85;color:var(--ink)}
+.copybox .cops{display:flex;gap:6px;margin-top:8px}
+.demotag{display:inline-block;font-size:10.5px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:4px;padding:1px 8px;font-weight:700}
+.simtag{display:inline-block;font-size:10.5px;background:#f5f0ff;color:#6d28d9;border:1px solid #ddd0ff;border-radius:4px;padding:1px 8px;font-weight:700}
+.cond-add{background:#f0fdf4}
+.cond-del{background:#fef2f2}
+
+/* 报告卡（消息内） */
+.rcard{border:1px solid var(--border);border-radius:11px;overflow:hidden;background:#fff}
+.rcard .rc-h{background:linear-gradient(135deg,#f6f8ff,#f8f6ff);padding:14px 18px;text-align:center;border-bottom:1px solid #eef2f7}
+.rcard .rc-h .rt{font-size:10.5px;color:var(--blue);font-weight:700;letter-spacing:2px}
+.rcard .rc-h h4{font-size:15px;color:var(--navy);font-weight:800;margin-top:6px;line-height:1.5}
+.rcard .rc-h .rs{font-size:10.5px;color:var(--muted);margin-top:4px}
+.rcard .rc-toc{padding:10px 18px}
+.rcard .rc-toc .ti{font-size:12.2px;padding:5px 0;border-bottom:1px dashed #eef2f7;display:flex;gap:7px}
+.rcard .rc-toc .ti:last-child{border-bottom:none}
+.rcard .rc-toc .ti b{color:var(--navy)}
+.rcard .rc-f{padding:0 18px 14px;display:flex;gap:8px;flex-wrap:wrap}
+
+/* ===== 弹窗 ===== */
+.mask{position:fixed;inset:0;background:rgba(15,28,44,.45);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+.mask.on{display:flex;animation:fadeIn .2s ease}
+.modal{background:#fff;border-radius:14px;max-width:820px;width:100%;max-height:86vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.modal .mh{padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal .mh .mt{font-size:15px;font-weight:700;color:var(--navy)}
+.modal .mx{width:30px;height:30px;border-radius:8px;border:none;background:#f4f6fa;font-size:15px;cursor:pointer;color:var(--text2)}
+.modal .mb{overflow-y:auto;padding:20px 24px;font-size:13px;line-height:1.9;color:var(--text2)}
+.modal .mb h4{font-size:14px;color:var(--navy);margin:16px 0 6px}
+.modal .mb h4:first-child{margin-top:0}
+.modal .mb b{color:var(--ink)}
+.modal .mb .rd{color:var(--red);font-weight:700}
+.modal .mb .am{color:var(--amber);font-weight:700}
+.modal .mb .gn{color:var(--green);font-weight:700}
+
+@media (max-width:1080px){.shell{grid-template-columns:200px 1fr 230px}.kpis{grid-template-columns:repeat(2,1fr)}.wcards{grid-template-columns:1fr}}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#d3dbe5;border-radius:4px}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="agent-ico">🤖</div>
+  <div class="agent-name">AI精准营销与客群经营数字员工</div>
+  <div class="right">
+    <div class="me"><div class="me-ava">林</div><span class="me-name">客户经营岗 · 小林</span></div>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- 左：任务历史 -->
+  <aside class="hs">
+    <button class="newchat" onclick="newTask()">＋ 新建任务</button>
+    <div class="hs-list">
+      <div class="hs-title">营销任务</div>
+      <div class="hitem on" id="hi-t1" onclick="switchChat('t1')"><span class="hi">📋</span><span>本月存量客户支用促动</span></div>
+      <div class="hitem" id="hi-t2" onclick="switchChat('t2')"><span class="hi">📊</span><span>上月支用促动复盘</span></div>
+      <div class="hitem" id="hi-t3" onclick="switchChat('t3')"><span class="hi">🎯</span><span>9月新客活动复盘</span></div>
+    </div>
+  </aside>
+
+  <!-- 中：对话区 -->
+  <section class="chat">
+    <div class="stream" id="stream">
+      <div class="welcome" id="welcome">
+        <div class="w-ava">🤖</div>
+        <h2>你好，我是AI精准营销与客群经营数字员工</h2>
+        <div class="w-sub">一句话描述营销目标 → AI 自动完成客群圈选、客群分析、策略与内容生成、模拟效果验证<br>圈选条件全程透明可核对 · 营销内容经人工审核后使用 · 一期仅模拟验证，不向真实客户发送</div>
+        <div class="wcards">
+          <div class="wcard" onclick="startTask()">
+            <span class="wt" style="background:var(--blue-bg);color:var(--blue)">发起任务</span>
+            <div class="wn">一句话发起支用促动任务</div>
+            <div class="wd">如：圈选本月可做支用促动的存量客户</div>
+          </div>
+          <div class="wcard" onclick="previewRules()">
+            <span class="wt" style="background:var(--amber-bg);color:var(--amber)">合规口径</span>
+            <div class="wn">营销规则与合规红线</div>
+            <div class="wd">18 项规则 · 3 款产品资料 · 红线不可调整</div>
+          </div>
+          <div class="wcard" onclick="document.getElementById('chatInput').focus()">
+            <span class="wt" style="background:var(--green-bg);color:#065f46">自由提问</span>
+            <div class="wn">问我客群与营销问题</div>
+            <div class="wd">如：为什么营销授权有效不能去掉？</div>
+          </div>
+        </div>
+      </div>
+      <div class="stream-in" id="streamIn"></div>
+    </div>
+    <div class="inbar">
+      <div class="inbar-in">
+        <div class="chips" id="chips"></div>
+        <div class="inrow">
+          <input id="chatInput" placeholder="输入营销目标或问题，回车发送…（如：圈选本月可做支用促动的客户）" onkeydown="if(event.key==='Enter')freeAsk()">
+          <button onclick="freeAsk()">发送</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 右：文件区 -->
+  <aside class="fs">
+    <div class="fs-sec">
+      <div class="fs-h">📁 客群与营销数据</div>
+      <div class="fitem" onclick="previewFile('f1')">
+        <div class="fn">📊 客户经营数据.xlsx</div>
+        <div class="fm"><span>存量客户 50,000 户 · 已脱敏</span><span class="tag-ok">已加载</span></div>
+      </div>
+      <div class="fitem" onclick="previewRules()">
+        <div class="fn">📐 营销规则与产品资料.xlsx</div>
+        <div class="fm"><span>规则 18 项 · 产品 3 款</span><span class="tag-ok">已加载</span></div>
+      </div>
+    </div>
+    <div class="fs-sec">
+      <div class="fs-h">🧪 模拟环境</div>
+      <div class="fitem" onclick="previewFile('f3')">
+        <div class="fn">📊 模拟营销结果（上期）.xlsx</div>
+        <div class="fm"><span>上期 A/B 分组模拟结果</span><span class="tag-ok">示例数据</span></div>
+      </div>
+    </div>
+    <div class="fs-sec">
+      <div class="fs-h">📄 生成文件</div>
+      <div id="genFiles"><div class="fs-empty">营销方案与复盘报告<br>将出现在这里</div></div>
+    </div>
+    <div class="fnote">📊 客群数据导入后自动解析字段落与口径<br>📐 合规红线由业务配置，硬性条件不可去除<br>📄 报告生成后可预览、导出 Word · 一期不向真实客户发送营销信息</div>
+  </aside>
+
+</div>
+
+<!-- 数据预览 -->
+<div class="mask" id="mFile" onclick="closeModal('mFile')">
+  <div class="modal" style="max-width:680px" onclick="event.stopPropagation()">
+    <div class="mh"><div class="mt" id="mfTitle">数据文件 · 字段说明</div><button class="mx" onclick="closeModal('mFile')">✕</button></div>
+    <div class="mb" id="mfBody"></div>
+  </div>
+</div>
+
+<!-- 营销规则预览 -->
+<div class="mask" id="mRules" onclick="closeModal('mRules')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh"><div class="mt">📐 营销规则与产品资料.xlsx · 18 项规则 · 3 款产品</div><button class="mx" onclick="closeModal('mRules')">✕</button></div>
+    <div class="mb">
+      <h4>一、合规红线（硬性 · 不可去除）</h4>
+      <table class="tbl">
+        <tr><th style="width:52px">编号</th><th>规则</th><th style="width:100px">性质</th></tr>
+        <tr><td>M01</td><td>仅可触达<b>营销授权有效</b>的客户，无授权客户一律排除</td><td class="bad">红线</td></tr>
+        <tr><td>M02</td><td>近 90 天内<b>明确拒绝</b>营销触达的客户自动排除（拒扰名单）</td><td class="bad">红线</td></tr>
+        <tr><td>M03</td><td>同一客户 <b>30 天内营销触达 ≤ 1 次</b>（全渠道合并频控）</td><td class="bad">红线</td></tr>
+        <tr><td>M04</td><td>所有营销内容须通过<b>营销合规审核</b>后方可使用</td><td class="bad">红线</td></tr>
+        <tr><td>M05</td><td>坐席外呼须先完成<b>客户身份核验</b>，客户拒绝时立即结束并记录</td><td class="bad">红线</td></tr>
+        <tr><td>M06</td><td>短信须包含<b>退订方式</b>（回T退订），不得使用诱导性表述</td><td class="bad">红线</td></tr>
+      </table>
+      <h4>二、策略建议规则（可按业务口径调整）</h4>
+      <table class="tbl">
+        <tr><th style="width:52px">编号</th><th>规则</th></tr>
+        <tr><td>S01</td><td>APP 活跃客户建议优先通过 APP 消息触达</td></tr>
+        <tr><td>S02</td><td>低活跃客户建议「短信 + 坐席外呼」组合触达</td></tr>
+        <tr><td>S03</td><td>内容建议包含额度、利率等关键信息，并标注「资金用途须为日常消费」</td></tr>
+        <tr><td>S04</td><td>已授信未支用客户优先强调「额度已激活、随借随还」利益点</td></tr>
+      </table>
+      <h4>三、产品资料（3 款）</h4>
+      <table class="tbl">
+        <tr><th>产品</th><th>额度口径</th><th>定价口径</th></tr>
+        <tr><td>随借随还消费金额</td><td>最高 20 万（示例）</td><td>按日计息 · 随借随还</td></tr>
+        <tr><td>场景分期（装修 / 教育）</td><td>按场景核定</td><td>分期费率（示例）</td></tr>
+        <tr><td>车主专享额度</td><td>按车况核定</td><td>专享利率区间（示例）</td></tr>
+      </table>
+      <div style="font-size:11px;color:var(--muted);margin-top:14px;border-top:1px dashed var(--border);padding-top:10px">注：本演示规则与产品参数为模拟口径，正式环境中由业务与合规部门按行内制度配置 · 一期营销验证仅使用脱敏 / 模拟数据，不向真实客户发送营销信息</div>
+    </div>
+  </div>
+</div>
+
+<!-- 营销方案报告预览 -->
+<div class="mask" id="mPlan" onclick="closeModal('mPlan')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh"><div class="mt">消费信贷存量客户支用促动营销方案 · 本月</div><button class="mx" onclick="closeModal('mPlan')">✕</button></div>
+    <div class="mb">
+      <h4>一、任务与客群口径</h4>
+      任务由业务人员一句话发起：「圈选本月适合做支用促动的存量客户，并制定差异化营销方案」。经确认解析为：<b>目标客群 = 已授信未支用 · 营销授权有效 · 非拒扰名单</b>。候选客户池 50,000 户 → 已授信未支用 8,600 户 → 排除近 90 天拒绝或限制触达客户 2,360 户 → <b>最终目标客群 6,240 户</b>。全部筛选条件透明列出，业务人员可核对、可调整（合规红线除外）。
+      <h4>二、客群分层</h4>
+      <b>A类 · 活跃未支用优先</b>：2,860 户（近 30 天 APP 活跃 · 授信满 90 天 · 历史营销响应率 18.2%）；<b>B类 · 低活跃观察</b>：3,380 户（APP 低活跃 · 历史响应率 6.4%）；C类 2,360 户因拒绝或限制触达已排除。
+      <h4>三、触达策略与优先级</h4>
+      A类：APP 消息 + 短信，优先级高，24 小时内优先触达，利益点「额度已备好、随借随还」；B类：短信 + 坐席外呼话术，优先级中，分批触达，利益点「消费场景引导」。
+      <h4>四、营销内容方案（示例 · 待审核）</h4>
+      已按客群差异化生成短信、APP 消息、坐席话术三类内容草稿；全部内容标注「示例文案 · 尚未通过正式营销审核」，<b>须经人工审核后方可使用</b>。
+      <h4>五、合规与人工审核安排</h4>
+      硬性合规条件（营销授权有效、拒扰名单、频控、内容审核、身份核验、退订方式）全程强制执行，不可去除；内容送审单已生成，正式环境将流转至营销合规审核岗。
+      <h4>六、模拟验证计划</h4>
+      一期仅做模拟执行：按历史响应与转化基线对 A/B 两类客群进行模拟推演，并设置对照组（自然转化基线 2.1%），归因周期 7 天；<b>全程不向真实客户发送任何营销信息</b>。
+      <div style="font-size:11px;color:var(--muted);margin-top:14px;border-top:1px dashed var(--border);padding-top:10px">报告由 AI精准营销与客群经营数字员工 自动生成 · 2026-10-13 · 方案执行须以人工审核通过为前提</div>
+    </div>
+  </div>
+</div>
+
+<!-- 效果复盘报告预览 -->
+<div class="mask" id="mReview" onclick="closeModal('mReview')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh"><div class="mt">支用促动模拟效果复盘报告 · 本月</div><button class="mx" onclick="closeModal('mReview')">✕</button></div>
+    <div class="mb">
+      <h4>一、模拟执行口径</h4>
+      本次效果为<b>模拟推演结果</b>：基于上期模拟营销结果与历史基线数据，对 A/B 两类客群共 6,240 户进行模拟推演；设置对照组（不触达，按自然转化基线推演）；归因周期 7 天。<b>全程未向真实客户发送任何营销信息。</b>
+      <h4>二、分组模拟效果</h4>
+      <table class="mini-tbl">
+        <tr><th>分组</th><th>户数</th><th>模拟响应率</th><th>模拟支用转化率</th></tr>
+        <tr><td><b>A类 · 活跃未支用</b></td><td>2,860</td><td><b style="color:#16a34a">26.4%</b>（历史基线 18.2%）</td><td><b style="color:#16a34a">9.2%</b></td></tr>
+        <tr><td><b>B类 · 低活跃观察</b></td><td>3,380</td><td><b style="color:#2563eb">13.8%</b>（历史基线 6.4%）</td><td><b style="color:#2563eb">3.9%</b></td></tr>
+        <tr><td>对照组（不触达）</td><td>—</td><td>—</td><td>自然转化 2.1%</td></tr>
+      </table>
+      <h4>三、与对照组对比</h4>
+      A类模拟支用转化率 9.2%，约为对照组自然转化（2.1%）的 4.4 倍；B类 3.9% 约为对照组的 1.9 倍。A类对差异化策略的敏感度显著高于B类，建议后续资源向 A类客群倾斜。
+      <h4>四、结论与相关性提示</h4>
+      模拟数据显示本次差异化策略对 A类客群效果明显，但<b>相关不等于因果</b>：模拟推演基于历史基线假设，未包含真实市场环境变化、竞品活动等混杂因素，不能直接断言真实投放将获得同等效果。
+      <h4>五、下一步建议</h4>
+      ① 申请小流量真实实验（建议 A类客群 5%—10% 样本），以真实触达数据验证策略；② 实验组 / 对照组设计由数据分析岗复核；③ 内容文案正式送审；④ 复盘周期结束后将真实结果与本模拟结果做对照，迭代策略与分层口径。
+      <div style="font-size:11px;color:var(--muted);margin-top:14px;border-top:1px dashed var(--border);padding-top:10px">报告由 AI精准营销与客群经营数字员工 自动生成 · 2026-10-13 · 模拟结果仅用于演示与策略讨论，不构成经营承诺</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= 基础消息 ================= */
+const streamIn = document.getElementById('streamIn');
+const streamEl = document.getElementById('stream');
+let taskShown=false, selDone=false, anaDone=false, stratDone=false, contDone=false, revSent=false, simDone=false, planDone=false, repDone=false;
+const savedState={};
+function saveState(){ savedState[curChat]={sel:selDone,ana:anaDone,strat:stratDone,cont:contDone,rev:revSent,sim:simDone,plan:planDone,rep:repDone,task:taskShown}; }
+function loadState(t){ const st=savedState[t]||{sel:false,ana:false,strat:false,cont:false,rev:false,sim:false,plan:false,rep:false,task:false}; selDone=st.sel; anaDone=st.ana; stratDone=st.strat; contDone=st.cont; revSent=st.rev; simDone=st.sim; planDone=st.plan; repDone=st.rep; taskShown=st.task; }
+
+function scrollBottom(){ streamEl.scrollTop = streamEl.scrollHeight; }
+function hideWelcome(){ const w=document.getElementById('welcome'); if(w) w.style.display='none'; }
+function addUserMsg(text){
+  hideWelcome();
+  if(curChat.lastIndexOf('new',0)===0){
+    const sps=document.getElementById('hi-'+curChat).querySelectorAll('span');
+    if(sps[1]&&sps[1].textContent==='新任务') sps[1].textContent=text.length>10?text.slice(0,10)+'…':text;
+  }
+  const d=document.createElement('div'); d.className='msg user';
+  d.innerHTML='<div class="mav">我</div><div class="mb"><span class="u-bubble">'+text+'</span></div>';
+  streamIn.appendChild(d); scrollBottom();
+}
+function addAiMsg(html){
+  const d=document.createElement('div'); d.className='msg ai';
+  d.innerHTML='<div class="mav">🤖</div><div class="mb"><div class="ai-bubble">'+html+'</div></div>';
+  streamIn.appendChild(d); scrollBottom(); return d.querySelector('.ai-bubble');
+}
+function typingThen(fn){
+  const d=document.createElement('div'); d.className='msg ai';
+  d.innerHTML='<div class="mav">🤖</div><div class="mb"><div class="ai-bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>';
+  streamIn.appendChild(d); scrollBottom();
+  setTimeout(()=>{ d.remove(); fn(); }, 650+Math.random()*350);
+}
+
+/* ================= 快捷问题 chips ================= */
+function setChips(list){
+  const box=document.getElementById('chips'); box.innerHTML='';
+  list.forEach(c=>{
+    const s=document.createElement('span'); s.className='chip'; s.textContent=c.t;
+    s.onclick=c.fn; box.appendChild(s);
+  });
+}
+const CHIPS_HOME=[{t:'📋 发起支用促动任务',fn:()=>startTask()},{t:'查看营销规则与合规红线',fn:()=>previewRules()}];
+const CHIPS_AFTER_TASK=[{t:'✅ 确认执行 · 开始圈客',fn:()=>runSelect()},{t:'查看营销规则与合规红线',fn:()=>previewRules()}];
+const CHIPS_AFTER_SEL=[
+  {t:'＋ 增加「近30天有APP登录」条件',fn:()=>adjustAddLogin()},
+  {t:'🚫 去掉「营销授权有效」试试',fn:()=>adjustDropAuth()},
+  {t:'🔍 客群分层分析',fn:()=>runAnalysis()},
+  {t:'🎯 生成营销策略与内容',fn:()=>runStrategy()}];
+const CHIPS_AFTER_ANA=[
+  {t:'🎯 生成营销策略与内容',fn:()=>runStrategy()},
+  {t:'＋ 增加「近30天有APP登录」条件',fn:()=>adjustAddLogin()},
+  {t:'查看营销规则与合规红线',fn:()=>previewRules()}];
+const CHIPS_AFTER_CONT=[
+  {t:'📤 提交人工审核',fn:()=>submitReview()},
+  {t:'🧪 模拟执行与效果分析',fn:()=>runSim()},
+  {t:'📄 生成营销方案报告',fn:()=>genPlan()}];
+const CHIPS_AFTER_SIM=[
+  {t:'📄 生成效果复盘报告',fn:()=>genReport()},
+  {t:'📄 生成营销方案报告',fn:()=>genPlan()},
+  {t:'📤 提交人工审核',fn:()=>submitReview()}];
+function curChips(){
+  if(simDone) return CHIPS_AFTER_SIM;
+  if(contDone) return CHIPS_AFTER_CONT;
+  if(anaDone&&!stratDone) return CHIPS_AFTER_ANA;
+  if(selDone) return CHIPS_AFTER_SEL;
+  if(taskShown) return CHIPS_AFTER_TASK;
+  return CHIPS_HOME;
+}
+function refreshChips(){ setChips(curChips()); }
+
+/* ================= 任务理解 ================= */
+function startTask(){
+  addUserMsg('帮我圈选本月适合做支用促动的存量客户，并制定差异化营销方案');
+  setChips([]);
+  typingThen(()=>{
+    taskShown=true;
+    addAiMsg(
+      '<span class="scene blue">📋 营销任务理解 · 请确认</span>'
+      +'<p>我把你的目标解析如下——<b>确认无误后我再开始圈选客群</b>，避免口径跑偏：</p>'
+      +'<div class="tblwrap"><table class="tbl">'
+      +'<tr><th style="width:110px">解析项</th><th>内容</th></tr>'
+      +'<tr><td class="sub">任务目标</td><td><b>已授信未支用存量客户的支用促动</b></td></tr>'
+      +'<tr><td class="sub">目标产品</td><td>随借随还消费金额（额度最高 20 万示例 · 按日计息）</td></tr>'
+      +'<tr><td class="sub">客群范围</td><td>消费信贷存量客户池 · 50,000 户（已脱敏）</td></tr>'
+      +'<tr><td class="sub">营销方式</td><td>APP 消息 + 短信 + 坐席外呼话术（内容生成 · 待人工审核）</td></tr>'
+      +'<tr><td class="sub">合规约束</td><td>仅触达<span class="rd">营销授权有效</span>客户 · 拒扰名单排除 · 30 天频控</td></tr>'
+      +'<tr><td class="sub">执行方式</td><td><b>一期仅模拟验证</b>，不向真实客户发送营销信息</td></tr>'
+      +'</table></div>'
+      +'<div class="ai-note">✅ 口径没问题就点下面的按钮开始圈客；有偏差可直接用自然语言告诉我调整，如「只看 APP 活跃客户」。</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="lkbtn pri" onclick="runSelect()">✅ 确认执行 · 开始圈客</button><button class="lkbtn ghost" onclick="previewRules()">查看合规红线</button></div>'
+    );
+    setChips(CHIPS_AFTER_TASK);
+  });
+}
+
+/* ================= 客群圈选 ================= */
+const RUN_STEPS_SEL=[
+  {t:'读取客户经营数据',d:'客户经营数据.xlsx · 消费信贷存量客户 50,000 户 · 已脱敏',c:'1.2s',at:250},
+  {t:'解析圈选意图',d:'已授信未支用 · 营销授权有效 · 支用促动场景',c:'0.8s',at:1400},
+  {t:'应用合规红线过滤',d:'M01 营销授权有效 · M02 拒扰名单 · M03 30天频控',c:'1.1s',at:2400},
+  {t:'圈选目标客群',d:'已授信未支用且合规可触达 · 8,600 户',c:'1.3s',at:3900},
+  {t:'排除不可触达客群',d:'C类 · 近 90 天拒绝或限制触达 · 2,360 户',c:'0.9s',at:5400,warn:true},
+  {t:'生成客群清单',d:'最终目标客群 6,240 户 · 支持导出与逐户核对',c:'0.7s',at:6800},
+];
+function runStepsIn(bubble,steps,doneText,doneAt,onDone){
+  const box=bubble.querySelector('.rsteps');
+  const total=steps.length;
+  steps.forEach((s,i)=>{
+    const div=document.createElement('div'); div.className='rstep wait';
+    div.innerHTML='<div class="eic"></div><div class="etx"><div class="t1">'+s.t+'</div><div class="t2">'+s.d+'</div></div><div class="ecost">'+s.c+'</div>';
+    box.appendChild(div);
+    setTimeout(()=>{ div.classList.add('show'); div.classList.remove('wait'); div.classList.add('run'); bubble.querySelector('.rpct').textContent=Math.round(i/total*100)+'%'; scrollBottom(); }, s.at);
+    setTimeout(()=>{ div.classList.remove('run'); div.classList.add(s.warn?'warn':'ok'); div.querySelector('.eic').textContent=s.warn?'⚠':'✓'; bubble.querySelector('.rpct').textContent=Math.round((i+1)/total*100)+'%'; }, s.at+800);
+  });
+  setTimeout(()=>{
+    bubble.querySelector('.rspin').style.display='none';
+    bubble.querySelector('.rpct').textContent='100%';
+    const done=document.createElement('div'); done.className='rstep ok show';
+    done.innerHTML='<div class="eic">✓</div><div class="etx"><div class="t1">'+doneText+'</div></div>';
+    box.appendChild(done);
+    onDone();
+  }, doneAt);
+}
+function runSelect(){
+  if(selDone){ addUserMsg('重新圈选客群'); typingThen(()=>addAiMsg('<p>本次任务的客群圈选已完成 ✅ 结果就在上面——可以直接 <b>客群分层分析</b> 或调整筛选条件；如需全新任务，请点左上角「＋ 新建任务」。</p>')); return; }
+  addUserMsg('确认执行 · 开始圈选客群');
+  setChips([]);
+  typingThen(()=>{
+    const bubble=addAiMsg('<div class="runbox"><div class="rh"><span class="rspin"></span>正在执行 · 自然语言圈客（条件全程透明）<span class="rp rpct">0%</span></div><div class="rsteps"></div></div>');
+    runStepsIn(bubble,RUN_STEPS_SEL,'圈选完成 · 用时 7.9 秒',8200,()=>{});
+    setTimeout(()=>{ selDone=true; showSelectResult(); setChips(CHIPS_AFTER_SEL); }, 9000);
+  });
+}
+function showSelectResult(){
+  addAiMsg(
+    '<span class="scene blue">🎯 客群圈选结果 · 本月支用促动</span>'
+    +'<div class="kpis">'
+    +'<div class="kpi"><div class="kl">候选客户池</div><div class="kv">50,000<small> 户</small></div><div class="kd flat">消费信贷存量 · 已脱敏</div></div>'
+    +'<div class="kpi"><div class="kl">已授信未支用</div><div class="kv">8,600<small> 户</small></div><div class="kd up">核心促动客群</div></div>'
+    +'<div class="kpi warnk"><div class="kl">合规排除</div><div class="kv" style="color:var(--amber)">2,360<small> 户</small></div><div class="kd warn">C类 · 拒绝/限制触达</div></div>'
+    +'<div class="kpi goodk"><div class="kl">最终目标客群</div><div class="kv" style="color:var(--green)">6,240<small> 户</small></div><div class="kd up">A类 2,860 + B类 3,380</div></div>'
+    +'</div>'
+    +'<div><div class="ph"><span class="pno">1</span>筛选条件（透明可核对）</div>'
+    +'<div class="tblwrap" style="margin-top:9px"><table class="tbl">'
+    +'<tr><th style="width:66px">层级</th><th>条件</th><th style="width:96px">口径来源</th><th style="width:110px">影响户数</th></tr>'
+    +'<tr><td class="sub">基础范围</td><td>消费信贷存量客户</td><td class="sub">客户经营数据</td><td class="num">50,000</td></tr>'
+    +'<tr><td class="sub">核心条件</td><td>授信状态 = 已授信 且 未支用</td><td class="sub">任务解析</td><td class="num">8,600</td></tr>'
+    +'<tr><td class="sub">红线条件 🔒</td><td>营销授权有效 <span class="sub">（硬性合规 · 不可去除）</span></td><td class="sub">M01</td><td class="num sub">随核心条件生效</td></tr>'
+    +'<tr><td class="sub">排除条件</td><td>近 90 天拒绝或限制营销触达（拒扰名单）</td><td class="sub">M02</td><td class="num" style="color:var(--amber);font-weight:700">−2,360</td></tr>'
+    +'<tr><td class="sub">结果</td><td colspan="2"><b>最终目标客群 = 已授权的已授信未支用客户</b></td><td class="num" style="color:var(--green);font-weight:800">6,240</td></tr>'
+    +'</table></div></div>'
+    +'<div><div class="ph"><span class="pno">2</span>体验一下：调整筛选条件</div>'
+    +'<div style="display:flex;flex-direction:column;gap:10px;margin-top:9px">'
+    +'<div class="ano o"><div class="ah"><span class="lv">🟠</span><span class="at">条件增加 · 观察客群变化</span><span class="st">可调整</span></div>'
+    +'<div class="ab">增加业务条件（如活跃度、授信时长）AI 会重新计算客群规模并给出影响分析。</div>'
+    +'<div class="af"><button class="lkbtn warn" onclick="adjustAddLogin()">＋ 增加「近30天有APP登录」</button></div></div>'
+    +'<div class="ano r"><div class="ah"><span class="lv">🔴</span><span class="at">去掉合规条件 · AI 会拒绝</span><span class="rno">M01</span><span class="st">红线</span></div>'
+    +'<div class="ab">营销授权有效是<span class="rd">硬性合规条件</span>——试试去掉它，看我怎么拦。</div>'
+    +'<div class="af"><button class="lkbtn danger" onclick="adjustDropAuth()">🚫 去掉「营销授权有效」试试</button></div></div>'
+    +'</div></div>'
+    +'<div class="ai-note">📌 圈选口径：每个条件都来自你的任务描述或合规规则，<b>可逐条核对、按业务口径调整</b>（红线条件除外）；客群清单支持导出，供数据分析岗复核。</div>'
+  );
+}
+
+/* ================= 调整筛选条件演示 ================= */
+function adjustAddLogin(){
+  addUserMsg('增加条件：近30天有APP登录');
+  setChips([]);
+  typingThen(()=>{
+    addAiMsg(
+      '<span class="scene amber">🟠 条件已调整 · 客群重新圈选</span>'
+      +'<div class="tblwrap"><table class="tbl">'
+      +'<tr><th style="width:66px">层级</th><th>条件</th><th style="width:110px">影响户数</th></tr>'
+      +'<tr><td class="sub">核心条件</td><td>授信状态 = 已授信 且 未支用 · 营销授权有效</td><td class="num">8,600</td></tr>'
+      +'<tr><td class="sub">排除条件</td><td>近 90 天拒绝或限制营销触达</td><td class="num" style="color:var(--amber);font-weight:700">−2,360</td></tr>'
+      +'<tr class="cond-add"><td class="sub">新增条件</td><td>近 30 天有 APP 登录 <span class="tag-new">NEW</span></td><td class="num" style="color:var(--red);font-weight:700">−1,100</td></tr>'
+      +'<tr><td class="sub">结果</td><td colspan="2"><b>最终目标客群 6,240 → 5,140 户</b>（A类 2,860 → 1,760 · B类 3,380 不变）</td></tr>'
+      +'</table></div>'
+      +'<p>影响分析：新增「近 30 天有 APP 登录」后，<b>A类活跃客群从 2,860 收窄到 1,760 户</b>，总客群 5,140 户。这一条件让客群更聚焦「活跃但未支用」人群，<b>预期响应率会提高，但覆盖面变小</b>——投放规模与精准度需要权衡，属于业务决策。</p>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="lkbtn ghost" onclick="restoreCond()">↩ 恢复原始条件（6,240 户）</button><button class="lkbtn" onclick="runAnalysis()">🔍 按当前条件做客群分析</button></div>'
+    );
+    setChips(curChips());
+  });
+}
+function restoreCond(){
+  addUserMsg('恢复原始筛选条件');
+  typingThen(()=>{
+    addAiMsg(
+      '<span class="scene blue">↩ 条件已恢复</span>'
+      +'<p>已移除「近 30 天有 APP 登录」，回到原始口径：<b>最终目标客群 6,240 户</b>（A类 2,860 · B类 3,380 · 排除 C类 2,360）。每次调整都有记录，后续报告中会保留调整轨迹。</p>'
+      +'<div class="ai-note">💡 演示提示：真实环境中每个条件的增删都会像这样实时重算规模并留痕，方便业务与数据口径复核。</div>'
+    );
+  });
+}
+function adjustDropAuth(){
+  addUserMsg('去掉条件：营销授权有效');
+  setChips([]);
+  typingThen(()=>{
+    addAiMsg(
+      '<span class="scene red">🚫 该条件不能去掉 · 合规红线拦截</span>'
+      +'<div class="ano r"><div class="ah"><span class="lv">🔴</span><span class="at">「营销授权有效」为硬性合规条件</span><span class="rno">M01</span><span class="st">红线</span></div>'
+      +'<div class="ab">「营销授权有效」不是业务筛选条件，而是<b>合规红线（M01）</b>——只有客户明确授权后，才可以对其进行营销触达。若去掉该条件，将重新纳入 <b>2,360 户已拒绝或限制触达的 C类客户</b>，构成对客户意愿的违背。<span class="rd">该条件不可调整、不可去除，AI 拒绝执行本次修改。</span></div>'
+      +'<div class="af"><button class="lkbtn ghost" onclick="previewRules()">查看 18 项规则</button><button class="lkbtn" onclick="addUserMsg(\'那就在保留授权条件的前提下继续\');typingThen(()=>addAiMsg(\'<p>好的 ✅ 营销授权有效继续保留，客群维持 <b>6,240 户</b>，可直接进行客群分析或策略生成。</p>\'));">明白，继续</button></div></div>'
+      +'<p style="font-size:11.5px;color:var(--muted)">合规要点：硬性条件（授权 / 拒扰 / 频控 / 内容审核 / 身份核验 / 退订）由系统强制执行，与业务条件分开管理，任何一句话指令都无法绕开。</p>'
+    );
+    setChips(curChips());
+  });
+}
+
+/* ================= 客群分层分析 ================= */
+function runAnalysis(){
+  if(!selDone){ addUserMsg('客群分层分析'); typingThen(()=>addAiMsg('<p>请先发起任务并完成客群圈选，我再基于圈选结果做分层分析 😊</p>')); return; }
+  if(anaDone){ addUserMsg('客群分层分析'); typingThen(()=>addAiMsg('<p>客群分析已完成 ✅ 分层结果和响应率对比就在上面，可以直接 <b>生成营销策略与内容</b>。</p>')); return; }
+  addUserMsg('对圈选出的 6,240 户做客群分层分析');
+  setChips([]);
+  typingThen(()=>{
+    anaDone=true;
+    const uid='svgr'+Date.now();
+    addAiMsg(
+      '<span class="scene blue">🔍 客群分层分析 · 6,240 户</span>'
+      +'<div class="kpis">'
+      +'<div class="kpi goodk"><div class="kl">A类 · 活跃未支用优先</div><div class="kv" style="color:var(--green)">2,860<small> 户</small></div><div class="kd up">历史响应率 18.2% · 优先促动</div></div>'
+      +'<div class="kpi"><div class="kl">B类 · 低活跃观察</div><div class="kv" style="color:var(--blue)">3,380<small> 户</small></div><div class="kd flat">历史响应率 6.4% · 场景引导</div></div>'
+      +'<div class="kpi grayk"><div class="kl">C类 · 已排除</div><div class="kv">2,360<small> 户</small></div><div class="kd flat">拒绝/限制触达 · 不营销</div></div>'
+      +'<div class="kpi warnk"><div class="kl">整体基线</div><div class="kv" style="color:var(--amber)">9.8<small> %</small></div><div class="kd warn">近3期平均响应率</div></div>'
+      +'</div>'
+      /* ① 分层口径 */
+      +'<div><div class="ph"><span class="pno">1</span>分层口径（可解释）</div>'
+      +'<div class="tblwrap" style="margin-top:9px"><table class="tbl">'
+      +'<tr><th style="width:120px">分层</th><th>判定条件</th><th style="width:96px">户数</th><th style="width:120px">经营机会</th></tr>'
+      +'<tr><td><b style="color:var(--green)">A类</b> · 活跃未支用</td><td>近 30 天 APP 活跃 · 授信满 90 天 · 授信额度使用率 0%</td><td class="num">2,860</td><td class="good">高 · 优先促动</td></tr>'
+      +'<tr><td><b style="color:var(--blue)">B类</b> · 低活跃观察</td><td>APP 低活跃 · 授信未支用 · 无拒扰记录</td><td class="num">3,380</td><td class="sub">中 · 场景引导</td></tr>'
+      +'<tr><td style="color:var(--gray)">C类 · 已排除</td><td>近 90 天拒绝或限制营销触达（M02 拒扰名单）</td><td class="num">2,360</td><td class="bad">不营销</td></tr>'
+      +'</table></div></div>'
+      /* ② 响应率对比 */
+      +'<div><div class="ph"><span class="pno">2</span>近 3 期营销响应率对比</div>'
+      +'<div class="chartbox" style="margin-top:9px"><div class="ct">各客群近 3 期营销响应率（%）——A类显著高于整体基线</div><svg id="'+uid+'" width="100%" height="170" viewBox="0 0 640 170" preserveAspectRatio="none"></svg>'
+      +'<div class="legend"><span class="lg"><span class="sw" style="background:#16a34a"></span>A类（活跃未支用）</span><span class="lg"><span class="sw" style="background:#2563eb"></span>B类（低活跃观察）</span><span class="lg"><span class="sw" style="background:#d97706"></span>整体基线</span></div></div></div>'
+      /* ③ 经营机会识别 */
+      +'<div><div class="ph"><span class="pno">3</span>经营机会识别与建议</div>'
+      +'<div class="sugg" style="margin-top:9px"><div class="sh">💡 分客群经营机会</div>'
+      +'<div class="si"><span class="no">1</span><div><b>A类 · 主推</b>：额度在手但未使用，且 APP 活跃、触达成本低——建议利益点「额度已备好、随借随还」，APP 消息 + 短信优先触达，<b>优先级高</b>。</div></div>'
+      +'<div class="si"><span class="no">2</span><div><b>B类 · 场景引导</b>：不活跃不代表无需求——建议按装修、购车等消费场景做内容引导，短信 + 坐席外呼组合，<b>优先级中</b>，外呼须先完成身份核验（M05）。</div></div>'
+      +'<div class="si"><span class="no">3</span><div><b>C类 · 不营销</b>：客户已明确拒绝或被限制触达，本次与后续任务均自动排除，属合规要求而非经营选择。</div></div>'
+      +'</div><div class="footnote">分层基于脱敏示例数据 · 口径可解释、可调整，正式环境以行内客户标签体系为准</div></div>'
+      +'<div class="ai-note">📌 下一步：基于分层结果，我可以直接生成<b>差异化营销策略与三类内容草稿</b>（短信 / APP 消息 / 坐席话术），内容均需人工审核后使用。</div>'
+    );
+    requestAnimationFrame(()=>{ drawResp(document.getElementById(uid)); });
+    setChips(curChips());
+  });
+}
+
+/* ================= 营销策略生成 ================= */
+function runStrategy(){
+  if(!selDone){ addUserMsg('生成营销策略与内容'); typingThen(()=>addAiMsg('<p>请先完成客群圈选，我再生成策略与内容 😊</p>')); return; }
+  if(stratDone){ addUserMsg('生成营销策略与内容'); typingThen(()=>addAiMsg('<p>策略与内容已生成 ✅ 就在上面——可以直接 <b>提交人工审核</b> 或 <b>模拟执行与效果分析</b>。</p>')); return; }
+  addUserMsg('生成差异化营销策略与营销内容');
+  setChips([]);
+  typingThen(()=>{
+    stratDone=true;
+    addAiMsg(
+      '<span class="scene green">🎯 营销策略 · 按客群差异化</span>'
+      +'<div class="tblwrap"><table class="tbl">'
+      +'<tr><th style="width:110px">客群</th><th style="width:130px">触达方式</th><th style="width:80px">优先级</th><th>策略要点</th><th style="width:110px">历史响应参考</th></tr>'
+      +'<tr><td><b style="color:var(--green)">A类</b> 2,860 户</td><td>APP 消息 + 短信</td><td class="good">高 · 24h 内</td><td>强调「额度已备好、随借随还、按日计息」，直接给入口</td><td class="num">18.2%</td></tr>'
+      +'<tr><td><b style="color:var(--blue)">B类</b> 3,380 户</td><td>短信 + 坐席外呼</td><td>中 · 分批</td><td>按装修 / 购车等消费场景引导，外呼先做身份核验（M05）</td><td class="num">6.4%</td></tr>'
+      +'<tr><td style="color:var(--gray)">C类</td><td>不触达</td><td>—</td><td>拒绝/限制触达客户，红线排除，仅保留服务类触达</td><td class="num">—</td></tr>'
+      +'</table></div>'
+      +'<div class="ai-note">📌 触达方式参考策略建议规则（S01—S04），可按业务口径调整；历史响应率仅作参考基线，不代表本次实际效果。</div>'
+    );
+    setChips([{t:'✍️ 生成营销内容草稿',fn:()=>runContent()},{t:'🔍 先看客群分析',fn:()=>runAnalysis()}]);
+  });
+}
+
+/* ================= 营销内容生成 ================= */
+const CONTENT={
+  sms:{
+    A:{v1:'【宁波银行】尊敬的客户，您有一笔最高20万元的消费额度待使用，随借随还、按日计息，开通后资金实时到账。资金请用于日常消费，理性借贷。回T退订',
+       v2:'【宁波银行】您的消费额度已备好，最高20万，随借随还、按日计息，登录手机银行即可查看使用。资金用途须为日常消费。回T退订'},
+    B:{v1:'【宁波银行】装修、购车有资金安排？您名下的消费额度可随时启用，按日计息、灵活还款。如需了解额度详情，可登录手机银行查看。资金请用于日常消费。回T退订',
+       v2:'【宁波银行】您的消费额度可灵活用于装修、教育等日常消费场景，随借随还、按日计息。详情请登录手机银行查看。回T退订'}
+  },
+  app:{
+    A:{v1:'您的消费额度已激活待使用\n最高 200,000 元 · 随借随还 · 按日计息\n点击查看可用额度 →（资金用途须为日常消费）',
+       v2:'额度已备好，就差你点一下\n最高 20 万 · 借几天算几天利息\n查看额度 →（理性消费，量入为出）'},
+    B:{v1:'消费资金提前备\n装修 / 购车 / 教育，额度随取随用\n按日计息 · 随借随还 →（资金用途须为日常消费）',
+       v2:'大额消费不用愁\n您名下有一笔可启用的消费额度\n了解额度详情 →（理性消费提示）'}
+  },
+  call:{
+    A:{v1:'【开场】您好，这里是宁波银行客服中心，请问是尾号 **** 的客户本人吗？（先完成身份核验）\n【说明来意】看到您在我行有一笔已激活、未使用的消费额度，最高可到 20 万，随借随还、按日计息，最近有资金周转安排可以了解一下。\n【合规提醒】本次为额度介绍，不构成任何承诺；资金须用于日常消费。\n【异议处理】客户表示不需要 → 「好的，那就不打扰您了，额度会一直保留，需要时可随时在手机银行查看。」立即结束通话并记录。',
+       v2:'【开场】您好，我是宁波银行客户经理，先跟您核对一下身份信息。（核验通过后继续）\n【说明来意】您有一笔备用额度还没用过——20 万以内随借随还，按天计息，用几天算几天。\n【合规提醒】仅作产品介绍，资金用途须为日常消费。\n【异议处理】客户拒绝 → 感谢接听，立即结束，标注「拒绝营销」，30 天内不再触达。'},
+    B:{v1:'【开场】您好，这里是宁波银行客服中心，请先核对客户身份。（身份核验）\n【场景切入】最近是装修旺季 / 购车优惠季，很多客户会用您名下这笔消费额度做资金安排，随借随还、按日计息。\n【合规提醒】资金须用于日常消费，不构成投资建议。\n【异议处理】客户拒绝 → 礼貌结束，记录拒扰状态，纳入 M02 名单管理。',
+       v2:'【开场】您好，宁波银行客服，先做身份核验。（核验通过后继续）\n【场景切入】您有一笔可启用的消费额度，装修、教育等大额消费都能用，按日计息。\n【合规提醒】理性消费，资金用途须为日常消费。\n【异议处理】客户拒绝 → 立即结束并记录，30 天频控生效。'}
+  }
+};
+const CONTENT_REGEN={};
+function contentOf(tab,grp){ return (CONTENT_REGEN[tab]&&CONTENT_REGEN[tab][grp])?CONTENT[tab][grp].v2:CONTENT[tab][grp].v1; }
+function runContent(){
+  if(!stratDone){ addUserMsg('生成营销内容草稿'); typingThen(()=>addAiMsg('<p>请先生成营销策略（需要先有客群分层与触达方式），我再写内容草稿 😊</p>')); return; }
+  if(contDone){ addUserMsg('生成营销内容草稿'); typingThen(()=>addAiMsg('<p>内容草稿已生成 ✅ 就在上面——可以切换客群与渠道查看，也可以 <b>提交人工审核</b>。</p>')); return; }
+  addUserMsg('按客群生成短信、APP消息和坐席话术');
+  setChips([]);
+  typingThen(()=>{
+    contDone=true;
+    addAiMsg(
+      '<span class="scene green">✍️ 营销内容草稿 · 按客群差异化生成</span>'
+      +'<p>已生成 <b>3 类渠道 × 2 类客群</b> 共 6 版内容草稿。全部标注 <span class="demotag">示例文案 · 尚未通过正式营销审核</span>，<b>须经人工审核后方可使用</b>；可复制、可按风格要求重新生成。</p>'
+      +'<div class="ctabs">'
+      +'<button class="ctab on" onclick="showCtab(\'sms\',this)">💬 短信文案</button>'
+      +'<button class="ctab" onclick="showCtab(\'app\',this)">📱 APP 消息</button>'
+      +'<button class="ctab" onclick="showCtab(\'call\',this)">☎️ 坐席外呼话术</button>'
+      +'</div>'
+      +'<div class="cpane on" id="cp-sms">'
+      +renderContentPane('sms')
+      +'</div>'
+      +'<div class="cpane" id="cp-app">'
+      +renderContentPane('app')
+      +'</div>'
+      +'<div class="cpane" id="cp-call">'
+      +renderContentPane('call')
+      +'</div>'
+      +'<div class="ai-note">📤 所有内容默认进入「待人工审核」状态；正式环境中将连同分层口径、触达策略一起生成<b>送审单</b>，流转至营销合规审核岗（M04）。一期不会以任何形式向真实客户发送。</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="lkbtn pri" onclick="submitReview()">📤 提交人工审核</button><button class="lkbtn ghost" onclick="runSim()">🧪 模拟执行与效果分析</button></div>'
+    );
+    setChips(curChips());
+  });
+}
+function renderContentPane(tab){
+  const name={sms:'短信文案',app:'APP 消息',call:'坐席外呼话术'}[tab];
+  return '<div class="cgrp"><span style="width:9px;height:9px;border-radius:50%;background:#16a34a;display:inline-block"></span>A类 · 活跃未支用（2,860 户）</div>'
+    +'<div class="copybox"><span class="demotag">示例文案 · 尚未通过正式营销审核</span><div class="ctxt" style="margin-top:7px;white-space:pre-wrap">'+contentOf(tab,'A')+'</div>'
+    +'<div class="cops"><button class="lkbtn ghost" style="font-size:11px;padding:3px 11px" onclick="copyContent(this)">📋 复制</button><button class="lkbtn ghost" style="font-size:11px;padding:3px 11px" onclick="regenContent(\''+tab+'\',\'A\',this)">🔄 重新生成（更简短口语化）</button></div></div>'
+    +'<div class="cgrp"><span style="width:9px;height:9px;border-radius:50%;background:#2563eb;display:inline-block"></span>B类 · 低活跃观察（3,380 户）</div>'
+    +'<div class="copybox"><span class="demotag">示例文案 · 尚未通过正式营销审核</span><div class="ctxt" style="margin-top:7px;white-space:pre-wrap">'+contentOf(tab,'B')+'</div>'
+    +'<div class="cops"><button class="lkbtn ghost" style="font-size:11px;padding:3px 11px" onclick="copyContent(this)">📋 复制</button><button class="lkbtn ghost" style="font-size:11px;padding:3px 11px" onclick="regenContent(\''+tab+'\',\'B\',this)">🔄 重新生成（更简短口语化）</button></div></div>';
+}
+function showCtab(tab,btn){
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  ['sms','app','call'].forEach(k=>{
+    document.getElementById('cp-'+k).classList.toggle('on',k===tab);
+  });
+}
+function copyContent(btn){
+  const txt=btn.closest('.copybox').querySelector('.ctxt').innerText;
+  const done=()=>{ btn.textContent='✓ 已复制'; setTimeout(()=>{ btn.textContent='📋 复制'; },1600); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(done); }
+  else{ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); done(); }
+}
+function regenContent(tab,grp,btn){
+  CONTENT_REGEN[tab]=CONTENT_REGEN[tab]||{};
+  CONTENT_REGEN[tab][grp]=true;
+  const pane=document.getElementById('cp-'+tab);
+  pane.innerHTML=renderContentPane(tab);
+  // 在重渲染后的面板里找到对应客群的重新生成按钮并提示
+  const btns=pane.querySelectorAll('.copybox');
+  const idx=grp==='A'?0:1;
+  const newBtn=btns[idx]&&btns[idx].querySelectorAll('.cops button')[1];
+  if(newBtn){ newBtn.textContent='✓ 已重新生成 v2'; setTimeout(()=>{ newBtn.textContent='🔄 重新生成（更简短口语化）'; },1600); }
+  scrollBottom();
+}
+function submitReview(){
+  if(!contDone){ addUserMsg('提交人工审核'); typingThen(()=>addAiMsg('<p>请先生成营销内容草稿，再提交审核 😊</p>')); return; }
+  addUserMsg('内容确认没问题，提交人工审核');
+  setChips([]);
+  typingThen(()=>{
+    revSent=true;
+    addAiMsg(
+      '<span class="scene blue">📤 送审单已生成 · 待人工审核</span>'
+      +'<div class="ano"><div class="ah"><span class="lv">🟢</span><span class="at">《支用促动营销内容送审单》已生成</span><span class="st">待审核</span></div>'
+      +'<div class="ab">送审单包含：客群口径（6,240 户 · 条件清单）· 触达策略（A/B 两类）· 6 版内容草稿（短信 / APP / 坐席话术）。正式环境中将流转至<b>营销合规审核岗（M04）</b>，审核意见会回传到本任务。<b>本演示不会发送任何真实触达，内容状态保持「待人工审核」。</b></div></div>'
+      +'<p style="font-size:11.5px;color:var(--muted)">审核口径：AI 生成 → 人工审核 → 审核通过后才可进入投放流程；未通过内容自动退回修改，全程留痕。</p>'
+    );
+    setChips(curChips());
+  });
+}
+
+/* ================= 模拟执行与效果分析 ================= */
+const RUN_STEPS_SIM=[
+  {t:'加载模拟环境',d:'基于上期模拟结果与历史基线构建推演环境 · 全程不真实发送',c:'0.9s',at:250},
+  {t:'A类客群模拟推演',d:'2,860 户 · APP 消息 + 短信渠道 · 按历史响应基线推演',c:'1.4s',at:1200},
+  {t:'B类客群模拟推演',d:'3,380 户 · 短信 + 坐席外呼渠道 · 按历史响应基线推演',c:'1.2s',at:2600},
+  {t:'对照组推演',d:'不触达 · 按自然转化基线（2.1%）推演，用于效果对照',c:'0.8s',at:4100},
+  {t:'汇总模拟效果',d:'归因周期 7 天 · 分客群统计响应率与支用转化率',c:'1.0s',at:5600},
+];
+function runSim(){
+  if(!stratDone){ addUserMsg('模拟执行与效果分析'); typingThen(()=>addAiMsg('<p>请先完成客群圈选与策略生成，我再做模拟推演 😊</p>')); return; }
+  if(simDone){ addUserMsg('模拟执行与效果分析'); typingThen(()=>addAiMsg('<p>模拟推演已完成 ✅ 结果就在上面——可以 <b>生成效果复盘报告</b>，相关性与因果口径也都已标注。</p>')); return; }
+  addUserMsg('模拟执行本次营销策略，并做效果分析');
+  setChips([]);
+  typingThen(()=>{
+    const bubble=addAiMsg('<div class="runbox"><div class="rh"><span class="rspin"></span>正在执行 · 模拟推演（不真实发送）<span class="rp rpct">0%</span></div><div class="rsteps"></div></div>');
+    runStepsIn(bubble,RUN_STEPS_SIM,'模拟执行完成 · 用时 6.3 秒',7200,()=>{});
+    setTimeout(()=>{ simDone=true; showSimResult(); setChips(curChips()); }, 8000);
+  });
+}
+function showSimResult(){
+  const uid='svge'+Date.now();
+  addAiMsg(
+    '<span class="scene blue">🧪 模拟效果分析 · 归因周期 7 天 <span class="simtag">交互演示 · 全程未真实发送</span></span>'
+    +'<div class="kpis">'
+    +'<div class="kpi goodk"><div class="kl">A类 模拟响应率</div><div class="kv" style="color:var(--green)">26.4<small> %</small></div><div class="kd up">历史基线 18.2% · +8.2pct</div></div>'
+    +'<div class="kpi goodk"><div class="kl">A类 模拟支用转化率</div><div class="kv" style="color:var(--green)">9.2<small> %</small></div><div class="kd up">≈ 对照组自然转化 4.4 倍</div></div>'
+    +'<div class="kpi"><div class="kl">B类 模拟响应率</div><div class="kv" style="color:var(--blue)">13.8<small> %</small></div><div class="kd up">历史基线 6.4% · +7.4pct</div></div>'
+    +'<div class="kpi grayk"><div class="kl">对照组 自然转化</div><div class="kv" style="color:var(--gray)">2.1<small> %</small></div><div class="kd flat">不触达 · 仅作对照</div></div>'
+    +'</div>'
+    +'<div><div class="ph"><span class="pno">1</span>分客群模拟效果对比</div>'
+    +'<div class="chartbox" style="margin-top:9px"><div class="ct">模拟响应率 / 支用转化率对比（%）——A类显著高于对照组</div><svg id="'+uid+'" width="100%" height="180" viewBox="0 0 640 180" preserveAspectRatio="none"></svg>'
+    +'<div class="legend"><span class="lg"><span class="sw" style="background:#16a34a"></span>模拟响应率</span><span class="lg"><span class="sw" style="background:#2563eb"></span>支用转化率（A/B）· 自然转化（对照组）</span></div></div></div>'
+    /* ② 解读 */
+    +'<div><div class="ph"><span class="pno">2</span>AI 解读（相关 ≠ 因果）</div>'
+    +'<div class="judge" style="margin-top:9px"><div class="jh">🤖 效果解读与口径说明</div><div class="jb">模拟数据显示：A类客群的模拟响应率（26.4%）与支用转化率（9.2%）均<b>明显高于</b>对照组自然转化（2.1%），提示「额度已备好」利益点 + APP 优先触达的组合对活跃客群<b>可能有效</b>。<br>但需注意：<span class="am">① 相关不等于因果</span>——模拟推演基于历史基线假设，未包含市场环境、竞品活动等混杂因素；<span class="am">② 模拟结果不能直接推断真实投放效果</span>；<span class="am">③ 正式结论须以小流量真实实验为准</span>，实验设计（分组、样本量、周期）应由数据分析岗复核。</div>'
+    +'<div style="padding:0 15px 13px"><div class="sugg"><div class="sh">建议下一步</div>'
+    +'<div class="si"><span class="no">1</span><div><b>小流量真实实验</b>：建议先在 A类客群取 5%—10% 样本做真实投放实验，以真实数据验证策略</div></div>'
+    +'<div class="si"><span class="no">2</span><div><b>内容正式送审</b>：当前 6 版内容仍为示例草稿，投放前须通过营销合规审核（M04）</div></div>'
+    +'<div class="si"><span class="no">3</span><div><b>复盘对照</b>：真实实验结束后与本模拟结果对照，迭代分层口径与内容策略</div></div>'
+    +'</div><div class="footnote">以上为 AI 分析建议，供业务参考 · 模拟数据仅用于演示</div></div></div></div>'
+    +'<div class="ai-note">📌 一期边界：本演示的所有「执行」均为<b>模拟推演</b>，不生成真实营销任务、不发送短信 / APP 消息、不发起外呼；效果数据为示例数据，仅用于演示分析思路。</div>'
+  );
+  requestAnimationFrame(()=>{ drawEff(document.getElementById(uid)); });
+}
+
+/* ================= SVG 绘制 ================= */
+function drawResp(svg){
+  const W=640,H=170,padL=42,padR=16,padT=18,padB=26;
+  const cats=['A类 · 活跃未支用','B类 · 低活跃观察','整体基线'], v=[18.2,6.4,9.8];
+  const cols=['#16a34a','#2563eb','#d97706'];
+  const y0=0,y1=20;
+  const bw=64, gap=(W-padL-padR-3*bw)/4;
+  const Y=val=>padT+(H-padT-padB)*(1-(val-y0)/(y1-y0));
+  let g='';
+  for(let gv=0;gv<=20;gv+=5){ g+='<line x1="'+padL+'" y1="'+Y(gv)+'" x2="'+(W-padR)+'" y2="'+Y(gv)+'" stroke="#eef2f7"/><text x="'+(padL-7)+'" y="'+(Y(gv)+3.5)+'" text-anchor="end" font-size="10" fill="#8a99ab">'+gv+'%</text>'; }
+  cats.forEach((c,i)=>{
+    const x=padL+gap+(bw+gap)*i;
+    const bh=Y(0)-Y(v[i]);
+    g+='<rect x="'+x+'" y="'+Y(v[i])+'" width="'+bw+'" height="'+bh+'" rx="4" fill="'+cols[i]+'" opacity=".82"/>';
+    g+='<text x="'+(x+bw/2)+'" y="'+(Y(v[i])-7)+'" text-anchor="middle" font-size="12" font-weight="800" fill="'+cols[i]+'">'+v[i]+'%</text>';
+    g+='<text x="'+(x+bw/2)+'" y="'+(H-7)+'" text-anchor="middle" font-size="10.5" fill="#5a6b7d">'+c+'</text>';
+  });
+  svg.innerHTML=g;
+}
+function drawEff(svg){
+  const W=640,H=180,padL=42,padR=16,padT=18,padB=26;
+  const y0=0,y1=30;
+  const Y=v=>padT+(H-padT-padB)*(1-(v-y0)/(y1-y0));
+  const groups=[{n:'A类（模拟）',a:26.4,b:9.2},{n:'B类（模拟）',a:13.8,b:3.9},{n:'对照组（不触达）',a:null,b:2.1}];
+  const gw=(W-padL-padR)/3, bw=40, inner=(gw-bw*2)/3;
+  let g='';
+  for(let gv=0;gv<=30;gv+=10){ g+='<line x1="'+padL+'" y1="'+Y(gv)+'" x2="'+(W-padR)+'" y2="'+Y(gv)+'" stroke="#eef2f7"/><text x="'+(padL-7)+'" y="'+(Y(gv)+3.5)+'" text-anchor="end" font-size="10" fill="#8a99ab">'+gv+'%</text>'; }
+  groups.forEach((grp,i)=>{
+    const cx=padL+gw*i+gw/2;
+    if(grp.a!==null){
+      const x1=cx-bw-inner/2, x2=cx+inner/2;
+      g+='<rect x="'+x1+'" y="'+Y(grp.a)+'" width="'+bw+'" height="'+(Y(0)-Y(grp.a))+'" rx="4" fill="#16a34a" opacity=".82"/>';
+      g+='<text x="'+(x1+bw/2)+'" y="'+(Y(grp.a)-7)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#16a34a">'+grp.a+'%</text>';
+      g+='<rect x="'+x2+'" y="'+Y(grp.b)+'" width="'+bw+'" height="'+(Y(0)-Y(grp.b))+'" rx="4" fill="#2563eb" opacity=".82"/>';
+      g+='<text x="'+(x2+bw/2)+'" y="'+(Y(grp.b)-7)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#2563eb">'+grp.b+'%</text>';
+    }else{
+      g+='<rect x="'+(cx-bw/2)+'" y="'+Y(grp.b)+'" width="'+bw+'" height="'+(Y(0)-Y(grp.b))+'" rx="4" fill="#64748b" opacity=".7"/>';
+      g+='<text x="'+cx+'" y="'+(Y(grp.b)-7)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#64748b">'+grp.b+'%</text>';
+    }
+    g+='<text x="'+cx+'" y="'+(H-7)+'" text-anchor="middle" font-size="10.5" fill="#5a6b7d">'+grp.n+'</text>';
+  });
+  svg.innerHTML=g;
+}
+
+/* ================= 报告生成 ================= */
+function renderGenFiles(){
+  const gf=document.getElementById('genFiles'); let h='';
+  if(planDone){
+    h+='<div class="fitem gen" onclick="openModal(\'mPlan\')"><div class="fn">📄 支用促动营销方案.docx</div><div class="fm"><span>客群口径 · 策略 · 送审安排</span><span class="tag-doc">可预览/导出</span></div></div>'
+    +'<div style="display:flex;gap:6px;margin:2px 0 6px"><button class="lkbtn ghost" style="flex:1;font-size:11px;padding:4px 8px" onclick="downloadPlan()">⬇ 下载</button></div>';
+  }
+  if(repDone){
+    h+='<div class="fitem gen" onclick="openModal(\'mReview\')"><div class="fn">📄 模拟效果复盘报告.docx</div><div class="fm"><span>模拟口径 · 对照组 · 相关性提示</span><span class="tag-doc">可预览/导出</span></div></div>'
+    +'<div style="display:flex;gap:6px;margin:2px 0 6px"><button class="lkbtn ghost" style="flex:1;font-size:11px;padding:4px 8px" onclick="downloadReport()">⬇ 下载</button></div>';
+  }
+  gf.innerHTML=h||'<div class="fs-empty">营销方案与复盘报告<br>将出现在这里</div>';
+}
+function genPlan(){
+  if(!selDone){ addUserMsg('生成营销方案报告'); typingThen(()=>addAiMsg('<p>请先完成客群圈选，我再基于圈选结果生成方案 😊</p>')); return; }
+  addUserMsg('生成营销方案报告');
+  typingThen(()=>{
+    planDone=true;
+    addAiMsg(
+      '<p>📄 已生成 <b>《支用促动营销方案》</b>，汇总了任务口径、客群分层、策略与内容安排，已存入右侧文件区。</p>'
+      +'<div class="rcard"><div class="rc-h"><div class="rt">营 销 方 案</div><h4>消费信贷存量客户支用促动营销方案<br>本月 · 已授信未支用客群</h4><div class="rs">生成于 2026-10-13 · 客群 6,240 户 · A/B 两类差异化策略</div></div>'
+      +'<div class="rc-toc">'
+      +'<div class="ti"><b>一、</b>任务与客群口径（50,000 → 8,600 → 6,240 · 条件透明可核对）</div>'
+      +'<div class="ti"><b>二、</b>客群分层（A类 2,860 · B类 3,380 · C类 2,360 已排除）</div>'
+      +'<div class="ti"><b>三、</b>触达策略与优先级（A：APP+短信 · B：短信+外呼）</div>'
+      +'<div class="ti"><b>四、</b>营销内容方案（3 渠道 × 2 客群 · 示例 · 待审核）</div>'
+      +'<div class="ti"><b>五、</b>合规与人工审核安排（红线 M01—M06 强制执行）</div>'
+      +'<div class="ti"><b>六、</b>模拟验证计划（对照组 2.1% · 归因周期 7 天 · 不真实发送）</div>'
+      +'</div>'
+      +'<div class="rc-f"><button class="lkbtn" onclick="openModal(\'mPlan\')">查看完整方案</button><button class="lkbtn ghost" onclick="downloadPlan()">⬇ 导出 Word</button></div></div>'
+    );
+    renderGenFiles(); setChips(curChips());
+  });
+}
+function genReport(){
+  if(!simDone){ addUserMsg('生成效果复盘报告'); typingThen(()=>addAiMsg('<p>复盘报告基于模拟效果数据生成——请先执行 <b>模拟执行与效果分析</b> 😊</p>')); return; }
+  addUserMsg('生成效果复盘报告');
+  typingThen(()=>{
+    repDone=true;
+    addAiMsg(
+      '<p>📄 已生成 <b>《模拟效果复盘报告》</b>——含对照组对比与相关性口径说明，已存入右侧文件区。</p>'
+      +'<div class="rcard"><div class="rc-h"><div class="rt">复 盘 报 告</div><h4>支用促动模拟效果复盘报告<br>本月 · A/B 分客群</h4><div class="rs">生成于 2026-10-13 · 模拟推演 · 未真实发送</div></div>'
+      +'<div class="rc-toc">'
+      +'<div class="ti"><b>一、</b>模拟执行口径（示例数据 · 不真实发送 · 归因周期 7 天）</div>'
+      +'<div class="ti"><b>二、</b>分组模拟效果（A 26.4% / 9.2% · B 13.8% / 3.9%）</div>'
+      +'<div class="ti"><b>三、</b>与对照组对比（自然转化 2.1% · A类约 4.4 倍）</div>'
+      +'<div class="ti"><b>四、</b>结论与相关性提示（相关 ≠ 因果）</div>'
+      +'<div class="ti"><b>五、</b>下一步建议（小流量真实实验 · 内容正式送审）</div>'
+      +'</div>'
+      +'<div class="rc-f"><button class="lkbtn" onclick="openModal(\'mReview\')">查看完整报告</button><button class="lkbtn ghost" onclick="downloadReport()">⬇ 导出 Word</button></div></div>'
+    );
+    renderGenFiles(); setChips(curChips());
+  });
+}
+
+/* ================= 追问 QA ================= */
+const QA={
+  1:{q:'为什么营销授权有效不能去掉？',a:'<p>「营销授权有效」来自合规规则 <b>M01</b>，性质与业务筛选条件不同：</p><table class="mini-tbl"><tr><th>维度</th><th>业务条件（如 APP 活跃）</th><th>合规红线（M01）</th></tr><tr><td>目的</td><td>提升营销精准度</td><td>保护客户意愿与个人信息权益</td></tr><tr><td>能否调整</td><td>可增删改，实时重算</td><td>不可调整、不可去除</td></tr><tr><td>去掉的后果</td><td>客群规模变化，属经营选择</td><td>违规触达，本次将重新纳入 2,360 户已拒绝触达客户</td></tr><tr><td>管理方式</td><td>任务内灵活配置</td><td>系统强制执行，任何指令无法绕开</td></tr></table><p>因此当我识别到「去掉营销授权」类指令时会<b>直接拒绝执行并说明原因</b>——这不是能力限制，而是设计要求：营销动作的边界由合规决定，不由效率决定。</p>'},
+  2:{q:'A类和B类的策略有什么不同？',a:'<p>两类客群的差异在于<b>活跃度与经营机会</b>，对应策略也不同：</p><table class="mini-tbl"><tr><th>维度</th><th>A类 · 活跃未支用（2,860）</th><th>B类 · 低活跃观察（3,380）</th></tr><tr><td>客群特征</td><td>近 30 天 APP 活跃 · 授信满 90 天</td><td>APP 低活跃 · 授信未支用</td></tr><tr><td>历史响应率</td><td>18.2%</td><td>6.4%</td></tr><tr><td>触达方式</td><td>APP 消息 + 短信 · 24h 内优先</td><td>短信 + 坐席外呼 · 分批触达</td></tr><tr><td>内容利益点</td><td>「额度已备好 · 随借随还」直接给入口</td><td>装修 / 购车等消费场景引导</td></tr><tr><td>优先级</td><td>高</td><td>中（外呼须先身份核验）</td></tr></table><p>简单说：<b>A类是「提醒他用」，B类是「告诉他有什么用」</b>——同一个产品，不同客群讲不同的故事。</p>'},
+  3:{q:'这次营销的合规边界是什么？',a:'<p>本次任务全程受 18 项营销规则约束，其中 6 项为硬性红线：</p><table class="mini-tbl"><tr><th>红线</th><th>要求</th><th>在本任务中的体现</th></tr><tr><td>M01</td><td>营销授权有效</td><td>客群圈选硬性条件 · 不可去除</td></tr><tr><td>M02</td><td>拒扰名单排除</td><td>C类 2,360 户自动排除</td></tr><tr><td>M03</td><td>30 天频控</td><td>同一客户 30 天内触达 ≤ 1 次</td></tr><tr><td>M04</td><td>内容人工审核</td><td>6 版内容均标注「待审核」，不审核不投放</td></tr><tr><td>M05</td><td>外呼身份核验</td><td>坐席话术第一条即身份核验</td></tr><tr><td>M06</td><td>短信退订方式</td><td>所有短信文案含「回T退订」</td></tr></table><p>另外本演示处于<b>一期验证阶段</b>：全程不向真实客户发送任何营销信息，执行均为模拟推演。</p>'},
+  4:{q:'模拟效果好能代表真实效果吗？',a:'<p><b>不能直接代表，但能回答「值不值得做实验」。</b>口径区别：</p><table class="mini-tbl"><tr><th>维度</th><th>模拟推演（本次）</th><th>真实投放</th></tr><tr><td>数据来源</td><td>历史基线 + 上期模拟结果（示例数据）</td><td>真实客户触达与行为数据</td></tr><tr><td>混杂因素</td><td>未纳入（市场环境、竞品、季节性）</td><td>真实存在</td></tr><tr><td>结论性质</td><td>方向性参考 · 提示策略可能有效</td><td>可做统计显著性检验的经营结论</td></tr><tr><td>对照组</td><td>自然转化基线 2.1%（推演）</td><td>随机分组的真实对照组</td></tr></table><p>因此复盘报告里的表述是「<b>模拟数据显示…提示策略可能有效，相关不等于因果</b>」——下一步是用 A类 5%—10% 样本的小流量真实实验来验证，而不是直接全量投放。</p>'},
+};
+function askQA(id){ addUserMsg(QA[id].q); typingThen(()=>addAiMsg(QA[id].a)); }
+
+/* ================= 自由输入 ================= */
+function freeAsk(){
+  const inp=document.getElementById('chatInput');
+  const q=inp.value.trim(); if(!q) return;
+  inp.value='';
+  if(/圈|促动|支用|客群|开始|发起/.test(q) && !selDone){ startTask(); return; }
+  if(/为什么.*授权|授权.*为什么|去掉.*授权|授权.*去掉/.test(q)){ askQA(1); return; }
+  if(/红线|合规|边界|规则/.test(q)){ askQA(3); return; }
+  if(/A类|B类|分层|差异/.test(q)){ askQA(2); return; }
+  if(/模拟|真实|效果.*代表|代表.*效果|因果|相关/.test(q)){ askQA(4); return; }
+  if(/分析/.test(q)){ runAnalysis(); return; }
+  if(/策略/.test(q)){ runStrategy(); return; }
+  if(/内容|文案|话术/.test(q)){ runContent(); return; }
+  if(/送审|提交|审核/.test(q)){ submitReview(); return; }
+  if(/复盘报告/.test(q)){ genReport(); return; }
+  if(/报告|方案/.test(q)){ genPlan(); return; }
+  addUserMsg(q);
+  typingThen(()=>addAiMsg('<p>这个问题超出当前演示数据范围 😊 本次演示聚焦「一句话圈客 → 分客群策略与内容 → 模拟效果复盘」。可以试试：</p><p>· 圈选本月可做支用促动的客户<br>· 为什么营销授权有效不能去掉？<br>· A类和B类的策略有什么不同？<br>· 模拟效果好能代表真实效果吗？</p>'));
+}
+
+/* ================= 任务切换（历史） ================= */
+const PAST={
+  t2:'<div class="msg ai"><div class="mav">🤖</div><div class="mb"><div class="ai-bubble"><span class="scene green">📊 历史任务 · 上月支用促动复盘</span>'
+    +'<p>上月支用促动任务（模拟口径）共覆盖 <b>4,820 户</b>：模拟响应率 <b>21.7%</b>、模拟支用转化率 <b>7.8%</b>，较上上月提升 2.3pct。A类客群贡献了 71% 的转化。</p>'
+    +'<div class="ai-note">📌 该任务已归档：内容经人工审核后进入模拟执行 · 一期全程未真实发送 · 复盘报告已存档。</div></div></div></div>',
+  t3:'<div class="msg ai"><div class="mav">🤖</div><div class="mb"><div class="ai-bubble"><span class="scene green">🎯 历史任务 · 9月新客活动复盘</span>'
+    +'<p>9月新客首单促动（模拟口径）覆盖 <b>3,120 户</b>：模拟响应率 <b>16.9%</b>、模拟首单转化 <b>6.2%</b>；「首单立减」类利益点响应优于「额度提醒」类 3.1pct。</p>'
+    +'<div class="ai-note">📌 该任务已归档：结论已回流至策略规则库（S04 优化）· 一期全程未真实发送。</div></div></div></div>'
+};
+const savedHtml={}; let curChat='t1';
+function switchChat(t){
+  if(t===curChat) return;
+  document.querySelectorAll('.hitem').forEach(h=>h.classList.remove('on'));
+  document.getElementById('hi-'+t).classList.add('on');
+  saveState();
+  savedHtml[curChat]=document.getElementById('streamIn').innerHTML;
+  curChat=t;
+  loadState(t); renderGenFiles();
+  const html=(t in savedHtml)?savedHtml[t]:(PAST[t]||'');
+  savedHtml[t]=html;
+  document.getElementById('streamIn').innerHTML=html;
+  document.getElementById('welcome').style.display=html?'none':'block';
+  setChips(curChips());
+  streamEl.scrollTop = streamEl.scrollHeight;
+}
+let newTaskSeq=0;
+function newTask(){
+  savedHtml[curChat]=document.getElementById('streamIn').innerHTML;
+  saveState();
+  document.querySelectorAll('.hitem').forEach(h=>h.classList.remove('on'));
+  newTaskSeq++;
+  const id='new'+newTaskSeq;
+  savedHtml[id]='';
+  const item=document.createElement('div');
+  item.className='hitem on'; item.id='hi-'+id;
+  item.innerHTML='<span class="hi">💬</span><span>新任务</span>';
+  item.onclick=()=>switchChat(id);
+  const first=document.getElementById('hi-t1');
+  first.parentElement.insertBefore(item,first);
+  curChat=id;
+  loadState(id); renderGenFiles();
+  document.getElementById('streamIn').innerHTML='';
+  document.getElementById('welcome').style.display='block';
+  setChips(curChips());
+}
+
+/* ================= 弹窗 / 预览 / 下载 ================= */
+function openModal(id){ document.getElementById(id).classList.add('on'); }
+function closeModal(id){ document.getElementById(id).classList.remove('on'); }
+function previewRules(){ openModal('mRules'); }
+const FILES={
+  f1:{t:'客户经营数据.xlsx · 字段与口径',rows:[['数据范围','消费信贷存量客户 · 50,000 户'],['脱敏说明','客户编号已脱敏（C****），仅用于演示'],['关键字段','授信状态 / 支用状态 / 授信额度 / 支用余额'],['行为字段','APP 活跃度 · 近 30 天登录 · 最近触达时间'],['合规字段','营销授权状态 · 拒扰标记 · 30 天频控状态'],['历史表现','近 3 期营销响应 / 转化记录'],['数据更新','2026-10-13 · T+1 批次']]},
+  f3:{t:'模拟营销结果（上期）.xlsx · 示例数据',rows:[['任务','上月支用促动（模拟口径）'],['A类 模拟响应率','24.1%'],['A类 模拟支用转化率','8.4%'],['B类 模拟响应率','12.6%'],['B类 模拟支用转化率','3.5%'],['对照组自然转化','2.0%'],['数据性质','示例数据 · 仅用于演示，不构成经营依据']]},
+};
+function previewFile(id){
+  const f=FILES[id]; if(!f) return;
+  document.getElementById('mfTitle').textContent=f.t;
+  let h='<table class="tbl"><tr><th style="width:170px">字段 / 指标</th><th>内容</th></tr>';
+  f.rows.forEach(r=>{ h+='<tr><td class="sub">'+r[0]+'</td><td><b>'+r[1]+'</b></td></tr>'; });
+  h+='</table><div style="font-size:11px;color:var(--muted);margin-top:12px">本演示数据均为脱敏 / 模拟口径 · 一期营销验证不使用真实客户数据</div>';
+  document.getElementById('mfBody').innerHTML=h;
+  openModal('mFile');
+}
+function dlWord(html,name){
+  const blob=new Blob(['﻿'+html],{type:'application/msword'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function downloadPlan(){
+  const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><title>支用促动营销方案</title></head><body style="font-family:\'PingFang SC\',\'Microsoft YaHei\',sans-serif;line-height:1.9">'
+  +'<h1 style="text-align:center">消费信贷存量客户支用促动营销方案</h1>'
+  +'<p style="text-align:center;color:#888;font-size:12px">AI精准营销与客群经营数字员工 自动生成 · 2026-10-13 · 本月</p>'
+  +'<h2>一、任务与客群口径</h2><p>任务由业务人员一句话发起，经确认解析为：目标客群 = 已授信未支用 · 营销授权有效 · 非拒扰名单。候选客户池 50,000 户 → 已授信未支用 8,600 户 → 排除近 90 天拒绝或限制触达客户 2,360 户 → 最终目标客群 6,240 户。全部筛选条件透明列出，业务可核对、可调整（合规红线除外）。</p>'
+  +'<h2>二、客群分层</h2><p>A类 · 活跃未支用优先：2,860 户（近 30 天 APP 活跃 · 授信满 90 天 · 历史营销响应率 18.2%）；B类 · 低活跃观察：3,380 户（历史响应率 6.4%）；C类 2,360 户因拒绝或限制触达已排除。</p>'
+  +'<h2>三、触达策略与优先级</h2><p>A类：APP 消息 + 短信，优先级高，24 小时内优先触达，利益点「额度已备好、随借随还」；B类：短信 + 坐席外呼话术，优先级中，分批触达，利益点「消费场景引导」，外呼须先完成身份核验。</p>'
+  +'<h2>四、营销内容方案（示例 · 待审核）</h2><p>已按客群差异化生成短信、APP 消息、坐席话术共 6 版内容草稿；全部内容标注「示例文案 · 尚未通过正式营销审核」，须经人工审核后方可使用。</p>'
+  +'<h2>五、合规与人工审核安排</h2><p>硬性合规条件（营销授权有效 M01、拒扰名单 M02、30 天频控 M03、内容审核 M04、身份核验 M05、退订方式 M06）全程强制执行，不可去除；送审单已生成，正式环境将流转至营销合规审核岗。</p>'
+  +'<h2>六、模拟验证计划</h2><p>一期仅做模拟执行：按历史基线对 A/B 两类客群模拟推演，设置对照组（自然转化基线 2.1%），归因周期 7 天；全程不向真实客户发送任何营销信息。</p>'
+  +'<p style="color:#888;font-size:11px">方案执行须以人工审核通过为前提。一期营销验证基于脱敏 / 模拟数据。</p></body></html>';
+  dlWord(html,'支用促动营销方案_本月.doc');
+}
+function downloadReport(){
+  const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><title>模拟效果复盘报告</title></head><body style="font-family:\'PingFang SC\',\'Microsoft YaHei\',sans-serif;line-height:1.9">'
+  +'<h1 style="text-align:center">支用促动模拟效果复盘报告</h1>'
+  +'<p style="text-align:center;color:#888;font-size:12px">AI精准营销与客群经营数字员工 自动生成 · 2026-10-13 · 本月</p>'
+  +'<h2>一、模拟执行口径</h2><p>本次效果为模拟推演结果：基于上期模拟结果与历史基线数据，对 A/B 两类客群共 6,240 户进行模拟推演；设置对照组（不触达，按自然转化基线推演）；归因周期 7 天。全程未向真实客户发送任何营销信息。</p>'
+  +'<h2>二、分组模拟效果</h2><p>A类（2,860 户）：模拟响应率 26.4%（历史基线 18.2%），模拟支用转化率 9.2%；B类（3,380 户）：模拟响应率 13.8%（历史基线 6.4%），模拟支用转化率 3.9%；对照组自然转化 2.1%。</p>'
+  +'<h2>三、与对照组对比</h2><p>A类模拟支用转化率约为对照组自然转化的 4.4 倍，B类约为 1.9 倍；A类对差异化策略的敏感度显著高于 B类，建议后续资源向 A类客群倾斜。</p>'
+  +'<h2>四、结论与相关性提示</h2><p>模拟数据显示本次差异化策略对 A类客群效果明显，但相关不等于因果：模拟推演基于历史基线假设，未包含真实市场环境变化、竞品活动等混杂因素，不能直接断言真实投放将获得同等效果。</p>'
+  +'<h2>五、下一步建议</h2><p>1. 申请小流量真实实验（建议 A类客群 5%—10% 样本），以真实触达数据验证策略；2. 实验组 / 对照组设计由数据分析岗复核；3. 内容文案正式送审；4. 复盘周期结束后将真实结果与本模拟结果对照，迭代策略与分层口径。</p>'
+  +'<p style="color:#888;font-size:11px">模拟结果仅用于演示与策略讨论，不构成经营承诺。</p></body></html>';
+  dlWord(html,'支用促动模拟效果复盘报告_本月.doc');
+}
+setChips(CHIPS_HOME);
+</script>
+</body>
+</html>
