@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -610,6 +609,8 @@ body.sb-collapsed .sb-toggle{left:64px}
 .wtip:hover{color:var(--g600)}
 .wtip:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);background:var(--g800);color:#fff;font-size:12px;font-weight:400;padding:5px 10px;border-radius:6px;white-space:nowrap;z-index:60;box-shadow:var(--shadow-lg)}
 .wtip:hover::before{content:'';position:absolute;left:50%;bottom:calc(100% + 2px);transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--g800);z-index:60}
+.wtip.wide:hover::after{white-space:normal;width:250px;line-height:1.7;text-align:left;left:0;transform:none}
+.wtip.wide:hover::before{left:10px;transform:none}
 .msg-pop .msg-it{align-items:flex-start}
 .crumb-home{color:var(--e600);font-weight:600;cursor:pointer}
 .crumb-home:hover{text-decoration:underline}
@@ -2645,6 +2646,8 @@ function handleAct(act, el) {
       renderQOpts(); break;
     }
     case 'qf-opt-add': syncQOpts(); window.__qEdit.opts.push(''); renderQOpts(); break;
+    case 'qf-blank-add': syncQOpts(); window.__qEdit.ansList.push(''); renderQOpts(); break;
+    case 'qf-blank-del': { syncQOpts(); window.__qEdit.ansList.splice(+d.i, 1); renderQOpts(); break; }
     case 'qf-opt-del': {
       const i = +d.i, st = window.__qEdit;
       syncQOpts();
@@ -2704,13 +2707,24 @@ function handleAct(act, el) {
       toast('已批量设置 ' + sel.length + ' 题的分类/难度'); qiRender(); break;
     }
     case 'plan-mode': planPull(); APP.planDraft.mode = d.mode; renderPlanEdit(); break;
-    case 'plan-cat-toggle': { planPull(); const cs = APP.planDraft.cats, c = d.cat; const i = cs.indexOf(c); if (i < 0) cs.push(c); else cs.splice(i, 1); renderPlanEdit(); break; }
+    case 'plan-cat-toggle': { planPull(); const cs = APP.planDraft.cats, c = d.cat; const i = cs.indexOf(c); if (i < 0) cs.push(c); else cs.splice(i, 1); markPlanStale(); renderPlanEdit(); break; }
     case 'plan-grader-toggle': { planPull(); const gs = APP.planDraft.graders, gid = +d.gid; const i = gs.indexOf(gid); if (i < 0) gs.push(gid); else gs.splice(i, 1); renderPlanEdit(); break; }
     case 'plan-pick-open': planPull(); APP.planDraft.picking = true; renderPlanEdit(); break;
     case 'plan-pick-close': APP.planDraft.picking = false; renderPlanEdit(); break;
     case 'plan-pick-filter': planPickFilter(); break;
     case 'plan-pick-toggle': { const qs = APP.planDraft.qids, id = d.id; const i = qs.indexOf(id); if (i < 0) qs.push(id); else qs.splice(i, 1); renderPlanPickPanel(); break; }
     case 'plan-pick-done': APP.planDraft.picking = false; renderPlanEdit(); break;
+    case 'plan-draw': doPlanDraw(); break;
+    case 'plan-paper-view': planPull(); renderPlanPaperPanel(); break;
+    case 'plan-paper-close': renderPlanEdit(); break;
+    case 'plan-paper-ck': {
+      // 勾选切换：取消勾选行不消失（置灰），可再次勾回
+      const pd = APP.planDraft; if (!pd) break;
+      if (!pd.drawnOff) pd.drawnOff = [];
+      const i = pd.drawnOff.indexOf(d.id);
+      if (i < 0) pd.drawnOff.push(d.id); else pd.drawnOff.splice(i, 1);
+      renderPlanPaperPanel(); break;
+    }
     case 'dict-cat': APP.tab.dictType = d.id; renderView(APP.view); break;
     case 'dict-item-add': openDictItemEdit(d.tid, null); break;
     case 'dict-item-edit': openDictItemEdit(d.tid, d.id); break;
@@ -4249,6 +4263,7 @@ function renderSEPracticeNew() {
   if (d.picking) { renderSEPracPick(true); return; }
   const cats = BANK_CATS();
   const fx = { cnt: d.qids.length, sum: d.qids.reduce((s, id) => s + ((DEMO.questions.find(q => q.id === id) || {}).score || 0), 0) };
+  const fxQs = d.qids.map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean);
   const modeBtn = (v, ic, t, s) => `<div class="pick-mode${d.mode === v ? ' on' : ''}" data-act="se-prac-mode" data-mode="${v}">
     <div class="pm-ic"><i class="${ic}"></i></div><div><div class="pm-t">${t}</div><div class="pm-s">${s}</div></div></div>`;
   const assembly = d.mode === '固定选题'
@@ -4257,7 +4272,7 @@ function renderSEPracticeNew() {
           <button class="btn" data-act="se-prac-pick-open"><i class="ri-list-check-2"></i>选择试题</button>
           <div style="font-size:13px;color:var(--g600)">已选 <b style="color:var(--e600)">${fx.cnt}</b> 题 · 总分 <b style="color:var(--e600)">${fx.sum}</b> 分</div>
         </div>
-        ${fx.cnt ? `<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">${d.qids.map(id => { const q = DEMO.questions.find(x => x.id === id); return q ? `<span class="tag">${q.type}·${q.score}分</span>` : ''; }).join('')}</div>` : `<div style="margin-top:8px;font-size:12px;color:var(--g400)">从题库中勾选题目，系统按题目分值实时汇总总分</div>`}
+        ${fx.cnt ? `<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">${planTypeSumTagsHTML(fxQs)}</div>` : `<div style="margin-top:8px;font-size:12px;color:var(--g400)">从题库中勾选题目，系统按题目分值实时汇总总分</div>`}
       </div>`
     : `<div class="form-grid">
         <div class="field2 full"><label>题目分类范围</label>
@@ -12003,7 +12018,8 @@ function openQuestionEdit(id) {
   const isEdit = !!q;
   const type = q ? q.type : '单选';
   const opts = q ? q.opts.slice() : ['', '', '', ''];
-  window.__qEdit = { id: qiIdx != null ? null : (id || null), qiIdx, type, opts, ans: q ? q.ans.slice() : [], ansText: q ? (q.ansText || '') : '' };
+  window.__qEdit = { id: qiIdx != null ? null : (id || null), qiIdx, type, opts, ans: q ? q.ans.slice() : [], ansText: q ? (q.ansText || '') : '',
+    ansList: q && q.type === '填空' && q.ansText ? String(q.ansText).split('；') : [''] };
   openModal(modalHead(isEdit ? '编辑试题' : '新增试题', '', true) + `
     <div class="modal-body">
       <div class="form-grid">
@@ -12045,6 +12061,7 @@ function openQuestionEdit(id) {
     window.__qEdit.type = ts.value;
     window.__qEdit.ans = [];
     if (window.__qEdit.type === '判断') window.__qEdit.opts = ['正确', '错误'];
+    if (window.__qEdit.type === '填空' && window.__qEdit.ansList.length === 1 && !window.__qEdit.ansList[0] && window.__qEdit.ansText) window.__qEdit.ansList = [window.__qEdit.ansText];
     renderQOpts();
     if (!window.__qEdit.id) { const sf = $('#q-f-score'); if (sf) sf.value = qTypeDefaultScore(ts.value); }
   });
@@ -12055,10 +12072,21 @@ function renderQOpts() {
   const single = st.type !== '多选';
   const prevAns = $('#q-f-ans'); if (prevAns) st.ansText = prevAns.value;
   const isQA = st.type === '简答' || st.type === '填空';
-  const lab = $('#q-opts-label'); if (lab) lab.innerHTML = `<span class="req">*</span>` + (isQA ? '正确答案' : '选项与正确答案');
+  const lab = $('#q-opts-label'); if (lab) lab.innerHTML = `<span class="req">*</span>` + (isQA ? '正确答案' : '选项与正确答案') + (st.type === '填空' ? ` <span class="wtip wide" data-tip="同一题可填写多组正确答案，命中其中一组即判正确；若一题有多个空，各组答案内以“、”分隔。"><i class="ri-information-line"></i></span>` : '');
+  if (st.type === '填空') {
+    // 多组备选答案：第一组不可删除，其余可增删；一组内多个空以、分隔
+    if (!st.ansList || !st.ansList.length) st.ansList = st.ansText ? st.ansText.split('；') : [''];
+    box.innerHTML = st.ansList.map((v, i) => `
+      <div class="q-opt-row">
+        <span class="o-tag">${i + 1}</span>
+        <input class="input q-blank-in" data-i="${i}" value="${esc(v)}" placeholder="正确答案 ${i + 1}（多个空以、分隔）">
+        ${i > 0 ? `<button class="btn btn-sm" data-act="qf-blank-del" data-i="${i}"><i class="ri-close-line"></i></button>` : '<span style="width:20px"></span>'}
+      </div>`).join('') +
+      (st.ansList.length < 8 ? `<button class="btn btn-sm" data-act="qf-blank-add" style="margin-top:8px"><i class="ri-add-line"></i>添加选项</button>` : '');
+    return;
+  }
   if (isQA) {
-    const ph = st.type === '填空' ? '填写正确答案（自动判分，支持关键词匹配）' : '填写参考答案要点，用于评分参考';
-    box.innerHTML = `<textarea class="textarea" id="q-f-ans" placeholder="${ph}">${esc(st.ansText || '')}</textarea>`;
+    box.innerHTML = `<textarea class="textarea" id="q-f-ans" placeholder="填写参考答案要点，用于评分参考">${esc(st.ansText || '')}</textarea>`;
     return;
   }
   if (st.type === '判断') {
@@ -12077,6 +12105,7 @@ function renderQOpts() {
 }
 function syncQOpts() {
   $$('.q-opt-in').forEach(inp => { window.__qEdit.opts[+inp.dataset.i] = inp.value; });
+  $$('.q-blank-in').forEach(inp => { window.__qEdit.ansList[+inp.dataset.i] = inp.value; });
 }
 function doQSave() {
   const st = window.__qEdit;
@@ -12089,7 +12118,9 @@ function doQSave() {
     const isTF = st.type === '简答' || st.type === '填空';
     let opts = [], ans = [], ansText = '';
     if (isTF) {
-      ansText = ($('#q-f-ans').value || '').trim();
+      ansText = st.type === '填空'
+        ? st.ansList.map(x => x.trim()).filter(Boolean).join('；')
+        : ($('#q-f-ans').value || '').trim();
       if (!ansText) { toast('请填写正确答案', 'error'); return; }
     } else {
       opts = st.opts.map(o => o.trim()).filter(o => o !== '');
@@ -12114,7 +12145,9 @@ function doQSave() {
   }
   let rec;
   if (st.type === '简答' || st.type === '填空') {
-    const ansText = ($('#q-f-ans').value || '').trim();
+    const ansText = st.type === '填空'
+      ? st.ansList.map(x => x.trim()).filter(Boolean).join('；')
+      : ($('#q-f-ans').value || '').trim();
     if (!ansText) { toast('请填写正确答案', 'error'); return; }
     const saveType = st.type === '填空' ? '填空' : '简答';
     rec = {
@@ -12158,8 +12191,7 @@ function doQDel(id) {
   if (i >= 0) DEMO.questions.splice(i, 1);
   closeModal(); toast('试题已删除'); renderView(APP.view);
 }
-function openQuestionView(id, row) {
-  const x = row || DEMO.questions.find(q => q.id === id); if (!x) return;
+function questionDetailCardsHTML(x) {
   const isQA = x.type === '简答' || x.type === '填空';
   const ansSet = new Set(x.ans);
   const optRows = isQA ? '' : x.opts.map((o, i) => {
@@ -12171,10 +12203,10 @@ function openQuestionView(id, row) {
     </div>`;
   }).join('');
   const ansTxt = isQA ? (x.ansText || '—') : x.ans.map(i => String.fromCharCode(65 + i)).join('、');
-  openDrawer(drawerHead('', '试题详情', '') + `
+  return `
     <div class="card">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px">
-        ${[['题目编号', x.id || '—'], ['题型', x.type], ['一级分类', x.cat1], ['二级分类', x.cat2], ['难度', x.diff], ['分值', x.score + ' 分'], ['状态', x.status || '启用'], ['创建人', x.creator || (row ? '本次导入' : '张敏')], ['创建时间', x.created || '导入时生成']].map(r =>
+        ${[['题目编号', x.id || '—'], ['题型', x.type], ['一级分类', x.cat1], ['二级分类', x.cat2], ['难度', x.diff], ['分值', x.score + ' 分'], ['状态', x.status || '启用'], ['创建人', x.creator || (x.id ? '张敏' : '本次导入')], ['创建时间', x.created || '导入时生成']].map(r =>
           `<div class="kv"><span class="k">${r[0]}</span><span class="v">${esc(String(r[1]))}</span></div>`).join('')}
       </div>
       <div class="kv"><span class="k">正确答案</span><span class="v" style="color:var(--e600);font-weight:600">${ansTxt}</span></div>
@@ -12187,7 +12219,11 @@ function openQuestionView(id, row) {
     </div>
     <div class="card" style="margin-bottom:0"><div class="card-title">答案解析</div>
       <div style="font-size:13px;line-height:1.85;color:var(--g700)">${x.parse ? esc(x.parse) : '<span style="color:var(--g400)">暂无解析</span>'}</div>
-    </div>`);
+    </div>`;
+}
+function openQuestionView(id, row) {
+  const x = row || DEMO.questions.find(q => q.id === id); if (!x) return;
+  openDrawer(drawerHead('', '试题详情', '') + questionDetailCardsHTML(x));
 }
 /* ========== 题库 · 批量导入（Excel / Word 双入口 · 三步：选择上传 → 解析预览 → 导入完成） ==========
    解析结果为内置演示数据；仅「可导入 / 疑似重复」写入题库，校验失败 / 待完善不入库（支持部分成功） */
@@ -12486,6 +12522,10 @@ function openPlanEdit(id) {
     dur: p.dur, pass: p.pass, maxtry: p.maxTry, full: p.full || DEMO.examDefaults.full,
     graders: (p.graders || []).slice(),
     picking: false, pf: {},
+    drawn: (p.mode === '随机抽题' ? (p.drawn || []) : []).slice(),
+    drawnOff: (p.mode === '随机抽题' ? (p.drawnOff || []) : []).slice(),
+    drawnCnt: p.drawnCnt ? Object.assign({}, p.drawnCnt) : null,
+    drawnCond: p.drawnCond || null, short: (p.short || []).slice(), stale: false,
   } : {
     id: null, title: '', desc: '', start: '', end: '',
     scopeOffices: CONFIG.org.reduce(function (a, r) { return a.concat(r.offices.map(function (o) { return o.name; })); }, []),
@@ -12495,6 +12535,7 @@ function openPlanEdit(id) {
     dur: d.dur, pass: d.pass, maxtry: d.retry, full: d.full,
     graders: [],
     picking: false, pf: {},
+    drawn: [], drawnOff: [], drawnCnt: null, drawnCond: null, short: [], stale: false,
   };
   renderPlanEdit();
 }
@@ -12513,6 +12554,10 @@ function openPlanRepublish(id) {
     dur: p.dur, pass: p.pass, maxtry: p.maxTry, full: p.full || DEMO.examDefaults.full,
     graders: (p.graders || []).slice(),
     picking: false, pf: {},
+    drawn: (p.mode === '随机抽题' ? (p.drawn || []) : []).slice(),
+    drawnOff: (p.mode === '随机抽题' ? (p.drawnOff || []) : []).slice(),
+    drawnCnt: p.drawnCnt ? Object.assign({}, p.drawnCnt) : null,
+    drawnCond: p.drawnCond || null, short: (p.short || []).slice(), stale: false,
   };
   APP.planRepublish = true;
   renderPlanEdit();
@@ -12531,6 +12576,36 @@ function planPull() {
     d.types = { 单选: n('pl-t-single'), 多选: n('pl-t-multi'), 判断: n('pl-t-judge') };
     d.diff = { easy: n('pl-d-easy'), mid: n('pl-d-mid'), hard: n('pl-d-hard') };
   }
+  markPlanStale();
+}
+/* 组卷条件快照：分类范围 + 题型数量 + 难度比例 */
+function planCondKey(d) { return JSON.stringify([(d.cats || []).slice().sort(), d.types, d.diff]); }
+/* 条件与抽题时不一致 → 结果失效，须重新抽题 */
+function markPlanStale() {
+  const d = APP.planDraft; if (!d) return;
+  if (d.mode === '随机抽题' && d.drawn && d.drawn.length && !d.stale && d.drawnCond && planCondKey(d) !== d.drawnCond) d.stale = true;
+}
+/* 当前试卷：固定选题取 qids，随机抽题取抽题结果 drawn */
+function planPaperQs() {
+  const d = APP.planDraft;
+  const off = d.drawnOff || [];
+  const ids = d.mode === '固定选题' ? d.qids : (d.drawn || []).filter(id => !off.includes(id));
+  return ids.map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean);
+}
+function planPaperTotal() { return planPaperQs().reduce((s, q) => s + q.score, 0); }
+function planTypeSumTagsHTML(qs) {
+  return [['单选', '单选题'], ['多选', '多选题'], ['判断', '判断题']].map(([t, label]) => {
+    const list = qs.filter(q => q.type === t);
+    return list.length ? `<span class="tag">${label} ${list.length}题 / ${list.reduce((s, q) => s + q.score, 0)}分</span>` : '';
+  }).filter(Boolean).join(' ');
+}
+/* 随机抽题结果被手动删除 → 按题型比对抽题时数量，返回缺口 */
+function planDrawnGap() {
+  const d = APP.planDraft;
+  if (d.mode !== '随机抽题' || !d.drawnCnt) return null;
+  const qs = planPaperQs();
+  const hit = [['单选', '单选题'], ['多选', '多选题'], ['判断', '判断题']].find(([t]) => qs.filter(q => q.type === t).length < (d.drawnCnt[t] || 0));
+  return hit ? { label: hit[1], n: d.drawnCnt[hit[0]] - qs.filter(q => q.type === hit[0]).length } : null;
 }
 function planSelectedQs() {
   const d = APP.planDraft;
@@ -12582,6 +12657,9 @@ function planFixedSummary() {
 }
 function planTotalScore(d) {
   if (d.mode === '固定选题') return planFixedSummary().sum;
+  if (d.drawn && d.drawn.length) {
+    return d.drawn.map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean).reduce((s, q) => s + q.score, 0);
+  }
   const ts = DEMO.examTypeScores;
   const s = t => (ts.find(x => x.label === t) || {}).score || 0;
   return (d.types.单选||0) * s('单选题') + (d.types.多选||0) * s('多选题') + (d.types.判断||0) * s('判断题');
@@ -12618,16 +12696,18 @@ function renderPlanEdit() {
   if (d.picking) { renderPlanPickPanel(true); return; }
   const isEdit = !!d.id;
   const cats = BANK_CATS();
-  const fx = planFixedSummary();
   const modeBtn = (v, ic, t, s) => `<div class="pick-mode${d.mode === v ? ' on' : ''}" data-act="plan-mode" data-mode="${v}">
     <div class="pm-ic"><i class="${ic}"></i></div><div><div class="pm-t">${t}</div><div class="pm-s">${s}</div></div></div>`;
+  const paperQs = planPaperQs();
+  const paperTotal = paperQs.reduce((s, q) => s + q.score, 0);
+  const paperHead = `<div style="font-size:13px;color:var(--g600)">总题数 <b style="color:var(--e600)">${paperQs.length}</b> 题 ｜ 总分 <b style="color:var(--e600)">${paperTotal}</b> 分</div>`;
   const assembly = d.mode === '固定选题'
     ? `<div class="card" style="margin:0;box-shadow:none;border:1px solid var(--g200);background:var(--g50)">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <button class="btn" data-act="plan-pick-open"><i class="ri-list-check-2"></i>选择试题</button>
-          <div style="font-size:13px;color:var(--g600)">已选 <b style="color:var(--e600)">${fx.cnt}</b> 题 · 总分 <b style="color:var(--e600)">${fx.sum}</b> 分</div>
+          ${paperQs.length ? paperHead : `<div style="font-size:12px;color:var(--g400)">从题库中勾选题目，系统按题目分值自动汇总总分</div>`}
         </div>
-        ${fx.cnt ? `<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">${planSelectedQs().map(q => `<span class="tag">${q.type}·${q.score}分</span>`).slice(0, 40).join('')}</div>` : `<div style="margin-top:8px;font-size:12px;color:var(--g400)">从题库中勾选题目，系统按题目分值实时汇总总分</div>`}
+        ${paperQs.length ? `<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">${planTypeSumTagsHTML(paperQs)}</div>` : ''}
       </div>`
     : `<div class="form-grid">
         <div class="field2 full"><label>题目分类范围</label>
@@ -12645,7 +12725,19 @@ function renderPlanEdit() {
             <div style="flex:1;display:flex;align-items:center;gap:6px"><span style="font-size:12.5px;color:var(--g600);white-space:nowrap">困难</span><input class="input" id="pl-d-hard" type="number" value="${d.diff.hard}" style="padding:7px 10px"><span style="color:var(--g400)">%</span></div>
           </div>
           <div id="pl-diff-hint" style="font-size:12px;color:var(--g400);margin-top:6px">简单 / 中等 / 困难 占比合计应为 100%</div></div>
-      </div>`;
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
+        <button class="btn btn-primary" data-act="plan-draw"><i class="ri-shuffle-line"></i>一键抽题</button>
+        ${paperQs.length ? `<button class="btn" data-act="plan-paper-view"><i class="ri-file-list-3-line"></i>查看试题列表</button>` : ''}
+      </div>
+      ${paperQs.length ? `
+      <div class="card" style="margin:12px 0 0;box-shadow:none;border:1px solid var(--g200);background:var(--g50)">
+        ${d.stale ? `<div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--a600);margin-bottom:8px"><i class="ri-error-warning-line"></i>组卷条件已修改，请重新抽题</div>` : ''}
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">${paperHead}</div>
+        <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">${planTypeSumTagsHTML(paperQs)}</div>
+        ${d.short && d.short.length ? `<div style="margin-top:8px;font-size:12px;color:var(--a600)">题库中符合条件题目不足：${d.short.map(x => `${x[0]} ${x[1]}/${x[2]}题`).join(' · ')}</div>` : ''}
+        ${!d.stale && planDrawnGap() ? `<div style="margin-top:8px;font-size:12px;color:var(--r500)">当前试卷缺少${planDrawnGap().n}道${planDrawnGap().label}，请重新抽题后再发布</div>` : ''}
+      </div>` : ''}`;
   const isRepub = APP.planRepublish;
   renderModal(modalHead(isRepub ? '重新发布考试' : (isEdit ? '编辑考试' : '新增考试'), '', true) + `
     <div class="modal-body">${isRepub ? `
@@ -12663,10 +12755,12 @@ function renderPlanEdit() {
       <div class="form-grid">
         <div class="field2 full"><label>组卷方式</label><div class="kv"><div class="v">${esc(d.mode)}</div></div></div>
         ${d.mode === '固定选题'
-          ? `<div class="field2 full"><label>已选试题</label><div class="kv"><div class="v">${planSelectedQs().map(q => q.type + '·' + q.score + '分').join('、') || '—'}</div></div></div>`
+          ? `<div class="field2 full"><label>已选试题</label><div class="kv"><div class="v">${planTypeSumTagsHTML(planPaperQs()) || '—'}</div></div></div>`
           : `<div class="field2 full"><label>分类范围</label><div class="kv"><div class="v">${(d.cats||[]).join('、') || '—'}</div></div></div>
         <div class="field2"><label>题型</label><div class="kv"><div class="v">单选${d.types.单选}题 · 多选${d.types.多选}题 · 判断${d.types.判断}题</div></div></div>
-        <div class="field2"><label>难度分布</label><div class="kv"><div class="v">简单${d.diff.easy}% · 中等${d.diff.mid}% · 困难${d.diff.hard}%</div></div></div>`}
+        <div class="field2"><label>难度分布</label><div class="kv"><div class="v">简单${d.diff.easy}% · 中等${d.diff.mid}% · 困难${d.diff.hard}%</div></div></div>
+        <div class="field2 full"><label>试卷结果</label><div class="kv"><div class="v">${paperQs.length ? `总题数 ${paperQs.length} 题 ｜ 总分 ${paperTotal} 分` : '—'}</div></div></div>
+        <div class="field2 full"><label>题型汇总</label><div class="kv"><div class="v">${planTypeSumTagsHTML(paperQs) || '—'}</div></div></div>`}
       </div>
       <div class="form-sec-title mt16">考试规则</div>
       <div class="form-grid">
@@ -12735,6 +12829,8 @@ function renderPlanEdit() {
       <button class="btn btn-primary" data-act="plan-save-publish">${isEdit && d.status !== '草稿' ? '保存' : '发布考试'}</button>`}</div>`);
   // Scope tree event binding below (inline after render)
   ['pl-d-easy', 'pl-d-mid', 'pl-d-hard'].forEach(id => { const e = $('#' + id); if (e) e.addEventListener('input', () => { const s = ['easy', 'mid', 'hard'].reduce((a, k) => a + (+(($('#pl-d-' + k) || {}).value) || 0), 0); const h = $('#pl-diff-hint'); if (h) { if (s === 100) h.textContent = '简单 / 中等 / 困难 占比合计应为 100%'; else h.innerHTML = `当前合计 <b style="color:var(--r500)">${s}%</b>，请调整至 100%`; } }); });
+  // 组卷条件变更 → 抽题结果失效提示（change 失焦时判定，避免输入过程整窗重渲染）
+  ['pl-t-single', 'pl-t-multi', 'pl-t-judge', 'pl-d-easy', 'pl-d-mid', 'pl-d-hard'].forEach(id => { const e = $('#' + id); if (e) e.addEventListener('change', () => { planPull(); if (APP.planDraft && APP.planDraft.stale) renderPlanEdit(); }); });
   // Scope tree event binding
   (function() {
     const trig = $('#pl-scope-trigger'), panel = $('#pl-scope-panel');
@@ -12823,21 +12919,69 @@ function renderPlanPickPanel(full) {
       <button class="btn" data-act="plan-pick-close">返回</button>
       <button class="btn btn-primary" data-act="plan-pick-done"><i class="ri-check-line"></i>完成选择</button></div>`);
 }
+/* ========== 一键抽题：按当前条件生成试卷快照（可反复覆盖） ========== */
+function doPlanDraw() {
+  planPull();
+  const d = APP.planDraft; if (!d || d.mode !== '随机抽题') return;
+  if (!d.cats.length) { toast('请选择题目分类范围', 'error'); return; }
+  if (!(d.types.单选 + d.types.多选 + d.types.判断)) { toast('请设置题型数量', 'error'); return; }
+  const pool = DEMO.questions.filter(q => q.status === '启用' && q.type !== '简答' && d.cats.includes(q.cat2));
+  if (!pool.length) { toast('所选分类范围内没有可用试题', 'error'); return; }
+  const pick = drawExamPaper(pool, d.types, d.diff, d.id || 0);
+  if (!pick.length) { toast('所选范围内没有可抽取的试题', 'error'); return; }
+  d.drawn = pick.map(q => q.id);
+  d.drawnOff = [];
+  d.drawnCnt = { 单选: 0, 多选: 0, 判断: 0 };
+  pick.forEach(q => { d.drawnCnt[q.type]++; });
+  d.short = [['单选', '单选题'], ['多选', '多选题'], ['判断', '判断题']].map(([t, l]) => [l, d.drawnCnt[t], d.types[t] || 0]).filter(x => x[1] < x[2]);
+  d.drawnCond = planCondKey(d);
+  d.stale = false;
+  renderPlanEdit();
+  toast(`已抽取 ${pick.length} 题`);
+}
+/* ========== 试卷题目列表：字段同「选择试题」，勾选/取消勾选（行不消失，可再勾回） ========== */
+function renderPlanPaperPanel() {
+  const d = APP.planDraft; if (!d) return;
+  const off = d.drawnOff || [];
+  const all = (d.mode === '固定选题' ? d.qids : d.drawn).map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean);
+  const qs = planPaperQs();
+  const total = qs.reduce((s, q) => s + q.score, 0);
+  const gap = planDrawnGap();
+  renderModal(modalHead('抽题结果', `已选 ${qs.length} 题 · 总分 ${total} 分`, true) + `
+    <div class="modal-body">
+      ${gap ? `<div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--r500);margin-bottom:10px"><i class="ri-error-warning-line"></i>当前试卷缺少${gap.n}道${gap.label}，请重新抽题后再发布</div>` : ''}
+      <div style="max-height:400px;overflow:auto;border:1px solid var(--g200);border-radius:8px">
+        <table class="tbl" style="margin:0">
+          <tr><th style="width:44px"></th><th>题目内容</th><th>题型</th><th>二级分类</th><th>难度</th><th class="right">分值</th></tr>
+          ${all.length ? all.map(q => { const ck = !off.includes(q.id); return `<tr style="cursor:pointer;${ck ? '' : 'opacity:.45'}" data-act="plan-paper-ck" data-id="${q.id}">
+            <td style="text-align:center"><input type="checkbox" ${ck ? 'checked' : ''} style="pointer-events:none"></td>
+            <td style="max-width:360px">${esc(q.text)}</td>
+            <td>${q.type}</td><td style="color:var(--g500)">${esc(q.cat1)}/${esc(q.cat2)}</td><td>${q.diff}</td>
+            <td class="right num">${q.score}</td></tr>`; }).join('')
+          : `<tr><td colspan="6"><div class="empty"><i class="ri-inbox-line"></i>暂无试题</div></td></tr>`}
+        </table>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-act="plan-paper-close">返回</button></div>`);
+}
 function doPlanSaveModal(publish) {
   planPull();
   const d = APP.planDraft; if (!d) return;
   if (!d.title) { toast('请填写考试名称', 'error'); return; }
-  if (d.pass <= 0 || d.pass > 100) { toast('及格分数线须在 1~100 之间', 'error'); return; }
-  let total = 0, scopeLabel;
+  let scopeLabel;
   if (d.mode === '固定选题') {
     const fx = planFixedSummary();
     if (publish && fx.cnt === 0) { toast('请先选择试题', 'error'); return; }
-    total = fx.sum;
   } else {
     if (publish && d.cats.length === 0) { toast('请选择题目分类范围', 'error'); return; }
     const tc = d.types.单选 + d.types.多选 + d.types.判断;
     if (publish && tc === 0) { toast('请设置题型数量', 'error'); return; }
+    if (publish && !(d.drawn && d.drawn.length)) { toast('请先完成一键抽题', 'error'); return; }
+    if (publish && d.stale) { toast('组卷条件已修改，请重新抽题', 'error'); return; }
+    const gap = planDrawnGap();
+    if (publish && gap) { toast(`当前试卷缺少${gap.n}道${gap.label}，请重新抽题后再发布`, 'error'); return; }
   }
+  if (d.pass <= 0 || d.pass > d.full) { toast(`及格分数线须在 1~${d.full} 之间`, 'error'); return; }
   scopeLabel = d.scopeOffices && d.scopeOffices.length ? d.scopeOffices.join('、') : '全部区域 · 全部事务所';
   const people = scopeMatchCount();
   const rec = {
@@ -12846,6 +12990,9 @@ function doPlanSaveModal(publish) {
     examMode: d.examMode || '正式',
     mode: d.mode, cats: d.cats.slice(), qids: d.qids.slice(),
     types: Object.assign({}, d.types), diff: Object.assign({}, d.diff),
+    drawn: (d.mode === '随机抽题' ? planPaperQs().map(q => q.id) : (d.drawn || []).slice()),
+    drawnCnt: d.drawnCnt ? Object.assign({}, d.drawnCnt) : null,
+    drawnCond: d.drawnCond || null, short: (d.short || []).slice(),
     scope: scopeLabel, scopeOffices: (d.scopeOffices || []).slice(), posts: (d.posts || []).slice(), people: publish ? people : 0,
     graders: (d.graders || []).slice(),
     status: publish ? '未开始' : '草稿',
@@ -12869,10 +13016,11 @@ function doPlanSaveModal(publish) {
   renderView(APP.view);
 }
 function planPaperLabel(d) {
-  if (d.mode === '固定选题') {
-    const qs = d.qids.map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean);
-    const c = t => qs.filter(q => q.type === t).length;
-    return `固定选题（单选×${c('单选')} · 多选×${c('多选')} · 判断×${c('判断')}）`;
+  const qs = (d.mode === '固定选题' ? d.qids : (d.drawn || []));
+  const real = qs.map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean);
+  if (real.length) {
+    const c = t => real.filter(q => q.type === t).length;
+    return `${d.mode}（单选×${c('单选')} · 多选×${c('多选')} · 判断×${c('判断')}）`;
   }
   return `随机抽题（单选×${d.types.单选} · 多选×${d.types.多选} · 判断×${d.types.判断}）`;
 }
@@ -13070,7 +13218,35 @@ function planOffices(p) {
   else if (sc.indexOf('华南') >= 0) names = (CONFIG.org.find(g => g.name === '华南区域') || { offices: [] }).offices.map(o => o.name);
   return names.length ? names : CONFIG.org.flatMap(g => g.offices.map(o => o.name));
 }
-/* 发布后试卷冻结：固定选题取所选题目；随机抽题按分类范围+题型数量+难度分布确定性抽取（seed=计划id，全部考生同卷） */
+/* 发布后试卷冻结：固定选题取所选题目；随机抽题优先取「一键抽题」快照（drawn），
+   无快照的旧数据回退为按分类范围+题型数量+难度分布确定性抽取（seed=计划id，全部考生同卷） */
+function drawExamPaper(pool, types, diff, seed) {
+  const pick = [];
+  const DKEY = { '简单': 'easy', '中等': 'mid', '困难': 'hard' };
+  const diffTotal = (diff.easy || 0) + (diff.mid || 0) + (diff.hard || 0);
+  [['单选', types.单选], ['多选', types.多选], ['判断', types.判断]].forEach(([tp, n]) => {
+    if (diffTotal > 0) {
+      // 难度分布（%）与题型数量共同约束：按 题型×难度 二维确定性抽取，余数按最大余数法分配
+      const floors = {}, frac = [];
+      let sum = 0;
+      ['简单', '中等', '困难'].forEach(d => {
+        const ex = n * (diff[DKEY[d]] || 0) / diffTotal;
+        floors[d] = Math.floor(ex); sum += floors[d]; frac.push([d, ex - floors[d]]);
+      });
+      frac.sort((a, b) => b[1] - a[1]);
+      let rem = n - sum;
+      frac.forEach(pair => { if (rem > 0) { floors[pair[0]]++; rem--; } });
+      ['简单', '中等', '困难'].forEach(d => {
+        const cand = pool.filter(q => q.type === tp && q.diff === d).sort((a, b) => srand(seed, 'pick', a.id) - srand(seed, 'pick', b.id));
+        for (let i = 0; i < Math.min(floors[d] || 0, cand.length); i++) pick.push(cand[i]);
+      });
+    } else {
+      const cand = pool.filter(q => q.type === tp).sort((a, b) => srand(seed, 'pick', a.id) - srand(seed, 'pick', b.id));
+      for (let i = 0; i < Math.min(n || 0, cand.length); i++) pick.push(cand[i]);
+    }
+  });
+  return pick;
+}
 function planQuestions(p) {
   const active = DEMO.questions.filter(q => q.status === '启用' && q.type !== '简答');
   if (!p) return active;
@@ -13078,36 +13254,14 @@ function planQuestions(p) {
   if (p.mode === '固定选题' && p.qids && p.qids.length) {
     base = p.qids.map(id => active.find(q => q.id === id)).filter(Boolean);
   } else if (p.mode === '随机抽题' && p.types) {
-    const cats = (p.cats && p.cats.length) ? p.cats : BANK_CATS();
-    const pool = active.filter(q => cats.includes(q.cat2));
-    const diff = p.diff || {};
-    const diffTotal = (diff.easy || 0) + (diff.mid || 0) + (diff.hard || 0);
-    const pick = [];
-    if (diffTotal > 0) {
-      // 难度分布（%）与题型数量共同约束：按 题型×难度 二维确定性抽取，余数按最大余数法分配
-      const DKEY = { '简单': 'easy', '中等': 'mid', '困难': 'hard' };
-      [['单选', p.types.单选], ['多选', p.types.多选], ['判断', p.types.判断]].forEach(([tp, n]) => {
-        const floors = {}, frac = [];
-        let sum = 0;
-        ['简单', '中等', '困难'].forEach(d => {
-          const ex = n * (diff[DKEY[d]] || 0) / diffTotal;
-          floors[d] = Math.floor(ex); sum += floors[d]; frac.push([d, ex - floors[d]]);
-        });
-        frac.sort((a, b) => b[1] - a[1]);
-        let rem = n - sum;
-        frac.forEach(pair => { if (rem > 0) { floors[pair[0]]++; rem--; } });
-        ['简单', '中等', '困难'].forEach(d => {
-          const cand = pool.filter(q => q.type === tp && q.diff === d).sort((a, b) => srand(p.id, 'pick', a.id) - srand(p.id, 'pick', b.id));
-          for (let i = 0; i < Math.min(floors[d] || 0, cand.length); i++) pick.push(cand[i]);
-        });
-      });
+    if (p.drawn && p.drawn.length) {
+      base = p.drawn.map(id => active.find(q => q.id === id)).filter(Boolean);
     } else {
-      [['单选', p.types.单选], ['多选', p.types.多选], ['判断', p.types.判断]].forEach(([tp, n]) => {
-        const cand = pool.filter(q => q.type === tp).sort((a, b) => srand(p.id, 'pick', a.id) - srand(p.id, 'pick', b.id));
-        for (let i = 0; i < Math.min(n || 0, cand.length); i++) pick.push(cand[i]);
-      });
+      const cats = (p.cats && p.cats.length) ? p.cats : BANK_CATS();
+      const pool = active.filter(q => cats.includes(q.cat2));
+      const pick = drawExamPaper(pool, p.types, p.diff || {}, p.id);
+      base = pick.length ? pick : active;
     }
-    base = pick.length ? pick : active;
   } else {
     base = active;
   }
@@ -13124,7 +13278,7 @@ function tryAnswers(sid, t, qs, skill) {
     }
     if (q.type === '填空') {
       const correct = srand(sid, 'fill', t, q.id) < Math.min(0.85, skill + (q.diff === '简单' ? 0.08 : q.diff === '困难' ? -0.2 : 0));
-      const txt = correct ? (q.ansText || '正确答案') : (q.ansText ? q.ansText[0] + '...' : '错误答案');
+      const txt = correct ? String(q.ansText || '正确答案').split('；')[0] : (q.ansText ? q.ansText[0] + '...' : '错误答案');
       return { given: [txt], ok: correct, gain: correct ? q.score : 0 };
     }
     const correct = srand(sid, 'c', t, q.id) < Math.min(0.85, skill + (q.diff === '简单' ? 0.08 : q.diff === '困难' ? -0.2 : 0));
