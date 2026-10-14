@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>课题 01 · AI 在空调厂商 / 制造业厂商的运用</title>
+<style>
+  :root{
+    --ink:#1f2937; --ink2:#4b5563; --ink3:#9ca3af;
+    --line:#e5e7eb; --bg:#f6f8f7; --card:#ffffff;
+    --green:#059669; --green-d:#047857; --green-dd:#065f46; --green-l:#ecfdf5; --green-l2:#d1fae5;
+    --blue:#2563eb; --blue-l:#eff4ff;
+    --orange:#d97706; --orange-l:#fdf6ec;
+    --purple:#7c3aed;
+    --gray:#9ca3af; --gray-l:#f3f4f6;
+    --r:10px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+    background:var(--bg); color:var(--ink); font-size:14px; line-height:1.65;
+  }
+  /* ===== 顶栏 ===== */
+  .topbar{
+    position:sticky; top:0; z-index:50; height:52px;
+    background:#fff; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:14px; padding:0 28px;
+  }
+  .brand{font-size:15px; font-weight:700; letter-spacing:.5px; display:flex; align-items:center; gap:10px;}
+  .brand .mark{width:8px; height:22px; border-radius:2px; background:linear-gradient(180deg,var(--green),var(--green-dd));}
+  .topbar .sp{flex:1;}
+  .btn-back{
+    align-items:center; gap:6px; cursor:pointer; user-select:none;
+    font-size:13px; color:var(--ink2); border:1px solid var(--line); border-radius:8px;
+    padding:6px 14px; background:#fff; transition:.15s; text-decoration:none;
+  }
+  .btn-back:hover{border-color:var(--green); color:var(--green);}
+  .brandtag{font-size:13px; font-weight:700; color:var(--green); letter-spacing:2px;}
+  /* ===== 页面 ===== */
+  .topic{max-width:1360px; margin:0 auto; padding:36px 28px 80px;}
+  .n-head{text-align:center; margin-bottom:8px;}
+  .n-tag{font-size:12.5px; font-weight:700; color:var(--green); letter-spacing:2px; margin-bottom:8px;}
+  .n-h1{font-size:26px; font-weight:700; letter-spacing:1px;}
+  .n-route{display:flex; justify-content:center; align-items:center; gap:8px; margin-top:12px; flex-wrap:wrap;}
+  .n-route span{font-size:11.5px; color:var(--ink2); background:#fff; border:1px solid var(--line); border-radius:20px; padding:4px 14px; letter-spacing:.5px; font-weight:600;}
+  .n-route i{color:#c4cdc5; font-style:normal; font-size:11px;}
+  .n-concl{
+    max-width:1060px; margin:16px auto 0; background:#fff; border:1px solid var(--line);
+    border-left:4px solid var(--green); border-radius:0 10px 10px 0; padding:15px 22px;
+    font-size:14.5px; color:var(--ink2); line-height:1.9;
+  }
+  .n-concl b{color:var(--ink);}
+  .trends{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  .trend{font-size:12.5px; font-weight:600; color:var(--green-d); background:var(--green-l); border:1px solid var(--green-l2); border-radius:20px; padding:6px 16px;}
+  /* 主线分隔 */
+  .trunk{display:flex; flex-direction:column; align-items:center; margin-top:30px;}
+  .vline{width:2px; height:16px; background:#c9d4cc;}
+  .vlabel{font-size:13px; color:var(--ink2); background:#fff; border:1px solid var(--line); border-radius:20px; padding:6px 22px; font-weight:700; letter-spacing:1px;}
+  .vsub{font-size:11.5px; color:var(--ink3); margin-top:6px;}
+  /* 价值链细条（非交互） */
+  .chainstrip{
+    display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:6px;
+    max-width:1200px; margin:16px auto 0; background:#fff; border:1px solid var(--line);
+    border-radius:12px; padding:12px 18px;
+  }
+  .chainstrip b{font-size:12px; font-weight:700; color:var(--green-dd); background:var(--green-l); border-radius:6px; padding:4px 10px; white-space:nowrap;}
+  .chainstrip i{color:#b6c4ba; font-style:normal; font-size:11px;}
+  /* 厂商卡 */
+  .vwrap{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:1320px; margin:16px auto 0;}
+  .vcard{background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; transition:.18s;}
+  .vhead{padding:14px 18px 12px; border-bottom:1px solid var(--line);}
+  .vhead .co{font-size:16px; font-weight:800;}
+  .vhead .co .ext{font-size:11px; font-weight:600; color:var(--ink3); text-decoration:none; margin-left:8px; border:1px solid var(--line); border-radius:5px; padding:1px 7px; vertical-align:2px; transition:.15s;}
+  .vhead .co .ext:hover{color:var(--green); border-color:var(--green);}
+  .vhead .mo{font-size:12.5px; color:var(--green-d); font-weight:600; margin-top:3px; line-height:1.6;}
+  .vbody{padding:13px 18px; flex:1;}
+  .vkw{display:flex; flex-wrap:wrap; gap:6px;}
+  .vkw span{font-size:11.5px; padding:3px 10px; border-radius:6px; background:var(--gray-l); color:var(--ink2);}
+  [data-cap]{cursor:pointer;}
+  .vcard[data-cap]:hover{transform:translateY(-2px); box-shadow:0 8px 22px rgba(6,95,70,.13); border-color:var(--green);}
+  /* 对比表 */
+  .cmpwrap{max-width:1180px; margin:16px auto 0; background:#fff; border:1px solid var(--line); border-radius:12px; padding:6px 14px 10px; overflow-x:auto;}
+  .cmp{width:100%; border-collapse:collapse;}
+  .cmp th{font-size:12px; color:var(--ink2); border-bottom:2px solid var(--line); padding:9px 10px; text-align:left; font-weight:700; white-space:nowrap;}
+  .cmp th:last-child{color:var(--green-d);}
+  .cmp td{font-size:12.5px; border-bottom:1px solid var(--line); padding:8px 10px; color:var(--ink2);}
+  .cmp tr:last-child td{border-bottom:none;}
+  .cmp td.dir{font-weight:700; color:var(--ink); white-space:nowrap;}
+  .cmp td .lv{display:inline-block; font-size:11.5px; font-weight:600; border-radius:5px; padding:2px 10px; white-space:nowrap;}
+  .lv3{background:var(--green-d); color:#fff;}
+  .lv2{background:var(--green-l); color:var(--green-dd);}
+  .lv1{background:var(--gray-l); color:var(--ink3);}
+  .lvtxt{font-size:12px; color:var(--ink2);}
+  .cmp tr[data-cap]:hover td{background:#f2faf6;}
+  .concl{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  .concl .cc{font-size:12.5px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:6px 16px;}
+  .concl .cc b{color:var(--green-d); margin-right:4px;}
+  /* 大金 8 组能力 */
+  .dgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; max-width:1320px; margin:16px auto 0;}
+  .dcard{background:#fff; border:1px solid var(--line); border-radius:11px; padding:13px 14px; transition:.18s;}
+  .dcard .dt{display:flex; align-items:center; gap:8px; margin-bottom:9px;}
+  .dcard .dt b{font-size:13.5px;}
+  .dcard .vkw span{font-size:11px; padding:2px 8px;}
+  .dcard[data-cap]:hover{border-color:var(--green); box-shadow:0 6px 18px rgba(6,95,70,.10); transform:translateY(-1px);}
+  .dstnote{display:flex; justify-content:center; gap:16px; margin-top:12px; font-size:11.5px; color:var(--ink3);}
+  .dstnote i{font-style:normal; width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px;}
+  .keyline{
+    max-width:900px; margin:18px auto 0; text-align:center; font-size:14.5px; font-weight:700;
+    color:var(--green-dd); background:var(--green-l); border:1px solid var(--green-l2); border-radius:10px; padding:12px 20px;
+  }
+  /* A/B 桥接层 */
+  .bridge{display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:1240px; margin:16px auto 0;}
+  .bcol{background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .bcol .bh{padding:10px 18px; font-size:13.5px; font-weight:700; color:#fff;}
+  .bcol.a .bh{background:var(--green-d);}
+  .bcol.b .bh{background:var(--blue);}
+  .brow{padding:11px 18px; border-bottom:1px dashed var(--line); transition:.12s;}
+  .brow:last-child{border-bottom:none;}
+  .brow b{font-size:13px;}
+  .brow p{font-size:12px; color:var(--ink2); margin-top:2px; line-height:1.7;}
+  .brow p em{font-style:normal; color:var(--ink3);}
+  .brow[data-cap]:hover{background:var(--green-l);}
+  .btag{font-size:10.5px; border-radius:4px; padding:1px 7px; margin-left:6px; vertical-align:1px;}
+  .btag.a{background:var(--green-l); color:var(--green-d);}
+  .btag.b{background:var(--blue-l); color:var(--blue);}
+  /* 六方向 */
+  .dirgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:1240px; margin:14px auto 0;}
+  .dirgrp{grid-column:1/-1; display:flex; align-items:center; gap:12px; margin-top:4px;}
+  .dirgrp:first-child{margin-top:0;}
+  .dirgrp .dg{font-size:12px; font-weight:700; color:#fff; border-radius:20px; padding:4px 15px; letter-spacing:1px;}
+  .dirgrp.g1 .dg{background:var(--green-d);}
+  .dirgrp.g2 .dg{background:var(--blue);}
+  .dirgrp .ln{flex:1; height:1px; background:var(--line);}
+  .dircard{
+    background:#fff; border:1px solid var(--line); border-radius:11px; padding:15px 17px;
+    cursor:pointer; transition:.18s; border-top:3px solid var(--green-d);
+  }
+  .dircard.g2c{border-top-color:var(--blue);}
+  .dircard:hover{transform:translateY(-2px); box-shadow:0 8px 22px rgba(6,95,70,.13); border-color:var(--green);}
+  .dircard .dn{display:flex; align-items:baseline; gap:8px;}
+  .dircard .dn em{font-style:normal; font-size:11px; font-weight:800; color:var(--green); letter-spacing:.5px;}
+  .dircard.g2c .dn em{color:var(--blue);}
+  .dircard .dn b{font-size:14.5px;}
+  .dircard p{font-size:12.5px; color:var(--ink2); margin-top:6px; line-height:1.7;}
+  .dircard .open{margin-top:10px; font-size:11.5px; font-weight:600; color:var(--green);}
+  .dircard.g2c .open{color:var(--blue);}
+  /* 分阶段 */
+  .stages{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; max-width:1320px; margin:16px auto 0;}
+  .stage{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; position:relative;}
+  .stage .sn{font-size:11px; font-weight:800; letter-spacing:1px; color:var(--green); }
+  .stage .st2{font-size:15.5px; font-weight:800; margin-top:2px;}
+  .stage .sgoal{font-size:12.5px; color:var(--ink2); margin-top:6px; line-height:1.75;}
+  .stage .vkw{margin-top:10px;}
+  .stage .sval{margin-top:11px; font-size:12px; color:var(--green-dd); background:var(--green-l); border-radius:7px; padding:7px 11px; line-height:1.7;}
+  .cmpnote{max-width:1180px; margin:8px auto 0; font-size:11.5px; color:var(--ink3);}
+  .vkw span i.cd{display:inline-block; width:6px; height:6px; border-radius:50%; margin-left:5px; vertical-align:1px; flex:none;}
+  .vkw span i.cd.g{background:var(--green);}
+  .vkw span i.cd.b{background:var(--blue);}
+  .dircard .dn .stg{margin-left:auto; font-size:10.5px; font-weight:600; border-radius:4px; padding:1px 8px; flex:none;}
+  .stg.s1{background:var(--green-l); color:var(--green-d);}
+  .stg.s2{background:var(--blue-l); color:var(--blue);}
+  .stg.s3{background:#f5f3ff; color:var(--purple);}
+  .stage .sn{display:flex; justify-content:space-between; align-items:center;}
+  .stage .sn .sdir{font-size:10.5px; font-weight:600; color:var(--ink3); letter-spacing:0;}
+  @media (max-width:1100px){
+    .vwrap{grid-template-columns:1fr;}
+    .dgrid{grid-template-columns:1fr 1fr;}
+    .bridge{grid-template-columns:1fr;}
+    .dirgrid{grid-template-columns:1fr;}
+    .stages{grid-template-columns:1fr;}
+  }
+  @media print{
+    .topbar,.n-route,.dmask,.drawer{display:none !important;}
+    body{background:#fff;}
+    .vcard,.dcard,.stage,.dircard{break-inside:avoid;}
+  }
+  /* ===== 抽屉 ===== */
+  .dmask{position:fixed; inset:0; background:rgba(6,40,28,.38); opacity:0; pointer-events:none; transition:opacity .25s; z-index:90;}
+  .dmask.on{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:fixed; top:0; right:0; height:100vh; width:min(580px,94vw); background:#fff;
+    box-shadow:-8px 0 30px rgba(0,0,0,.18); transform:translateX(105%); transition:transform .28s ease;
+    z-index:100; display:flex; flex-direction:column;
+  }
+  .drawer.on{transform:none;}
+  .d-head{padding:18px 22px 14px; border-bottom:1px solid var(--line); flex-shrink:0;}
+  .d-tags{display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+  .db{color:#fff; font-size:11px; font-weight:600; border-radius:5px; padding:2px 9px; letter-spacing:.5px;}
+  .d-x{margin-left:auto; border:none; background:var(--gray-l); border-radius:6px; width:26px; height:26px; cursor:pointer; color:var(--ink2); font-size:13px; line-height:1;}
+  .d-x:hover{background:var(--line); color:var(--ink);}
+  .d-name{font-size:19px; font-weight:800; margin-top:10px; line-height:1.35;}
+  .d-body{overflow-y:auto; padding:18px 22px 30px; flex:1;}
+  .d-pitch{background:var(--green-l); border-left:4px solid var(--green); border-radius:0 8px 8px 0; padding:10px 14px; font-size:13px; font-weight:600; color:var(--green-dd); line-height:1.7;}
+  .d-sec{margin-top:14px; background:#fafbfa; border:1px solid var(--line); border-radius:8px; padding:11px 14px;}
+  .d-lb{font-size:11.5px; font-weight:700; letter-spacing:1px; margin-bottom:6px; color:var(--ink2);}
+  .d-sec p{font-size:12.8px; line-height:1.8; color:var(--ink);}
+  .d-sec ul{margin:2px 0 0 18px;}
+  .d-sec li{font-size:12.5px; line-height:1.85; color:var(--ink2);}
+  .d-base{background:var(--green-l); border-color:var(--green-l2);}
+  .d-base .d-lb{color:var(--green-d);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="mark"></span>大金（中国）· 数字化课题调研</div>
+  <div class="sp"></div>
+  <a class="btn-back" href="index.html">← 返回</a>
+  <span class="brandtag">唯安</span>
+</div>
+
+<div class="topic">
+
+  <!-- ===== 01 行业变化 ===== -->
+  <div class="n-head">
+    <div class="n-tag">课题 01 · 调研全景</div>
+    <div class="n-h1">AI 在空调厂商 / 制造业厂商的运用</div>
+    <div class="n-route">
+      <span>行业变化</span><i>→</i><span>头部厂商实践</span><i>→</i><span>能力对比</span><i>→</i><span>大金基础</span><i>→</i><span>深化与参考</span><i>→</i><span>重点未来方向</span><i>→</i><span>分阶段建设</span>
+    </div>
+  </div>
+
+  <div class="trunk"><div class="vline"></div><div class="vlabel">行业变化</div><div class="vline"></div></div>
+
+  <div class="n-concl">
+    空调行业的数字化正在从单点自动化，逐步向<b>研发、制造、质量、交付、服务和设备运营的全链路智能化</b>发展；AI 也开始从辅助工具进入<b>选型、设计、排产、质检、诊断和控制</b>等核心业务环节。
+  </div>
+  <div class="trends">
+    <span class="trend">全价值链数字化连接</span>
+    <span class="trend">AI 进入核心业务流程</span>
+    <span class="trend">从设备销售向全生命周期服务升级</span>
+  </div>
+
+  <div class="chainstrip">
+    <b>研发设计</b><i>→</i><b>选型方案</b><i>→</i><b>供应协同</b><i>→</i><b>智能排产</b><i>→</i><b>生产物流</b><i>→</i><b>质量检测</b><i>→</i><b>营销方案</b><i>→</i><b>安装交付</b><i>→</i><b>售后维修</b><i>→</i><b>设备运营</b>
+  </div>
+
+  <!-- ===== 02 头部厂商实践 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">头部厂商现在已经做了什么</div><div class="vline"></div></div>
+  <div class="vwrap">
+
+    <div class="vcard" data-cap="v1">
+      <div class="vhead">
+        <div class="co">海尔中央空调<a class="ext" href="https://www.haier.com/" target="_blank" rel="noopener" title="打开海尔官网">↗</a></div>
+        <div class="mo">用户需求驱动的大规模定制 + AI 智能制造</div>
+      </div>
+      <div class="vbody">
+        <div class="vkw">
+          <span>AI智能选型</span><span>AI仿真研发</span><span>316万设计模块组合</span><span>AI供应协同</span><span>AI智能排产</span><span>AI智能物流</span><span>AI在线检测</span><span>AI动作识别</span><span>外观视觉质检</span><span>生产过程可视</span><span>HIMOS统一平台</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vcard" data-cap="v2">
+      <div class="vhead">
+        <div class="co">美的楼宇科技<a class="ext" href="https://mbt.midea.com/" target="_blank" rel="noopener" title="打开美的楼宇科技官网">↗</a></div>
+        <div class="mo">面向高度定制化中央空调的 AI 选型、设计、柔性制造与运维</div>
+      </div>
+      <div class="vbody">
+        <div class="vkw">
+          <span>AI智能选型</span><span>自动报价</span><span>AI智能设计</span><span>历史设计数据复用</span><span>物理仿真模型</span><span>柔性制造</span><span>AR/AI质量防错</span><span>IoT设备监控</span><span>智能运维</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vcard" data-cap="v3">
+      <div class="vhead">
+        <div class="co">格力<a class="ext" href="https://www.gree.com.cn/" target="_blank" rel="noopener" title="打开格力官网">↗</a></div>
+        <div class="mo">制造自动化 + 机器视觉 + 质量管控</div>
+      </div>
+      <div class="vbody">
+        <div class="vkw">
+          <span>智能排产</span><span>AGV/智能仓储</span><span>自动化生产</span><span>5G机器视觉</span><span>包装检测</span><span>压缩机线序检测</span><span>电气安全检测</span><span>不良品自动分离</span><span>设备联网与运维</span><span>供应商质量数字化</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== 03 能力对比 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">从厂商对比看行业能力分布</div><div class="vline"></div></div>
+  <div class="concl">
+    <span class="cc"><b>海尔</b>全链路智能制造</span>
+    <span class="cc"><b>美的</b>定制化方案 + 制造</span>
+    <span class="cc"><b>格力</b>生产质量管控</span>
+    <span class="cc"><b>大金</b>空调专业能力 · 安装 · 现场服务 · 设备数据 · 全生命周期运营</span>
+  </div>
+  <div class="cmpwrap">
+    <table class="cmp">
+      <tr><th>方向</th><th>海尔</th><th>美的</th><th>格力</th><th>大金公开基础</th></tr>
+      <tr data-cap="c1"><td class="dir">用户需求驱动制造</td><td><span class="lv lv3">强</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv1">较少公开</span></td><td class="lvtxt">有客户触点，制造链路未见公开</td></tr>
+      <tr data-cap="c2"><td class="dir">AI 智能选型</td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">强</span></td><td><span class="lv lv1">较少公开</span></td><td class="lvtxt">有 BIM / 设计提案基础</td></tr>
+      <tr data-cap="c3"><td class="dir">AI 设计</td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">强</span></td><td><span class="lv lv1">较少公开</span></td><td class="lvtxt">集团研发DX</td></tr>
+      <tr data-cap="c4"><td class="dir">AI 供应协同</td><td><span class="lv lv3">强</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td class="lvtxt">公开资料较少</td></tr>
+      <tr data-cap="c5"><td class="dir">AI 排产</td><td><span class="lv lv3">强</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td class="lvtxt">公开信息有限</td></tr>
+      <tr data-cap="c6"><td class="dir">AI 质量检测</td><td><span class="lv lv3">强</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">强</span></td><td class="lvtxt">公开具体制造案例较少</td></tr>
+      <tr data-cap="c7"><td class="dir">远程技术支援</td><td><span class="lv lv1">—</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv1">—</span></td><td class="lvtxt"><span class="lv lv3">强</span></td></tr>
+      <tr data-cap="c8"><td class="dir">AI 故障诊断</td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td class="lvtxt"><span class="lv lv3">强</span></td></tr>
+      <tr data-cap="c9"><td class="dir">IoT 主动服务</td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td class="lvtxt"><span class="lv lv3">强</span></td></tr>
+      <tr data-cap="c10"><td class="dir">AI 节能运营</td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td class="lvtxt"><span class="lv lv3">强</span></td></tr>
+    </table>
+  </div>
+  <div class="cmpnote">注：能力分布基于公开资料中可检索到的实践丰富度归纳，不代表企业实际能力评级。</div>
+
+  <!-- ===== 04 大金现有能力 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">大金现在已经具备什么</div><div class="vsub">8 组数字化与 AI 能力</div></div>
+  <div class="dgrid">
+    <div class="dcard" data-cap="g1">
+      <div class="dt"><b>方案设计</b></div>
+      <div class="vkw"><span>BIM服务<i class="cd g"></i></span><span>能耗计算<i class="cd g"></i></span><span>科学设计提案<i class="cd g"></i></span><span>商用系统解决方案<i class="cd g"></i></span></div>
+    </div>
+    <div class="dcard" data-cap="g2">
+      <div class="dt"><b>安装交付</b></div>
+      <div class="vkw"><span>专业安装标准<i class="cd g"></i></span><span>安装过程数字化<i class="cd g"></i></span><span>安装品质守护<i class="cd g"></i></span><span>App过程可视<i class="cd g"></i></span></div>
+    </div>
+    <div class="dcard" data-cap="g3">
+      <div class="dt"><b>售后服务</b></div>
+      <div class="vkw"><span>在线报修<i class="cd g"></i></span><span>清洗保养<i class="cd g"></i></span><span>智能监控<i class="cd g"></i></span><span>实机运行数据分析<i class="cd g"></i></span><span>专业解析报告<i class="cd g"></i></span><span>远程支援DX<i class="cd g"></i></span></div>
+    </div>
+    <div class="dcard" data-cap="g4">
+      <div class="dt"><b>设备运营</b></div>
+      <div class="vkw"><span>Daikin Care<i class="cd g"></i></span><span>IoT主动服务<i class="cd g"></i></span><span>DK-CONNECT<i class="cd b"></i></span><span>AI节能控制<i class="cd b"></i></span></div>
+    </div>
+    <div class="dcard" data-cap="g5">
+      <div class="dt"><b>维修诊断</b></div>
+      <div class="vkw"><span>AI智能检测服务<i class="cd g"></i></span><span>AirNet长期设备数据<i class="cd b"></i></span><span>Hybrid AI故障诊断<i class="cd b"></i></span></div>
+    </div>
+    <div class="dcard" data-cap="g6">
+      <div class="dt"><b>现场技术支援</b></div>
+      <div class="vkw"><span>THINKLET远程支援<i class="cd b"></i></span><span>现场视频知识沉淀<i class="cd b"></i></span><span>远程专家指导<i class="cd b"></i></span></div>
+    </div>
+    <div class="dcard" data-cap="g7">
+      <div class="dt"><b>生产制造</b></div>
+      <div class="vkw"><span>工厂设备故障AI<i class="cd b"></i></span><span>设备异常分析<i class="cd b"></i></span><span>AI能源管理（上海工厂）<i class="cd b"></i></span></div>
+    </div>
+    <div class="dcard" data-cap="g8">
+      <div class="dt"><b>企业AI与研发</b></div>
+      <div class="vkw"><span>AI故障监控<i class="cd b"></i></span><span>IoT异常预测<i class="cd b"></i></span><span>研发设计流程DX<i class="cd b"></i></span><span>数字孪生<i class="cd b"></i></span><span>AI人才培养<i class="cd b"></i></span></div>
+    </div>
+  </div>
+  <div class="dstnote">
+    <span>能力标签圆点：</span>
+    <span><i style="background:var(--green)"></i>中国区已公开落地</span>
+    <span><i style="background:var(--blue)"></i>大金集团已有实践</span>
+  </div>
+  <div class="keyline">从公开资料看，大金已在多个业务环节形成数字化与 AI 实践，后续可进一步关注能力深化与跨环节协同。</div>
+
+  <!-- ===== 05 深化与参考（桥接） ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">对比行业：深化什么，参考什么</div><div class="vline"></div></div>
+  <div class="bridge">
+    <div class="bcol a">
+      <div class="bh">A · 现有优势深化</div>
+      <div class="brow" data-cap="b1"><b>设备智能运维<span class="btag a">Daikin Care + AirNet + DK-CONNECT + AI节能</span></b><p>可深化至：设备健康管理、预测性维护、自动服务触发。</p></div>
+      <div class="brow" data-cap="b2"><b>现场服务<span class="btag a">远程支援DX + THINKLET + SE能力</span></b><p>可深化至：AI维修诊断、AI现场作业助手、知识自动沉淀。</p></div>
+      <div class="brow" data-cap="b3"><b>安装品质<span class="btag a">安装规范 + App可视 + AI辅助</span></b><p>可深化至：AI安装质量检查、整改闭环、服务商质量评价。</p></div>
+    </div>
+    <div class="bcol b">
+      <div class="bh">B · 行业参考方向</div>
+      <div class="brow" data-cap="b4"><b>AI智能选型<em>（参考美的、海尔）</em></b><p>已有 BIM + 能耗分析 + 科学提案 → 需求输入 → 自动选型 → 方案比较 → 报价 / 初步方案。</p></div>
+      <div class="brow" data-cap="b5"><b>AI供应协同<em>（参考海尔）</em></b><p>订单预测 → 物料计划 → 供应商协同 → 异常预警；与课题 02 衔接。</p></div>
+      <div class="brow" data-cap="b6"><b>AI生产质量<em>（参考海尔、格力）</em></b><p>工序动作识别 → 在线质检 → 自动拦截 → 质量追溯。</p></div>
+      <div class="brow" data-cap="b7"><b>AI柔性排产<em>（参考海尔、美的）</em></b><p>多规格、小批量、定制订单场景的适用性评估。</p></div>
+    </div>
+  </div>
+
+  <!-- ===== 06 重点未来方向 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">重点未来方向</div><div class="vline"></div></div>
+  <div class="dirgrid">
+
+    <div class="dirgrp g1"><span class="dg">通用能力型</span><span class="ln"></span></div>
+
+    <div class="dircard" data-cap="d1">
+      <div class="dn"><em>方向 1</em><b>AI 数据分析与经营洞察</b><span class="stg s1">近期可试点</span></div>
+      <p>连接分散的业务数据，用自然语言完成经营分析、异常识别与结论生成，让管理层快速下钻。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+    <div class="dircard" data-cap="d2">
+      <div class="dn"><em>方向 2</em><b>AI 现场作业数字员工</b><span class="stg s1">近期可试点</span></div>
+      <p>面向维修、安装、服务的现场人员：识别场景、检索标准与案例、给出步骤、自动记录。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+    <div class="dircard" data-cap="d3">
+      <div class="dn"><em>方向 3</em><b>AI 快速构建业务应用</b><span class="stg s1">近期可试点</span></div>
+      <p>业务人员描述需求，AI 快速生成轻量应用，用于专项检查、数据采集、小型看板等场景验证。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+
+    <div class="dirgrp g2"><span class="dg">业务场景型</span><span class="ln"></span></div>
+
+    <div class="dircard g2c" data-cap="d4">
+      <div class="dn"><em>方向 4</em><b>AI 智能方案</b><span class="stg s2">业务深化</span></div>
+      <p>从客户建筑与空间需求出发，AI 辅助完成选型、能耗计算、多方案对比与初步方案生成。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+    <div class="dircard g2c" data-cap="d5">
+      <div class="dn"><em>方向 5</em><b>AI 质量管理</b><span class="stg s2">业务深化</span></div>
+      <p>AI 质量识别与闭环：覆盖产品制造质量、安装质量、服务作业质量、供应商作业质量。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+    <div class="dircard g2c" data-cap="d6">
+      <div class="dn"><em>方向 6</em><b>智能设备运营</b><span class="stg s3">中长期</span></div>
+      <p>基于 IoT 数据的设备健康评分、故障预测、节能优化与自动服务触发，运营设备全生命周期。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+
+  </div>
+
+  <!-- ===== 07 分阶段建设 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">分阶段建设</div><div class="vline"></div></div>
+  <div class="stages">
+
+    <div class="stage">
+      <div class="sn"><span>第一阶段</span><span class="sdir">对应方向 1 · 2 · 3</span></div>
+      <div class="st2">轻量 AI 场景试点</div>
+      <div class="sgoal">低改造成本、快速验证价值，优先利用现有数据与知识。</div>
+      <div class="vkw">
+        <span>AI经营分析</span><span>工单分析</span><span>SE能力分析</span><span>质量分析</span><span>售后知识助手</span><span>SE维修助手</span><span>安装规范助手</span><span>制度知识助手</span><span>专项检查轻应用</span><span>临时数据采集</span><span>小型管理看板</span>
+      </div>
+      <div class="sval">先让业务部门在低风险、易验证场景体验 AI 价值。</div>
+    </div>
+
+    <div class="stage">
+      <div class="sn"><span>第二阶段</span><span class="sdir">对应方向 4 · 5 及维修诊断等核心场景</span></div>
+      <div class="st2">AI 进入核心业务环节</div>
+      <div class="sgoal">在第一阶段基础上连接核心业务数据、规则与系统。</div>
+      <div class="vkw">
+        <span>AI智能选型</span><span>AI维修诊断</span><span>AI安装质量</span><span>AI生产质检</span><span>设备预测性维护</span><span>供应链预测与预警</span>
+      </div>
+      <div class="sval">AI 从「给建议」开始进入：业务判断 + 流程联动。</div>
+    </div>
+
+    <div class="stage">
+      <div class="sn"><span>第三阶段</span><span class="sdir">对应方向 6 + 全价值链连接</span></div>
+      <div class="st2">全价值链智能化</div>
+      <div class="sgoal">市场需求 → 智能方案 → 研发 → 供应 → 制造 → 质量 → 安装 → 服务 → 设备运营，逐步连接。</div>
+      <div class="vkw">
+        <span>统一数据能力</span><span>统一知识能力</span><span>统一AI能力</span><span>业务系统协同</span>
+      </div>
+      <div class="sval">不是建一个超级 AI，而是形成数据、知识、AI 与业务系统的协同能力。</div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 抽屉 -->
+<div class="dmask" id="dmask"></div>
+<aside class="drawer" id="drawer">
+  <div class="d-head" id="dHead"></div>
+  <div class="d-body" id="dBody"></div>
+</aside>
+
+<script>
+var CAPS={
+/* ===== 头部厂商 ===== */
+v1:{nm:"海尔中央空调",tag:"对标厂商",col:"#047857",
+ secs:[
+  {lb:"核心模式",p:"海尔中央空调互联工厂（行业「灯塔工厂」）以「用户需求驱动的大规模定制」为核心模式：客户通过交互平台提交选型与定制需求，需求直接进入设计与排产系统，工厂用统一数据平台 HIMOS 串联研发、供应、制造、物流与服务全流程，AI 分布在从需求到交付的各个环节。"},
+  {lb:"能力明细",lis:[
+   "AI 智能选型：客户输入建筑参数与使用需求，系统自动匹配机型组合与系统方案，需求直传设计与制造，不再人工转译",
+   "AI 仿真研发 + 316万设计模块组合：历史设计沉淀为标准化模块，新方案通过仿真验证与模块组合快速生成，设计周期 -62%",
+   "AI 供应协同：订单与需求变化实时同步供应商，物料计划自动调整，减少缺料与库存积压",
+   "AI 智能排产：订单驱动的产线自动排程，支持小批量、多规格的定制订单",
+   "AI 智能物流：物料配送与成品发运的智能调度",
+   "AI 在线检测 + 动作识别：关键工序质量自动检查，员工操作动作识别与纠偏",
+   "外观视觉质检：外观缺陷识别率 99.9%，替代人工目检",
+   "生产过程可视 + HIMOS 统一平台：打通 49 个业务系统、连接 4256 台设备，生产状态实时可视"]},
+  {lb:"数据与来源",lis:[
+   "设计周期 -62%、生产效率 +32%",
+   "HIMOS 打通 49 个系统、连接 4256 台设备",
+   "来源：海尔中央空调互联工厂（世界经济论坛「灯塔工厂」）公开报道"]},
+  {lb:"对大金的启发",p:"海尔的模式说明行业竞争点正在从「单机制造能力」转向「需求到交付的全链路效率」。对大金的参考不是复制工厂模式，而是两点：一是用户需求如何直传设计与制造（大金已有 Daikin Care、PROSHOP 等客户触点）；二是用统一数据平台串联分散的业务环节（大金各能力目前较分散，连接是关键）。"}]},
+v2:{nm:"美的楼宇科技",tag:"对标厂商",col:"#047857",
+ secs:[
+  {lb:"核心模式",p:"美的楼宇科技重庆水机工厂面向高度定制化的大型中央空调（冷水机组等），与商用中央空调业务形态高度相似：单台价值高、方案定制化强，传统上选型、报价、设计都依赖资深工程师。美的用 AI 重构了「选型 → 报价 → 设计 → 制造 → 运维」的定制化交付链路。"},
+  {lb:"能力明细",lis:[
+   "AI 智能选型：输入建筑与负荷需求，自动完成机型匹配与方案组合，选型周期 5.3天→约1天（-81%）",
+   "自动报价：选型结果直接生成报价，减少人工核算与等待",
+   "AI 智能设计：基于历史设计数据自动生成设计文件，设计周期 -45%；23万张历史图纸作为数据基础",
+   "100+ 物理仿真模型：机组性能仿真验证，减少样机试错",
+   "柔性制造：产线支持多规格、小批量的定制化生产",
+   "AR/AI 质量防错：装配过程自动提示作业标准并校验步骤，减少人为差错",
+   "IoT 设备监控 + 智能运维：交付后设备持续联网监控，维修率 -31%"]},
+  {lb:"数据与来源",lis:[
+   "选型周期 -81%、设计周期 -45%、维修率 -31%",
+   "100+ 物理仿真模型、23万张历史图纸复用",
+   "来源：美的楼宇科技重庆水机工厂公开资料"]},
+  {lb:"对大金的启发",p:"美的与大金的可比性最强：同为高度定制化的商用设备业务。其路径说明 AI 最先见效的环节是「选型、报价、方案」这类知识密集、重复度高的专业工作 —— 这正是大金商用空调方案设计环节的现状，也是大金已有 BIM / 能耗计算载体、最容易切入的方向。"}]},
+v3:{nm:"格力",tag:"对标厂商",col:"#047857",
+ secs:[
+  {lb:"核心模式",p:"格力以 5G + 工业互联网为基础，重点解决「制造过程质量」问题：把生产工艺标准与质量标准转为可自动执行的数字规则，由机器视觉与自动化设备在线执行，检测结果直接联动产线，不良品不流入下道工序。"},
+  {lb:"能力明细",lis:[
+   "智能排产 + AGV/智能仓储 + 自动化生产：产线与物流的自动化基础",
+   "5G 机器视觉 · 包装检测：出厂包装完整性自动检查",
+   "5G 机器视觉 · 压缩机线序检测：核心部件装配线序自动校验，防止错装漏装",
+   "5G 机器视觉 · 电气安全检测：电气安全项自动检测",
+   "不良品自动分离：检测结果直接联动产线，不良品自动拦截分线",
+   "设备联网与运维：设备状态实时采集与异常预警",
+   "供应商质量数字化：来料与过程质量数据化管理，质量问题可追溯到供应商"]},
+  {lb:"数据与来源",lis:[
+   "5G 机器视觉三类检测（包装 / 压缩机线序 / 电气安全）、不良品自动分离",
+   "来源：格力 5G + 工业互联网工厂公开报道"]},
+  {lb:"对大金的启发",p:"格力的价值在于「标准数字化」的方法：只有先把标准写成机器可执行的规则，AI 检查与自动拦截才可能实现。这条路径同样适用于大金的安装标准、服务作业标准与供应商交付标准的数字化（衔接课题 02）。"}]},
+/* ===== 对比表 10 方向 ===== */
+c1:{nm:"方向 · 用户需求驱动制造",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"把客户的机型选择、参数与定制要求，通过数字化手段直接传入设计、排产与制造系统，由需求自动驱动生产，减少销售、技术、工厂之间的人工传递。这是「大规模定制」模式的基础：需求传递越直接，定制订单的交付效率与准确率越高。"},
+  {lb:"行业实践",lis:[
+   "海尔：强 —— 定制需求通过交互平台直传设计与排产系统，实现需求驱动的大规模定制，设计周期 -62%、生产效率 +32%",
+   "美的：有 —— 高度定制化设备的选型与设计已数字化，需求经选型系统进入制造",
+   "格力：较少公开"]},
+  {lb:"大金现状",p:"客户端触点成熟：PROSHOP 门店网络 2000+ 网点、Daikin Care 直连用户；但客户需求到设计、制造的传递环节未见公开的数字化实践，制造链路信息有限。"}]},
+c2:{nm:"方向 · AI 智能选型",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"输入建筑类型、空间、朝向、负荷与使用需求后，AI 自动完成机型匹配、系统方案组合与报价，替代「资深工程师翻手册、算负荷、写方案」的传统选型过程。选型是商用项目的入口环节，响应速度直接影响商机转化。"},
+  {lb:"行业实践",lis:[
+   "美的：强 —— AI 选型 + 自动报价，选型周期 5.3天→约1天（-81%），已用于定制化冷水机组销售",
+   "海尔：有 —— AI 智能选型进入大规模定制链路，需求直传设计与制造",
+   "格力：较少公开"]},
+  {lb:"大金现状",p:"已有 BIM 组件库、能耗计算、科学设计提案等设计支持工具，载体较好；但选型环节仍以专业工程师人工判断为主，尚未见 AI 辅助选型的公开实践。"}]},
+c3:{nm:"方向 · AI 设计",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"AI 辅助生成设计图纸与方案文件，核心是历史设计数据的检索与复用：把过往图纸、方案沉淀为结构化数据，新项目在历史基础上快速生成，而不是每次从零开始。设计是定制化设备交付链路中最耗人力的环节之一。"},
+  {lb:"行业实践",lis:[
+   "美的：强 —— AI 智能设计使设计周期 -45%，23万张历史图纸作为数据基础",
+   "海尔：有 —— 316万设计模块组合，设计模块化复用",
+   "格力：较少公开"]},
+  {lb:"大金现状",p:"大金集团层面推进研发设计流程 DX，中国区公开案例有限。空调设计是强专业领域，行业经验表明「历史数据复用」比「全自动生成」更务实。"}]},
+c4:{nm:"方向 · AI 供应协同",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"围绕订单的需求预测、物料计划、供应商协同与异常预警的数字化联动：需求变化实时传导到供应端，供应商按计划协同供货，异常自动预警。供应协同能力决定定制化订单能否快速、准确交付。"},
+  {lb:"行业实践",lis:[
+   "海尔：强 —— AI 供应协同随订单与需求变化实时调整物料计划",
+   "美的：有 —— 柔性制造配套的供应计划体系",
+   "格力：有 —— 供应商质量数字化管理"]},
+  {lb:"大金现状",p:"公开资料较少。大金已有与上下游供应商共同制定生产交付管理标准的实践（属质量与标准协同，衔接课题 02），AI 驱动的供应计划协同未见公开。"}]},
+c5:{nm:"方向 · AI 排产",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"在多规格、小批量、定制化订单场景下，AI 自动排定生产计划与产线调度，平衡交期、产能与换线成本。订单越定制、批量越小，人工排产越困难，AI 的价值越大。"},
+  {lb:"行业实践",lis:[
+   "海尔：强 —— 订单驱动的 AI 智能排产，支撑大规模定制",
+   "美的：有 —— 柔性制造体系",
+   "格力：有 —— 智能排产"]},
+  {lb:"大金现状",p:"公开信息有限。"}]},
+c6:{nm:"方向 · AI 质量检测",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"用机器视觉、动作识别等 AI 手段替代人工目检与抽检，对产品外观、工序装配、安全项进行在线检测，检测结果直接联动产线自动拦截不良品。是制造业验证最充分的 AI 方向之一。"},
+  {lb:"行业实践",lis:[
+   "海尔：强 —— AI 全过程质检，外观缺陷识别率 99.9%，配合动作识别纠偏",
+   "格力：强 —— 5G 机器视觉三类检测（包装 / 压缩机线序 / 电气安全）+ 不良品自动分离",
+   "美的：有 —— AR/AI 质量防错，装配标准自动提示与校验"]},
+  {lb:"大金现状",p:"公开的具体制造质检案例较少；大金制造侧公开的 AI 实践集中在设备故障与能源管理（见下方能力组）。"}]},
+c7:{nm:"方向 · 远程技术支援",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"现场工程师遇到疑难问题时，通过音视频与远程专家实时连线，结合文档、图纸与系统数据协同排障；专家经验跨地域复用，减少重复出差与客户等待。对服务网络覆盖广的空调行业尤其重要。"},
+  {lb:"行业实践",lis:[
+   "美的：有 —— 智能运维体系的远程支持",
+   "海尔 / 格力：未见公开"]},
+  {lb:"大金现状",p:"强 —— 远程支援DX 技术App 已在中国区落地（官网可查）；THINKLET 为集团实践（与 Fairy Devices 合作的现场DX：现场视频知识沉淀、远程专家指导）。这是大金相对行业的明显优势方向。"}]},
+c8:{nm:"方向 · AI 故障诊断",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"基于设备运行数据、故障历史与维修知识库，AI 自动完成故障识别与原因定位，辅助甚至部分替代专家诊断。诊断能力决定售后响应速度与一次修复率，是售后服务的核心 AI 能力。"},
+  {lb:"行业实践",lis:[
+   "海尔 / 美的 / 格力：有 —— 多为设备 IoT 监控的配套告警能力，深度 AI 诊断公开案例有限"]},
+  {lb:"大金现状",p:"强 —— 中国区已有 AI 智能检测服务（2026.9 官网专题：将专业诊断经验算法化，覆盖 200+ 故障检测）；集团层面有 Hybrid AI 故障诊断（规则知识 + 机器学习组合，2025.2 投用）与 AirNet 长期设备数据。属行业内领先。"}]},
+c9:{nm:"方向 · IoT 主动服务",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"设备联网后持续回传运行数据，异常自动预警并触发主动服务（主动联系客户、预约上门），把「坏了报修」变为「坏前处理」，同时创造持续的服务收入。是从卖设备走向卖服务的关键能力。"},
+  {lb:"行业实践",lis:[
+   "海尔 / 美的 / 格力：有 —— IoT 设备监控与智能运维；家用空调联网较普及，商用设备的深度主动服务公开有限"]},
+  {lb:"大金现状",p:"强 —— Daikin Care 已形成规模（200+ 数据专家、200+ 空气管家、3000+ 售后工程师，截至 2025.3），配合 IoT 主动服务与 DK-CONNECT 设备管理平台。"}]},
+c10:{nm:"方向 · AI 节能运营",tag:"能力方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"基于负荷预测与运行数据的 AI 自动优化控制：预测未来热负荷，自动调整机组运行策略，在保证舒适性的同时降低能耗。节能既是客户价值，也可成为服务收费的新模式（合同能源管理）。"},
+  {lb:"行业实践",lis:[
+   "海尔 / 美的 / 格力：有 —— 智能运维体系均含节能方向"]},
+  {lb:"大金现状",p:"强 —— AI 结合传感器与天气数据预测热负荷、自动优化运行策略；上海工厂 AI 能源管理已落地。既有产品能力，又有自身工厂的验证场景。"}]},
+/* ===== 大金 8 组能力 ===== */
+g1:{nm:"大金能力 · 方案设计",tag:"现状 · 中国区落地",col:"#059669",
+ secs:[
+  {lb:"能力明细",lis:[
+   "BIM 服务：提供 BIM 组件库，支撑设计阶段建模与管线碰撞检查",
+   "能耗计算：方案阶段的能耗测算，支撑方案比较与客户沟通",
+   "科学设计提案：基于空间用途与需求的专业设计方案",
+   "商用系统解决方案：覆盖不同建筑类型的应用方案"]},
+  {lb:"现状说明",p:"中国区已公开落地的设计支持服务能力，已有稳定的工具与内容载体。"},
+  {lb:"相关方向",p:"AI 智能方案（方向 4）—— 在现有载体上叠加自动选型与方案生成，是最容易切入的方向之一。"}]},
+g2:{nm:"大金能力 · 安装交付",tag:"现状 · 中国区落地",col:"#059669",
+ secs:[
+  {lb:"能力明细",lis:[
+   "专业安装标准：覆盖安装工艺的质量要求体系",
+   "安装过程数字化：安装节点、过程数据的线上化",
+   "安装品质守护：工程师 + AI 的品质管理机制",
+   "App 安装过程可视：客户可查看安装进度与过程"]},
+  {lb:"现状说明",p:"中国区已公开落地；「安装品质守护」已引入 AI 辅助，是 AI 进入安装环节的现成入口。"},
+  {lb:"相关方向",p:"AI 质量管理（方向 5）的安装质量环节。"}]},
+g3:{nm:"大金能力 · 售后服务",tag:"现状 · 中国区落地",col:"#059669",
+ secs:[
+  {lb:"能力明细",lis:[
+   "在线报修：客户线上提交服务需求",
+   "清洗保养：周期性的保养服务体系",
+   "智能监控：设备运行的远程监控",
+   "实机运行数据分析：基于真实运行数据的专业分析",
+   "专业解析报告：面向客户的运行分析报告",
+   "远程支援DX 技术App：现场工程师与远程专家的支援协同工具"]},
+  {lb:"现状说明",p:"中国区已公开落地的售后服务体系，数据与专家资源已形成规模。"},
+  {lb:"相关方向",p:"AI 现场作业数字员工（方向 2）、AI 数据分析与经营洞察（方向 1）。"}]},
+g4:{nm:"大金能力 · 设备运营",tag:"现状 · 中国区 + 集团",col:"#047857",
+ secs:[
+  {lb:"能力明细",lis:[
+   "Daikin Care（中国区）：IoT 主动服务体系 —— 200+ 数据专家、200+ 空气管家、3000+ 售后工程师（截至 2025.3），中国官网可查",
+   "IoT 主动服务（中国区）：设备异常预警触发的主动上门服务",
+   "DK-CONNECT（集团）：设备联网与管理平台",
+   "AI 节能控制（集团）：热负荷预测 + 运行策略自动优化"]},
+  {lb:"现状说明",p:"Daikin Care 是中国区明确落地的服务载体；DK-CONNECT 与 AI 节能控制目前公开资料为集团层面实践。"},
+  {lb:"相关方向",p:"智能设备运营（方向 6）。"}]},
+g5:{nm:"大金能力 · 维修诊断",tag:"现状 · 中国区 + 集团",col:"#047857",
+ secs:[
+  {lb:"能力明细",lis:[
+   "AI 智能检测服务（中国区）：将专业诊断经验算法化（「把老师傅装进算法」），面向中央空调服务，辅助故障检测与服务判断 —— 2026.9 大金中国官网专题报道",
+   "AI 智能检测：覆盖 200+ 故障类型的自动识别",
+   "AirNet（集团）：长期设备运行数据积累",
+   "Hybrid AI 故障诊断（集团）：规则知识 + 机器学习组合诊断，2025.2 算法投入应用"]},
+  {lb:"现状说明",p:"AI 智能检测服务是大金中国近期公开的 AI 服务落地点，最贴近中国当前业务；Hybrid AI 与 AirNet 为集团层面的技术底座。"},
+  {lb:"相关方向",p:"AI 现场作业数字员工（方向 2）。"}]},
+g6:{nm:"大金能力 · 现场技术支援",tag:"现状 · 集团实践",col:"#2563eb",
+ secs:[
+  {lb:"能力明细",lis:[
+   "THINKLET：可穿戴 AI 设备，与 Fairy Devices 合作的现场DX实践 —— 现场第一视角视频与音频 AI",
+   "现场视频知识沉淀：现场作业视频转为可复用的知识",
+   "远程专家指导：现场与专家的实时连线支援"]},
+  {lb:"现状说明",p:"大金集团层面的现场DX实践（集团官网可查）；中国区落地情况待进一步确认。中国区已落地的是远程支援DX 技术App（见「售后服务」组）。"},
+  {lb:"相关方向",p:"AI 现场作业数字员工（方向 2）。"}]},
+g7:{nm:"大金能力 · 生产制造",tag:"现状 · 集团实践",col:"#2563eb",
+ secs:[
+  {lb:"能力明细",lis:[
+   "工厂设备故障 AI：与日立合作（2025）的设备故障检测 AI",
+   "设备异常分析：生产设备运行数据的异常识别",
+   "AI 能源管理：上海工厂的能源管理应用"]},
+  {lb:"现状说明",p:"大金集团 / 海外已有实践；AI 能源管理（上海工厂）公开细节有限，中国区落地状态待进一步确认。制造侧 AI 有集团经验可借鉴。"},
+  {lb:"相关方向",p:"AI 质量管理（方向 5）的生产质量环节。"}]},
+g8:{nm:"大金能力 · 企业AI与研发",tag:"现状 · 集团实践",col:"#2563eb",
+ secs:[
+  {lb:"能力明细",lis:[
+   "AI 故障监控：企业级设备与系统故障监控",
+   "IoT 异常预测：基于 IoT 数据的异常预测",
+   "研发设计流程 DX：研发环节的数字化改造",
+   "数字孪生：产品与系统的数字孪生实践",
+   "AI 人才培养：DICT 数字人才大学，AI 人才梯队建设"]},
+  {lb:"现状说明",p:"大金集团 / 海外已有实践，属企业级 AI 基础能力建设，为各业务环节的 AI 应用提供底座。"}]},
+/* ===== 桥接层 A/B ===== */
+b1:{nm:"深化 · 设备智能运维",tag:"现有优势深化",col:"#047857",
+ secs:[
+  {lb:"现有基础",p:"Daikin Care + AirNet + DK-CONNECT + AI 节能控制 —— 已有设备联网、数据积累与主动服务体系。"},
+  {lb:"深化路径",lis:[
+   "设备健康管理：从单点监控升级为设备整体健康评分，量化每台设备的健康状态",
+   "预测性维护：基于运行数据的故障预测，维护计划自动生成，替代固定周期保养",
+   "自动服务触发：异常预警直接生成服务工单并派单，缩短从发现到处理的链路"]},
+  {lb:"对应方向",p:"智能设备运营（方向 6）。"}]},
+b2:{nm:"深化 · 现场服务",tag:"现有优势深化",col:"#047857",
+ secs:[
+  {lb:"现有基础",p:"远程支援DX + THINKLET + SE 能力体系（SE 能力指标化管理平台）—— 现场支援工具与工程师能力管理已有基础。"},
+  {lb:"深化路径",lis:[
+   "AI 维修诊断助手：输入故障现象，给出可能原因与处理步骤，结合设备数据定位问题",
+   "AI 现场作业助手：标准、手册、历史案例随问随答，覆盖安装与维修现场",
+   "知识自动沉淀：现场视频与工单数据自动结构化，持续扩充知识库"]},
+  {lb:"对应方向",p:"AI 现场作业数字员工（方向 2）。"}]},
+b3:{nm:"深化 · 安装品质",tag:"现有优势深化",col:"#047857",
+ secs:[
+  {lb:"现有基础",p:"专业安装标准 + App 过程可视 + 安装品质守护（工程师 + AI）—— 安装环节已有标准与数据载体。"},
+  {lb:"深化路径",lis:[
+   "AI 安装质量检查：现场照片 / 视频自动比对安装标准，自动发现不符合项",
+   "整改闭环：问题识别 → 整改任务 → 复检追踪，全流程线上闭环",
+   "服务商质量评价：安装过程数据沉淀为服务商质量评级，反向驱动安装质量"]},
+  {lb:"对应方向",p:"AI 质量管理（方向 5）。"}]},
+b4:{nm:"参考 · AI 智能选型",tag:"行业参考方向",col:"#2563eb",
+ secs:[
+  {lb:"现有基础",p:"已有 BIM 服务 + 能耗计算 + 科学设计提案，具备选型的工具与数据载体。"},
+  {lb:"参考路径",lis:[
+   "需求输入（建筑 / 空间 / 负荷 / 使用需求）→ AI 自动选型 → 多方案比较 → 报价 / 初步方案生成"]},
+  {lb:"行业参考",p:"美的 AI 选型周期 5.3天→约1天（-81%）、AI 设计周期 -45%；海尔 AI 智能选型已进入定制链路。是行业验证最充分、见效最快的方向。"},
+  {lb:"对应方向",p:"AI 智能方案（方向 4）。"}]},
+b5:{nm:"参考 · AI 供应协同",tag:"行业参考方向",col:"#2563eb",
+ secs:[
+  {lb:"参考路径",lis:[
+   "订单预测 → 物料计划 → 供应商协同 → 异常预警，需求变化实时传导供应端"]},
+  {lb:"行业参考",p:"海尔 AI 供应协同随订单与需求变化实时调整物料计划，支撑大规模定制。"},
+  {lb:"衔接",p:"与课题 02（供应商作业质量 / 标准提升管理）协同推进：课题 02 解决「管标准」，本方向解决「供计划」。"}]},
+b6:{nm:"参考 · AI 生产质量",tag:"行业参考方向",col:"#2563eb",
+ secs:[
+  {lb:"参考路径",lis:[
+   "工序动作识别 → 在线质检 → 自动拦截 → 质量追溯，标准转为机器可执行的规则"]},
+  {lb:"行业参考",p:"海尔 AI 全过程质检（外观缺陷识别率 99.9%）、格力 5G 机器视觉三类检测 + 不良品自动分离。"},
+  {lb:"对应方向",p:"AI 质量管理（方向 5）。"}]},
+b7:{nm:"参考 · AI 柔性排产",tag:"行业参考方向",col:"#2563eb",
+ secs:[
+  {lb:"方向说明",p:"多规格、小批量、定制订单场景的排产适用性评估：订单越定制、批量越小，人工排产越困难，AI 排产价值越大；需结合大金产品结构与订单形态评估适用范围。"},
+  {lb:"行业参考",p:"海尔订单驱动的 AI 智能排产（支撑大规模定制）；美的柔性制造体系。"}]},
+/* ===== 六个重点方向 ===== */
+d1:{nm:"AI 数据分析与经营洞察",tag:"通用能力型",col:"#047857",
+ pitch:"让经营分析从「人工汇总报表」升级为「自然语言提问、主动发现异常」。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "数据分散在各业务环节",
+   "经营分析依赖人工汇总",
+   "异常发现滞后",
+   "管理层难以快速下钻"]},
+  {lb:"怎么做",p:"连接业务数据 → 自然语言提问 → 自动分析 → 异常识别 → 生成图表与结论 → 持续跟踪。"},
+  {lb:"适用场景",lis:[
+   "售后经营分析","SE 能力分析","工单质量分析","设备运营分析","供应链分析","客户服务分析"]},
+  {lb:"行业参考",p:"制造企业正在把数据平台从「看报表」升级为「智能分析与决策」。"},
+  {lb:"价值",p:"从被动要数到主动洞察，管理层决策与分析效率显著提升；适用范围大、启动成本低。"}]},
+d2:{nm:"AI 现场作业数字员工",tag:"通用能力型",col:"#047857",
+ pitch:"把标准、手册、历史案例装进现场人员的随身助手。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "维修、安装、服务现场高度依赖老师傅经验",
+   "查手册、打电话问专家，耗时长",
+   "新人上手慢、作业质量波动"]},
+  {lb:"怎么做",p:"作业人员提问 / 上传照片 → AI 识别业务场景 → 检索标准、手册、历史案例 → 给出步骤 → 调用业务系统查询 → 自动记录处理结果。"},
+  {lb:"适用场景",lis:[
+   "SE 维修助手","安装作业助手","故障诊断","新人培训","远程专家辅助"]},
+  {lb:"大金基础",g:1,lis:[
+   "远程支援DX 技术App（中国区）",
+   "THINKLET 远程支援（集团实践：现场视频知识沉淀、远程专家指导）",
+   "Hybrid AI 故障诊断（集团：规则知识 + 机器学习）"]},
+  {lb:"价值",p:"把老师傅经验变成可复用的组织能力。"}]},
+d3:{nm:"AI 快速构建业务应用",tag:"通用能力型",col:"#047857",
+ pitch:"让业务侧大量临时性、轻量化需求不再排队等开发。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "专项检查、临时数据采集、项目登记、现场表单、小型看板等需求量大",
+   "传统开发排期长、成本高",
+   "很多轻需求用完即弃"]},
+  {lb:"怎么做",p:"业务人员描述需求 → AI 生成页面、数据结构和流程 → 快速形成轻量应用 → 用于验证 → 成熟后再系统化。"},
+  {lb:"行业参考",p:"AI 辅助构建内部工具正在成为制造企业数字化团队的标配能力。"},
+  {lb:"大金基础",g:1,lis:[
+   "各业务环节已有明确的轻量场景储备（检查、采集、登记、看板）"]},
+  {lb:"价值",p:"业务需求响应从月级到天级；先验证再系统化，降低试错成本。"}]},
+d4:{nm:"AI 智能方案",tag:"业务场景型",col:"#2563eb",
+ pitch:"商用项目的选型与方案制作，从专业人工走向 AI 辅助生成。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "商用中央空调高度定制",
+   "选型与方案制作依赖专业工程师，周期长",
+   "方案质量依赖个人经验"]},
+  {lb:"怎么做",p:"客户建筑 / 空间 / 需求 → AI 理解需求 → 产品选型 → 能耗计算 → 多方案对比 → 生成初步方案。"},
+  {lb:"行业参考",p:"美的：AI 选型周期 5.3天→约1天（-81%）、AI 设计周期 -45%；海尔：AI 智能选型已进入定制链路。"},
+  {lb:"大金基础",g:1,lis:[
+   "BIM 服务","能耗计算","科学设计提案","商用系统解决方案"]},
+  {lb:"价值",p:"商用项目响应速度与方案一致性显著提升；大金已有载体，是行业验证最充分的方向之一。"}]},
+d5:{nm:"AI 质量管理",tag:"业务场景型",col:"#2563eb",
+ pitch:"AI 质量识别与闭环，覆盖产品、安装、服务、供应商四个环节。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "质量检查分散在制造、安装、服务、供应商各环节",
+   "多为人工抽检，覆盖有限",
+   "问题发现滞后、追溯困难"]},
+  {lb:"怎么做",p:"标准数字化 → 自动检查 → 异常识别 → 整改 → 复检 → 质量数据沉淀。"},
+  {lb:"行业参考",p:"海尔：AI 全过程质检（外观缺陷识别率 99.9%）；格力：5G 机器视觉 + 不良品自动分离。"},
+  {lb:"大金基础",g:1,lis:[
+   "安装品质守护（工程师 + AI、App 过程可视）",
+   "工厂设备故障 AI、设备异常分析",
+   "与上下游供应商共同制定生产交付管理标准"]},
+  {lb:"价值",p:"从抽检走向全过程识别，形成覆盖全链路的质量管理闭环。"}]},
+d6:{nm:"智能设备运营",tag:"业务场景型",col:"#2563eb",
+ pitch:"设备卖出后持续连接，从「维修一台设备」到「运营设备全生命周期」。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "传统模式服务靠报修触发",
+   "设备运行数据价值未充分释放",
+   "客户需要节能、健康、持续可用"]},
+  {lb:"怎么做",p:"IoT 数据 → 设备健康评分 → 故障预测 → 节能优化 → 自动服务触发。"},
+  {lb:"行业参考",p:"大金自身已是行业强基础：AI 结合传感器与天气数据预测热负荷、自动优化运行策略。"},
+  {lb:"大金基础",g:1,lis:[
+   "Daikin Care（IoT 主动服务）","AirNet 长期设备数据","DK-CONNECT","AI 节能控制","Hybrid AI 故障诊断"]},
+  {lb:"价值",p:"主动服务替代被动报修，节能与设备可用性成为可交付的服务产品。"}]}
+};
+var drawer=document.getElementById("drawer"),dmask=document.getElementById("dmask"),
+    dHead=document.getElementById("dHead"),dBody=document.getElementById("dBody");
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function openCap(id){
+  var c=CAPS[id]; if(!c) return;
+  var h='<div class="d-tags">'+
+        (c.tag?'<span class="db" style="background:'+c.col+'">'+esc(c.tag)+'</span>':'')+
+        '<button class="d-x" onclick="closeDir()">✕</button></div>'+
+        '<div class="d-name">'+esc(c.nm)+'</div>';
+  var b=c.pitch?'<div class="d-pitch">'+esc(c.pitch)+"</div>":"";
+  (c.secs||[]).forEach(function(s){
+    b+='<div class="d-sec'+(s.g?' d-base':'')+'"><div class="d-lb">'+esc(s.lb)+'</div>';
+    if(s.p) b+='<p>'+esc(s.p)+'</p>';
+    if(s.lis){ b+='<ul>'; s.lis.forEach(function(x){ b+='<li>'+esc(x)+'</li>'; }); b+='</ul>'; }
+    b+='</div>';
+  });
+  dHead.innerHTML=h; dBody.innerHTML=b; dBody.scrollTop=0;
+  drawer.classList.add("on"); dmask.classList.add("on");
+  document.body.style.overflow="hidden";
+}
+function closeDir(){
+  drawer.classList.remove("on"); dmask.classList.remove("on");
+  document.body.style.overflow="";
+}
+window.closeDir=closeDir;
+document.addEventListener("click",function(e){
+  if(e.target.closest("a.ext")) return;  // 官网外链直接跳转，不开抽屉
+  var t=e.target.closest("[data-cap]"); if(t) openCap(t.dataset.cap);
+});
+dmask.addEventListener("click",closeDir);
+document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeDir(); });
+</script>
+</body>
+</html>

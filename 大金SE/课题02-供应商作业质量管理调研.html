@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>课题 02 · 大型集团供应商作业质量 / 标准提升的管理调研</title>
+<style>
+  :root{
+    --ink:#1f2937; --ink2:#4b5563; --ink3:#9ca3af;
+    --line:#e5e7eb; --bg:#f6f8f7; --card:#ffffff;
+    --green:#059669; --green-d:#047857; --green-dd:#065f46; --green-l:#ecfdf5; --green-l2:#d1fae5;
+    --blue:#2563eb; --blue-l:#eff4ff;
+    --orange:#d97706; --orange-l:#fdf6ec;
+    --purple:#7c3aed;
+    --gray:#9ca3af; --gray-l:#f3f4f6;
+    --r:10px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+    background:var(--bg); color:var(--ink); font-size:14px; line-height:1.65;
+  }
+  /* ===== 顶栏 ===== */
+  .topbar{
+    position:sticky; top:0; z-index:50; height:52px;
+    background:#fff; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:14px; padding:0 28px;
+  }
+  .brand{font-size:15px; font-weight:700; letter-spacing:.5px; display:flex; align-items:center; gap:10px;}
+  .brand .mark{width:8px; height:22px; border-radius:2px; background:linear-gradient(180deg,var(--green),var(--green-dd));}
+  .topbar .sp{flex:1;}
+  .btn-back{
+    align-items:center; gap:6px; cursor:pointer; user-select:none;
+    font-size:13px; color:var(--ink2); border:1px solid var(--line); border-radius:8px;
+    padding:6px 14px; background:#fff; transition:.15s; text-decoration:none;
+  }
+  .btn-back:hover{border-color:var(--green); color:var(--green);}
+  .brandtag{font-size:13px; font-weight:700; color:var(--green); letter-spacing:2px;}
+  /* ===== 页面 ===== */
+  .topic{max-width:1400px; margin:0 auto; padding:36px 28px 80px;}
+  .n-head{text-align:center; margin-bottom:8px;}
+  .n-tag{font-size:12.5px; font-weight:700; color:var(--green); letter-spacing:2px; margin-bottom:8px;}
+  .n-h1{font-size:26px; font-weight:700; letter-spacing:1px;}
+  .n-route{display:flex; justify-content:center; align-items:center; gap:8px; margin-top:12px; flex-wrap:wrap;}
+  .n-route span{font-size:11.5px; color:var(--ink2); background:#fff; border:1px solid var(--line); border-radius:20px; padding:4px 14px; letter-spacing:.5px; font-weight:600;}
+  .n-route i{color:#c4cdc5; font-style:normal; font-size:11px;}
+  .n-concl{
+    max-width:1060px; margin:16px auto 0; background:#fff; border:1px solid var(--line);
+    border-left:4px solid var(--green); border-radius:0 10px 10px 0; padding:15px 22px;
+    font-size:14.5px; color:var(--ink2); line-height:1.9;
+  }
+  .n-concl b{color:var(--ink);}
+  .trends{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  .trend{font-size:12.5px; font-weight:600; color:var(--green-d); background:var(--green-l); border:1px solid var(--green-l2); border-radius:20px; padding:6px 16px;}
+  /* 主线分隔 */
+  .trunk{display:flex; flex-direction:column; align-items:center; margin-top:30px;}
+  .vline{width:2px; height:16px; background:#c9d4cc;}
+  .vlabel{font-size:13px; color:var(--ink2); background:#fff; border:1px solid var(--line); border-radius:20px; padding:6px 22px; font-weight:700; letter-spacing:1px;}
+  .vsub{font-size:11.5px; color:var(--ink3); margin-top:6px;}
+  /* 成熟能力链（可点） */
+  .chainstrip{
+    display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:6px;
+    max-width:1200px; margin:16px auto 0; background:#fff; border:1px solid var(--line);
+    border-radius:12px; padding:12px 18px;
+  }
+  .chainstrip b{font-size:12px; font-weight:700; color:var(--green-dd); background:var(--green-l); border-radius:6px; padding:4px 10px; white-space:nowrap;}
+  .chainstrip b[data-cap]{cursor:pointer; transition:.15s;}
+  .chainstrip b[data-cap]:hover{background:var(--green); color:#fff;}
+  .chainstrip i{color:#b6c4ba; font-style:normal; font-size:11px;}
+  /* 五家企业卡 */
+  .vwrap{display:grid; grid-template-columns:repeat(5,1fr); gap:13px; max-width:1400px; margin:16px auto 0;}
+  .vcard{background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; transition:.18s;}
+  .vhead{padding:13px 15px 11px; border-bottom:1px solid var(--line);}
+  .vhead .co{font-size:15px; font-weight:800;}
+  .vhead .co .ext{font-size:11px; font-weight:600; color:var(--ink3); text-decoration:none; margin-left:7px; border:1px solid var(--line); border-radius:5px; padding:1px 7px; vertical-align:2px; transition:.15s;}
+  .vhead .co .ext:hover{color:var(--green); border-color:var(--green);}
+  .vhead .mo{font-size:12px; color:var(--green-d); font-weight:600; margin-top:3px; line-height:1.6;}
+  .vbody{padding:12px 15px; flex:1;}
+  .vkw{display:flex; flex-wrap:wrap; gap:6px;}
+  .vkw span{font-size:11px; padding:3px 9px; border-radius:6px; background:var(--gray-l); color:var(--ink2);}
+  [data-cap]{cursor:pointer;}
+  .vcard[data-cap]:hover{transform:translateY(-2px); box-shadow:0 8px 22px rgba(6,95,70,.13); border-color:var(--green);}
+  /* 对比表 */
+  .cmpwrap{max-width:1280px; margin:16px auto 0; background:#fff; border:1px solid var(--line); border-radius:12px; padding:6px 14px 10px; overflow-x:auto;}
+  .cmp{width:100%; border-collapse:collapse;}
+  .cmp th{font-size:12px; color:var(--ink2); border-bottom:2px solid var(--line); padding:9px 10px; text-align:left; font-weight:700; white-space:nowrap;}
+  .cmp th:last-child{color:var(--green-d);}
+  .cmp td{font-size:12.5px; border-bottom:1px solid var(--line); padding:8px 10px; color:var(--ink2);}
+  .cmp tr:last-child td{border-bottom:none;}
+  .cmp td.dir{font-weight:700; color:var(--ink); white-space:nowrap;}
+  .cmp td .lv{display:inline-block; font-size:11.5px; font-weight:600; border-radius:5px; padding:2px 10px; white-space:nowrap;}
+  .lv3{background:var(--green-d); color:#fff;}
+  .lv2{background:var(--green-l); color:var(--green-dd);}
+  .lv1{background:var(--gray-l); color:var(--ink3);}
+  .lvtxt{font-size:12px; color:var(--ink2);}
+  .cmp tr[data-cap]:hover td{background:#f2faf6;}
+  .concl{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  .concl .cc{font-size:12.5px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:6px 16px;}
+  .concl .cc b{color:var(--green-d); margin-right:4px;}
+  .cmpnote{max-width:1280px; margin:8px auto 0; font-size:11.5px; color:var(--ink3);}
+  /* 大金 A/B 两条线 */
+  .abgrid{display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:1240px; margin:16px auto 0;}
+  .abcard{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; transition:.18s;}
+  .abcard .dt{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+  .abcard .dt b{font-size:15px;}
+  .abcard .dt .ln{font-size:11px; color:var(--ink3);}
+  .abcard .ds{font-size:12px; color:var(--ink2); line-height:1.7; margin-bottom:11px;}
+  .abcard .vkw span{font-size:11.5px; padding:3px 10px;}
+  .abcard[data-cap]:hover{border-color:var(--green); box-shadow:0 6px 18px rgba(6,95,70,.10); transform:translateY(-1px);}
+  .keyline{
+    max-width:980px; margin:18px auto 0; text-align:center; font-size:14.5px; font-weight:700;
+    color:var(--green-dd); background:var(--green-l); border:1px solid var(--green-l2); border-radius:10px; padding:12px 20px;
+  }
+  /* 参考桥接（单列 5 行） */
+  .bridge{max-width:1240px; margin:16px auto 0; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .bcol .bh{padding:10px 18px; font-size:13.5px; font-weight:700; color:#fff; background:var(--green-d);}
+  .brow{padding:12px 18px; border-bottom:1px dashed var(--line); transition:.12s;}
+  .brow:last-child{border-bottom:none;}
+  .brow b{font-size:13px;}
+  .brow p{font-size:12px; color:var(--ink2); margin-top:2px; line-height:1.7;}
+  .brow p em{font-style:normal; color:var(--ink3);}
+  .brow[data-cap]:hover{background:var(--green-l);}
+  .btag{font-size:10.5px; border-radius:4px; padding:1px 7px; margin-left:6px; vertical-align:1px;}
+  .btag.a{background:var(--green-l); color:var(--green-d);}
+  .btag.b{background:var(--blue-l); color:var(--blue);}
+  /* 六方向 */
+  .dirgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:1240px; margin:14px auto 0;}
+  .dircard{
+    background:#fff; border:1px solid var(--line); border-radius:11px; padding:15px 17px;
+    cursor:pointer; transition:.18s; border-top:3px solid var(--green-d);
+  }
+  .dircard.s2c{border-top-color:var(--blue);}
+  .dircard.s3c{border-top-color:var(--purple);}
+  .dircard:hover{transform:translateY(-2px); box-shadow:0 8px 22px rgba(6,95,70,.13); border-color:var(--green);}
+  .dircard .dn{display:flex; align-items:baseline; gap:8px;}
+  .dircard .dn em{font-style:normal; font-size:11px; font-weight:800; color:var(--green); letter-spacing:.5px;}
+  .dircard.s2c .dn em{color:var(--blue);}
+  .dircard.s3c .dn em{color:var(--purple);}
+  .dircard .dn b{font-size:14.5px;}
+  .dircard .dn .stg{margin-left:auto; font-size:10.5px; font-weight:600; border-radius:4px; padding:1px 8px; flex:none;}
+  .stg.s1{background:var(--green-l); color:var(--green-d);}
+  .stg.s2{background:var(--blue-l); color:var(--blue);}
+  .stg.s3{background:#f5f3ff; color:var(--purple);}
+  .dircard p{font-size:12.5px; color:var(--ink2); margin-top:6px; line-height:1.7;}
+  .dircard .open{margin-top:10px; font-size:11.5px; font-weight:600; color:var(--green);}
+  .dircard.s2c .open{color:var(--blue);}
+  .dircard.s3c .open{color:var(--purple);}
+  /* 分阶段 */
+  .stages{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; max-width:1320px; margin:16px auto 0;}
+  .stage{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; position:relative;}
+  .stage .sn{display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:800; letter-spacing:1px; color:var(--green);}
+  .stage .sn .sdir{font-size:10.5px; font-weight:600; color:var(--ink3); letter-spacing:0;}
+  .stage .st2{font-size:15.5px; font-weight:800; margin-top:2px;}
+  .stage .sgoal{font-size:12.5px; color:var(--ink2); margin-top:6px; line-height:1.75;}
+  .stage .vkw{margin-top:10px;}
+  .stage .sval{margin-top:11px; font-size:12px; color:var(--green-dd); background:var(--green-l); border-radius:7px; padding:7px 11px; line-height:1.7;}
+  @media (max-width:1100px){
+    .vwrap{grid-template-columns:1fr 1fr;}
+    .abgrid{grid-template-columns:1fr;}
+    .dirgrid{grid-template-columns:1fr;}
+    .stages{grid-template-columns:1fr;}
+  }
+  @media print{
+    .topbar,.n-route,.dmask,.drawer{display:none !important;}
+    body{background:#fff;}
+    .vcard,.abcard,.stage,.dircard{break-inside:avoid;}
+  }
+  /* ===== 抽屉 ===== */
+  .dmask{position:fixed; inset:0; background:rgba(6,40,28,.38); opacity:0; pointer-events:none; transition:opacity .25s; z-index:90;}
+  .dmask.on{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:fixed; top:0; right:0; height:100vh; width:min(580px,94vw); background:#fff;
+    box-shadow:-8px 0 30px rgba(0,0,0,.18); transform:translateX(105%); transition:transform .28s ease;
+    z-index:100; display:flex; flex-direction:column;
+  }
+  .drawer.on{transform:none;}
+  .d-head{padding:18px 22px 14px; border-bottom:1px solid var(--line); flex-shrink:0;}
+  .d-tags{display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+  .db{color:#fff; font-size:11px; font-weight:600; border-radius:5px; padding:2px 9px; letter-spacing:.5px;}
+  .d-x{margin-left:auto; border:none; background:var(--gray-l); border-radius:6px; width:26px; height:26px; cursor:pointer; color:var(--ink2); font-size:13px; line-height:1;}
+  .d-x:hover{background:var(--line); color:var(--ink);}
+  .d-name{font-size:19px; font-weight:800; margin-top:10px; line-height:1.35;}
+  .d-body{overflow-y:auto; padding:18px 22px 30px; flex:1;}
+  .d-pitch{background:var(--green-l); border-left:4px solid var(--green); border-radius:0 8px 8px 0; padding:10px 14px; font-size:13px; font-weight:600; color:var(--green-dd); line-height:1.7;}
+  .d-sec{margin-top:14px; background:#fafbfa; border:1px solid var(--line); border-radius:8px; padding:11px 14px;}
+  .d-lb{font-size:11.5px; font-weight:700; letter-spacing:1px; margin-bottom:6px; color:var(--ink2);}
+  .d-sec p{font-size:12.8px; line-height:1.8; color:var(--ink);}
+  .d-sec ul{margin:2px 0 0 18px;}
+  .d-sec li{font-size:12.5px; line-height:1.85; color:var(--ink2);}
+  .d-base{background:var(--green-l); border-color:var(--green-l2);}
+  .d-base .d-lb{color:var(--green-d);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="mark"></span>大金（中国）· 数字化课题调研</div>
+  <div class="sp"></div>
+  <a class="btn-back" href="index.html">← 返回</a>
+  <span class="brandtag">唯安</span>
+</div>
+
+<div class="topic">
+
+  <!-- ===== 头部 ===== -->
+  <div class="n-head">
+    <div class="n-tag">课题 02 · 调研全景</div>
+    <div class="n-h1">大型集团的供应商作业质量与标准提升管理</div>
+    <div class="n-route">
+      <span>行业变化</span><i>→</i><span>五家实践</span><i>→</i><span>管理对比</span><i>→</i><span>成熟能力</span><i>→</i><span>大金基础</span><i>→</i><span>对大金参考</span><i>→</i><span>未来方向</span><i>→</i><span>分阶段建设</span>
+    </div>
+  </div>
+
+  <!-- ===== 01 行业变化 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">行业变化</div><div class="vline"></div></div>
+
+  <div class="n-concl">
+    大型集团对供应商的管理，正在从「准入、采购、年度评价」逐步向<b>标准统一、过程检查、问题整改、能力提升、动态分级</b>的全过程管理演进；对于安装、施工、维修、服务等<b>作业型合作伙伴</b>，管理重点也从「企业是否合格」进一步延伸到<b>具体人员是否具备能力、每次作业是否符合标准</b>。
+  </div>
+  <div class="trends">
+    <span class="trend">从企业准入走向全过程质量管理</span>
+    <span class="trend">从结果抽检走向作业过程标准化</span>
+    <span class="trend">从问题处罚走向供应商持续能力提升</span>
+  </div>
+
+  <div class="chainstrip">
+    <b>伙伴准入</b><i>→</i><b>体系审核</b><i>→</i><b>培训认证</b><i>→</i><b>作业执行</b><i>→</i><b>过程检查</b><i>→</i><b>质量追溯</b><i>→</i><b>评价分级</b><i>→</i><b>整改闭环</b><i>→</i><b>育成提升</b>
+  </div>
+
+  <!-- ===== 02 五家实践 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">五家头部企业现在怎么做</div><div class="vline"></div></div>
+  <div class="vwrap">
+
+    <div class="vcard" data-cap="s1">
+      <div class="vhead">
+        <div class="co">海尔<a class="ext" href="https://www.haier.com/" target="_blank" rel="noopener" title="打开海尔官网">↗</a></div>
+        <div class="mo">供应商上线前已数字化：自承诺 → 现场互联 → 信用等级</div>
+      </div>
+      <div class="vbody">
+        <div class="vkw">
+          <span>供应商自承诺</span><span>海达源平台</span><span>现场互联审核</span><span>TQRDC 七维评分</span><span>信用等级评价</span><span>智能寻源</span><span>高风险供应商监控</span><span>动态准入</span><span>供应商数据管理</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vcard" data-cap="s2">
+      <div class="vhead">
+        <div class="co">美的<a class="ext" href="https://gsc.midea.com/" target="_blank" rel="noopener" title="打开美的全球供应商平台">↗</a></div>
+        <div class="mo">全球供应商云平台统一承载寻源、入驻与采购协同</div>
+      </div>
+      <div class="vbody">
+        <div class="vkw">
+          <span>全球供应商云平台</span><span>供应商入驻</span><span>公开寻源</span><span>在线报价</span><span>商机发布</span><span>采购协同</span><span>全球供应商资源池</span><span>供应链数字化</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vcard" data-cap="s3">
+      <div class="vhead">
+        <div class="co">格力<a class="ext" href="https://www.gree.com.cn/" target="_blank" rel="noopener" title="打开格力官网">↗</a></div>
+        <div class="mo">供应商质量与制造现场质量联动，问题可追溯</div>
+      </div>
+      <div class="vbody">
+        <div class="vkw">
+          <span>供应商质量管理</span><span>供方审核</span><span>来料质量</span><span>质量数据追溯</span><span>5G机器视觉检测</span><span>不良品自动分离</span><span>问题反馈供应商</span><span>数字化质量管理</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vcard" data-cap="s4">
+      <div class="vhead">
+        <div class="co">丰田<a class="ext" href="https://www.toyota-industries.com/sustainability/stakeholders/customers/" target="_blank" rel="noopener" title="打开丰田产业可持续发展页">↗</a></div>
+        <div class="mo">从集团审核走向供应商自主改善（育成）</div>
+      </div>
+      <div class="vbody">
+        <div class="vkw">
+          <span>年度质量审核</span><span>现地现物现场检查</span><span>弱项识别</span><span>改善建议与支持</span><span>内部审核员认证</span><span>供应商自主改善</span><span>自评清单</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vcard" data-cap="s5">
+      <div class="vhead">
+        <div class="co">华为<a class="ext" href="https://www.huawei.com/cn/sustainability/sustainability-report/huawei-supplier-social-responsibility-code-of-conduct" target="_blank" rel="noopener" title="打开华为供应商社会责任行为准则">↗</a></div>
+        <div class="mo">全生命周期管理 + 绩效挂钩 + 标准逐级穿透</div>
+      </div>
+      <div class="vbody">
+        <div class="vkw">
+          <span>分类准入门槛</span><span>供应商自检</span><span>现场体系审核</span><span>评审组集体决策</span><span>绩效评估</span><span>合作机会挂钩</span><span>二级供应商穿透</span><span>标准逐级传递</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== 03 管理对比 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">从五家对比看供应商管理机制分布</div><div class="vline"></div></div>
+  <div class="concl">
+    <span class="cc"><b>海尔</b>数字化准入与审核</span>
+    <span class="cc"><b>美的</b>统一平台协同</span>
+    <span class="cc"><b>格力</b>质量联动制造</span>
+    <span class="cc"><b>丰田</b>育成与自主改善</span>
+    <span class="cc"><b>华为</b>全生命周期 + 穿透</span>
+  </div>
+  <div class="cmpwrap">
+    <table class="cmp">
+      <tr><th>管理方向</th><th>海尔</th><th>美的</th><th>格力</th><th>丰田</th><th>华为</th><th>大金公开基础</th></tr>
+      <tr data-cap="c1"><td class="dir">供应商数字化平台</td><td><span class="lv lv3">突出</span></td><td><span class="lv lv3">突出</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">突出</span></td><td class="lvtxt">伙伴侧有 PROSHOP / App 载体，统一平台未见公开</td></tr>
+      <tr data-cap="c2"><td class="dir">供应商准入</td><td><span class="lv lv3">突出</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">突出</span></td><td class="lvtxt">集团有准入要求；伙伴侧 PROSHOP 认证已落地</td></tr>
+      <tr data-cap="c3"><td class="dir">现场审核</td><td><span class="lv lv2">有</span></td><td><span class="lv lv1">少</span></td><td><span class="lv lv1">少</span></td><td><span class="lv lv3">突出</span></td><td><span class="lv lv3">突出</span></td><td class="lvtxt">集团有质量审核；作业侧公开有限</td></tr>
+      <tr data-cap="c4"><td class="dir">多维度评价</td><td><span class="lv lv3">突出</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">突出</span></td><td class="lvtxt">质量 / 价格 / 交期综合评价（集团）</td></tr>
+      <tr data-cap="c5"><td class="dir">质量问题追溯</td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">突出</span></td><td><span class="lv lv3">突出</span></td><td><span class="lv lv2">有</span></td><td class="lvtxt">公开资料较少</td></tr>
+      <tr data-cap="c6"><td class="dir">整改与改善</td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">突出</span></td><td><span class="lv lv3">突出</span></td><td class="lvtxt">集团有改善要求；伙伴侧闭环未公开</td></tr>
+      <tr data-cap="c7"><td class="dir">供应商能力培养</td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">突出</span></td><td><span class="lv lv3">突出</span></td><td class="lvtxt"><span class="lv lv2">有</span>　培训认证 / 工事指导</td></tr>
+      <tr data-cap="c8"><td class="dir">伙伴自主审核</td><td><span class="lv lv1">少</span></td><td><span class="lv lv1">少</span></td><td><span class="lv lv1">少</span></td><td><span class="lv lv3">突出</span></td><td><span class="lv lv2">有</span></td><td class="lvtxt">公开资料较少</td></tr>
+      <tr data-cap="c9"><td class="dir">多级供应商穿透</td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">突出</span></td><td class="lvtxt">多层体系存在，穿透机制未见公开</td></tr>
+      <tr data-cap="c10"><td class="dir">绩效与合作挂钩</td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv2">有</span></td><td><span class="lv lv3">突出</span></td><td class="lvtxt">公开资料较少</td></tr>
+    </table>
+  </div>
+  <div class="cmpnote">注：表内「突出」= 公开实践丰富且有机制细节，「有」= 有公开实践，「少」= 公开资料较少；分布基于公开资料披露丰富度归纳，不代表企业实际管理水平。</div>
+
+  <!-- ===== 04 成熟能力 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">五家企业共同指向的六项成熟能力</div></div>
+  <div class="chainstrip">
+    <b data-cap="m1">统一标准</b><i>→</i><b data-cap="m2">分层准入</b><i>→</i><b data-cap="m3">作业过程管控</b><i>→</i><b data-cap="m4">质量问题闭环</b><i>→</i><b data-cap="m5">评价驱动管理动作</b><i>→</i><b data-cap="m6">伙伴自主改善</b>
+  </div>
+
+  <!-- ===== 05 大金基础 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">大金现在已经有什么</div></div>
+  <div class="abgrid">
+    <div class="abcard" data-cap="da">
+      <div class="dt"><b>A · 制造型供应商</b><span class="ln">零部件 / 材料 / 生产供应商</span></div>
+      <div class="ds">大金集团层面的采购与品质管理基础。</div>
+      <div class="vkw">
+        <span>供应商准入</span><span>质量价格交期综合评价</span><span>供应商质量审核</span><span>供应链风险管理</span><span>不达标供应商改善</span>
+      </div>
+    </div>
+    <div class="abcard" data-cap="db">
+      <div class="dt"><b>B · 作业型合作伙伴</b><span class="ln">经销商 / 安装商 / 维修服务商</span></div>
+      <div class="ds">中国区已公开落地，覆盖「认证 → 培训 → 作业 → 检查」主要环节。</div>
+      <div class="vkw">
+        <span>PROSHOP 认证店网络</span><span>安装标准</span><span>人员培训认证</span><span>工事指导</span><span>安装过程数字化</span><span>安装品质守护</span><span>SE 能力评价</span>
+      </div>
+    </div>
+  </div>
+  <div class="keyline">大金对制造型供应商有采购与品质管理基础；课题二的重点发力方向，是对作业型合作伙伴的作业过程质量与标准提升管理。</div>
+
+  <!-- ===== 06 对大金参考 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">五家企业分别给大金什么参考</div><div class="vline"></div></div>
+  <div class="bridge">
+    <div class="bcol">
+      <div class="bh">五家企业 → 大金的参考路径</div>
+      <div class="brow" data-cap="b1"><b>参考海尔 · 分层准入与审核数字化<span class="btag a">连到方向 2 · 5</span></b><p>把「企业资质 + 人员能力 + 现场作业能力」的分层准入标准线上化，准入、审核、评价记录统一管理。</p></div>
+      <div class="brow" data-cap="b2"><b>参考美的 · 统一合作伙伴档案与画像<span class="btag a">连到方向 1</span></b><p>为经销商、安装商、服务商建立统一数字档案：企业、人员、资质、服务区域、历史作业、质量表现统一画像。</p></div>
+      <div class="brow" data-cap="b3"><b>参考格力 · 质量问题追溯到作业环节<span class="btag a">连到方向 3 · 4</span></b><p>安装 / 维修质量问题关联具体任务、工程师、事务所，形成合作伙伴质量表现。</p></div>
+      <div class="brow" data-cap="b4"><b>参考丰田 · 育成与伙伴自主审核<span class="btag a">连到方向 6</span></b><p>培训认证合作伙伴自己的检查员 / 内审员，从「集团一直查」走向「伙伴自主改善」。</p></div>
+      <div class="brow" data-cap="b5"><b>参考华为 · 绩效挂钩与标准穿透<span class="btag a">连到方向 5</span></b><p>评价结果联动合作机会（份额 / 派单 / 限额），标准经一级伙伴逐级传导到实际执行人员。</p></div>
+    </div>
+  </div>
+
+  <!-- ===== 07 未来方向 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">重点未来方向</div><div class="vline"></div></div>
+  <div class="dirgrid">
+
+    <div class="dircard" data-cap="d1">
+      <div class="dn"><em>方向 1</em><b>供应商质量数据洞察</b><span class="stg s1">近期可试点</span></div>
+      <p>把分散的伙伴档案、作业记录、质量表现连成统一数据资产，从「出了事再查」到「主动识别风险」。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+    <div class="dircard" data-cap="d2">
+      <div class="dn"><em>方向 2</em><b>标准与知识数字化</b><span class="stg s1">近期可试点</span></div>
+      <p>把安装、维修、安全标准拆成可执行、可检查的数字化条目，让标准可查、可执行、可评。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+    <div class="dircard" data-cap="d3">
+      <div class="dn"><em>方向 3</em><b>作业过程质量管理</b><span class="stg s2">业务深化</span></div>
+      <p>从看验收结果到看作业过程：关键节点留痕、AI 过程符合性检查，过程问题过程解决。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+    <div class="dircard" data-cap="d4">
+      <div class="dn"><em>方向 4</em><b>质量问题整改闭环</b><span class="stg s1">近期可试点</span></div>
+      <p>问题发现 → 分级 → 整改 → 复检 → 关闭 → 重复问题升级，全流程线上闭环、留痕可查。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+    <div class="dircard s2c" data-cap="d5">
+      <div class="dn"><em>方向 5</em><b>供应商动态评价与风险分级</b><span class="stg s2">业务深化</span></div>
+      <p>评价结果驱动管理动作：谁增加审核、谁需要培训、谁限期整改、谁扩大或限制合作。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+    <div class="dircard s3c" data-cap="d6">
+      <div class="dn"><em>方向 6</em><b>供应商能力提升与自主审核</b><span class="stg s3">中长期</span></div>
+      <p>育成体系 + 内部审核员认证，从「集团一直检查」走向「伙伴自己发现问题、持续改善」。</p>
+      <div class="open">点击查看场景与路径 →</div>
+    </div>
+
+  </div>
+
+  <!-- ===== 08 分阶段建设 ===== -->
+  <div class="trunk"><div class="vline"></div><div class="vlabel">分阶段建设</div><div class="vline"></div></div>
+  <div class="stages">
+
+    <div class="stage">
+      <div class="sn"><span>第一阶段</span><span class="sdir">对应方向 1 · 2 · 4</span></div>
+      <div class="st2">轻量数字化试点</div>
+      <div class="sgoal">低改造成本、快速验证价值，优先把档案、标准、闭环线上化。</div>
+      <div class="vkw">
+        <span>合作伙伴质量档案</span><span>标准知识库</span><span>检查表数字化</span><span>整改闭环线上化</span><span>质量数据分析看板</span>
+      </div>
+      <div class="sval">先把档案、标准、闭环线上化，让质量数据先跑起来。</div>
+    </div>
+
+    <div class="stage">
+      <div class="sn"><span>第二阶段</span><span class="sdir">对应方向 3 · 5</span></div>
+      <div class="st2">进入作业过程管理</div>
+      <div class="sgoal">在档案与闭环基础上，把管理推进到作业过程与动态评价。</div>
+      <div class="vkw">
+        <span>作业过程检查数字化</span><span>AI 过程符合性识别</span><span>动态评价与风险分级</span><span>评价结果联动管理动作</span>
+      </div>
+      <div class="sval">从「年审一次」走向「过程可见、动态分级」。</div>
+    </div>
+
+    <div class="stage">
+      <div class="sn"><span>第三阶段</span><span class="sdir">对应方向 6 + 全链条协同</span></div>
+      <div class="st2">伙伴能力与自主改善</div>
+      <div class="sgoal">标准 → 育成 → 认证 → 自主审核 → 持续改善，机制逐级穿透。</div>
+      <div class="vkw">
+        <span>分层育成体系</span><span>伙伴检查员认证</span><span>标准逐级传递</span><span>统一伙伴数据与 AI 能力</span>
+      </div>
+      <div class="sval">目标不是总部一直查，而是伙伴自己会发现问题、会改善。</div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 抽屉 -->
+<div class="dmask" id="dmask"></div>
+<aside class="drawer" id="drawer">
+  <div class="d-head" id="dHead"></div>
+  <div class="d-body" id="dBody"></div>
+</aside>
+
+<script>
+var CAPS={
+/* ===== 五家企业 ===== */
+s1:{nm:"海尔",tag:"对标企业",col:"#047857",
+ secs:[
+  {lb:"核心模式",p:"海尔把供应商管理前置到上线之前：制定《模块商能力自承诺管理标准》《供应商现场质量互联》等制度，所有供应商在海达源平台完成「自承诺 → 现场互联 → 信用等级评价」三个阶段，才能进入海尔供应商库；进入后再通过平台做智能寻源、高风险监控与动态管理。核心是把准入、审核、评价标准全部在线化，让不符合集团要求的供应商提前被筛掉。"},
+  {lb:"具体做法",lis:[
+   "供应商自承诺：资格能力评估的第一步，环境与社会风险管理自承诺是重要评估项目",
+   "现场互联：质量与社会责任线现场审核，按 TQRDC（技术、质量、任务协同、交付、成本）+ 环境与劳工管理能力 + 合规底线共 7 个维度评分",
+   "信用等级评价：财务信用等级评估，达到相关要求才准入库",
+   "海达源平台：智能寻源（对接第三方数据校验黑名单、诉讼风险、纳税状态等）、高风险供应商监控、开发双点供应商降险",
+   "供应商数据管理系统：环境与社会类数据的全球收集与追踪"]},
+  {lb:"公开依据",lis:[
+   "来源：海尔 CSR 报告「可持续供应链」章节（海尔官网公开 PDF）",
+   "中国区供应商 1017 家，数量与分布按区域公开"]},
+  {lb:"对大金的启发",p:"海尔的价值不在某一项技术，而在「标准前置 + 分层准入」的思路。对大金最直接的参照是作业型合作伙伴：安装商、服务商、事务所是否也能建立「企业资质 → 人员能力 → 现场作业能力」的分层准入，并把准入标准、审核记录、评价结果放到统一平台上管理。"}]},
+s2:{nm:"美的",tag:"对标企业",col:"#047857",
+ secs:[
+  {lb:"核心模式",p:"美的公开可确认的是全球供应商云平台（GSC）：统一承载全球寻源、供应商入驻、商机发布、在线报价等协同环节，让供应商管理从分散沟通转为平台化运营。具体的供应商作业质量管理机制，公开披露少于海尔、丰田、华为。"},
+  {lb:"具体做法",lis:[
+   "全球供应商云平台 GSC：覆盖全球寻源、供应商入驻、商机发布、在线报价",
+   "供应商报名与项目协同线上化",
+   "全球供应商资源池统一运营"]},
+  {lb:"公开依据",lis:[
+   "来源：美的全球供应商平台（gsc.midea.com）公开页面，平台在售、含寻源 / 报价 / 商机模块",
+   "平台规模数据以平台公示为准；供应商作业质量管理细节公开披露较少"]},
+  {lb:"对大金的启发",p:"美的的参考点是「统一入口」：大金面对大量经销商、安装商、服务商与事务所，是否需要统一的合作伙伴数字档案与协同入口——把企业、人员、资质、服务区域、历史作业、质量表现做成统一画像。这不是直接上一个 SRM，而是先把「画像」需要的数据项定义清楚。"}]},
+s3:{nm:"格力",tag:"对标企业",col:"#047857",
+ secs:[
+  {lb:"核心模式",p:"格力的特点是把供应商质量与制造现场质量连成一条线：来料与供应商质量数据进入质量管理体系，生产环节 5G 机器视觉检测、不良品自动分离产生的质量数据可追溯到物料、供应商与生产环节。质量问题不只停留在工厂内部，而是能反向关联到供方。"},
+  {lb:"具体做法",lis:[
+   "供应商质量管理：供方审核与来料质量管控",
+   "质量数据追溯：质量问题关联物料、供应商、生产环节",
+   "5G 机器视觉：包装、压缩机线序、电气安全三类检测（课题一已梳理）",
+   "不良品自动分离：检测结果直接联动产线自动拦截",
+   "问题反馈供应商：质量问题闭环到供方"]},
+  {lb:"公开依据",lis:[
+   "5G 机器视觉检测与不良品自动分离为公开报道（课题一已核实）",
+   "供应商审核与来料管理的具体机制公开披露较少"]},
+  {lb:"对大金的启发",p:"格力的参考是「质量数据联动」：对大金的作业型伙伴，对应的是安装 / 维修质量问题 → 关联具体任务 → 关联工程师 → 关联事务所 / 服务商 → 形成合作伙伴质量表现。这条追溯链是课题二后续最关键的一条路线。"}]},
+s4:{nm:"丰田",tag:"对标企业",col:"#047857",
+ secs:[
+  {lb:"核心模式",p:"丰田（Toyota Industries）对主要供应商每年开展质量审核：到供应商现场做「现地现物」检查，看质量保证体系与生产现场管理；明确识别弱点后提出具体改善措施并支持落实（FY2025 按供应商特点定制改进活动）。更进一步，丰田培养并认证满足标准的供应商内部审核员——认证后由供应商自己持续开展内部审核，集团持续支持，最终让供应商形成自主发现问题、持续改善的文化。"},
+  {lb:"具体做法",lis:[
+   "年度质量审核：每年对主要供应商开展",
+   "现地现物（genchi genbutsu）现场检查：质量保证体系 + 生产现场管理",
+   "弱项识别与改善：明确弱点 → 提出具体改善措施 → 支持落实",
+   "内部审核员培养认证：达到标准的供应商人员经培养认证后，自主开展内部审核",
+   "自主改善文化：集团持续支持，鼓励供应商自主维护和提升质量保证体系"]},
+  {lb:"公开依据",lis:[
+   "来源：Toyota Industries 可持续发展报告 Customers 章节（官网公开）",
+   "原文关键词：annual quality audits、genchi genbutsu inspections、Nurturing and Certifying Internal Auditors at Suppliers"]},
+  {lb:"对大金的启发",p:"丰田是「下场育成」最完整的公开样本：审核的目的不是打分，而是让供应商最终不需要被查。对大金的参考：安装品质守护、工事指导、SE 培训认证已经有「育成」的雏形，可以进一步向「认证合作伙伴自己的检查员、让伙伴自主审核」演进。"}]},
+s5:{nm:"华为",tag:"对标企业",col:"#047857",
+ secs:[
+  {lb:"核心模式",p:"华为代表大型集团的治理体系：准入前「供应商自检 → 现场体系审核 → 体系评审组集体决策」，覆盖质量体系、工艺制程、职业健康安全、网络安全等；进入合作后把要求纳入认证、选择、绩效评估、组合管理的全生命周期——表现好提高采购份额、优先给机会，表现差限期整改、降低份额，不能整改则取消合作。还有代表性的一点：要求一级供应商把标准继续传递给二级供应商。"},
+  {lb:"具体做法",lis:[
+   "分类准入门槛：按品类设置准入门槛",
+   "认证三步：供应商自检 → 现场体系审核 → 体系评审组集体决策（一般审核后三周内通知结果）",
+   "全生命周期：认证、选择、绩效评估、组合管理全流程纳入",
+   "绩效挂钩：表现好提高份额、优先合作机会；红线问题限期整改、降低份额直至取消合作",
+   "二级穿透：33 家一级供应商建立采购 CSR 管理体系，与近 4000 家下级供应商签署协议、审核近 400 家，华为现场抽查其中 4 家验证体系有效性",
+   "审核常态化：2025 年全球开展 1000+ 次供应商 CSR/EHS 体系审核，结果用于绩效评估"]},
+  {lb:"公开依据",lis:[
+   "来源：华为采购官网供应商合作向导 / 华为供应商社会责任行为准则",
+   "来源：华为可持续发展故事「二级供应商 CSR 管理」/ 华为 2025 年年报"]},
+  {lb:"对大金的启发",p:"华为的参考是「标准穿透 + 结果挂钩」：标准不停留在一级合作方，而是逐级传导到实际执行者；评价结果直接联动合作策略。对大金：经销商 → 门店 → 工程师的多层体系里，安装与服务标准如何逐级传导、质量表现如何与派单 / 合作策略挂钩，华为给出了最完整的框架。"}]},
+/* ===== 对比表 10 方向 ===== */
+c1:{nm:"管理方向 · 供应商数字化平台",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"统一平台承载供应商档案、准入、审核、协同、评价等全流程数据，替代分散的线下沟通与表格管理。平台是全过程管理的数据底座：没有统一平台，过程检查与动态评价都难以落地。"},
+  {lb:"行业实践",lis:[
+   "海尔：突出 —— 海达源平台承载自承诺、现场互联、信用等级与智能寻源、高风险监控",
+   "华为：突出 —— 全球供应商体系与 e-Supplier 等系统支撑全生命周期管理",
+   "美的：突出 —— 全球供应商云平台 GSC 统一寻源与协同",
+   "丰田 / 格力：有"]},
+  {lb:"大金现状",p:"制造供应商管理平台未见公开；作业型伙伴侧有 PROSHOP 认证、金制空气 App 等载体，但未形成统一的合作伙伴管理平台。"}]},
+c2:{nm:"管理方向 · 供应商准入",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"从注册登记到最终合作的筛选机制：企业资质、体系审核、产品 / 服务能力、人员能力逐层评估，达标才准入。准入决定合作方的基本盘。"},
+  {lb:"行业实践",lis:[
+   "海尔：突出 —— 自承诺 → 现场互联 → 信用等级评价，三阶段完成才准入库",
+   "华为：突出 —— 按品类设准入门槛，自检 → 现场审核 → 评审组集体决策",
+   "丰田 / 美的 / 格力：有"]},
+  {lb:"大金现状",p:"制造供应商准入有集团采购方针支撑（公开细节有限）；作业型伙伴侧已有 PROSHOP 两级认证（2000+ 网点），是现成的分层准入雏形。"}]},
+c3:{nm:"管理方向 · 现场审核",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"到供应商 / 合作伙伴现场检查质量保证体系与作业现场管理，发现问题并跟踪改善。现场审核是发现「纸面合格、现场不合格」的关键手段。"},
+  {lb:"行业实践",lis:[
+   "丰田：突出 —— 年度质量审核 + 现地现物现场检查（质量保证体系 + 生产现场管理）",
+   "华为：突出 —— 现场体系审核 + 2025 年全球 1000+ 次 CSR/EHS 审核",
+   "海尔：有 —— 现场互联审核",
+   "美的 / 格力：公开较少"]},
+  {lb:"大金现状",p:"集团有供应商质量审核实践（采购方针层面）；作业型伙伴侧有工事指导与安装检查，公开细节有限。"}]},
+c4:{nm:"管理方向 · 多维度评价",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"不只评质量：技术、质量、协同、交付、成本、环境、安全等多维度打分，形成供应商综合画像，为分级与合作策略提供依据。"},
+  {lb:"行业实践",lis:[
+   "海尔：突出 —— TQRDC + 环境劳工 + 合规底线共 7 维度评分",
+   "华为：突出 —— 质量体系、工艺制程、职业健康安全、社会责任、网络安全多维审核",
+   "美的 / 丰田 / 格力：有（以质量、交付、成本为主）"]},
+  {lb:"大金现状",p:"制造供应商按质量、价格、交期综合评价（集团层面）；作业型伙伴的评价维度未见公开。"}]},
+c5:{nm:"管理方向 · 质量问题追溯",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"质量问题能反向关联到物料批次、供应商、作业环节与具体人员，形成「问题 → 来源」的追溯链。追溯能力决定问题能不能真正被解决。"},
+  {lb:"行业实践",lis:[
+   "格力：突出 —— 质量数据关联物料、供应商、生产环节",
+   "丰田：突出 —— 现场审核直接定位供应商现场管理弱点",
+   "海尔 / 华为 / 美的：有"]},
+  {lb:"大金现状",p:"公开资料较少。安装 / 维修质量问题与具体任务、工程师、事务所的关联机制未见公开，是可补的空白。"}]},
+c6:{nm:"管理方向 · 整改与改善",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"问题不只是记录，而是推动整改：提出改善措施、支持落实、复检关闭。整改机制决定同样的问题会不会反复出现。"},
+  {lb:"行业实践",lis:[
+   "丰田：突出 —— 弱项识别 → 具体改善措施 → 支持落实（FY2025 按供应商特点定制）",
+   "华为：突出 —— 限期整改 → 降份额 → 取消合作的阶梯机制",
+   "海尔 / 美的 / 格力：有"]},
+  {lb:"大金现状",p:"集团对不达标供应商有改善要求；作业型伙伴的问题整改闭环公开资料较少。"}]},
+c7:{nm:"管理方向 · 供应商能力培养",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"集团主动投入资源提升伙伴能力：培训、指导、认证，而不只是考核。能力培养改变的是伙伴「会不会做」，考核只能改变「想不想做」。"},
+  {lb:"行业实践",lis:[
+   "丰田：突出 —— 培养并认证供应商内部审核员",
+   "华为：突出 —— 25 门网络安全课程覆盖核心供应商 2000+ 名管理者和工程师",
+   "海尔 / 美的 / 格力：有"]},
+  {lb:"大金现状",p:"有 —— 作业型伙伴侧培训认证体系成型：安装人员培训持证上岗、工事指导、SE 能力评价建设中。这是大金的既有优势。"}]},
+c8:{nm:"管理方向 · 伙伴自主审核",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"伙伴建立自己的内审能力：培养认证内部审核员，自主开展内部审核与改善，集团只做抽验与支持。是「育成」的最终形态。"},
+  {lb:"行业实践",lis:[
+   "丰田：突出 —— 培养并认证满足标准的供应商内部审核员，认证后自主审核、集团持续支持",
+   "华为：有 —— 要求一级供应商对二级开展审核，集团现场抽查验证",
+   "海尔 / 美的 / 格力：公开较少"]},
+  {lb:"大金现状",p:"公开资料较少，属可探索的中长期方向。"}]},
+c9:{nm:"管理方向 · 多级供应商穿透",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"集团标准不停留在一级合作方，逐级传递到下级供应商与实际执行人员——真正的作业者是末端人员，标准穿不透，管理就落不到作业现场。"},
+  {lb:"行业实践",lis:[
+   "华为：突出 —— 33 家一级供应商建立采购 CSR 管理体系，与近 4000 家下级供应商签署协议、审核近 400 家",
+   "海尔 / 美的 / 格力 / 丰田：有"]},
+  {lb:"大金现状",p:"经销商 → 门店 → 工程师的多层体系天然存在，但标准与质量要求向多级穿透的机制未见公开。"}]},
+c10:{nm:"管理方向 · 绩效与合作挂钩",tag:"管理方向",col:"#047857",
+ secs:[
+  {lb:"这个方向是什么",p:"评价结果直接决定合作策略：份额、派单、合作范围、终止。评价不挂钩利益，整改就没有动力——这是「考核分钱」的机制轮。"},
+  {lb:"行业实践",lis:[
+   "华为：突出 —— 表现好提高份额、优先机会；红线问题限期整改、降份额直至终止",
+   "海尔 / 美的 / 格力 / 丰田：有"]},
+  {lb:"大金现状",p:"公开资料较少。作业型伙伴的派单 / 合作策略与质量表现的联动机制未见公开。"}]},
+/* ===== 成熟能力 ===== */
+m1:{nm:"成熟能力 · 统一标准",tag:"成熟能力",col:"#047857",
+ secs:[
+  {lb:"是什么",p:"集团先把企业准入标准、人员标准、产品 / 作业标准、安全标准、质量检查标准定义清楚——没有统一标准，后续审核、评价、整改都没有依据。标准是全部管理动作的地基。"},
+  {lb:"哪家最典型",lis:[
+   "华为：供应商社会责任行为准则全球统一，覆盖劳工、健康安全、环保、商业道德、管理体系五部分",
+   "丰田：Sustainability Guidelines for Suppliers，超过 80% 国内供应商签署"]},
+  {lb:"对应大金",p:"大金有安装标准与作业规范基础（课题一已梳理）；本课题的关键是把标准拆到「作业级检查项」，让标准可查、可执行、可评。"}]},
+m2:{nm:"成熟能力 · 分层准入",tag:"成熟能力",col:"#047857",
+ secs:[
+  {lb:"是什么",p:"不是注册完就能合作：企业资质 → 体系审核 → 产品 / 服务能力 → 人员能力 → 最终准入，逐层筛选，把不合格的合作方挡在门外。"},
+  {lb:"哪家最典型",lis:[
+   "海尔：自承诺 → 现场互联 → 信用等级评价，三阶段完成才准入库",
+   "华为：品类准入门槛 + 自检 → 现场审核 → 评审组集体决策"]},
+  {lb:"对应大金",p:"作业型伙伴可建立「企业资质 + 人员能力 + 现场作业能力」的分层准入；PROSHOP 两级认证已是雏形。"}]},
+m3:{nm:"成熟能力 · 作业过程管控",tag:"成熟能力",col:"#047857",
+ secs:[
+  {lb:"是什么",p:"从看最终验收结果，走向看作业过程中有没有按标准执行——关键节点留痕、过程数据采集、过程符合性检查。对安装、维修这类强过程业务尤其重要：结果合格不等于过程规范。"},
+  {lb:"哪家最典型",lis:[
+   "格力：质量数据联动生产过程，问题可追溯到环节",
+   "华为：1000+ 次 / 年体系审核，过程检查常态化"]},
+  {lb:"对应大金",p:"安装过程数字化 + 安装品质守护已有载体（课题一已梳理），可从「结果验收」深化到「过程检查」。"}]},
+m4:{nm:"成熟能力 · 质量问题闭环",tag:"成熟能力",col:"#047857",
+ secs:[
+  {lb:"是什么",p:"问题发现 → 风险分级 → 原因分析 → 整改 → 复检 → 关闭 → 重复问题升级，全流程闭环且留痕。这是成熟质量体系的共同特征：问题不闭环，就会反复出现。"},
+  {lb:"哪家最典型",lis:[
+   "华为：限期整改 → 复评 → 降低份额 → 取消合作的阶梯机制",
+   "丰田：弱项识别 → 具体改善措施 → 支持落实"]},
+  {lb:"对应大金",p:"安装品质守护已能识别问题项；缺的是从问题到整改到复检的线上闭环。"}]},
+m5:{nm:"成熟能力 · 评价驱动管理动作",tag:"成熟能力",col:"#047857",
+ secs:[
+  {lb:"是什么",p:"评价不是为了得到 85 分，而是结果直接决定管理动作：谁增加审核、谁需要培训、谁限期改善、谁扩大合作、谁限制业务。评价与利益脱钩，整改就没有动力。"},
+  {lb:"哪家最典型",lis:[
+   "华为：绩效 → 份额调整 / 业务限制 / 终止合作，阶梯最完整",
+   "海尔：信用等级评价与高风险供应商监控"]},
+  {lb:"对应大金",p:"评价结果与合作策略挂钩是大金可评估引入的机制；前提是评价数据先统一（方向 1、5）。"}]},
+m6:{nm:"成熟能力 · 伙伴自主改善",tag:"成熟能力",col:"#047857",
+ secs:[
+  {lb:"是什么",p:"管理的终点不是集团一直查，而是集团定义标准 + 伙伴自检 + 内部审核 + 持续改善。查的边际成本越来越高，唯有伙伴自己会改善，质量才能持续提升。"},
+  {lb:"哪家最典型",lis:[
+   "丰田：培养并认证供应商内部审核员，认证后自主审核、集团持续支持，鼓励形成自主改善文化"]},
+  {lb:"对应大金",p:"中长期方向：认证合作伙伴自己的检查员 / 内审员；SE 培训认证体系可自然延伸。"}]},
+/* ===== 大金两条线 ===== */
+da:{nm:"大金基础 · A 制造型供应商",tag:"现状 · 集团采购方针",col:"#047857",
+ secs:[
+  {lb:"能力明细",lis:[
+   "供应商准入：集团采购方针的准入要求",
+   "综合评价：质量、价格、交期等多因素评价",
+   "供应商质量审核：对供应商的质量体系审核",
+   "供应链风险管理：供应中断与合规风险的防范",
+   "不达标供应商改善：对不达标供应商提出改善要求"]},
+  {lb:"现状说明",p:"以上来自大金集团采购方针与可持续采购公开资料（集团层面）；中国区制造供应商管理的具体流程、系统与数据化程度公开细节有限。"},
+  {lb:"深化空间",p:"对标五家企业的差距主要在：统一数字化平台、评价结果动态联动、多级穿透（对应方向 1、5）。"}]},
+db:{nm:"大金基础 · B 作业型合作伙伴",tag:"现状 · 中国区落地",col:"#059669",
+ secs:[
+  {lb:"能力明细",lis:[
+   "PROSHOP 认证店网络：约 2000+ 网点、两级认证",
+   "安装标准：覆盖安装工艺的质量要求体系",
+   "人员培训认证：安装人员经大金培训考核持证上岗",
+   "工事指导：施工环节的专业指导",
+   "安装过程数字化：安装节点、过程数据的线上化，App 过程可视",
+   "安装品质守护：工程师 + AI 的品质管理机制",
+   "SE 能力评价：售后工程师能力指标化管理（建设中）"]},
+  {lb:"现状说明",p:"中国区已公开落地，覆盖「认证 → 培训 → 作业 → 检查」的主要环节；课题一已梳理其数字化与 AI 面，本课题关注的是这些能力如何组合成对合作伙伴作业质量的管理体系。"},
+  {lb:"深化空间",p:"已有载体分散在门店、安装、售后各条线；课题二的机会是把企业、人员、作业、质量表现连成统一的合作伙伴质量画像与闭环管理（对应方向 1、3、4）。"}]},
+/* ===== 参考桥接 ===== */
+b1:{nm:"参考海尔 · 分层准入与审核数字化",tag:"对大金参考",col:"#2563eb",
+ secs:[
+  {lb:"参考点",p:"把「企业资质 → 人员能力 → 现场作业能力」的分层准入标准线上化，准入、审核、评价记录统一管理，让不符合要求的伙伴在进入体系前就被筛掉。"},
+  {lb:"解决什么",p:"安装商、服务商、事务所数量多、水平参差；准入目前依赖线下资质审核，标准不统一、记录分散。"},
+  {lb:"可落地形态",lis:[
+   "分层准入标准清单化（企业 / 人员 / 作业三级）",
+   "准入申请与审核流程线上化",
+   "审核记录与评价结果入库，支撑后续动态管理"]},
+  {lb:"对应方向",p:"标准与知识数字化（方向 2）、供应商动态评价与风险分级（方向 5）。"}]},
+b2:{nm:"参考美的 · 统一合作伙伴档案与画像",tag:"对大金参考",col:"#2563eb",
+ secs:[
+  {lb:"参考点",p:"统一入口与统一资源池：为经销商、安装商、服务商建立统一数字档案，把企业、人员、资质、服务区域、历史作业、质量表现做成统一画像。"},
+  {lb:"解决什么",p:"合作伙伴信息分散在门店、安装、售后各条线，没有统一画像；质量表现无法量化沉淀，管理动作缺少数据依据。"},
+  {lb:"可落地形态",lis:[
+   "定义合作伙伴主数据（企业 / 人员 / 资质 / 区域）",
+   "档案与作业数据打通（工单、检查、整改记录回流档案）",
+   "形成质量表现画像，支撑评价与分级"]},
+  {lb:"对应方向",p:"供应商质量数据洞察（方向 1）。"}]},
+b3:{nm:"参考格力 · 质量问题追溯到作业环节",tag:"对大金参考",col:"#2563eb",
+ secs:[
+  {lb:"参考点",p:"质量数据联动：安装 / 维修质量问题关联具体任务 → 关联工程师 → 关联事务所 / 服务商，形成合作伙伴质量表现，问题可追到来源。"},
+  {lb:"解决什么",p:"质量问题记录与具体作业脱节：问题知道了，但难定位到人、到组织，改进责任无法落实。"},
+  {lb:"可落地形态",lis:[
+   "工单与质量问题结构化关联",
+   "追溯链路：问题 → 任务 → 人员 → 组织",
+   "组织级质量表现指标沉淀"]},
+  {lb:"对应方向",p:"作业过程质量管理（方向 3）、质量问题整改闭环（方向 4）。"}]},
+b4:{nm:"参考丰田 · 育成与伙伴自主审核",tag:"对大金参考",col:"#2563eb",
+ secs:[
+  {lb:"参考点",p:"下场育成：培训认证合作伙伴自己的检查员 / 内审员，伙伴自主开展审核与改善，集团持续支持与抽验，最终让伙伴自己会发现问题。"},
+  {lb:"解决什么",p:"每年查一次只能保底线，能力提升靠伙伴自觉；查的边际成本越来越高，而伙伴能力没有真正增长。"},
+  {lb:"可落地形态",lis:[
+   "检查员 / 内审员认证课程（依托现有培训认证体系）",
+   "伙伴自评清单 + 自主审核流程",
+   "集团抽验与持续支持机制"]},
+  {lb:"对应方向",p:"供应商能力提升与自主审核（方向 6）。"}]},
+b5:{nm:"参考华为 · 绩效挂钩与标准穿透",tag:"对大金参考",col:"#2563eb",
+ secs:[
+  {lb:"参考点",p:"评价结果联动合作策略（份额 / 派单 / 限额 / 限期整改），标准经一级伙伴逐级传导到实际执行人员，管理落到作业现场。"},
+  {lb:"解决什么",p:"评价结果与业务脱钩，整改缺动力；标准传导到经销商后逐级衰减，末端执行人员感知不到。"},
+  {lb:"可落地形态",lis:[
+   "伙伴评价分级 + 分级合作策略",
+   "标准分层传递机制（大金 → 经销商 → 施工队 → 人员）",
+   "重复问题升级与红线机制"]},
+  {lb:"对应方向",p:"供应商动态评价与风险分级（方向 5）。"}]},
+/* ===== 六个未来方向 ===== */
+d1:{nm:"供应商质量数据洞察",tag:"未来方向 · 近期",col:"#047857",
+ pitch:"把分散的伙伴档案、作业记录、质量表现连成统一数据资产，从「出了事再查」到「主动识别风险」。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "合作伙伴信息分散在门店、安装、售后各条线",
+   "质量表现没有量化沉淀",
+   "风险识别靠经验判断"]},
+  {lb:"怎么做",p:"统一伙伴主数据 → 作业与质量数据回流 → 质量画像与风险指标 → 分析看板与异常预警。"},
+  {lb:"大金基础",g:1,lis:[
+   "PROSHOP 认证数据（2000+ 网点）",
+   "安装过程数字化（App 过程可视）",
+   "SE 能力评价（建设中）"]},
+  {lb:"价值",p:"评价与分级的数据前提；先统一档案与口径，投入小、见效快。"}]},
+d2:{nm:"标准与知识数字化",tag:"未来方向 · 近期",col:"#047857",
+ pitch:"把安装、维修、安全标准拆成可执行、可检查的数字化条目。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "标准以文档存在，检查靠人工对照",
+   "标准版本与执行口径不统一",
+   "标准穿不到末端执行人员"]},
+  {lb:"怎么做",p:"标准结构化 → 拆解为作业级检查项 → 关联作业节点 → 支撑自动检查、培训与评价。"},
+  {lb:"大金基础",g:1,lis:[
+   "专业安装标准",
+   "安装品质守护（已引入 AI）",
+   "工事指导"]},
+  {lb:"价值",p:"一切过程检查与自动评价的地基；标准数字化后，过程管控、评价、培训共用一套规则。"}]},
+d3:{nm:"作业过程质量管理",tag:"未来方向 · 深化",col:"#2563eb",
+ pitch:"从看验收结果到看作业过程：关键节点留痕、过程符合性可查。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "安装 / 维修是强过程业务，结果合格不等于过程规范",
+   "过程问题往往交付后才暴露",
+   "过程数据缺失，难以管理"]},
+  {lb:"怎么做",p:"关键节点采集（照片 / 数据）→ AI 比对标准 → 不符合项提示 → 过程记录归档。"},
+  {lb:"行业参考",p:"格力质量数据联动生产过程；华为体系审核常态化。"},
+  {lb:"大金基础",g:1,lis:[
+   "安装过程数字化 + App 过程可视",
+   "安装品质守护（工程师 + AI）"]},
+  {lb:"价值",p:"过程可控带来质量稳定性；过程数据沉淀为评价分级提供依据。"}]},
+d4:{nm:"质量问题整改闭环",tag:"未来方向 · 近期",col:"#047857",
+ pitch:"问题发现 → 分级 → 整改 → 复检 → 关闭 → 重复问题升级，全流程线上闭环。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "问题整改靠线下沟通跟踪，进度不可见",
+   "整改完成缺少复检确认",
+   "重复问题没有升级机制"]},
+  {lb:"怎么做",p:"问题结构化登记 → 风险分级 → 整改任务 → 复检 → 关闭 → 重复问题自动升级。"},
+  {lb:"大金基础",g:1,lis:[
+   "安装品质守护已能识别问题项"]},
+  {lb:"价值",p:"闭环留痕是评价体系的数据来源；改造成本低，第一阶段即可启动。"}]},
+d5:{nm:"供应商动态评价与风险分级",tag:"未来方向 · 深化",col:"#2563eb",
+ pitch:"评价结果驱动管理动作：谁增加审核、谁需要培训、谁限期整改、谁扩大或限制合作。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "评价静态、年度化，结果与业务策略脱钩",
+   "风险伙伴与优质伙伴得不到差异化管理"]},
+  {lb:"怎么做",p:"多维评价 → 动态分级 → 分级策略（审核频次 / 培训投入 / 合作机会）。"},
+  {lb:"行业参考",p:"华为绩效挂钩最完整（份额 / 机会 / 终止的阶梯机制）；海尔动态信用等级。"},
+  {lb:"大金基础",g:1,lis:[
+   "培训认证体系（PROSHOP / SE）",
+   "质量数据基础（方向 1 沉淀）"]},
+  {lb:"价值",p:"让评价「有用」——形成「考核分钱」的机制轮，评价结果直接联动合作策略。"}]},
+d6:{nm:"供应商能力提升与自主审核",tag:"未来方向 · 中长期",col:"#7c3aed",
+ pitch:"终点是伙伴自己会改善：育成体系 + 内部审核员认证，从「集团一直查」到「伙伴自主管理」。",
+ secs:[
+  {lb:"解决什么",lis:[
+   "只查不教，伙伴能力不增长",
+   "查的边际成本越来越高，覆盖却有限"]},
+  {lb:"怎么做",p:"分层育成（培训 → 认证 → 指导）→ 认证伙伴检查员 → 伙伴自评自审 → 集团抽验支持。"},
+  {lb:"行业参考",p:"丰田内部审核员认证最典型：培养 → 认证 → 自主审核 → 持续支持，形成自主改善文化。"},
+  {lb:"大金基础",g:1,lis:[
+   "培训认证持证上岗体系",
+   "工事指导",
+   "SE 能力评价（建设中）"]},
+  {lb:"价值",p:"管理成本长期下降，伙伴能力成为质量护城河——「下场育成」的机制轮。"}]}
+};
+var drawer=document.getElementById("drawer"),dmask=document.getElementById("dmask"),
+    dHead=document.getElementById("dHead"),dBody=document.getElementById("dBody");
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function openCap(id){
+  var c=CAPS[id]; if(!c) return;
+  var h='<div class="d-tags">'+
+        (c.tag?'<span class="db" style="background:'+c.col+'">'+esc(c.tag)+'</span>':'')+
+        '<button class="d-x" onclick="closeDir()">✕</button></div>'+
+        '<div class="d-name">'+esc(c.nm)+'</div>';
+  var b=c.pitch?'<div class="d-pitch">'+esc(c.pitch)+"</div>":"";
+  (c.secs||[]).forEach(function(s){
+    b+='<div class="d-sec'+(s.g?' d-base':'')+'"><div class="d-lb">'+esc(s.lb)+'</div>';
+    if(s.p) b+='<p>'+esc(s.p)+'</p>';
+    if(s.lis){ b+='<ul>'; s.lis.forEach(function(x){ b+='<li>'+esc(x)+'</li>'; }); b+='</ul>'; }
+    b+='</div>';
+  });
+  dHead.innerHTML=h; dBody.innerHTML=b; dBody.scrollTop=0;
+  drawer.classList.add("on"); dmask.classList.add("on");
+  document.body.style.overflow="hidden";
+}
+function closeDir(){
+  drawer.classList.remove("on"); dmask.classList.remove("on");
+  document.body.style.overflow="";
+}
+window.closeDir=closeDir;
+document.addEventListener("click",function(e){
+  if(e.target.closest("a.ext")) return;  // 官网外链直接跳转，不开抽屉
+  var t=e.target.closest("[data-cap]"); if(t) openCap(t.dataset.cap);
+});
+dmask.addEventListener("click",closeDir);
+document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeDir(); });
+</script>
+</body>
+</html>

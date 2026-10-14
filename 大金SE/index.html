@@ -1,231 +1,576 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大金SE项目</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: #f0f2f5;
-            color: #1a1d2e;
-            min-height: 100vh;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大金（中国）· 数字化课题调研</title>
+<style>
+  :root{
+    --ink:#1f2937; --ink2:#4b5563; --ink3:#9ca3af;
+    --line:#e5e7eb; --bg:#f6f8f7; --card:#ffffff;
+    /* 大金绿主题（对齐 SE 能力平台） */
+    --green:#059669; --green-d:#047857; --green-dd:#065f46; --green-l:#ecfdf5; --green-l2:#d1fae5;
+    --blue:#2563eb; --blue-l:#eff4ff;
+    --orange:#d97706; --orange-l:#fdf6ec;
+    --purple:#7c3aed; --purple-l:#f5f0ff;
+    --gray:#9ca3af; --gray-l:#f3f4f6;
+    --r:10px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+    background:var(--bg); color:var(--ink); font-size:14px; line-height:1.65;
+  }
+  /* ===== 顶栏 ===== */
+  .topbar{
+    position:sticky; top:0; z-index:50; height:52px;
+    background:#fff; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:14px; padding:0 28px;
+  }
+  .brand{font-size:15px; font-weight:700; letter-spacing:.5px; display:flex; align-items:center; gap:10px;}
+  .brand .mark{width:8px; height:22px; border-radius:2px; background:linear-gradient(180deg,var(--green),var(--green-dd));}
+  .crumb{color:var(--ink3); font-size:13px;}
+  .crumb b{color:var(--ink2); font-weight:600;}
+  .topbar .sp{flex:1;}
+  .btn-back{
+    display:none; align-items:center; gap:6px; cursor:pointer; user-select:none;
+    font-size:13px; color:var(--ink2); border:1px solid var(--line); border-radius:8px;
+    padding:6px 14px; background:#fff; transition:.15s;
+  }
+  .btn-back:hover{border-color:var(--green); color:var(--green);}
+  .btn-print{
+    cursor:pointer; user-select:none; font-size:13px; color:#fff;
+    background:var(--green); border-radius:8px; padding:6px 16px; transition:.15s;
+  }
+  .btn-print:hover{background:var(--green-d);}
+  /* ===== 视图切换 ===== */
+  .view{display:none;}
+  .view.on{display:block;}
+  /* ===== 入口页 ===== */
+  .home{max-width:1080px; margin:0 auto; padding:56px 28px 80px;}
+  .home-tag{font-size:13px; color:var(--green); font-weight:600; letter-spacing:2px; margin-bottom:10px;}
+  .home-h1{font-size:30px; font-weight:700; line-height:1.35; margin-bottom:16px;}
+  .home-lead{
+    max-width:860px; color:var(--ink2); font-size:15px; line-height:1.9; margin-bottom:44px;
+    border-left:3px solid var(--green); padding-left:18px;
+  }
+  .entry-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+  .entry{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:30px 30px 26px; cursor:pointer; transition:.2s; position:relative; overflow:hidden;
+  }
+  .entry:hover{border-color:var(--green); box-shadow:0 8px 28px rgba(6,95,70,.10); transform:translateY(-2px);}
+  .entry .no{
+    font-size:12px; font-weight:700; color:var(--green); letter-spacing:1px; margin-bottom:12px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .entry .no::after{content:""; flex:1; height:1px; background:var(--line);}
+  .entry h2{font-size:20px; font-weight:700; line-height:1.5; margin-bottom:10px; min-height:60px;}
+  .entry p{color:var(--ink2); font-size:13.5px; margin-bottom:18px;}
+  .entry ul{list-style:none; margin-bottom:20px;}
+  .entry li{
+    font-size:13px; color:var(--ink2); padding:7px 0 7px 20px; position:relative;
+    border-top:1px dashed var(--line);
+  }
+  .entry li::before{content:""; position:absolute; left:4px; top:15px; width:6px; height:6px; border-radius:50%; background:#6ee7b7;}
+  .entry .go{font-size:13px; font-weight:600; color:var(--green); display:flex; align-items:center; gap:6px;}
+  .entry .go::after{content:"→"; transition:.2s;}
+  .entry:hover .go::after{transform:translateX(4px);}
+  .entry.disabled{cursor:default; opacity:.62;}
+  .entry.disabled:hover{border-color:var(--line); box-shadow:none; transform:none;}
+  .entry.disabled .go{color:var(--ink3);}
+  .entry.disabled .go::after{content:"";}
+  .entry .wait{font-size:12px; color:var(--ink3); background:var(--gray-l); border-radius:20px; padding:3px 12px;}
+  .home-foot{margin-top:46px; color:var(--ink3); font-size:12.5px;}
+  /* ============================================================
+     课题一 · 空调：故事线全景
+     ============================================================ */
+  .topic{max-width:1400px; margin:0 auto; padding:36px 28px 90px;}
+  /* 头部结论 */
+  .n-head{text-align:center; margin-bottom:8px;}
+  .n-tag{font-size:12.5px; font-weight:700; color:var(--green); letter-spacing:2px; margin-bottom:8px;}
+  .n-h1{font-size:26px; font-weight:700; letter-spacing:1px;}
+  .n-route{display:flex; justify-content:center; align-items:center; gap:8px; margin-top:12px; flex-wrap:wrap;}
+  .n-route span{font-size:11.5px; color:var(--ink2); background:#fff; border:1px solid var(--line); border-radius:20px; padding:4px 14px; letter-spacing:.5px; font-weight:600;}
+  .n-route i{color:#c4cdc5; font-style:normal; font-size:11px;}
+  .n-concl{
+    max-width:1020px; margin:18px auto 0; background:#fff; border:1px solid var(--line);
+    border-left:4px solid var(--green); border-radius:0 10px 10px 0; padding:15px 22px;
+    font-size:14.5px; color:var(--ink2); line-height:1.9; text-align:left;
+  }
+  .n-concl b{color:var(--ink);}
+  .trends{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  .trend{font-size:12.5px; font-weight:600; color:var(--green-d); background:var(--green-l); border:1px solid var(--green-l2); border-radius:20px; padding:6px 16px;}
+  /* 主线分隔 */
+  .trunk{display:flex; flex-direction:column; align-items:center; margin-top:26px;}
+  .vline{width:2px; height:16px; background:#c9d4cc;}
+  .vlabel{font-size:13px; color:var(--ink2); background:#fff; border:1px solid var(--line); border-radius:20px; padding:6px 22px; font-weight:700; letter-spacing:1px;}
+  /* 对标厂商 */
+  .venders{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; max-width:1280px; margin:16px auto 0;}
+  .vd{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
+  .vd .co{font-size:14.5px; font-weight:700; margin-bottom:2px;}
+  .vd .cs{font-size:11.5px; color:var(--ink3); margin-bottom:9px;}
+  .vd.self{background:linear-gradient(135deg,var(--green-dd),var(--green-d)); border-color:var(--green-d); color:#fff;}
+  .vd.self .cs{color:rgba(255,255,255,.66);}
+  .vd .kw{display:flex; flex-wrap:wrap; gap:5px;}
+  .vd .kw span{font-size:11px; padding:2px 8px; border-radius:5px; background:var(--gray-l); color:var(--ink2);}
+  .vd.self .kw span{background:rgba(255,255,255,.13); color:#fff;}
+  /* 分组段 */
+  .seg{display:flex; align-items:center; gap:14px; max-width:1340px; margin:30px auto 12px;}
+  .seg .sg{font-size:13px; font-weight:700; color:#fff; background:var(--green-d); border-radius:20px; padding:5px 18px; letter-spacing:1px; white-space:nowrap;}
+  .seg .ln{flex:1; height:1px; background:var(--line);}
+  .seg .sn{font-size:12px; color:var(--ink3); white-space:nowrap;}
+  /* 节点行 */
+  .nrow{display:flex; align-items:stretch; gap:0; max-width:1340px; margin:0 auto;}
+  .nb{
+    flex:1; background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 13px;
+    display:flex; flex-direction:column; min-width:0;
+  }
+  .nb:hover{border-color:#b8d5c8;}
+  .nar{display:flex; align-items:center; padding:0 7px; color:#b6c4ba; font-size:16px; font-weight:700; flex:none;}
+  .nb .no{display:flex; align-items:baseline; gap:8px; margin-bottom:2px;}
+  .nb .no em{font-style:normal; font-size:11px; font-weight:700; color:var(--green); letter-spacing:.5px;}
+  .nb .nm{font-size:14.5px; font-weight:700;}
+  .nb .ds{font-size:11.5px; color:var(--ink3); margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .nb .gp{display:flex; flex-direction:column; gap:6px;}
+  .gp-lb{font-size:10.5px; color:var(--ink3); letter-spacing:1px; margin-bottom:-2px;}
+  /* 标签（可点开抽屉） */
+  .tk{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:4px 10px;
+    border-radius:6px; background:var(--gray-l); color:var(--ink2); cursor:pointer;
+    border:1px solid transparent; transition:.15s; line-height:1.5; text-align:left;
+  }
+  .tk:hover{transform:translateY(-1px); box-shadow:0 3px 10px rgba(6,95,70,.14);}
+  .tk .dot{width:7px; height:7px; border-radius:50%; flex:none;}
+  .tk.ind{background:#fff; border-color:var(--line);}
+  .tk.ind .dot{background:var(--blue);}
+  .tk.st1{background:var(--green-l); color:var(--green-dd);} .tk.st1 .dot{background:var(--green);}
+  .tk.st2{background:var(--blue-l); color:#1d4fa8;} .tk.st2 .dot{background:var(--blue);}
+  .tk.st3{background:var(--orange-l); color:#a05a08;} .tk.st3 .dot{background:var(--orange);}
+  .tk.st4{background:var(--gray-l); color:var(--ink2);} .tk.st4 .dot{background:var(--gray);}
+  .tk.op1{background:var(--green-d); color:#fff;} .tk.op1 .dot{background:#a7f3d0;}
+  .tk.op2{background:var(--blue); color:#fff;} .tk.op2 .dot{background:#bfdbfe;}
+  .tk.op3{background:var(--purple); color:#fff;} .tk.op3 .dot{background:#ddd6fe;}
+  /* 图例 */
+  .legend{display:flex; flex-direction:column; gap:8px; align-items:center; margin:22px 0 6px;}
+  .legend .lgrow{display:flex; gap:10px; flex-wrap:wrap; justify-content:center;}
+  .lg{display:flex; align-items:center; gap:7px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:5px 12px;}
+  .lg .dot{width:8px; height:8px; border-radius:50%;}
+  .lg .nm{font-size:12px; font-weight:700; color:var(--ink);}
+  .lg .ex{font-size:10.5px; color:var(--ink3);}
+  .lg.tkb{padding:0; border:none; background:none;}
+  .lg.tkb .tk{cursor:default;} .lg.tkb .tk:hover{transform:none; box-shadow:none;}
+  /* 能力底座 */
+  .basebar{max-width:1340px; margin:14px auto 0; background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
+  .basebar .bt{font-size:12px; font-weight:700; color:var(--green-d); letter-spacing:2px; text-align:center; margin-bottom:10px;}
+  .basegrid{display:grid; grid-template-columns:repeat(6,1fr); gap:10px;}
+  .bcell{background:var(--gray-l); border-radius:9px; padding:10px 12px;}
+  .bcell b{display:block; font-size:12.5px; margin-bottom:2px;}
+  .bcell span{font-size:11px; color:var(--ink3); line-height:1.55; display:block;}
+  /* 重点方向 */
+  .five{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; max-width:1340px; margin:16px auto 0;}
+  .fcard{background:#fff; border:1px solid var(--line); border-top:3px solid var(--green-d); border-radius:10px; padding:14px 15px; display:flex; flex-direction:column;}
+  .fcard .fn{font-size:13px; font-weight:700; line-height:1.5; margin-bottom:6px;}
+  .fcard .fj{font-size:12px; color:var(--ink2); line-height:1.7; flex:1;}
+  .fcard .fk{margin-top:10px; display:flex; flex-wrap:wrap; gap:5px;}
+  .fcard .fk .tk{font-size:11px; padding:3px 8px;}
+  .fcard .fo{margin-top:9px;}
+  .fcard .fo .tk{cursor:default;}
+  /* 下一步 */
+  .nextline{display:flex; justify-content:center; align-items:center; gap:14px; margin-top:26px; flex-wrap:wrap;}
+  .nx{font-size:12.5px; color:var(--ink2); background:#fff; border:1px solid var(--line); border-radius:20px; padding:6px 18px;}
+  .nx b{color:var(--green-d); margin-right:6px;}
+  .nextline i{color:#b6c4ba; font-style:normal;}
+  .endnote{text-align:center; color:var(--ink3); font-size:12px; margin-top:16px;}
+  /* ===== 抽屉 ===== */
+  .dmask{position:fixed; inset:0; background:rgba(6,40,28,.38); opacity:0; pointer-events:none; transition:opacity .25s; z-index:90;}
+  .dmask.on{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:fixed; top:0; right:0; height:100vh; width:min(580px,94vw); background:#fff;
+    box-shadow:-8px 0 30px rgba(0,0,0,.18); transform:translateX(105%); transition:transform .28s ease;
+    z-index:100; display:flex; flex-direction:column;
+  }
+  .drawer.on{transform:none;}
+  .d-head{padding:18px 22px 14px; border-bottom:1px solid var(--line); flex-shrink:0;}
+  .d-tags{display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+  .db{color:#fff; font-size:11px; font-weight:600; border-radius:5px; padding:2px 9px; letter-spacing:.5px;}
+  .d-x{margin-left:auto; border:none; background:var(--gray-l); border-radius:6px; width:26px; height:26px; cursor:pointer; color:var(--ink2); font-size:13px; line-height:1;}
+  .d-x:hover{background:var(--line); color:var(--ink);}
+  .d-name{font-size:19px; font-weight:800; margin-top:10px; line-height:1.35;}
+  .d-node{font-size:12px; color:var(--ink3); margin-top:3px;}
+  .d-body{overflow-y:auto; padding:18px 22px 30px; flex:1;}
+  .d-pitch{background:var(--green-l); border-left:4px solid var(--green); border-radius:0 8px 8px 0; padding:10px 14px; font-size:13px; font-weight:600; color:var(--green-dd); line-height:1.7;}
+  .d-sec{margin-top:14px; background:#fafbfa; border:1px solid var(--line); border-radius:8px; padding:11px 14px;}
+  .d-lb{font-size:11.5px; font-weight:700; letter-spacing:1px; margin-bottom:6px; color:var(--ink2);}
+  .d-sec p{font-size:12.8px; line-height:1.8; color:var(--ink);}
+  .d-src{font-size:11px; color:var(--ink3); margin-top:6px;}
+  .d-chk{margin-top:14px; background:var(--orange-l); border:1px solid #f3e3c8; border-radius:8px; padding:11px 14px;}
+  .d-chk .d-lb{color:var(--orange);}
+  .d-chk li{font-size:12.5px; line-height:1.8; color:var(--ink2); margin-left:18px;}
+  /* ===== 课题二（沿用结构样式，绿主题） ===== */
+  .topic2{max-width:1180px; margin:0 auto; padding:34px 28px 90px;}
+  .topic-head{margin-bottom:8px;}
+  .topic-tag{font-size:12.5px; font-weight:700; color:var(--green); letter-spacing:1.5px; margin-bottom:8px;}
+  .topic-h1{font-size:24px; font-weight:700; line-height:1.45;}
+  .topic-lead{
+    background:var(--card); border:1px solid var(--line); border-left:3px solid var(--green);
+    border-radius:0 var(--r) var(--r) 0; padding:16px 22px; margin:18px 0 10px;
+    color:var(--ink2); font-size:14.5px; line-height:1.9;
+  }
+  .sec{margin-bottom:44px;}
+  .sec-h{display:flex; align-items:baseline; gap:14px; margin-bottom:16px;}
+  .sec-h .st{font-size:18px; font-weight:700; white-space:nowrap;}
+  .sec-h .st::before{content:""; display:inline-block; width:4px; height:16px; background:var(--green); border-radius:2px; margin-right:10px; vertical-align:-2px;}
+  .sec-h .sd{font-size:13px; color:var(--ink3);}
+  .sec-h .ln{flex:1; height:1px; background:var(--line); align-self:center;}
+  .why-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  .why{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px;}
+  .why b{display:block; font-size:14.5px; margin-bottom:8px;}
+  .why p{font-size:13px; color:var(--ink2);}
+  .tri-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  .tri{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px; border-top:3px solid var(--green-d);}
+  .tri:nth-child(2){border-top-color:#34b38a;}
+  .tri:nth-child(3){border-top-color:#8fd9bd;}
+  .tri b{display:block; font-size:14.5px; margin-bottom:4px;}
+  .tri .en{font-size:12px; color:var(--ink3); margin-bottom:8px; display:block;}
+  .tri p{font-size:13px; color:var(--ink2); margin-bottom:8px;}
+  .tri .ex{font-size:12.5px; color:var(--green-dd); background:var(--green-l); border-radius:6px; padding:6px 10px;}
+  .lc-wrap{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:26px 22px 20px;}
+  .lc{display:grid; grid-template-columns:repeat(7,1fr); gap:0;}
+  .lc-node{position:relative; padding:0 8px; text-align:center;}
+  .lc-node::before{content:""; position:absolute; top:13px; left:0; right:0; height:2px; background:var(--line);}
+  .lc-node:first-child::before{left:50%;} .lc-node:last-child::before{right:50%;}
+  .lc-dot{
+    position:relative; z-index:1; width:26px; height:26px; border-radius:50%; margin:0 auto 10px;
+    background:#fff; border:2px solid var(--green); color:var(--green);
+    font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center;
+  }
+  .lc-node b{display:block; font-size:13.5px; margin-bottom:4px;}
+  .lc-node span{font-size:12px; color:var(--ink2); line-height:1.55; display:block;}
+  .bench{background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .b-head{background:#f7faf8; border-bottom:1px solid var(--line); display:grid; grid-template-columns:130px 1fr 1fr;}
+  .b-head > div{padding:11px 18px; font-size:13px; font-weight:600; color:var(--ink2); border-right:1px solid var(--line);}
+  .b-head > div:last-child{border-right:none;}
+  .b-row{display:grid; grid-template-columns:130px 1fr 1fr; border-bottom:1px solid var(--line);}
+  .b-row:last-child{border-bottom:none;}
+  .b-row:hover{background:#fafcfb;}
+  .b-co{padding:15px 18px; border-right:1px solid var(--line); display:flex; flex-direction:column; justify-content:center; gap:3px;}
+  .b-co b{font-size:14px;}
+  .b-co span{font-size:12px; color:var(--ink3);}
+  .b-cell{padding:14px 18px; border-right:1px solid var(--line); font-size:13px; color:var(--ink2);}
+  .b-cell:last-child{border-right:none;}
+  .chips{display:flex; flex-wrap:wrap; gap:10px;}
+  .chips .chip{font-size:12.5px; padding:6px 14px; border-radius:6px; background:var(--green-l); color:var(--green-dd);}
+  .insight{background:var(--green-l); border-radius:var(--r); padding:16px 22px; margin-bottom:16px; font-size:14px; color:var(--green-dd); line-height:1.9;}
+  .insight b{font-weight:700;}
+  .ask-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .ask{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:14px 18px; display:flex; gap:12px; align-items:flex-start;}
+  .ask .an{flex:none; width:22px; height:22px; border-radius:50%; background:var(--orange-l); color:var(--orange); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:1px;}
+  .ask b{font-size:13.5px; display:block; margin-bottom:2px;}
+  .ask p{font-size:12.5px; color:var(--ink2);}
+  /* ===== 机会总览矩阵（抽屉内表格） ===== */
+  .mx{width:100%; border-collapse:collapse; margin-top:12px;}
+  .mx th{font-size:11.5px; color:var(--ink2); background:#fafbfa; border:1px solid var(--line); padding:7px 9px; text-align:left; font-weight:600;}
+  .mx td{font-size:12px; color:var(--ink); border:1px solid var(--line); padding:7px 9px; line-height:1.6;}
+  .mx td.jd{font-weight:600; color:var(--green-dd); white-space:nowrap;}
+  /* ===== 响应式 ===== */
+  @media (max-width:1100px){
+    .venders{grid-template-columns:1fr 1fr;}
+    .nrow{flex-direction:column;}
+    .nar{transform:rotate(90deg); padding:4px 0;}
+    .five{grid-template-columns:1fr 1fr;}
+    .basegrid{grid-template-columns:repeat(3,1fr);}
+    .why-grid,.tri-grid,.ask-grid{grid-template-columns:1fr;}
+    .lc{grid-template-columns:repeat(2,1fr); gap:18px 0;}
+    .b-row,.b-head{grid-template-columns:1fr;}
+    .b-co,.b-cell{border-right:none; border-bottom:1px dashed var(--line);}
+  }
+  @media print{
+    .topbar,.n-route,.btn-print,.dmask,.drawer{display:none !important;}
+    body{background:#fff;}
+    .view{display:block !important;}
+    .sec,.nb,.fcard{break-inside:avoid;}
+  }
 
-        /* ===== 顶部蓝色背景 ===== */
-        .header {
-            background: linear-gradient(135deg, #0f111e, #1a1d2e);
-            padding: 48px 0 40px;
-            color: #fff;
-            text-align: center;
-        }
-        .header h1 {
-            font-size: 30px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .container {
-            max-width: 560px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        /* ===== 卡片样式 ===== */
-        .card-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .card {
-            background: #ffffff;
-            border-radius: 14px;
-            padding: 28px 24px;
-            border: 1px solid #e8eaef;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-decoration: none;
-            display: block;
-            color: inherit;
-        }
-        .card:hover {
-            border-color: #4f6ef7;
-            box-shadow: 0 8px 30px rgba(79, 110, 247, 0.13);
-            transform: translateY(-3px);
-        }
-        .card .icon {
-            font-size: 30px;
-            margin-bottom: 12px;
-        }
-        .card .name {
-            font-size: 17px;
-            font-weight: 600;
-            color: #0f111e;
-            line-height: 1.4;
-        }
-        .card .tag {
-            display: inline-block;
-            margin-top: 8px;
-            font-size: 11px;
-            padding: 2px 14px;
-            border-radius: 12px;
-            background: #eef1ff;
-            color: #4f6ef7;
-        }
-
-        /* ===== 密码锁遮罩层 ===== */
-        #lockOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 17, 30, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            transition: opacity 0.5s ease;
-        }
-        #lockOverlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .lock-box {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 40px 36px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
-        }
-        .lock-box .lock-icon {
-            font-size: 48px;
-            color: #4f6ef7;
-            margin-bottom: 16px;
-        }
-        .lock-box h2 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #0f111e;
-        }
-        .lock-box p {
-            font-size: 14px;
-            color: #6b7280;
-            margin-bottom: 20px;
-        }
-        .lock-box input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .lock-box input:focus {
-            border-color: #4f6ef7;
-            box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.1);
-        }
-        .lock-box .error-msg {
-            color: #ef4444;
-            font-size: 13px;
-            margin-top: 8px;
-            min-height: 20px;
-        }
-        .lock-box button {
-            margin-top: 16px;
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #4f6ef7, #6c5ce7);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .lock-box button:hover {
-            opacity: 0.9;
-        }
-
-        /* ===== 响应式 ===== */
-        @media (max-width: 640px) {
-            .container {
-                padding: 20px 16px;
-            }
-        }
-    </style>
+  /* 子页顶栏品牌 + 入口页卡片 */
+  .brandtag{font-size:13px; font-weight:700; color:var(--green-d); letter-spacing:2px;}
+  .home2{min-height:calc(100vh - 52px); display:flex; align-items:center; justify-content:center; padding:40px 28px;}
+  .hgrid{display:grid; grid-template-columns:1fr 1fr; gap:26px; max-width:980px; width:100%;}
+  .hcard{
+    display:block; background:#fff; border:1px solid var(--line); border-radius:16px;
+    padding:54px 40px; text-decoration:none; transition:.2s;
+  }
+  .hcard:hover{border-color:var(--green); box-shadow:0 10px 30px rgba(6,95,70,.12); transform:translateY(-3px);}
+  .hcard .hno{font-size:13px; font-weight:700; color:var(--green); letter-spacing:2px; margin-bottom:14px; display:flex; align-items:center; gap:12px;}
+  .hcard .hno::after{content:""; flex:1; height:1px; background:var(--line);}
+  .hcard .ht{font-size:22px; font-weight:700; color:var(--ink); line-height:1.55;}
+  .hcard .go{margin-top:22px; font-size:13px; font-weight:600; color:var(--green);}
+  @media (max-width:900px){ .hgrid{grid-template-columns:1fr;} }
+</style>
 </head>
 <body>
+<div class="topbar">
+  <div class="brand"><span class="mark"></span>大金（中国）· 数字化课题调研</div>
+  <div class="sp"></div>
+  <span class="brandtag">唯安</span>
+</div>
+<div class="home2">
+  <div class="hgrid">
+    <a class="hcard" href="课题01-AI在空调厂商与制造业的运用.html" target="_blank" rel="noopener">
+      <div class="hno">课题 01</div>
+      <div class="ht">AI 在空调厂商 / 制造业厂商的运用</div>
+      <div class="go">进入全景图 →</div>
+    </a>
+    <a class="hcard" href="课题02-供应商作业质量管理调研.html" target="_blank" rel="noopener">
+      <div class="hno">课题 02</div>
+      <div class="ht">大型集团对供应商作业质量 / 标准提升的管理调研</div>
+      <div class="go">进入全景图 →</div>
+    </a>
+  </div>
+</div>
+<div class="dmask" id="dmask"></div>
+<aside class="drawer" id="drawer">
+  <div class="d-head" id="dHead"></div>
+  <div class="d-body" id="dBody"></div>
+</aside>
+<script>
+/* ===== 视图切换 ===== */
+var CRUMB = {
+  home: '<b>课题入口</b>',
+  t1:   '<b>课题入口</b> / 课题 01 · AI 在空调厂商的运用',
+  t2:   '<b>课题入口</b> / 课题 02 · 供应商作业质量 / 标准提升的管理调研'
+};
+function showView(k){
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('on'); });
+  document.getElementById('view-' + k).classList.add('on');
+  document.getElementById('crumb').innerHTML = CRUMB[k];
+  document.getElementById('btnBack').style.display = (k === 'home') ? 'none' : 'flex';
+  window.scrollTo(0, 0);
+}
 
-    <!-- ===== 密码锁遮罩 ===== -->
-    <div id="lockOverlay">
-        <div class="lock-box">
-            <div class="lock-icon"><i class="fas fa-lock"></i></div>
-            <h2>请输入访问密码</h2>
-            <p>该项目受密码保护，请输入密码查看</p>
-            <input type="password" id="passwordInput" placeholder="请输入密码" onkeydown="if(event.key==='Enter') verifyPassword()">
-            <div class="error-msg" id="errorMsg"></div>
-            <button onclick="verifyPassword()"><i class="fas fa-unlock"></i> 解锁</button>
-        </div>
-    </div>
+/* ===== 抽屉数据 =====
+  k: ind=行业案例 dj=大金现状 opp=机会方向
+  st(大金现状四档): 1中国区已公开落地 2集团已有实践 3建设中 4公开资料不足
+  ot(机会三类): 1已有能力深化 2行业成熟可引入 3探索方向 */
+var KIND={ind:["行业案例","#2563eb"],dj:["大金现状","#059669"],opp:["机会方向","#7c3aed"]};
+var ST={1:["中国区已公开落地","#059669"],2:["大金集团已有实践","#2563eb"],3:["当前项目建设中","#d97706"],4:["公开资料不足 · 待确认","#9ca3af"]};
+var OT={1:["已有能力深化","#047857"],2:["行业成熟 · 可评估引入","#2563eb"],3:["探索方向","#7c3aed"]};
+var CAPS={
+/* —— 01 市场与用户洞察 —— */
+h_mkt:{nm:"海尔｜用户需求驱动定制",node:"01 市场与用户洞察",k:"ind",
+ pitch:"用户需求直接驱动定制设计与生产计划，形成需求到制造的闭环。",
+ ind:"海尔中央空调以用户需求输入驱动产品定制，通过 HIMOS 平台打通 49 个系统、连接 4256 台设备，支撑大规模定制模式。",
+ src:"来源：海尔公开资料",
+ chk:["用户需求以什么形式进入设计和生产","云端数据如何驱动制造端调整"]},
+d_touch:{nm:"大金｜用户直接触达",node:"01 市场与用户洞察",k:"dj",st:1,
+ pitch:"面向用户的线上线下一体化触点体系。",
+ dj:"官网已形成售前咨询、展厅、经销商、上门量房，到在线报修、服务进度、换新的完整线上服务入口；线下有展厅、VR 样板房、金制空气 App 等触点。",
+ val:"触点已有基础，数据连接是关键缺口。",
+ chk:["是否已有统一客户 ID","售前、销售、设备、售后数据是否已打通","客户数据目前主要归属哪个业务系统"]},
+o_insight:{nm:"用户需求智能洞察",node:"01 市场与用户洞察",k:"opp",ot:3,
+ pitch:"将分散在各触点的数据连接，识别真实需求并反向支撑决策。",
+ val:"销售咨询、产品选择、设备使用、售后、维修、IoT 数据连接 → 识别不同区域、家庭、商业空间的真实需求 → 反向支撑产品、营销和服务决策。",
+ chk:["各触点数据的归属与可用性","需求洞察结果的消费方（产品 / 营销 / 服务）"]},
+/* —— 02 产品选型与方案设计 —— */
+h_msel:{nm:"美的｜AI最优选型",node:"02 产品选型与方案设计",k:"ind",
+ pitch:"用仿真模型库替代人工参数筛选，实现一键选型与自动报价。",
+ ind:"美的重庆冷水机工厂以 100 多个高精度物理仿真模型自动匹配最优机组组合并自动报价，选型周期由 5.3 天降至约 1 天，公开披露下降 81%。",
+ src:"来源：美的楼宇科技公开资料",
+ chk:["当前商用项目选型平均耗时","选型规则是否已结构化"]},
+h_mdes:{nm:"美的｜AI智能设计",node:"02 产品选型与方案设计",k:"ind",
+ pitch:"从历史图纸提取设计参数，AI 辅助换热器与管路设计。",
+ ind:"从约 23 万张历史设计图纸中提取参数，结合 AI 算法进行换热器、管路智能设计，公开披露设计周期缩短 45%。",
+ src:"来源：美的楼宇科技公开资料",
+ chk:["历史设计图纸是否结构化留存","是否已有 PLM / 仿真平台"]},
+d_bim:{nm:"大金｜BIM与科学设计提案",node:"02 产品选型与方案设计",k:"dj",st:1,
+ pitch:"面向设计院与客户的数字化设计支持体系。",
+ dj:"官网公开提供 BIM 组件下载（商用 / 家用中央空调、新风）、BIM 定制提案、能耗计算分析与科学设计提案服务。",
+ val:"与 AI 推荐结合后，可自然升级为「智能方案助手」。",
+ chk:["BIM 组件与提案工具的使用覆盖率","一个定制方案的平均制作耗时"]},
+o_sol:{nm:"智能方案助手",node:"02 产品选型与方案设计",k:"opp",ot:2,
+ pitch:"从客户需求到初步方案材料的自动生成链路。",
+ ind:"美的已实现 AI 选型 + AI 设计并公开量化收益（选型 -81%、设计 -45%），行业路径成熟。",
+ dj:"大金具备 BIM、能耗计算与科学提案基础，是 AI 方案生成的天然载体。",
+ val:"客户需求 / 建筑条件 → 设备推荐 → BIM / 产品组合 → 能耗计算 → 多方案比选 → 自动形成初步方案材料。",
+ chk:["方案制作环节的人力投入","与设计院的协作模式"]},
+/* —— 03 产品研发 —— */
+d_rdx:{nm:"大金集团｜研发DX",node:"03 产品研发",k:"dj",st:2,
+ pitch:"集团层面的研发数字化实践。",
+ dj:"大金集团已有研发数字化与 AI 应用实践；中国区研发环节公开资料不足。",
+ chk:["中国区研发能否获取售后工单与设备数据","质量问题是否有标准的研发反馈机制","新产品上市后如何收集现场问题"]},
+o_feed:{nm:"售后数据反哺研发",node:"03 产品研发",k:"opp",ot:3,
+ pitch:"用现场数据定位产品薄弱点，替代经验式改进。",
+ ind:"行业公开案例少，属前沿方向。",
+ dj:"大金拥有大量设备运行数据与维修案例，具备天然数据基础。",
+ val:"高频故障 / 客户投诉 / 维修案例 / 设备运行数据 → AI 聚类分析 → 产品薄弱点与设计改善建议。",
+ chk:["售后数据能否回流研发","反馈机制与数据权限如何设定"]},
+/* —— 04 供应链 —— */
+h_hsc:{nm:"海尔｜AI供应协同",node:"04 供应链",k:"ind",
+ pitch:"供应商、物料、订单与生产计划的协同。",
+ ind:"海尔以数字化平台连接供应商与生产计划，支撑大规模定制的物料协同。",
+ src:"来源：海尔公开资料"},
+d_sc:{nm:"大金｜供应链数字化",node:"04 供应链",k:"dj",st:4,
+ pitch:"供应链计划与协同的数字化现状。",
+ dj:"公开资料不足；集团层面有供应链协同方向（与上下游共同制定生产交付管理标准），中国区现状待确认。",
+ chk:["当前需求预测以什么方式开展","库存与采购计划使用什么工具","供应异常的响应流程"]},
+o_sc:{nm:"需求预测与供应风险",node:"04 供应链",k:"opp",ot:2,
+ pitch:"以预测与预警驱动供应计划。",
+ val:"销售预测 / 备件预测 / 库存 / 采购计划 / 供应异常 / 供应商质量一体化分析；与课题 02（供应商作业质量管理）直接衔接。",
+ chk:["现有预测工具与数据基础","备件预测是否独立开展"]},
+/* —— 05 生产制造 —— */
+h_sched:{nm:"海尔｜AI排产",node:"05 生产制造",k:"ind",
+ pitch:"按订单、物料、设备与产能动态排产。",
+ ind:"海尔中央空调互联工厂以 AI 根据订单、物料、设备和产能状态动态排产，支撑大规模定制。",
+ src:"来源：海尔公开资料"},
+h_agv:{nm:"海尔｜智能物流",node:"05 生产制造",k:"ind",
+ pitch:"产线物流自动跟随生产状态调整。",
+ ind:"AGV 根据产线状态自动调整搬运策略，公开披露物流效率提升 30%。",
+ src:"来源：海尔公开资料"},
+m_flex:{nm:"美的｜柔性制造",node:"05 生产制造",k:"ind",
+ pitch:"面向大量定制订单的柔性与质量贯通。",
+ ind:"美的楼宇科技将智能设计、敏捷生产与质量控制贯通，支撑冷水机等产品的柔性制造。",
+ src:"来源：美的楼宇科技公开资料"},
+d_devai:{nm:"大金集团｜设备故障AI",node:"05 生产制造",k:"dj",st:2,
+ pitch:"用 AI 辅助工厂设备故障分析与恢复。",
+ ind:"集团公开实践：设备故障时 AI 结合设备信息、图纸、历史维修记录与现场 OT 知识分析原因并给出处理建议（2025 年与日立共同开发「工厂设备图纸 AI 活用系统」）；日本鹿岛工厂以设备诊断 + AI 预测分析获 2023 年度 Plant of the Year。",
+ dj:"属集团 / 海外工厂实践，中国工厂应用现状待确认。",
+ val:"可向设备预测性维护、生产异常智能分析自然延伸。",
+ chk:["中国工厂设备数据采集现状","是否有类似 AI 试点"]},
+o_pdm:{nm:"设备预测性维护",node:"05 生产制造",k:"opp",ot:2,
+ pitch:"从故障后响应转向故障前预警。",
+ val:"设备传感数据 → 趋势分析 → 故障预测 → 维护计划；集团已有设备诊断与 AI 基础。",
+ chk:["产线设备联网与数据采集覆盖率"]},
+o_anl:{nm:"生产异常智能分析",node:"05 生产制造",k:"opp",ot:2,
+ pitch:"生产异常的快速定位与归因。",
+ val:"产量 / 质量 / 设备数据 → 异常识别 → 原因假设 → 处置建议。",
+ chk:["异常记录方式与数据完整性"]},
+/* —— 06 生产质量 —— */
+h_qc:{nm:"海尔｜AI全过程质检",node:"06 生产质量",k:"ind",
+ pitch:"质量检查从抽检走向全过程自动识别。",
+ ind:"充氮动作识别、铜管位置识别、自动检漏、外观缺陷检测；质量数据与生产系统联动、异常报警停机并全流程追溯；公开披露外观缺陷 AI 识别率 99.9%。",
+ src:"来源：海尔公开资料"},
+g_5g:{nm:"格力｜5G机器视觉质检",node:"06 生产质量",k:"ind",
+ pitch:"总装环节机器视觉在线检测并联动产线。",
+ ind:"空调总装线的外观包装、压缩机线序、电气安全测试等环节部署 5G 机器视觉，检测结果直接联动产线分离不良品。",
+ src:"来源：黑龙江省通信管理局公开资料"},
+d_q:{nm:"大金｜制造质量数字化",node:"06 生产质量",k:"dj",st:4,
+ pitch:"制造质量管控的数字化现状。",
+ dj:"公开资料不足，具体 AI 应用待确认。",
+ chk:["产线质检目前以人工抽检还是自动检测为主","质量数据是否与生产系统联动"]},
+o_aiqc:{nm:"AI质量检查",node:"06 生产质量",k:"opp",ot:2,
+ pitch:"把产品质量标准转成机器可识别的规则。",
+ val:"机器视觉 / 传感数据自动检查、问题追溯，可与生产系统联动报警停线；并可自然延伸：产品质量 → 安装质量 → 服务质量 → 供应商质量。",
+ chk:["关键工序的质检标准文档化程度"]},
+/* —— 07 营销与销售 —— */
+d_scene:{nm:"大金｜场景化空气方案",node:"07 营销与销售",k:"dj",st:1,
+ pitch:"从卖设备到卖场景方案。",
+ dj:"围绕户型、家庭结构、生活习惯与空气需求，提供中央空调、新风、地暖、智控等组合方案。",
+ val:"方案化销售已成型，AI 可进一步前置到需求理解环节。"},
+o_adv:{nm:"AI空气顾问",node:"07 营销与销售",k:"opp",ot:2,
+ pitch:"需求理解与方案匹配的销售辅助。",
+ val:"用户描述户型 / 家庭成员 / 生活习惯 / 预算 → AI 辅助理解需求 → 匹配产品与解决方案 → 销售顾问进一步确认。",
+ chk:["销售顾问当前的方案沟通流程","常用需求要素有哪些"]},
+/* —— 08 安装交付 —— */
+d_inst:{nm:"大金｜安装品质守护",node:"08 安装交付",k:"dj",st:1,
+ pitch:"安装过程的品质保障体系。",
+ ind:"PROSHOP 认证店约 2000+ 网点、两级认证，安装人员经大金培训考核持证上岗。",
+ dj:"官网公开「工程师与 AI 技术加持」，安装全过程可通过金制空气 App 在线可视，并辅助确认施工效果；AI 具体识别能力边界待确认。",
+ chk:["AI 目前识别照片还是视频","检查哪些安装节点","AI 结果是提示还是强制整改","是否形成工程师 / 经销商安装质量评分","影像是否长期留存","能否关联投诉与维修结果"]},
+o_iqc:{nm:"AI安装质量闭环",node:"08 安装交付",k:"opp",ot:1,
+ pitch:"安装质量的 AI 闭环管理。",
+ ind:"安装影像 AI 自动验收在行业内尚属空白，属差异化方向。",
+ dj:"大金已公开「工程师 + AI」安装品质守护与 App 过程可视，具备载体。",
+ val:"作业标准 → 关键节点影像采集 → AI 识别 → 问题项 → 整改 → 复检 → 质量评分。"},
+/* —— 09 售后维修 —— */
+d_on:{nm:"大金｜线上售后服务",node:"09 售后维修",k:"dj",st:1,
+ pitch:"售后服务线上化入口。",
+ dj:"在线报修、服务进度、操作视频、清洗预约、24 小时服务、全国服务网络。",
+ val:"服务流程线上化已完成，是 AI 诊断与助手的入口载体。"},
+d_rmt:{nm:"大金｜远程支援DX",node:"09 售后维修",k:"dj",st:1,
+ pitch:"面向服务现场的技术支援应用。",
+ dj:"官网提供「远程支援DX」技术 App；另有 AI 智能检测服务，可读取设备运行数据识别 200+ 种故障。具体业务流程与能力边界公开未披露。",
+ chk:["远程支援的使用范围与作业流程","AI 智能检测的落地范围","与派单、知识库的关系"]},
+d_se:{nm:"大金｜SE能力评价体系",node:"09 售后维修",k:"dj",st:3,
+ pitch:"售后工程师能力的数字化管理。",
+ dj:"SE 能力评价体系建设中，覆盖证书、考试、业绩、技术力画像等指标化管理。",
+ val:"与 AI 结合可延伸至 AI 人才培养（培训陪练、知识助手等）。"},
+o_diag:{nm:"AI维修诊断",node:"09 售后维修",k:"opp",ot:1,
+ pitch:"维修经验与数据结合的诊断辅助。",
+ ind:"大金已有 AI 智能检测服务（识别 200+ 故障），行业处于大模型客服与诊断替换期。",
+ dj:"全国售后体系 + 远程支援DX + 大量维修经验，起点高于行业平均。",
+ val:"设备信息 + 故障代码 + IoT 数据 + 维修手册 + 历史案例 → 可能原因 → 检查步骤 → 维修建议。",
+ chk:["维修案例与手册的结构化程度","工程师现场移动端使用情况"]},
+/* —— 10 设备运维与客户经营 —— */
+d_care:{nm:"Daikin Care｜IoT主动关怀",node:"10 设备运维与客户经营",k:"dj",st:1,
+ pitch:"设备 IoT 驱动的全生命周期用户服务。",
+ dj:"截至 2025 年 3 月，体系含 200+ 数据专家、200+ 空气管家、3000+ 售后工程师；通过 IoT 数据与环境数据识别用户需求，开展保养、极端天气、节能等主动关怀；累计与用户互动 200 万次，推送 180 万条使用建议，约 10% 被采纳。",
+ src:"来源：大金官网公开数据",
+ val:"大金最成熟的可公开 IoT 业务，是设备健康管理的直接基础。",
+ chk:["当前接入设备台数与覆盖范围","主动关怀策略的制定方式"]},
+o_health:{nm:"设备健康管理",node:"10 设备运维与客户经营",k:"opp",ot:1,
+ pitch:"从主动关怀升级到设备健康管理。",
+ val:"设备运行数据 → 健康评分 → 异常趋势 → 故障预测 → 主动服务；从「维修一台设备」向「运营设备全生命周期」演进。",
+ chk:["故障预测所需的运行数据完备度"]},
+o_energy:{nm:"智能节能运营",node:"10 设备运维与客户经营",k:"opp",ot:2,
+ pitch:"以数据优化设备运行策略。",
+ ind:"海尔智慧楼宇物联多联机系统节能 50%（有第三方检测），行业节能价值已验证。",
+ val:"使用习惯 + 天气 + 空间环境 + 设备状态 → 推荐 / 自动优化运行策略。",
+ chk:["能耗数据的采集与计量基础","节能服务的商业模式"]},
+/* —— 机会总览矩阵 —— */
+m_overview:{nm:"机会总览矩阵",node:"机会盘点",k:"ind",
+ pitch:"按「行业成熟度 × 大金公开基础 × 业务结合度」盘点 8 个方向，供内部讨论排序。"}
+};
+var MATRIX=[
+ ["AI 辅助选型 / 方案","高","较强（BIM + 提案）","高","值得深入"],
+ ["AI 制造质检","高","待确认","中高","需确认制造现状"],
+ ["设备预测性维护","高","集团已有实践","高","重点关注"],
+ ["AI 安装质量","中高","已有公开基础","很高","重点关注"],
+ ["AI 维修诊断","高","售后基础强","很高","重点关注"],
+ ["智能客户经营","中高","Daikin Care 较强","高","可深化"],
+ ["AI 人才培养","中","SE 系统建设中","高","可延伸"],
+ ["AI 供应链","高","信息不足","待确认","先调研"]
+];
 
-    <!-- ===== 主内容 ===== -->
-    <div id="mainContent" style="display:none;">
-        <div class="header">
-            <h1>大金SE项目</h1>
-        </div>
-
-        <div class="container">
-            <div class="card-grid">
-
-                <!-- 卡片：大金SE能力指标化平台 -->
-                <a href="大金SE能力指标化平台.html" class="card">
-                    <div class="icon" style="color:#4f6ef7;"><i class="fas fa-robot"></i></div>
-                    <div class="name">大金SE能力指标化平台</div>
-                    <span class="tag"><i class="fas fa-pen-ruler"></i> 原型</span>
-                </a>
-
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // ===== 密码验证逻辑 =====
-        const CORRECT_PASSWORD = '20260410';
-
-        function verifyPassword() {
-            const input = document.getElementById('passwordInput');
-            const errorMsg = document.getElementById('errorMsg');
-            const entered = input.value.trim();
-
-            if (entered === CORRECT_PASSWORD) {
-                document.getElementById('lockOverlay').classList.add('hidden');
-                document.getElementById('mainContent').style.display = 'block';
-                errorMsg.textContent = '';
-                input.value = '';
-            } else {
-                errorMsg.textContent = '❌ 密码错误，请重新输入';
-                input.value = '';
-                input.focus();
-            }
-        }
-    </script>
-
+/* ===== 抽屉渲染 ===== */
+var drawer=document.getElementById("drawer"),dmask=document.getElementById("dmask"),
+    dHead=document.getElementById("dHead"),dBody=document.getElementById("dBody");
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function openCap(id){
+  var c=CAPS[id]; if(!c) return;
+  var tags="";
+  if(c.k==="dj"&&c.st) tags+='<span class="db" style="background:'+ST[c.st][1]+'">'+ST[c.st][0]+"</span>";
+  if(c.k==="opp"&&c.ot) tags+='<span class="db" style="background:'+OT[c.ot][1]+'">'+OT[c.ot][0]+"</span>";
+  tags+='<span class="db" style="background:'+KIND[c.k][1]+'">'+KIND[c.k][0]+"</span>";
+  var h='<div class="d-tags">'+tags+'<button class="d-x" onclick="closeCap()">✕</button></div>'+
+        '<div class="d-name">'+esc(c.nm)+'</div><div class="d-node">'+esc(c.node)+"</div>";
+  var b="";
+  if(c.pitch) b+='<div class="d-pitch">'+esc(c.pitch)+"</div>";
+  if(c.ind)   b+='<div class="d-sec"><div class="d-lb">行业实践</div><p>'+esc(c.ind)+"</p>"+(c.src?'<div class="d-src">'+esc(c.src)+"</div>":"")+"</div>";
+  if(c.dj)    b+='<div class="d-sec"><div class="d-lb">大金现状</div><p>'+esc(c.dj)+"</p></div>";
+  if(c.val)   b+='<div class="d-sec"><div class="d-lb">'+(c.k==="opp"?"机会与价值":"对大金的启发")+"</div><p>"+esc(c.val)+"</p></div>";
+  if(c.chk){ b+='<div class="d-chk"><div class="d-lb">待客户确认</div><ul>';
+    c.chk.forEach(function(q){ b+="<li>"+esc(q)+"</li>"; });
+    b+="</ul></div>"; }
+  if(id==="m_overview"){
+    b+='<table class="mx"><tr><th>方向</th><th>行业成熟度</th><th>大金公开基础</th><th>业务结合度</th><th>当前判断</th></tr>';
+    MATRIX.forEach(function(r){ b+="<tr><td class='jd'>"+r[0]+"</td><td>"+r[1]+"</td><td>"+r[2]+"</td><td>"+r[3]+"</td><td>"+r[4]+"</td></tr>"; });
+    b+="</table>";
+  }
+  dHead.innerHTML=h; dBody.innerHTML=b; dBody.scrollTop=0;
+  drawer.classList.add("on"); dmask.classList.add("on");
+  document.body.style.overflow="hidden";
+}
+function closeCap(){
+  drawer.classList.remove("on"); dmask.classList.remove("on");
+  document.body.style.overflow="";
+}
+window.closeCap=closeCap; window.openCap=openCap;
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-cap]"); if(t) openCap(t.dataset.cap);
+});
+dmask.addEventListener("click",closeCap);
+document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeCap(); });
+</script>
 </body>
 </html>
