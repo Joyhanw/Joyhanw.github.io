@@ -9347,11 +9347,11 @@ let DICT_TYPES = [
     ] },
   { id: 'DT02', name: '职务', used: true, kind: 'position',
     positions: [
-      { id: 'DP01', name: '总经理', code: 'GM',       sort: 1, status: '启用', updatedTime: '2026-09-01 10:00' },
-      { id: 'DP02', name: '部长',   code: 'MINISTER',   sort: 2, status: '启用', updatedTime: '2026-09-01 10:00' },
-      { id: 'DP03', name: '科长',   code: 'SECTION_CHIEF', sort: 3, status: '启用', updatedTime: '2026-09-01 10:00' },
-      { id: 'DP04', name: '课长',   code: 'SECTION_HEAD',  sort: 4, status: '启用', updatedTime: '2026-09-01 10:00' },
-      { id: 'DP05', name: '所长',   code: 'OFFICE_HEAD',   sort: 5, status: '启用', updatedTime: '2026-09-01 10:00' },
+      { id: 'DP01', name: '总经理', sort: 1, status: '启用', updatedTime: '2026-09-01 10:00' },
+      { id: 'DP02', name: '部长',   sort: 2, status: '启用', updatedTime: '2026-09-01 10:00' },
+      { id: 'DP03', name: '科长',   sort: 3, status: '启用', updatedTime: '2026-09-01 10:00' },
+      { id: 'DP04', name: '课长',   sort: 4, status: '启用', updatedTime: '2026-09-01 10:00' },
+      { id: 'DP05', name: '所长',   sort: 5, status: '启用', updatedTime: '2026-09-01 10:00' },
     ] },
 ];
 function vSysDict(el) {
@@ -9402,7 +9402,6 @@ function positionBody(cur, side) {
   if (q.status) list = list.filter(x => x.status === q.status);
   const rows = list.map(p => `<tr${p.status === '停用' ? ' style="opacity:.5"' : ''}>
     <td class="fw600">${esc(p.name)}</td>
-    <td style="font-family:monospace;font-size:12.5px;color:var(--g600)">${esc(p.code)}</td>
     <td>${p.status === '启用' ? '<span class="badge badge-green">启用</span>' : '<span class="badge badge-gray">停用</span>'}</td>
     <td>${p.sort}</td>
     <td style="color:var(--g600);font-size:12.5px">${p.updatedTime}</td>
@@ -9427,8 +9426,8 @@ function positionBody(cur, side) {
         <button class="btn btn-sm btn-primary" data-act="pos-add" data-tid="${cur.id}"><i class="ri-add-line"></i>新增职务</button>
       </div>
       <table class="tbl" style="margin-top:0">
-        <tr><th style="width:140px">职务名称</th><th style="width:108px">职务编码</th><th style="width:78px">状态</th><th style="width:56px">排序</th><th style="width:140px">更新时间</th><th style="width:120px" class="right">操作</th></tr>
-        ${rows || '<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:28px">暂无职务数据</td></tr>'}
+        <tr><th style="width:140px">职务名称</th><th style="width:78px">状态</th><th style="width:56px">排序</th><th style="width:140px">更新时间</th><th style="width:120px" class="right">操作</th></tr>
+        ${rows || '<tr><td colspan="5" style="text-align:center;color:var(--g400);padding:28px">暂无职务数据</td></tr>'}
       </table>
     </div>
   </div>`;
@@ -9439,12 +9438,11 @@ function openPositionEdit(tid, id) {
   const it = id ? t.positions.find(x => x.id === id) : null;
   const isEdit = !!it;
   const nextSort = t.positions.reduce((m, x) => Math.max(m, x.sort), 0) + 1;
-  const dv = { name: it ? it.name : '', code: it ? it.code : '', sort: it ? it.sort : nextSort, status: it ? it.status : '启用' };
+  const dv = { name: it ? it.name : '', sort: it ? it.sort : nextSort, status: it ? it.status : '启用' };
   openModal(modalHead(isEdit ? '编辑职务' : '新增职务', '') + `
     <div class="modal-body">
       <div class="form-grid">
         <div class="field2 full"><label><span class="req">*</span>职务名称</label><input class="input" id="pos-name" value="${esc(dv.name)}" placeholder="如：总经理"></div>
-        <div class="field2 full"><label>职务编码</label><input class="input" id="pos-code" value="${esc(dv.code)}" placeholder="如：GM"${isEdit ? ' readonly style="background:var(--g100);color:var(--g500)"' : ''}></div>
         <div class="field2"><label>排序<span style="font-size:11px;color:var(--g400);font-weight:400;margin-left:6px">数字越小越靠前</span></label><input class="input" id="pos-sort" type="number" value="${dv.sort}"></div>
         ${isEdit ? '' : '<div class="field2"><label><span class="req">*</span>状态</label><select class="select" id="pos-status"><option value="启用" selected>启用</option><option value="停用">停用</option></select></div>'}
       </div>
@@ -9456,12 +9454,9 @@ function openPositionEdit(tid, id) {
 function doPositionSave(tid, id) {
   const t = DICT_TYPES.find(x => x.id === tid); if (!t) return;
   const name = (($('#pos-name') || {}).value || '').trim();
-  const code = (($('#pos-code') || {}).value || '').trim();
   const sort = +(($('#pos-sort') || {}).value) || 0;
   if (!name) { toast('请填写职务名称', 'error'); return; }
 
-  const dupCode = t.positions.find(x => x.code === code && x.id !== id);
-  if (dupCode) { toast('职务编码「' + code + '」已存在，请更换', 'error'); return; }
   const dupName = t.positions.find(x => x.name === name && x.id !== id);
   if (dupName) { toast('职务名称「' + name + '」已存在，请更换', 'error'); return; }
   const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
@@ -9472,7 +9467,7 @@ function doPositionSave(tid, id) {
   } else {
     const status = ($('#pos-status') || {}).value || '启用';
     const n = t.positions.reduce((m, x) => Math.max(m, +x.id.slice(2)), 0) + 1;
-    t.positions.push({ id: 'DP' + String(n).padStart(2, '0'), name, code, sort, status, updatedTime: now });
+    t.positions.push({ id: 'DP' + String(n).padStart(2, '0'), name, sort, status, updatedTime: now });
     toast('职务已新增');
   }
   closeModal();
@@ -10276,7 +10271,7 @@ function paramCertRequirement() {
         <tr>
           <th rowspan="2" class="cr-l nbl stk1">证书类型</th>
           <th rowspan="2" class="cr-l stk2">种类</th>
-          <th rowspan="2" class="cr-l stk3">难易度</th>
+          <th rowspan="2" class="cr-l stk3">国家资格</th>
           <th rowspan="2" class="cr-l" style="width:72px">难易度</th>
           <th rowspan="2" class="cr-c cr-sep">1级技术员</th>
           <th colspan="3" class="cr-mh cr-sep">2级高级技术员</th>
