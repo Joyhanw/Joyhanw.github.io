@@ -1486,6 +1486,8 @@ DEMO.techLevelConfig = {
     ['3级', '技师', 'SE', 6, true],
     ['3级', '技师', '间接', 6, true],
     ['3级', '技师', '工事', null, true],
+    ['4级', '工程师', '-', null, true],
+    ['5级', '技术主任', '-', null, true],
   ],
   weight: { theory: 35, practice: 15, perfKpi: 25, interview: 25 },
   bonus: [
@@ -10405,6 +10407,12 @@ function tlContentReq() {
     <td class="fw600">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
   const certRow = (r, i) => {
     const editing = editRow === i;
+    const nameCell = editing
+      ? (r[4] ? `<input class="input" id="tl-cert-n-${i}" type="text" value="${r[1]}" style="width:110px">` : r[1])
+      : r[1];
+    const postCell = editing
+      ? (r[4] ? `<input class="input" id="tl-cert-p-${i}" type="text" value="${r[2]}" style="width:80px">` : r[2])
+      : r[2];
     const numCell = editing
       ? `<input class="input" id="tl-cert-${i}" type="number" min="0" value="${r[3] === null ? '' : r[3]}" style="width:70px;text-align:center">`
       : (r[3] === null ? '—' : r[3]);
@@ -10413,7 +10421,7 @@ function tlContentReq() {
       : `<button class="btn btn-sm" data-act="techlevel-req-edit" data-row="${i}">编辑</button>`)
       : '';
     return `<tr>
-    <td class="fw600">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td>
+    <td class="fw600">${r[0]}</td><td>${nameCell}</td><td>${postCell}</td>
     <td class="right num">${numCell}</td>
     <td class="right">${opCell}</td>
   </tr>`;
@@ -10546,7 +10554,14 @@ function doTechLevelEdit(sec) { APP.tab.tlEditing = sec; renderView(APP.view); }
 function doTechLevelCancel(sec) { APP.tab.tlEditing = null; renderView(APP.view); }
 function doTechLevelReqSave(row) {
   const r = DEMO.techLevelConfig.cert[row];
-  const v = (($('#tl-cert-' + row) || {}).value || '').trim();
+  if (r[4]) {
+    const n = (($('#tl-cert-n-' + row) || {}).value || '').trim();
+    const p = (($('#tl-cert-p-' + row) || {}).value || '').trim();
+    if (p === '' && n !== '') { toast('岗位不能为空', 'warn'); return; }
+    if (n !== '') r[1] = n;
+    if (p !== '') r[2] = p;
+  }
+  const v = ((($('#tl-cert-' + row) || {}).value) || '').trim();
   r[3] = v === '' ? null : +v;
   APP.tab.tlReqEditRow = null;
   renderView(APP.view);
