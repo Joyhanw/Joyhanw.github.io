@@ -405,6 +405,7 @@ body.sb-collapsed .sb-toggle{left:64px}
 .modal{width:520px;max-width:calc(100vw - 40px);max-height:86vh;background:#fff;border-radius:16px;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;animation:pop .18s ease}
 @keyframes pop{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
 .modal.modal-lg{width:680px}
+.modal.modal-xl{width:980px}
 .modal-head{padding:18px 22px;border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:10px}
 .modal-head h3{font-size:16px;font-weight:700;color:var(--g900)}
 .modal-head .sp{flex:1}
@@ -2005,7 +2006,7 @@ function openModal(html) {
   closeOverlays();
   const m = document.createElement('div');
   m.className = 'mask'; m.id = 'modal-mask';
-  m.innerHTML = `<div class="modal ${html.includes('data-lg') ? 'modal-lg' : ''}">${html}</div>`;
+  m.innerHTML = `<div class="modal ${html.includes('data-xl') ? 'modal-xl' : html.includes('data-lg') ? 'modal-lg' : ''}">${html}</div>`;
   document.body.appendChild(m);
 }
 function closeModal() { const m = $('#modal-mask'); if (m) m.remove(); }
@@ -2014,7 +2015,7 @@ function renderModal(html) {
   const mask = $('#modal-mask');
   const modal = mask && mask.querySelector('.modal');
   if (modal) {
-    modal.className = 'modal ' + (html.includes('data-lg') ? 'modal-lg' : '');
+    modal.className = 'modal ' + (html.includes('data-xl') ? 'modal-xl' : html.includes('data-lg') ? 'modal-lg' : '');
     modal.innerHTML = html;
     return;
   }
@@ -2493,7 +2494,7 @@ function handleAct(act, el) {
     case 'logout': APP.user = null; document.body.classList.remove('sb-collapsed'); renderLogin(); break;
     case 'open-profile': closeDropdowns(); openProfile(); break;
     case 'open-pwd': closeDropdowns(); openPwdModal(); break;
-    case 'close-modal': clearInterval(window.__examTimer); closeModal(); break;
+    case 'close-modal': { clearInterval(window.__examTimer); if (window.__pickD) { pickLeave(false); break; } closeModal(); break; }
     case 'open-prd': window.open(PRD_TD_LINK, '_blank'); break;
     case 'open-h5': window.open('考试H5.html', '_blank'); break;
     case 'open-export': window.open('报告导出模板.html', '_blank'); break;
@@ -2624,11 +2625,7 @@ function handleAct(act, el) {
     case 'se-prac-new': openSEPracticeNew(); break;
     case 'se-prac-mode': { const pd = window.__sePrac; if (pd) { sePracPull(); pd.mode = d.mode; renderSEPracticeNew(); } break; }
     case 'se-prac-cat': { const pd = window.__sePrac; if (pd) { sePracPull(); const cs = pd.cats, c = d.cat; const i = cs.indexOf(c); if (i < 0) cs.push(c); else cs.splice(i, 1); renderSEPracticeNew(); } break; }
-    case 'se-prac-pick-open': sePracPull(); window.__sePrac.picking = true; renderSEPracPick(true); break;
-    case 'se-prac-pick-back': window.__sePrac.picking = false; renderSEPracticeNew(); break;
-    case 'se-prac-pick-filter': { const pd = window.__sePrac; if (pd) { pd.pf = { kw: ($('#sp-f-kw') || {}).value || '', cat1: ($('#sp-f-cat1') || {}).value || '', cat2: ($('#sp-f-cat2') || {}).value || '', type: ($('#sp-f-type') || {}).value || '', diff: ($('#sp-f-diff') || {}).value || '' }; renderSEPracPick(false); } break; }
-    case 'se-prac-pick-toggle': { const pd = window.__sePrac; if (pd) { const qs = pd.qids, id = d.id; const i = qs.indexOf(id); if (i < 0) qs.push(id); else qs.splice(i, 1); renderSEPracPick(false); } break; }
-    case 'se-prac-pick-done': window.__sePrac.picking = false; renderSEPracticeNew(); break;
+    case 'se-prac-pick-open': sePracPull(); pickOpen(window.__sePrac, '选择练习题目'); break;
     case 'se-prac-save': doSEPracticeSave(); break;
     case 'se-sheet-try': openSEAnswerSheet(window.__seSheetId, +d.try); break;
     case 'create-exam': openCreateExam(); break;
@@ -2679,6 +2676,7 @@ function handleAct(act, el) {
     case 'q-cat1-change': { const v = $('#q-cat1').value; const t = DICT_TYPES.find(x => x.id === 'DT01'); const p = t && t.categories.find(c => c.name === v); const c2 = $('#q-cat2'); if (c2) { if (p) { c2.innerHTML = '<option value="">全部分类</option>' + p.children.filter(c => c.status === '启用').map(c => '<option>' + c.name + '</option>').join(''); } else { c2.innerHTML = '<option value="">全部分类</option>'; } } break; }
     case 'plan-f-cat1-change': { const v = $('#plan-f-cat1').value; const t = DICT_TYPES.find(x => x.id === 'DT01'); const p = t && t.categories.find(c => c.name === v); const c2 = $('#plan-f-cat2'); if (c2) { if (p) { c2.innerHTML = '<option value="">全部分类</option>' + p.children.filter(c => c.status === '启用').map(c => '<option>' + c.name + '</option>').join(''); } else { c2.innerHTML = '<option value="">全部分类</option>'; } } break; }
     case 'sp-f-cat1-change': { const v = $('#sp-f-cat1').value; const t = DICT_TYPES.find(x => x.id === 'DT01'); const p = t && t.categories.find(c => c.name === v); const c2 = $('#sp-f-cat2'); if (c2) { if (p) { c2.innerHTML = '<option value="">全部分类</option>' + p.children.filter(c => c.status === '启用').map(c => '<option>' + c.name + '</option>').join(''); } else { c2.innerHTML = '<option value="">全部分类</option>'; } } break; }
+    case 'pick-f-cat1-change': { const v = $('#pick-f-cat1').value; const t = DICT_TYPES.find(x => x.id === 'DT01'); const p = t && t.categories.find(c => c.name === v); const c2 = $('#pick-f-cat2'); if (c2) { if (p) { c2.innerHTML = '<option value="">全部分类</option>' + p.children.filter(c => c.status === '启用').map(c => '<option>' + c.name + '</option>').join(''); } else { c2.innerHTML = '<option value="">全部分类</option>'; } } break; }
     case 'q-reset': APP.q.qbank = {}; renderView(APP.view); break;
     case 'qi-entry-menu': { const mm = $('#qi-entry-menu'); if (mm) mm.classList.toggle('open'); break; }
     case 'qi-entry': closeDropdowns(); openImportQBank(d.mode); break;
@@ -2709,11 +2707,14 @@ function handleAct(act, el) {
     case 'plan-mode': planPull(); APP.planDraft.mode = d.mode; renderPlanEdit(); break;
     case 'plan-cat-toggle': { planPull(); const cs = APP.planDraft.cats, c = d.cat; const i = cs.indexOf(c); if (i < 0) cs.push(c); else cs.splice(i, 1); markPlanStale(); renderPlanEdit(); break; }
     case 'plan-grader-toggle': { planPull(); const gs = APP.planDraft.graders, gid = +d.gid; const i = gs.indexOf(gid); if (i < 0) gs.push(gid); else gs.splice(i, 1); renderPlanEdit(); break; }
-    case 'plan-pick-open': planPull(); APP.planDraft.picking = true; renderPlanEdit(); break;
-    case 'plan-pick-close': APP.planDraft.picking = false; renderPlanEdit(); break;
-    case 'plan-pick-filter': planPickFilter(); break;
-    case 'plan-pick-toggle': { const qs = APP.planDraft.qids, id = d.id; const i = qs.indexOf(id); if (i < 0) qs.push(id); else qs.splice(i, 1); renderPlanPickPanel(); break; }
-    case 'plan-pick-done': APP.planDraft.picking = false; renderPlanEdit(); break;
+    case 'plan-pick-open': planPull(); pickOpen(APP.planDraft, '选择试题'); break;
+    /* —— 固定选题双栏弹窗（创建练习 / 考试计划共用）：左栏找题选题，右栏统计/移除 —— */
+    case 'pick-toggle': { const pd = window.__pickD; if (!pd) break; const i = pd.qids.indexOf(d.id); if (i < 0) pd.qids.push(d.id); else pd.qids.splice(i, 1); pickRefresh(); break; }
+    case 'pick-query': { const pd = window.__pickD; if (!pd) break; pd.pf = { kw: ($('#pick-f-kw') || {}).value || '', cat1: ($('#pick-f-cat1') || {}).value || '', cat2: ($('#pick-f-cat2') || {}).value || '', type: ($('#pick-f-type') || {}).value || '', diff: ($('#pick-f-diff') || {}).value || '' }; pd.pickPage = 1; renderPickModal(); break; }
+    case 'pick-page': { const pd = window.__pickD; if (!pd) break; const pages = Math.max(1, Math.ceil(pickRows(pd).length / PICK_PAGE)); pd.pickPage = Math.min(pages, Math.max(1, (pd.pickPage || 1) + +d.dir)); pickRefresh(); break; }
+    case 'pick-page-all': { const pd = window.__pickD; if (!pd) break; const p = pd.pickPage || 1; const rows = pickRows(pd).slice((p - 1) * PICK_PAGE, p * PICK_PAGE); const allOn = rows.length && rows.every(q => pd.qids.includes(q.id)); rows.forEach(q => { const i = pd.qids.indexOf(q.id); if (allOn) { if (i >= 0) pd.qids.splice(i, 1); } else if (i < 0) pd.qids.push(q.id); }); pickRefresh(); break; }
+    case 'pick-done': pickLeave(true); break;
+    case 'pick-cancel': pickLeave(false); break;
     case 'plan-draw': doPlanDraw(); break;
     case 'plan-paper-view': planPull(); renderPlanPaperPanel(); break;
     case 'plan-paper-close': renderPlanEdit(); break;
@@ -4260,7 +4261,7 @@ function openSEPracticeNew() {
 }
 function renderSEPracticeNew() {
   const d = window.__sePrac; if (!d) return;
-  if (d.picking) { renderSEPracPick(true); return; }
+  if (d.picking) { pickOpen(d, '选择练习题目'); return; }
   const cats = BANK_CATS();
   const fx = { cnt: d.qids.length, sum: d.qids.reduce((s, id) => s + ((DEMO.questions.find(q => q.id === id) || {}).score || 0), 0) };
   const fxQs = d.qids.map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean);
@@ -4341,52 +4342,6 @@ function doSEPracticeSave() {
   toast('练习已创建，可随时从「我的练习」进入答题，进度自动保存');
   renderView(APP.view);
 }
-function sePracPickRows() {
-  const d = window.__sePrac, f = d.pf || {};
-  return DEMO.questions.filter(q => q.status === '启用' && q.type !== '简答' && q.type !== '填空'
-    && (!f.kw || q.text.includes(f.kw))
-    && (!f.cat1 || f.cat1 === '全部分类' || q.cat1 === f.cat1) && (!f.cat2 || f.cat2 === '全部分类' || q.cat2 === f.cat2)
-    && (!f.type || f.type === '全部题型' || q.type === f.type)
-    && (!f.diff || f.diff === '全部难度' || q.diff === f.diff));
-}
-function renderSEPracPickBody() {
-  const d = window.__sePrac;
-  const rows = sePracPickRows();
-  return `
-    <div class="scope-count" style="margin:0 0 10px"><i class="ri-checkbox-multiple-line"></i>已选 <b>${d.qids.length}</b> 题</div>
-    <div style="max-height:340px;overflow:auto;border:1px solid var(--g200);border-radius:8px">
-      <table class="tbl" style="margin:0">
-        <tr><th style="width:44px"></th><th>题目内容</th><th>题型</th><th>二级分类</th><th>难度</th><th class="right">分值</th></tr>
-        ${rows.length ? rows.map(q => `<tr style="cursor:pointer" data-act="se-prac-pick-toggle" data-id="${q.id}">
-          <td style="text-align:center"><input type="checkbox" ${d.qids.includes(q.id) ? 'checked' : ''} style="pointer-events:none"></td>
-          <td style="max-width:360px">${esc(q.text)}</td>
-          <td>${q.type}</td><td style="color:var(--g500)">${esc(q.cat1)}/${esc(q.cat2)}</td><td>${q.diff}</td>
-          <td class="right num">${q.score}</td></tr>`).join('')
-        : `<tr><td colspan="6"><div class="empty"><i class="ri-inbox-line"></i>没有符合条件的试题</div></td></tr>`}
-      </table>
-    </div>`;
-}
-function renderSEPracPick(full) {
-  const d = window.__sePrac;
-  if (!full) { const b = $('#sp-pick-body'); if (b) b.innerHTML = renderSEPracPickBody(); return; }
-  const f = d.pf || {};
-  renderModal(modalHead('选择练习题目', '', true) + `
-    <div class="modal-body">
-      <div class="filter-bar">
-        <input class="input" id="sp-f-kw" placeholder="搜索题目内容" value="${esc(f.kw || '')}" style="flex:2;min-width:160px">
-        <select class="select" id="sp-f-cat1" style="flex:1;min-width:120px" data-change="sp-f-cat1-change"><option value="">全部分类</option>${(()=>{const t=DICT_TYPES.find(x=>x.id==='DT01');return t?t.categories.map(c=>`<option${f.cat1===c.name?' selected':''}>${c.name}</option>`).join(''):''})()}</select>
-        <select class="select" id="sp-f-cat2" style="flex:1;min-width:120px"><option value="">全部分类</option>${(()=>{if(!f.cat1)return '';const t=DICT_TYPES.find(x=>x.id==='DT01');const p=t&&t.categories.find(c=>c.name===f.cat1);return p?p.children.filter(c=>c.status==='启用').map(c=>`<option${f.cat2===c.name?' selected':''}>${c.name}</option>`).join(''):''})()}</select>
-        <select class="select" id="sp-f-type" style="flex:1;min-width:100px">${['全部题型', '判断', '单选', '多选', '填空', '简答'].map(c => `<option${f.type === c ? ' selected' : ''}>${c}</option>`).join('')}</select>
-        <select class="select" id="sp-f-diff" style="flex:1;min-width:100px">${['全部难度', '简单', '中等', '困难'].map(c => `<option${f.diff === c ? ' selected' : ''}>${c}</option>`).join('')}</select>
-        <button class="btn btn-primary" data-act="se-prac-pick-filter"><i class="ri-search-line"></i>查询</button>
-      </div>
-      <div id="sp-pick-body">${renderSEPracPickBody()}</div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn" data-act="se-prac-pick-back">返回</button>
-      <button class="btn btn-primary" data-act="se-prac-pick-done"><i class="ri-check-line"></i>完成选择</button></div>`);
-}
-
 /* ============ 工程师端：我的面谈 ============
    数据权限：仅本人（张明辉 / SE001）任务；草稿对 SE 不可见。
    工程师仅查看面谈纪要（留档参考）与聚合评委反馈。 */
@@ -12589,7 +12544,7 @@ function planPaperQs() {
 }
 function planPaperTotal() { return planPaperQs().reduce((s, q) => s + q.score, 0); }
 function planTypeSumTagsHTML(qs) {
-  return [['单选', '单选题'], ['多选', '多选题'], ['判断', '判断题']].map(([t, label]) => {
+  return [['单选', '单选题'], ['多选', '多选题'], ['判断', '判断题'], ['填空', '填空题']].map(([t, label]) => {
     const list = qs.filter(q => q.type === t);
     return list.length ? `<span class="tag">${label} ${list.length}题 / ${list.reduce((s, q) => s + q.score, 0)}分</span>` : '';
   }).filter(Boolean).join(' ');
@@ -12688,7 +12643,7 @@ function scopeMatchCount() {
 }
 function renderPlanEdit() {
   const d = APP.planDraft; if (!d) return;
-  if (d.picking) { renderPlanPickPanel(true); return; }
+  if (d.picking) { pickOpen(d, '选择试题'); return; }
   const isEdit = !!d.id;
   const cats = BANK_CATS();
   const modeBtn = (v, ic, t, s) => `<div class="pick-mode${d.mode === v ? ' on' : ''}" data-act="plan-mode" data-mode="${v}">
@@ -12863,57 +12818,140 @@ function renderPlanEdit() {
     }
   })();
 }
-function planPickFilter() {
-  const d = APP.planDraft;
-  d.pf = { kw: ($('#plan-f-kw') || {}).value || '', cat1: ($('#plan-f-cat1') || {}).value || '', cat2: ($('#plan-f-cat2') || {}).value || '', type: ($('#plan-f-type') || {}).value || '', diff: ($('#plan-f-diff') || {}).value || '' };
-  renderPlanPickPanel(false);
-}
-function planPickRows() {
-  const d = APP.planDraft, f = d.pf || {};
+/* ========== 固定选题：左右双栏选题弹窗（创建练习 / 考试计划共用） ==========
+   左栏「全部试题」负责查询、筛选、勾选（分页，全选仅作用当前页）；
+   右栏「已选试题」默认全部勾选，取消勾选即移除并同步左栏；进入弹窗时快照 qids，确定才提交，取消/关闭还原。 */
+const PICK_PAGE = 10;
+function pickRows(d) {
+  const f = d.pf || {};
   return DEMO.questions.filter(q => q.status === '启用' && q.type !== '简答'
     && (!f.kw || q.text.includes(f.kw))
-    && (!f.cat1 || f.cat1 === '全部分类' || q.cat1 === f.cat1) && (!f.cat2 || f.cat2 === '全部分类' || q.cat2 === f.cat2)
-    && (!f.type || f.type === '全部题型' || q.type === f.type)
-    && (!f.diff || f.diff === '全部难度' || q.diff === f.diff));
+    && (!f.cat1 || q.cat1 === f.cat1) && (!f.cat2 || q.cat2 === f.cat2)
+    && (!f.type || q.type === f.type) && (!f.diff || q.diff === f.diff));
 }
-function renderPlanPickBody() {
-  const d = APP.planDraft;
-  const rows = planPickRows();
-  const fx = planFixedSummary();
-  return `
-    <div class="scope-count" style="margin:0 0 10px"><i class="ri-checkbox-multiple-line"></i>已选 <b>${fx.cnt}</b> 题 · 总分 <b>${fx.sum}</b> 分</div>
-    <div style="max-height:340px;overflow:auto;border:1px solid var(--g200);border-radius:8px">
+function pickOpen(d, title) {
+  if (!d) return;
+  d.picking = true; d.pickTitle = title;
+  if (!d.pickSnap) { d.pickSnap = d.qids.slice(); d.pickPage = 1; }
+  window.__pickD = d;
+  renderPickModal();
+}
+function pickLeave(commit) {
+  const pd = window.__pickD; if (!pd) { closeModal(); return; }
+  if (!commit && pd.pickSnap) pd.qids = pd.pickSnap;
+  pd.picking = false; pd.pickSnap = null;
+  window.__pickD = null;
+  (pd === APP.planDraft ? renderPlanEdit : renderSEPracticeNew)();
+}
+function pickCatsCell(q) {
+  return `<div style="line-height:1.5"><div>${esc(q.cat1 || '—')}</div><div style="font-size:11px;color:var(--g400)">${esc(q.cat2 || '—')}</div></div>`;
+}
+function renderPickLeftTable() {
+  const pd = window.__pickD; if (!pd) return '';
+  const p = pd.pickPage || 1;
+  const cur = pickRows(pd).slice((p - 1) * PICK_PAGE, p * PICK_PAGE);
+  const allOn = cur.length && cur.every(q => pd.qids.includes(q.id));
+  return `<table class="tbl" style="margin:0">
+    <tr><th style="width:38px;text-align:center" title="全选当前页"><input type="checkbox" ${allOn ? 'checked' : ''} ${cur.length ? '' : 'disabled'} data-act="pick-page-all"></th><th>题目内容</th><th style="width:96px">分类</th><th style="width:54px">题型</th><th style="width:54px">难度</th><th class="right" style="width:50px">分值</th></tr>
+    ${cur.length ? cur.map(q => `<tr style="cursor:pointer" data-act="pick-toggle" data-id="${q.id}">
+      <td style="text-align:center"><input type="checkbox" ${pd.qids.includes(q.id) ? 'checked' : ''} style="pointer-events:none"></td>
+      <td style="max-width:250px"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" data-picktip="${esc(q.text)}">${esc(q.text)}</div></td>
+      <td>${pickCatsCell(q)}</td><td>${q.type}</td><td>${q.diff}</td><td class="right num">${q.score}</td></tr>`).join('')
+    : `<tr><td colspan="6"><div class="empty"><i class="ri-inbox-line"></i>没有符合条件的试题</div></td></tr>`}
+  </table>`;
+}
+function renderPickLeftPager() {
+  const pd = window.__pickD; if (!pd) return '';
+  const total = pickRows(pd).length;
+  const pages = Math.max(1, Math.ceil(total / PICK_PAGE));
+  const p = pd.pickPage || 1;
+  return `<span class="pager-info">共 ${total} 题 · 第 ${p} / ${pages} 页</span>
+    <button class="btn btn-sm" data-act="pick-page" data-dir="-1" ${p <= 1 ? 'disabled' : ''}>上一页</button>
+    <button class="btn btn-sm" data-act="pick-page" data-dir="1" ${p >= pages ? 'disabled' : ''}>下一页</button>`;
+}
+function renderPickRight() {
+  const pd = window.__pickD; if (!pd) return '';
+  const qs = pd.qids.map(id => DEMO.questions.find(q => q.id === id)).filter(Boolean);
+  const sum = qs.reduce((s2, q) => s2 + q.score, 0);
+  return `<div style="display:flex;gap:18px;font-size:12.5px;color:var(--g600);margin-bottom:6px">
+      <div>已选题数 <b style="color:var(--e600)">${qs.length}</b> 题</div>
+      <div>试题总分 <b style="color:var(--e600)">${sum}</b> 分</div>
+    </div>
+    <div style="font-size:12.5px;color:var(--g600);margin-bottom:10px">题型分布：${planTypeSumTagsHTML(qs) || '<span style="color:var(--g400)">—</span>'}</div>
+    <div style="flex:1;min-height:0;overflow:auto;border:1px solid var(--g200);border-radius:8px">
       <table class="tbl" style="margin:0">
-        <tr><th style="width:44px"></th><th>题目内容</th><th>题型</th><th>二级分类</th><th>难度</th><th class="right">分值</th></tr>
-        ${rows.length ? rows.map(q => `<tr style="cursor:pointer" data-act="plan-pick-toggle" data-id="${q.id}">
-          <td style="text-align:center"><input type="checkbox" ${d.qids.includes(q.id) ? 'checked' : ''} style="pointer-events:none"></td>
-          <td style="max-width:360px">${esc(q.text)}</td>
-          <td>${q.type}</td><td style="color:var(--g500)">${esc(q.cat1)}/${esc(q.cat2)}</td><td>${q.diff}</td>
-          <td class="right num">${q.score}</td></tr>`).join('')
-        : `<tr><td colspan="6"><div class="empty"><i class="ri-inbox-line"></i>没有符合条件的试题</div></td></tr>`}
+        <tr><th style="width:38px"></th><th>题目内容</th><th style="width:88px">分类</th><th style="width:50px">题型</th><th class="right" style="width:46px">分值</th></tr>
+        ${qs.length ? qs.map(q => `<tr style="cursor:pointer" data-act="pick-toggle" data-id="${q.id}">
+          <td style="text-align:center"><input type="checkbox" checked style="pointer-events:none"></td>
+          <td style="max-width:160px"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" data-picktip="${esc(q.text)}">${esc(q.text)}</div></td>
+          <td>${pickCatsCell(q)}</td><td>${q.type}</td><td class="right num">${q.score}</td></tr>`).join('')
+        : `<tr><td colspan="5"><div class="empty"><i class="ri-inbox-line"></i>尚未选择试题</div></td></tr>`}
       </table>
     </div>`;
 }
-function renderPlanPickPanel(full) {
-  const d = APP.planDraft;
-  if (!full) { const b = $('#plan-pick-body'); if (b) b.innerHTML = renderPlanPickBody(); return; }
-  const f = d.pf || {};
-  renderModal(modalHead('选择试题', '', true) + `
-    <div class="modal-body">
-      <div class="filter-bar">
-        <input class="input" id="plan-f-kw" placeholder="搜索题目内容" value="${esc(f.kw || '')}" style="flex:2;min-width:160px">
-        <select class="select" id="plan-f-cat1" style="flex:1;min-width:120px" data-change="plan-f-cat1-change"><option value="">全部分类</option>${(()=>{const t=DICT_TYPES.find(x=>x.id==='DT01');return t?t.categories.map(c=>`<option${f.cat1===c.name?' selected':''}>${c.name}</option>`).join(''):''})()}</select>
-        <select class="select" id="plan-f-cat2" style="flex:1;min-width:120px"><option value="">全部分类</option>${(()=>{if(!f.cat1)return '';const t=DICT_TYPES.find(x=>x.id==='DT01');const p=t&&t.categories.find(c=>c.name===f.cat1);return p?p.children.filter(c=>c.status==='启用').map(c=>`<option${f.cat2===c.name?' selected':''}>${c.name}</option>`).join(''):''})()}</select>
-        <select class="select" id="plan-f-type" style="flex:1;min-width:100px">${['全部题型', '判断', '单选', '多选', '填空', '简答'].map(c => `<option${f.type === c ? ' selected' : ''}>${c}</option>`).join('')}</select>
-        <select class="select" id="plan-f-diff" style="flex:1;min-width:100px">${['全部难度', '简单', '中等', '困难'].map(c => `<option${f.diff === c ? ' selected' : ''}>${c}</option>`).join('')}</select>
-        <button class="btn btn-primary" data-act="plan-pick-filter"><i class="ri-search-line"></i>查询</button>
+/* 局部刷新：保留左栏查询条件输入框的未提交内容，仅刷表格/分页/右栏/底栏题数 */
+function pickRefresh() {
+  const pd = window.__pickD; if (!pd) return;
+  const lb = $('#pick-left-body'); if (lb) lb.innerHTML = renderPickLeftTable();
+  const pg = $('#pick-left-pager'); if (pg) pg.innerHTML = renderPickLeftPager();
+  const r = $('#pick-right'); if (r) r.innerHTML = renderPickRight();
+  const c = $('#pick-done-cnt'); if (c) c.textContent = '确定（' + pd.qids.length + '题）';
+}
+function renderPickModal() {
+  const pd = window.__pickD; if (!pd) return;
+  const f = pd.pf || {};
+  renderModal(`<div data-xl></div>` + modalHead(pd.pickTitle || '选择试题') + `
+    <div class="modal-body" style="display:flex;gap:16px;overflow:hidden;align-items:stretch">
+      <div style="flex:1.6;min-width:0;display:flex;flex-direction:column">
+        <div class="form-sec-title" style="margin-bottom:10px">全部试题</div>
+        <div class="filter-bar" style="margin-bottom:0">
+          <input class="input" id="pick-f-kw" placeholder="搜索题目内容" value="${esc(f.kw || '')}" style="flex:2;min-width:130px">
+          <select class="select" id="pick-f-cat1" style="flex:1;min-width:104px" data-change="pick-f-cat1-change"><option value="">全部分类</option>${(()=>{const t=DICT_TYPES.find(x=>x.id==='DT01');return t?t.categories.map(c=>`<option${f.cat1===c.name?' selected':''}>${c.name}</option>`).join(''):''})()}</select>
+          <select class="select" id="pick-f-cat2" style="flex:1;min-width:104px"><option value="">全部分类</option>${(()=>{if(!f.cat1)return '';const t=DICT_TYPES.find(x=>x.id==='DT01');const p=t&&t.categories.find(c=>c.name===f.cat1);return p?p.children.filter(c=>c.status==='启用').map(c=>`<option${f.cat2===c.name?' selected':''}>${c.name}</option>`).join(''):''})()}</select>
+          <select class="select" id="pick-f-type" style="flex:1;min-width:86px">${[['', '全部题型'], ['判断', '判断'], ['单选', '单选'], ['多选', '多选'], ['填空', '填空']].map(([v, l]) => `<option value="${v}"${f.type === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          <select class="select" id="pick-f-diff" style="flex:1;min-width:86px">${[['', '全部难度'], ['简单', '简单'], ['中等', '中等'], ['困难', '困难']].map(([v, l]) => `<option value="${v}"${f.diff === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          <button class="btn btn-primary" data-act="pick-query"><i class="ri-search-line"></i>查询</button>
+        </div>
+        <div style="flex:1;min-height:0;overflow:auto;border:1px solid var(--g200);border-radius:8px;margin-top:10px">
+          <div id="pick-left-body">${renderPickLeftTable()}</div>
+        </div>
+        <div class="pager" id="pick-left-pager" style="margin-top:10px">${renderPickLeftPager()}</div>
       </div>
-      <div id="plan-pick-body">${renderPlanPickBody()}</div>
+      <div style="flex:1;min-width:262px;display:flex;flex-direction:column">
+        <div class="form-sec-title" style="margin-bottom:10px">已选试题</div>
+        <div id="pick-right" style="flex:1;min-height:0;display:flex;flex-direction:column">${renderPickRight()}</div>
+      </div>
     </div>
     <div class="modal-foot">
-      <button class="btn" data-act="plan-pick-close">返回</button>
-      <button class="btn btn-primary" data-act="plan-pick-done"><i class="ri-check-line"></i>完成选择</button></div>`);
+      <button class="btn" data-act="pick-cancel">取消</button>
+      <button class="btn btn-primary" data-act="pick-done"><i class="ri-check-line"></i><span id="pick-done-cnt">确定（${pd.qids.length}题）</span></button></div>`);
 }
+/* ========== 题干悬浮气泡：data-picktip 存全文，移入即显、移出/滚动隐藏（选题弹窗两栏共用） ========== */
+(function pickTip() {
+  let tip = null;
+  const ensure = () => {
+    if (tip) return tip;
+    tip = document.createElement('div');
+    tip.style.cssText = 'position:fixed;z-index:9999;display:none;max-width:420px;padding:8px 12px;background:#30343f;color:#fff;font-size:12.5px;line-height:1.7;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.18);pointer-events:none;word-break:break-all';
+    document.body.appendChild(tip);
+    return tip;
+  };
+  const hide = () => { if (tip) tip.style.display = 'none'; };
+  document.addEventListener('mouseover', e => {
+    const t = e.target && e.target.closest ? e.target.closest('[data-picktip]') : null;
+    if (!t) { hide(); return; }
+    const el = ensure();
+    el.textContent = t.dataset.picktip;
+    el.style.display = 'block';
+    const r = t.getBoundingClientRect();
+    const bw = Math.min(420, window.innerWidth - 24);
+    el.style.left = Math.min(Math.max(12, r.left), Math.max(12, window.innerWidth - bw - 12)) + 'px';
+    let top = r.top - el.offsetHeight - 8;
+    if (top < 8) top = r.bottom + 8;
+    el.style.top = top + 'px';
+  });
+  document.addEventListener('scroll', hide, true);
+})();
 /* ========== 一键抽题：按当前条件生成试卷快照（可反复覆盖） ========== */
 function doPlanDraw() {
   planPull();
