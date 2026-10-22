@@ -189,6 +189,10 @@
   .d-x{margin-left:auto; border:none; background:var(--gray-l); border-radius:6px; width:26px; height:26px; cursor:pointer; color:var(--ink2); font-size:13px; line-height:1;}
   .d-x:hover{background:var(--line); color:var(--ink);}
   .d-name{font-size:19px; font-weight:800; margin-top:10px; line-height:1.35;}
+  .d-links{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:16px; padding-top:13px; border-top:1px dashed var(--line);}
+  .d-lk-lb{font-size:11.5px; font-weight:700; letter-spacing:1px; color:var(--ink2);}
+  .d-lk{display:inline-block; padding:4px 12px; border:1px solid var(--line); border-radius:999px; font-size:12.5px; font-weight:600; color:var(--green-dd); background:#fff; text-decoration:none; transition:.15s;}
+  .d-lk:hover{border-color:var(--green); background:var(--green-l);}
   .d-body{overflow-y:auto; padding:18px 22px 30px; flex:1;}
   .d-pitch{background:var(--green-l); border-left:4px solid var(--green); border-radius:0 8px 8px 0; padding:10px 14px; font-size:13px; font-weight:600; color:var(--green-dd); line-height:1.7;}
   .d-sec{margin-top:14px; background:#fafbfa; border:1px solid var(--line); border-radius:8px; padding:11px 14px;}
@@ -453,7 +457,7 @@
 <script>
 var CAPS={
 /* ===== 头部厂商 ===== */
-v1:{nm:"海尔中央空调",tag:"对标厂商",col:"#047857",
+v1:{nm:"海尔中央空调",tag:"对标厂商",col:"#047857",links:[["海尔·领航级互联工厂","https://www.haier.com/press-events/news/20251127_283452.shtml"],["海尔·AI全链路制造","https://www.haier.com/press-events/news/20260427_289750.shtml"],["海尔·供应协同与排产","https://www.haier.com/press-events/news/20251202_283533.shtml"]],
  secs:[
   {lb:"核心模式",p:"海尔中央空调互联工厂（行业「灯塔工厂」）以「用户需求驱动的大规模定制」为核心模式：客户通过交互平台提交选型与定制需求，需求直接进入设计与排产系统，工厂用统一数据平台 HIMOS 串联研发、供应、制造、物流与服务全流程，AI 分布在从需求到交付的各个环节。"},
   {lb:"能力明细",lis:[
@@ -470,7 +474,7 @@ v1:{nm:"海尔中央空调",tag:"对标厂商",col:"#047857",
    "HIMOS 打通 49 个系统、连接 4256 台设备",
    "来源：海尔中央空调互联工厂（世界经济论坛「灯塔工厂」）公开报道"]},
   {lb:"对大金的启发",p:"海尔的模式说明行业竞争点正在从「单机制造能力」转向「需求到交付的全链路效率」。对大金的参考不是复制工厂模式，而是两点：一是用户需求如何直传设计与制造（大金已有 Daikin Care、PROSHOP 等客户触点）；二是用统一数据平台串联分散的业务环节（大金各能力目前较分散，连接是关键）。"}]},
-v2:{nm:"美的楼宇科技",tag:"对标厂商",col:"#047857",
+v2:{nm:"美的楼宇科技",tag:"对标厂商",col:"#047857",links:[["美的·AI水机灯塔工厂","https://mbt.midea.com/global/news/ai-zero-carbon--the-world-s-first-fully-ai-powered-chiller-light.mobilemobile"]],
  secs:[
   {lb:"核心模式",p:"美的楼宇科技重庆水机工厂面向高度定制化的大型中央空调（冷水机组等），与商用中央空调业务形态高度相似：单台价值高、方案定制化强，传统上选型、报价、设计都依赖资深工程师。美的用 AI 重构了「选型 → 报价 → 设计 → 制造 → 运维」的定制化交付链路。"},
   {lb:"能力明细",lis:[
@@ -486,7 +490,7 @@ v2:{nm:"美的楼宇科技",tag:"对标厂商",col:"#047857",
    "100+ 物理仿真模型、23万张历史图纸复用",
    "来源：美的楼宇科技重庆水机工厂公开资料"]},
   {lb:"对大金的启发",p:"美的与大金的可比性最强：同为高度定制化的商用设备业务。其路径说明 AI 最先见效的环节是「选型、报价、方案」这类知识密集、重复度高的专业工作 —— 这正是大金商用空调方案设计环节的现状，也是大金已有 BIM / 能耗计算载体、最容易切入的方向。"}]},
-v3:{nm:"格力",tag:"对标厂商",col:"#047857",
+v3:{nm:"格力",tag:"对标厂商",col:"#047857",links:[["格力5G机器视觉案例","https://hljca.miit.gov.cn/ztzl/gyhlw/art/2021/art_ffa6baa442f94e70b90b9cc4d4c1b7bb.html"]],
  secs:[
   {lb:"核心模式",p:"格力以 5G + 工业互联网为基础，重点解决「制造过程质量」问题：把生产工艺标准与质量标准转为可自动执行的数字规则，由机器视觉与自动化设备在线执行，检测结果直接联动产线，不良品不流入下道工序。"},
   {lb:"能力明细",lis:[
@@ -502,7 +506,7 @@ v3:{nm:"格力",tag:"对标厂商",col:"#047857",
    "来源：格力 5G + 工业互联网工厂公开报道"]},
   {lb:"对大金的启发",p:"格力的价值在于「标准数字化」的方法：只有先把标准写成机器可执行的规则，AI 检查与自动拦截才可能实现。这条路径同样适用于大金的安装标准、服务作业标准与供应商交付标准的数字化（衔接课题 02）。"}]},
 /* ===== 对比表 10 方向 ===== */
-c1:{nm:"方向 · 用户需求驱动制造",tag:"能力方向",col:"#047857",
+c1:{nm:"方向 · 用户需求驱动制造",tag:"能力方向",col:"#047857",links:[["海尔·互联工厂","https://www.haier.com/press-events/news/20251127_283452.shtml"]],
  secs:[
   {lb:"这个方向是什么",p:"把客户的机型选择、参数与定制要求，通过数字化手段直接传入设计、排产与制造系统，由需求自动驱动生产，减少销售、技术、工厂之间的人工传递。这是「大规模定制」模式的基础：需求传递越直接，定制订单的交付效率与准确率越高。"},
   {lb:"行业实践",lis:[
@@ -510,7 +514,7 @@ c1:{nm:"方向 · 用户需求驱动制造",tag:"能力方向",col:"#047857",
    "美的：有 —— 高度定制化设备的选型与设计已数字化，需求经选型系统进入制造",
    "格力：较少公开"]},
   {lb:"大金现状",p:"客户端触点成熟：PROSHOP 门店网络 2000+ 网点、Daikin Care 直连用户；但客户需求到设计、制造的传递环节未见公开的数字化实践，制造链路信息有限。"}]},
-c2:{nm:"方向 · AI 智能选型",tag:"能力方向",col:"#047857",
+c2:{nm:"方向 · AI 智能选型",tag:"能力方向",col:"#047857",links:[["美的","https://mbt.midea.com/global/news/ai-zero-carbon--the-world-s-first-fully-ai-powered-chiller-light.mobilemobile"],["海尔","https://www.haier.com/press-events/news/20251127_283452.shtml"]],
  secs:[
   {lb:"这个方向是什么",p:"输入建筑类型、空间、朝向、负荷与使用需求后，AI 自动完成机型匹配、系统方案组合与报价，替代「资深工程师翻手册、算负荷、写方案」的传统选型过程。选型是商用项目的入口环节，响应速度直接影响商机转化。"},
   {lb:"行业实践",lis:[
@@ -518,7 +522,7 @@ c2:{nm:"方向 · AI 智能选型",tag:"能力方向",col:"#047857",
    "海尔：有 —— AI 智能选型进入大规模定制链路，需求直传设计与制造",
    "格力：较少公开"]},
   {lb:"大金现状",p:"已有 BIM 组件库、能耗计算、科学设计提案等设计支持工具，载体较好；但选型环节仍以专业工程师人工判断为主，尚未见 AI 辅助选型的公开实践。"}]},
-c3:{nm:"方向 · AI 设计",tag:"能力方向",col:"#047857",
+c3:{nm:"方向 · AI 设计",tag:"能力方向",col:"#047857",links:[["美的","https://mbt.midea.com/global/news/ai-zero-carbon--the-world-s-first-fully-ai-powered-chiller-light.mobilemobile"],["海尔","https://www.haier.com/press-events/news/20260427_289750.shtml"]],
  secs:[
   {lb:"这个方向是什么",p:"AI 辅助生成设计图纸与方案文件，核心是历史设计数据的检索与复用：把过往图纸、方案沉淀为结构化数据，新项目在历史基础上快速生成，而不是每次从零开始。设计是定制化设备交付链路中最耗人力的环节之一。"},
   {lb:"行业实践",lis:[
@@ -526,7 +530,7 @@ c3:{nm:"方向 · AI 设计",tag:"能力方向",col:"#047857",
    "海尔：有 —— 316万设计模块组合，设计模块化复用",
    "格力：较少公开"]},
   {lb:"大金现状",p:"大金集团层面推进研发设计流程 DX，中国区公开案例有限。空调设计是强专业领域，行业经验表明「历史数据复用」比「全自动生成」更务实。"}]},
-c4:{nm:"方向 · AI 供应协同",tag:"能力方向",col:"#047857",
+c4:{nm:"方向 · AI 供应协同",tag:"能力方向",col:"#047857",links:[["海尔","https://www.haier.com/press-events/news/20251202_283533.shtml"]],
  secs:[
   {lb:"这个方向是什么",p:"围绕订单的需求预测、物料计划、供应商协同与异常预警的数字化联动：需求变化实时传导到供应端，供应商按计划协同供货，异常自动预警。供应协同能力决定定制化订单能否快速、准确交付。"},
   {lb:"行业实践",lis:[
@@ -534,7 +538,7 @@ c4:{nm:"方向 · AI 供应协同",tag:"能力方向",col:"#047857",
    "美的：有 —— 柔性制造配套的供应计划体系",
    "格力：有 —— 供应商质量数字化管理"]},
   {lb:"大金现状",p:"公开资料较少。大金已有与上下游供应商共同制定生产交付管理标准的实践（属质量与标准协同，衔接课题 02），AI 驱动的供应计划协同未见公开。"}]},
-c5:{nm:"方向 · AI 排产",tag:"能力方向",col:"#047857",
+c5:{nm:"方向 · AI 排产",tag:"能力方向",col:"#047857",links:[["海尔","https://www.haier.com/press-events/news/20251202_283533.shtml"]],
  secs:[
   {lb:"这个方向是什么",p:"在多规格、小批量、定制化订单场景下，AI 自动排定生产计划与产线调度，平衡交期、产能与换线成本。订单越定制、批量越小，人工排产越困难，AI 的价值越大。"},
   {lb:"行业实践",lis:[
@@ -542,7 +546,7 @@ c5:{nm:"方向 · AI 排产",tag:"能力方向",col:"#047857",
    "美的：有 —— 柔性制造体系",
    "格力：有 —— 智能排产"]},
   {lb:"大金现状",p:"公开信息有限。"}]},
-c6:{nm:"方向 · AI 质量检测",tag:"能力方向",col:"#047857",
+c6:{nm:"方向 · AI 质量检测",tag:"能力方向",col:"#047857",links:[["海尔","https://www.haier.com/press-events/news/20260427_289750.shtml"],["格力","https://hljca.miit.gov.cn/ztzl/gyhlw/art/2021/art_ffa6baa442f94e70b90b9cc4d4c1b7bb.html"]],
  secs:[
   {lb:"这个方向是什么",p:"用机器视觉、动作识别等 AI 手段替代人工目检与抽检，对产品外观、工序装配、安全项进行在线检测，检测结果直接联动产线自动拦截不良品。是制造业验证最充分的 AI 方向之一。"},
   {lb:"行业实践",lis:[
@@ -550,33 +554,33 @@ c6:{nm:"方向 · AI 质量检测",tag:"能力方向",col:"#047857",
    "格力：强 —— 5G 机器视觉三类检测（包装 / 压缩机线序 / 电气安全）+ 不良品自动分离",
    "美的：有 —— AR/AI 质量防错，装配标准自动提示与校验"]},
   {lb:"大金现状",p:"公开的具体制造质检案例较少；大金制造侧公开的 AI 实践集中在设备故障与能源管理（见下方能力组）。"}]},
-c7:{nm:"方向 · 远程技术支援",tag:"能力方向",col:"#047857",
+c7:{nm:"方向 · 远程技术支援",tag:"能力方向",col:"#047857",links:[["大金·远程支援DX","https://www.daikin-china.com.cn/service-support/ServiceAPP.html"],["大金·THINKLET","https://www.daikin.com/about/corporate/tic/topics/feature/2024/20241010"]],
  secs:[
   {lb:"这个方向是什么",p:"现场工程师遇到疑难问题时，通过音视频与远程专家实时连线，结合文档、图纸与系统数据协同排障；专家经验跨地域复用，减少重复出差与客户等待。对服务网络覆盖广的空调行业尤其重要。"},
   {lb:"行业实践",lis:[
    "美的：有 —— 智能运维体系的远程支持",
    "海尔 / 格力：未见公开"]},
   {lb:"大金现状",p:"强 —— 远程支援DX 技术App 已在中国区落地（官网可查）；THINKLET 为集团实践（与 Fairy Devices 合作的现场DX：现场视频知识沉淀、远程专家指导）。这是大金相对行业的明显优势方向。"}]},
-c8:{nm:"方向 · AI 故障诊断",tag:"能力方向",col:"#047857",
+c8:{nm:"方向 · AI 故障诊断",tag:"能力方向",col:"#047857",links:[["大金·Hybrid AI","https://www.daikin.com/about/corporate/tic/topics/feature/2026/20260126"]],
  secs:[
   {lb:"这个方向是什么",p:"基于设备运行数据、故障历史与维修知识库，AI 自动完成故障识别与原因定位，辅助甚至部分替代专家诊断。诊断能力决定售后响应速度与一次修复率，是售后服务的核心 AI 能力。"},
   {lb:"行业实践",lis:[
    "海尔 / 美的 / 格力：有 —— 多为设备 IoT 监控的配套告警能力，深度 AI 诊断公开案例有限"]},
   {lb:"大金现状",p:"强 —— 中国区已有 AI 智能检测服务（2026.9 官网专题：将专业诊断经验算法化，覆盖 200+ 故障检测）；集团层面有 Hybrid AI 故障诊断（规则知识 + 机器学习组合，2025.2 投用）与 AirNet 长期设备数据。属行业内领先。"}]},
-c9:{nm:"方向 · IoT 主动服务",tag:"能力方向",col:"#047857",
+c9:{nm:"方向 · IoT 主动服务",tag:"能力方向",col:"#047857",links:[["大金·Daikin Care","https://www.daikin-china.com.cn/daikinCare/"]],
  secs:[
   {lb:"这个方向是什么",p:"设备联网后持续回传运行数据，异常自动预警并触发主动服务（主动联系客户、预约上门），把「坏了报修」变为「坏前处理」，同时创造持续的服务收入。是从卖设备走向卖服务的关键能力。"},
   {lb:"行业实践",lis:[
    "海尔 / 美的 / 格力：有 —— IoT 设备监控与智能运维；家用空调联网较普及，商用设备的深度主动服务公开有限"]},
   {lb:"大金现状",p:"强 —— Daikin Care 已形成规模（200+ 数据专家、200+ 空气管家、3000+ 售后工程师，截至 2025.3），配合 IoT 主动服务与 DK-CONNECT 设备管理平台。"}]},
-c10:{nm:"方向 · AI 节能运营",tag:"能力方向",col:"#047857",
+c10:{nm:"方向 · AI 节能运营",tag:"能力方向",col:"#047857",links:[["大金·AI节能控制","https://www.daikin.com/about/corporate/tic/topics/feature/2025/20250514"],["大金·上海工厂","https://www.daikin-china.com.cn/news/20260814"]],
  secs:[
   {lb:"这个方向是什么",p:"基于负荷预测与运行数据的 AI 自动优化控制：预测未来热负荷，自动调整机组运行策略，在保证舒适性的同时降低能耗。节能既是客户价值，也可成为服务收费的新模式（合同能源管理）。"},
   {lb:"行业实践",lis:[
    "海尔 / 美的 / 格力：有 —— 智能运维体系均含节能方向"]},
   {lb:"大金现状",p:"强 —— AI 结合传感器与天气数据预测热负荷、自动优化运行策略；上海工厂 AI 能源管理已落地。既有产品能力，又有自身工厂的验证场景。"}]},
 /* ===== 大金 8 组能力 ===== */
-g1:{nm:"大金能力 · 方案设计",tag:"现状 · 中国区落地",col:"#059669",
+g1:{nm:"大金能力 · 方案设计",tag:"现状 · 中国区落地",col:"#059669",links:[["大金官网","https://www.daikin-china.com.cn/ServiceHome/"]],
  secs:[
   {lb:"能力明细",lis:[
    "BIM 服务：提供 BIM 组件库，支撑设计阶段建模与管线碰撞检查",
@@ -585,7 +589,7 @@ g1:{nm:"大金能力 · 方案设计",tag:"现状 · 中国区落地",col:"#0596
    "商用系统解决方案：覆盖不同建筑类型的应用方案"]},
   {lb:"现状说明",p:"中国区已公开落地的设计支持服务能力，已有稳定的工具与内容载体。"},
   {lb:"相关方向",p:"AI 智能方案（方向 4）—— 在现有载体上叠加自动选型与方案生成，是最容易切入的方向之一。"}]},
-g2:{nm:"大金能力 · 安装交付",tag:"现状 · 中国区落地",col:"#059669",
+g2:{nm:"大金能力 · 安装交付",tag:"现状 · 中国区落地",col:"#059669",links:[["大金·安装品质守护","https://www.daikin-china.com.cn/heating/"],["大金·新风安装","https://www.daikin-china.com.cn/newha/hrv/"]],
  secs:[
   {lb:"能力明细",lis:[
    "专业安装标准：覆盖安装工艺的质量要求体系",
@@ -594,7 +598,7 @@ g2:{nm:"大金能力 · 安装交付",tag:"现状 · 中国区落地",col:"#0596
    "App 安装过程可视：客户可查看安装进度与过程"]},
   {lb:"现状说明",p:"中国区已公开落地；「安装品质守护」已引入 AI 辅助，是 AI 进入安装环节的现成入口。"},
   {lb:"相关方向",p:"AI 质量管理（方向 5）的安装质量环节。"}]},
-g3:{nm:"大金能力 · 售后服务",tag:"现状 · 中国区落地",col:"#059669",
+g3:{nm:"大金能力 · 售后服务",tag:"现状 · 中国区落地",col:"#059669",links:[["大金官网","https://www.daikin-china.com.cn/ServiceHome/"]],
  secs:[
   {lb:"能力明细",lis:[
    "在线报修：客户线上提交服务需求",
@@ -605,7 +609,7 @@ g3:{nm:"大金能力 · 售后服务",tag:"现状 · 中国区落地",col:"#0596
    "远程支援DX 技术App：现场工程师与远程专家的支援协同工具"]},
   {lb:"现状说明",p:"中国区已公开落地的售后服务体系，数据与专家资源已形成规模。"},
   {lb:"相关方向",p:"AI 现场作业数字员工（方向 2）、AI 数据分析与经营洞察（方向 1）。"}]},
-g4:{nm:"大金能力 · 设备运营",tag:"现状 · 中国区 + 集团",col:"#047857",
+g4:{nm:"大金能力 · 设备运营",tag:"现状 · 中国区 + 集团",col:"#047857",links:[["大金·Daikin Care","https://www.daikin-china.com.cn/daikinCare/"],["大金·AI节能控制","https://www.daikin.com/about/corporate/tic/topics/feature/2025/20250514"]],
  secs:[
   {lb:"能力明细",lis:[
    "Daikin Care（中国区）：IoT 主动服务体系 —— 200+ 数据专家、200+ 空气管家、3000+ 售后工程师（截至 2025.3），中国官网可查",
@@ -614,7 +618,7 @@ g4:{nm:"大金能力 · 设备运营",tag:"现状 · 中国区 + 集团",col:"#0
    "AI 节能控制（集团）：热负荷预测 + 运行策略自动优化"]},
   {lb:"现状说明",p:"Daikin Care 是中国区明确落地的服务载体；DK-CONNECT 与 AI 节能控制目前公开资料为集团层面实践。"},
   {lb:"相关方向",p:"智能设备运营（方向 6）。"}]},
-g5:{nm:"大金能力 · 维修诊断",tag:"现状 · 中国区 + 集团",col:"#047857",
+g5:{nm:"大金能力 · 维修诊断",tag:"现状 · 中国区 + 集团",col:"#047857",links:[["大金·远程支援DX","https://www.daikin-china.com.cn/service-support/ServiceAPP.html"],["大金·Hybrid AI","https://www.daikin.com/about/corporate/tic/topics/feature/2026/20260126"]],
  secs:[
   {lb:"能力明细",lis:[
    "AI 智能检测服务（中国区）：将专业诊断经验算法化（「把老师傅装进算法」），面向中央空调服务，辅助故障检测与服务判断 —— 2026.9 大金中国官网专题报道",
@@ -623,7 +627,7 @@ g5:{nm:"大金能力 · 维修诊断",tag:"现状 · 中国区 + 集团",col:"#0
    "Hybrid AI 故障诊断（集团）：规则知识 + 机器学习组合诊断，2025.2 算法投入应用"]},
   {lb:"现状说明",p:"AI 智能检测服务是大金中国近期公开的 AI 服务落地点，最贴近中国当前业务；Hybrid AI 与 AirNet 为集团层面的技术底座。"},
   {lb:"相关方向",p:"AI 现场作业数字员工（方向 2）。"}]},
-g6:{nm:"大金能力 · 现场技术支援",tag:"现状 · 集团实践",col:"#2563eb",
+g6:{nm:"大金能力 · 现场技术支援",tag:"现状 · 集团实践",col:"#2563eb",links:[["大金·THINKLET","https://www.daikin.com/about/corporate/tic/topics/feature/2024/20241010"]],
  secs:[
   {lb:"能力明细",lis:[
    "THINKLET：可穿戴 AI 设备，与 Fairy Devices 合作的现场DX实践 —— 现场第一视角视频与音频 AI",
@@ -631,7 +635,7 @@ g6:{nm:"大金能力 · 现场技术支援",tag:"现状 · 集团实践",col:"#2
    "远程专家指导：现场与专家的实时连线支援"]},
   {lb:"现状说明",p:"大金集团层面的现场DX实践（集团官网可查）；中国区落地情况待进一步确认。中国区已落地的是远程支援DX 技术App（见「售后服务」组）。"},
   {lb:"相关方向",p:"AI 现场作业数字员工（方向 2）。"}]},
-g7:{nm:"大金能力 · 生产制造",tag:"现状 · 集团实践",col:"#2563eb",
+g7:{nm:"大金能力 · 生产制造",tag:"现状 · 集团实践",col:"#2563eb",links:[["大金×日立·设备AI","https://www.daikin.com/press/2025/20250422"],["大金·上海工厂","https://www.daikin-china.com.cn/news/20260814"]],
  secs:[
   {lb:"能力明细",lis:[
    "工厂设备故障 AI：与日立合作（2025）的设备故障检测 AI",
@@ -649,7 +653,7 @@ g8:{nm:"大金能力 · 企业AI与研发",tag:"现状 · 集团实践",col:"#25
    "AI 人才培养：DICT 数字人才大学，AI 人才梯队建设"]},
   {lb:"现状说明",p:"大金集团 / 海外已有实践，属企业级 AI 基础能力建设，为各业务环节的 AI 应用提供底座。"}]},
 /* ===== 桥接层 A/B ===== */
-b1:{nm:"深化 · 设备智能运维",tag:"现有优势深化",col:"#047857",
+b1:{nm:"深化 · 设备智能运维",tag:"现有优势深化",col:"#047857",links:[["大金·Daikin Care","https://www.daikin-china.com.cn/daikinCare/"],["大金·AI节能控制","https://www.daikin.com/about/corporate/tic/topics/feature/2025/20250514"]],
  secs:[
   {lb:"现有基础",p:"Daikin Care + AirNet + DK-CONNECT + AI 节能控制 —— 已有设备联网、数据积累与主动服务体系。"},
   {lb:"深化路径",lis:[
@@ -657,7 +661,7 @@ b1:{nm:"深化 · 设备智能运维",tag:"现有优势深化",col:"#047857",
    "预测性维护：基于运行数据的故障预测，维护计划自动生成，替代固定周期保养",
    "自动服务触发：异常预警直接生成服务工单并派单，缩短从发现到处理的链路"]},
   {lb:"对应方向",p:"智能设备运营（方向 6）。"}]},
-b2:{nm:"深化 · 现场服务",tag:"现有优势深化",col:"#047857",
+b2:{nm:"深化 · 现场服务",tag:"现有优势深化",col:"#047857",links:[["大金·远程支援DX","https://www.daikin-china.com.cn/service-support/ServiceAPP.html"],["大金·THINKLET","https://www.daikin.com/about/corporate/tic/topics/feature/2024/20241010"]],
  secs:[
   {lb:"现有基础",p:"远程支援DX + THINKLET + SE 能力体系（SE 能力指标化管理平台）—— 现场支援工具与工程师能力管理已有基础。"},
   {lb:"深化路径",lis:[
@@ -665,7 +669,7 @@ b2:{nm:"深化 · 现场服务",tag:"现有优势深化",col:"#047857",
    "AI 现场作业助手：标准、手册、历史案例随问随答，覆盖安装与维修现场",
    "知识自动沉淀：现场视频与工单数据自动结构化，持续扩充知识库"]},
   {lb:"对应方向",p:"AI 现场作业数字员工（方向 2）。"}]},
-b3:{nm:"深化 · 安装品质",tag:"现有优势深化",col:"#047857",
+b3:{nm:"深化 · 安装品质",tag:"现有优势深化",col:"#047857",links:[["大金·安装品质守护","https://www.daikin-china.com.cn/heating/"],["大金·新风安装","https://www.daikin-china.com.cn/newha/hrv/"]],
  secs:[
   {lb:"现有基础",p:"专业安装标准 + App 过程可视 + 安装品质守护（工程师 + AI）—— 安装环节已有标准与数据载体。"},
   {lb:"深化路径",lis:[
@@ -673,26 +677,26 @@ b3:{nm:"深化 · 安装品质",tag:"现有优势深化",col:"#047857",
    "整改闭环：问题识别 → 整改任务 → 复检追踪，全流程线上闭环",
    "服务商质量评价：安装过程数据沉淀为服务商质量评级，反向驱动安装质量"]},
   {lb:"对应方向",p:"AI 质量管理（方向 5）。"}]},
-b4:{nm:"参考 · AI 智能选型",tag:"行业参考方向",col:"#2563eb",
+b4:{nm:"参考 · AI 智能选型",tag:"行业参考方向",col:"#2563eb",links:[["海尔","https://www.haier.com/press-events/news/20251127_283452.shtml"],["美的","https://mbt.midea.com/global/news/ai-zero-carbon--the-world-s-first-fully-ai-powered-chiller-light.mobilemobile"]],
  secs:[
   {lb:"现有基础",p:"已有 BIM 服务 + 能耗计算 + 科学设计提案，具备选型的工具与数据载体。"},
   {lb:"参考路径",lis:[
    "需求输入（建筑 / 空间 / 负荷 / 使用需求）→ AI 自动选型 → 多方案比较 → 报价 / 初步方案生成"]},
   {lb:"行业参考",p:"美的 AI 选型周期 5.3天→约1天（-81%）、AI 设计周期 -45%；海尔 AI 智能选型已进入定制链路。是行业验证最充分、见效最快的方向。"},
   {lb:"对应方向",p:"AI 智能方案（方向 4）。"}]},
-b5:{nm:"参考 · AI 供应协同",tag:"行业参考方向",col:"#2563eb",
+b5:{nm:"参考 · AI 供应协同",tag:"行业参考方向",col:"#2563eb",links:[["海尔","https://www.haier.com/press-events/news/20251202_283533.shtml"]],
  secs:[
   {lb:"参考路径",lis:[
    "订单预测 → 物料计划 → 供应商协同 → 异常预警，需求变化实时传导供应端"]},
   {lb:"行业参考",p:"海尔 AI 供应协同随订单与需求变化实时调整物料计划，支撑大规模定制。"},
   {lb:"衔接",p:"与课题 02（供应商作业质量 / 标准提升管理）协同推进：课题 02 解决「管标准」，本方向解决「供计划」。"}]},
-b6:{nm:"参考 · AI 生产质量",tag:"行业参考方向",col:"#2563eb",
+b6:{nm:"参考 · AI 生产质量",tag:"行业参考方向",col:"#2563eb",links:[["海尔","https://www.haier.com/press-events/news/20260427_289750.shtml"],["格力","https://hljca.miit.gov.cn/ztzl/gyhlw/art/2021/art_ffa6baa442f94e70b90b9cc4d4c1b7bb.html"]],
  secs:[
   {lb:"参考路径",lis:[
    "工序动作识别 → 在线质检 → 自动拦截 → 质量追溯，标准转为机器可执行的规则"]},
   {lb:"行业参考",p:"海尔 AI 全过程质检（外观缺陷识别率 99.9%）、格力 5G 机器视觉三类检测 + 不良品自动分离。"},
   {lb:"对应方向",p:"AI 质量管理（方向 5）。"}]},
-b7:{nm:"参考 · AI 柔性排产",tag:"行业参考方向",col:"#2563eb",
+b7:{nm:"参考 · AI 柔性排产",tag:"行业参考方向",col:"#2563eb",links:[["海尔","https://www.haier.com/press-events/news/20251202_283533.shtml"]],
  secs:[
   {lb:"方向说明",p:"多规格、小批量、定制订单场景的排产适用性评估：订单越定制、批量越小，人工排产越困难，AI 排产价值越大；需结合大金产品结构与订单形态评估适用范围。"},
   {lb:"行业参考",p:"海尔订单驱动的 AI 智能排产（支撑大规模定制）；美的柔性制造体系。"}]},
@@ -792,6 +796,7 @@ function openCap(id){
     if(s.lis){ b+='<ul>'; s.lis.forEach(function(x){ b+='<li>'+esc(x)+'</li>'; }); b+='</ul>'; }
     b+='</div>';
   });
+  if(c.links&&c.links.length){b+='<div class="d-links"><div class="d-lk-lb">来源</div>';c.links.forEach(function(l){var t=c.links.length>1?esc(l[0]):'查看来源';b+='<a class="d-lk" href="'+l[1]+'" target="_blank" rel="noopener">'+t+' \u2197</a>';});b+='</div>';}
   dHead.innerHTML=h; dBody.innerHTML=b; dBody.scrollTop=0;
   drawer.classList.add("on"); dmask.classList.add("on");
   document.body.style.overflow="hidden";
