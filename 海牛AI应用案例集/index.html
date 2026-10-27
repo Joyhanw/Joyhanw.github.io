@@ -3,241 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>海牛AI应用案例集</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>海牛AI应用案例集 - 登录</title>
     <style>
+        /* 基础样式重置 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
+
         body {
-            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: #f0f2f5;
-            color: #1a1d2e;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
         }
 
-        .header {
-            background: linear-gradient(135deg, #0f111e, #1a1d2e);
-            padding: 48px 0 40px;
-            color: #fff;
-            text-align: center;
-        }
-        .header h1 {
-            font-size: 30px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        .header .subtitle {
-            font-size: 14px;
-            opacity: 0.7;
-            margin-top: 8px;
-        }
-
-        .container {
-            max-width: 560px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .card-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .card {
-            background: #ffffff;
-            border-radius: 14px;
-            padding: 28px 24px;
-            border: 1px solid #e8eaef;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-decoration: none;
-            display: block;
-            color: inherit;
-        }
-        .card:hover {
-            border-color: #4f6ef7;
-            box-shadow: 0 8px 30px rgba(79, 110, 247, 0.13);
-            transform: translateY(-3px);
-        }
-        .card .icon {
-            font-size: 30px;
-            margin-bottom: 12px;
-        }
-        .card .name {
-            font-size: 17px;
-            font-weight: 600;
-            color: #0f111e;
-            line-height: 1.4;
-        }
-        .card .desc {
-            font-size: 13px;
-            color: #6b7280;
-            margin-top: 6px;
-        }
-        .card .tag {
-            display: inline-block;
-            margin-top: 8px;
-            font-size: 11px;
-            padding: 2px 14px;
+        /* 登录界面样式 */
+        #login-container {
+            background: white;
+            padding: 40px;
             border-radius: 12px;
-        }
-        .card .tag-blue {
-            background: #eef1ff;
-            color: #4f6ef7;
-        }
-        .card .tag-green {
-            background: #e6f9f0;
-            color: #10b981;
-        }
-
-        /* ===== 密码锁遮罩层 ===== */
-        #lockOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 17, 30, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            transition: opacity 0.5s ease;
-        }
-        #lockOverlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .lock-box {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 40px 36px;
-            max-width: 400px;
-            width: 90%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             text-align: center;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+            width: 320px;
         }
-        .lock-box .lock-icon {
-            font-size: 48px;
-            color: #4f6ef7;
-            margin-bottom: 16px;
-        }
-        .lock-box h2 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #0f111e;
-        }
-        .lock-box p {
-            font-size: 14px;
-            color: #6b7280;
+
+        #login-container h2 {
             margin-bottom: 20px;
+            color: #333;
+            font-size: 20px;
         }
-        .lock-box input {
+
+        #password-input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #d1d5db;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.3s;
         }
-        .lock-box input:focus {
-            border-color: #4f6ef7;
-            box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.1);
+
+        #password-input:focus {
+            border-color: #4a76f9;
         }
-        .lock-box .error-msg {
-            color: #ef4444;
-            font-size: 13px;
-            margin-top: 8px;
-            min-height: 20px;
-        }
-        .lock-box button {
-            margin-top: 16px;
+
+        #login-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #4f6ef7, #6c5ce7);
-            color: #fff;
+            background-color: #4a76f9;
+            color: white;
             border: none;
             border-radius: 8px;
             font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .lock-box button:hover {
-            opacity: 0.9;
+            transition: background-color 0.3s;
         }
 
-        @media (max-width: 640px) {
-            .container {
-                padding: 20px 16px;
-            }
+        #login-btn:hover {
+            background-color: #355cd8;
+        }
+
+        #error-msg {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none; /* 默认隐藏 */
+        }
+
+        /* 主内容区域样式 (默认隐藏) */
+        #main-content {
+            display: none; /* 验证通过后显示 */
+            width: 100%;
+            min-height: 100vh;
+            flex-direction: column;
+            background-color: #f0f2f5;
+        }
+
+        /* 顶部黑色导航栏 */
+        .header {
+            background-color: #1a1c24;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 24px;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        /* 卡片容器 */
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+            width: 100%;
+        }
+
+        /* 卡片样式 */
+        .app-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 50px 80px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none; /* 去除a标签下划线 */
+            color: #333;
+            display: block;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        /* 卡片里的蓝色小房子图标 */
+        .house-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 15px auto;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1c24;
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== 密码锁遮罩 ===== -->
-    <div id="lockOverlay">
-        <div class="lock-box">
-            <div class="lock-icon"><i class="fas fa-lock"></i></div>
-            <h2>请输入访问密码</h2>
-            <p>海牛AI应用案例集</p>
-            <input type="password" id="passwordInput" placeholder="请输入密码" onkeydown="if(event.key==='Enter') verifyPassword()">
-            <div class="error-msg" id="errorMsg"></div>
-            <button onclick="verifyPassword()"><i class="fas fa-unlock"></i> 解锁</button>
-        </div>
+    <!-- 登录页面 -->
+    <div id="login-container">
+        <h2>请输入访问密码</h2>
+        <input type="password" id="password-input" placeholder="请输入密码" autofocus>
+        <button id="login-btn" onclick="checkPassword()">进入</button>
+        <div id="error-msg">密码错误，请重试！</div>
     </div>
 
-    <!-- ===== 主内容 ===== -->
-    <div id="mainContent" style="display:none;">
+    <!-- 主内容页面 (初始隐藏) -->
+    <div id="main-content">
+        <!-- 顶部黑色标题栏 -->
         <div class="header">
-            <h1>海牛AI应用案例集</h1>
+            海牛AI应用案例集
         </div>
-
-        <div class="container">
-            <div class="card-grid">
-
-                <!-- 卡片1：指向 shouye.html -->
-                <a href="海牛AI应用案例集/海牛AI应用案例集.html" class="card">
-                    <div class="icon" style="color:#4f6ef7;"><i class="fas fa-home"></i></div>
-                    <div class="name">海牛AI应用案例集</div>
-                </a>
-            </div>
+        
+        <!-- 卡片区域 -->
+        <div class="card-container">
+            <!-- 点击卡片跳转到指定的html文件 -->
+            <a href="海牛AI应用案例集.html" class="app-card">
+                <!-- 蓝色的SVG小房子图标 -->
+                <svg class="house-icon" viewBox="0 0 24 24" fill="#4a76f9" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 3L2 12H5V21H19V12H22L12 3Z"/>
+                </svg>
+                <div class="card-title">海牛AI应用案例集</div>
+            </a>
         </div>
     </div>
 
     <script>
-        // ===== 密码验证逻辑 =====
-        // 🔑 密码设置为 20260410
-        const CORRECT_PASSWORD = '20260410';
+        // 设置正确的密码
+        const CORRECT_PASSWORD = "20260410";
 
-        function verifyPassword() {
-            const input = document.getElementById('passwordInput');
-            const errorMsg = document.getElementById('errorMsg');
-            const entered = input.value.trim();
+        function checkPassword() {
+            const inputVal = document.getElementById('password-input').value;
+            const errorMsg = document.getElementById('error-msg');
+            const loginBox = document.getElementById('login-container');
+            const mainContent = document.getElementById('main-content');
 
-            if (entered === CORRECT_PASSWORD) {
-                document.getElementById('lockOverlay').classList.add('hidden');
-                document.getElementById('mainContent').style.display = 'block';
-                errorMsg.textContent = '';
-                input.value = '';
+            if (inputVal === CORRECT_PASSWORD) {
+                // 密码正确，隐藏登录框，显示主内容，并修改body的排版方式
+                loginBox.style.display = 'none';
+                mainContent.style.display = 'flex';
+                document.body.style.display = 'block'; 
+                document.body.style.backgroundColor = '#f0f2f5';
             } else {
-                errorMsg.textContent = '❌ 密码错误，请重新输入';
-                input.value = '';
-                input.focus();
+                // 密码错误，显示错误提示
+                errorMsg.style.display = 'block';
+                document.getElementById('password-input').value = ''; // 清空输入框
             }
         }
-    </script>
 
+        // 支持回车键登录
+        document.getElementById('password-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
 </body>
 </html>
