@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI智能经营分析案例 · 某大型食品商贸企业</title>
+<style>
+  :root{
+    --primary:#2153d9; --primary-deep:#1846c2;
+    --ink:#182236; --gray:#5b6577; --gray-lt:#8a93a6;
+    --line:#e7ecf5; --ok:#12855f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--ink); background:#f5f8fc; font-size:16px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 36px;}
+
+  /* ── 标题带 ── */
+  .hero{
+    background:linear-gradient(135deg, #1a4fd6 0%, #2E6BFF 50%, #4a8cff 100%);
+    padding:20px 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute;
+    top:-50%;
+    right:-10%;
+    width:400px;
+    height:400px;
+    background:rgba(255,255,255,0.08);
+    border-radius:50%;
+  }
+  .hero .wrap{position:relative;z-index:1;}
+  .hero h1{font-size:18px;font-weight:700;letter-spacing:.5px;color:#fff;}
+  .hero h1 .sep{color:rgba(255,255,255,.5);font-weight:400;margin:0 10px;}
+  .back-link{display:inline-block;font-size:13px;color:rgba(255,255,255,.85);text-decoration:none;margin-bottom:8px;}
+  .back-link:hover{color:#fff;text-decoration:underline;}
+
+  /* ── 章节卡片 ── */
+  main{padding:24px 0 56px;}
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:34px 38px;margin-bottom:20px;
+    box-shadow:0 1px 3px rgba(24,46,90,.04);
+  }
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;}
+  .sec-head .idx{font-size:14px;font-weight:700;color:var(--primary);letter-spacing:1px;}
+  .sec-head h2{font-size:19px;font-weight:700;}
+
+  /* ── 背景与痛点 ── */
+  .bg-grid{display:grid;grid-template-columns:5fr 6fr;gap:26px;align-items:stretch;}
+  .bg-card{
+    background:#f6f9ff;border:1px solid #e2ebf8;border-radius:12px;
+    padding:22px 26px;font-size:15.5px;color:var(--gray);
+    display:flex;align-items:center;
+  }
+  .bg-card b{color:var(--ink);font-weight:600;}
+  .pains{display:flex;flex-direction:column;gap:12px;}
+  .pain{
+    display:flex;gap:14px;align-items:flex-start;
+    border:1px solid var(--line);border-radius:12px;padding:15px 20px;
+  }
+  .pain .dot{
+    flex:none;width:30px;height:30px;border-radius:8px;margin-top:3px;
+    background:#eef3fe;color:var(--primary);
+    font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;
+  }
+  .pain h3{font-size:15.5px;font-weight:700;margin-bottom:2px;}
+  .pain p{font-size:14px;color:var(--gray);line-height:1.6;}
+
+  /* ── 解决方案 ── */
+  .sol-band{
+    background:linear-gradient(90deg,#eef4ff,#f8fbff);
+    border:1px solid #dce6fb;border-radius:12px;padding:19px 26px;
+    font-size:15.5px;
+  }
+  .sol-band .fix{color:var(--primary);font-weight:700;}
+  .flow{display:flex;align-items:stretch;margin-top:28px;}
+  .flow .step{
+    flex:1;background:#fbfcff;border:1px solid var(--line);border-radius:12px;
+    padding:16px 14px;text-align:center;
+  }
+  .flow .step .no{
+    width:26px;height:26px;border-radius:50%;margin:0 auto 8px;
+    background:var(--primary);color:#fff;font-size:13px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .flow .step h4{font-size:15px;font-weight:700;}
+  .flow .step p{font-size:13px;color:var(--gray);margin-top:3px;}
+  .flow .arr{
+    flex:none;width:34px;display:flex;align-items:center;justify-content:center;
+    color:#b9c4da;font-size:18px;font-weight:700;
+  }
+
+  /* ── 实际使用 ── */
+  .story-q{font-size:16.5px;font-weight:700;margin-bottom:18px;}
+  .story-q em{font-style:normal;color:var(--primary);}
+  .steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px;}
+  .step-card{border:1px solid var(--line);border-radius:12px;padding:17px 20px;background:#fbfcff;}
+  .step-card .lb{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px;
+  }
+  .step-card .lb i{
+    font-style:normal;width:20px;height:20px;border-radius:50%;
+    background:var(--primary);color:#fff;font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step-card p{font-size:14px;color:var(--gray);line-height:1.65;}
+  .step-card p b{color:var(--ink);font-weight:600;}
+  .shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 10px 32px rgba(24,40,80,.10);}
+  .shot img{display:block;width:100%;height:auto;}
+
+  .cta-row{margin-top:28px;text-align:center;}
+  .btn-demo{
+    flex:none;display:inline-flex;align-items:center;gap:10px;
+    background:var(--primary);color:#fff;text-decoration:none;
+    font-size:16px;font-weight:700;padding:14px 46px;border-radius:10px;
+    transition:background .15s;box-shadow:0 4px 14px rgba(33,83,217,.28);
+  }
+  .btn-demo:hover{background:var(--primary-deep);}
+
+  /* ── 应用价值 ── */
+  table.value{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  table.value th{
+    background:#eef4ff;color:var(--ink);font-size:14.5px;
+    padding:13px 22px;text-align:left;font-weight:700;
+  }
+  table.value th:last-child{color:var(--primary);}
+  table.value td{padding:13px 22px;font-size:14.5px;border-top:1px solid var(--line);vertical-align:top;}
+  table.value td.old{color:var(--gray);width:50%;}
+  table.value td.new{width:50%;font-weight:500;}
+  table.value td.new .v{color:var(--ok);font-weight:700;margin-right:8px;}
+  table.value tr:nth-child(even) td{background:#fafcff;}
+
+  @media (max-width:860px){
+    .bg-grid,.steps{grid-template-columns:1fr;}
+    .flow{flex-direction:column;}
+    .flow .arr{transform:rotate(90deg);width:auto;height:26px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 标题带 -->
+<div class="hero">
+  <div class="wrap">
+    <a class="back-link" href="../index.html">← 返回案例列表</a>
+    <h1>某大型食品商贸企业<span class="sep">·</span>AI智能经营分析案例</h1>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- 01 业务背景与痛点 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">01</span><h2>业务背景与痛点</h2></div>
+    <div class="bg-grid">
+      <div class="bg-card">
+        <div>
+          <p>某大型食品商贸企业经营<b>多个仓库、众多商品</b>，日常采购、销售、库存都记录在进销存系统中。</p>
+        <p style="margin-top:10px;">虽然系统里有数据，但采购和管理人员仍然需要<b>定期导出报表，用Excel自己统计、计算</b>，才能知道哪些商品快缺货、哪些商品可能积压，以及哪些商品需要安排进货。</p>
+        </div>
+      </div>
+      <div class="pains">
+        <div class="pain"><span class="dot">1</span><div><h3>数据分析靠人工</h3><p>库存、销量数据要导出Excel自己整理计算，重复劳动多。</p></div></div>
+        <div class="pain"><span class="dot">2</span><div><h3>风险发现不及时</h3><p>哪些商品快缺货、哪些商品卖不动，需要人工主动去查，容易发现得晚。</p></div></div>
+        <div class="pain"><span class="dot">3</span><div><h3>进货决策凭经验</h3><p>先关注哪些商品、哪些需要补货，主要靠采购人员自己分析和判断。</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 AI数字员工解决方案 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">02</span><h2>AI数字员工解决方案</h2></div>
+    <div class="sol-band">
+      基于企业<b>现有的进销存数据</b>搭建，业务人员直接提问即可。
+    </div>
+    <div class="flow">
+      <div class="step"><div class="no">1</div><h4>直接提问</h4><p>按人员、商品查询</p></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="no">2</div><h4>自动分析数据</h4><p>库存、销量、周转</p></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="no">3</div><h4>找出经营问题</h4><p>缺货、滞销、库存不足</p></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="no">4</div><h4>给出处理建议</h4><p>结果明细、进货建议</p></div>
+    </div>
+  </div>
+
+  <!-- 03 实际使用 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">03</span><h2>实际使用</h2></div>
+    <div class="story-q">一名采购人员，如何快速找到<em>需要优先处理的缺货商品</em>？</div>
+    <div class="steps">
+      <div class="step-card">
+        <span class="lb"><i>1</i>发起查询</span>
+        <p>采购人员直接问：<b>"查询张杰的缺货商品。"</b></p>
+      </div>
+      <div class="step-card">
+        <span class="lb"><i>2</i>拿到结果</span>
+        <p>AI数字员工结合库存和近期销量，找出缺货商品，整理成一张<b>清晰的明细表</b>。</p>
+      </div>
+      <div class="step-card">
+        <span class="lb"><i>3</i>给出建议</span>
+        <p>AI数字员工提示哪些商品需要<b>优先关注</b>，帮助采购人员判断下一步补货安排。</p>
+      </div>
+    </div>
+    <div class="shot">
+      <img src="演示截图-缺货查询.png" alt="AI数字员工实际运行界面">
+    </div>
+    <div class="cta-row">
+      <a class="btn-demo" href="智能经营分析助手-demo.html" target="_blank">体验AI数字员工</a>
+    </div>
+  </div>
+
+  <!-- 04 应用价值 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">04</span><h2>应用价值</h2></div>
+    <table class="value">
+      <tr><th>原来的工作方式</th><th>用了AI数字员工之后</th></tr>
+      <tr><td class="old">定期人工导出多张报表</td><td class="new"><span class="v">✓</span>直接提问，就能查询相关数据</td></tr>
+      <tr><td class="old">人工计算库存周转情况</td><td class="new"><span class="v">✓</span>AI数字员工自动计算，结果更容易查看</td></tr>
+      <tr><td class="old">人工逐个筛查缺货、滞销商品</td><td class="new"><span class="v">✓</span>根据业务规则快速找出相关商品</td></tr>
+      <tr><td class="old">人工整理进货关注清单</td><td class="new"><span class="v">✓</span>直接得到分析明细和处理建议</td></tr>
+    </table>
+  </div>
+
+</main>
+
+</body>
+</html>
