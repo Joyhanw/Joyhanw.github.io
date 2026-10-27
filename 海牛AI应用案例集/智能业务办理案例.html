@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI智能业务办理案例 · 某地方资产管理公司</title>
+<style>
+  :root{
+    --primary:#2153d9; --primary-deep:#1846c2;
+    --ink:#182236; --gray:#5b6577; --gray-lt:#8a93a6;
+    --line:#e7ecf5; --ok:#12855f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--ink); background:#f5f8fc; font-size:16px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 36px;}
+
+  /* ── 标题带 ── */
+  .hero{
+    background:linear-gradient(135deg, #1a4fd6 0%, #2E6BFF 50%, #4a8cff 100%);
+    padding:20px 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute;
+    top:-50%;
+    right:-10%;
+    width:400px;
+    height:400px;
+    background:rgba(255,255,255,0.08);
+    border-radius:50%;
+  }
+  .hero .wrap{position:relative;z-index:1;}
+  .hero h1{font-size:18px;font-weight:700;letter-spacing:.5px;color:#fff;}
+  .hero h1 .sep{color:rgba(255,255,255,.5);font-weight:400;margin:0 10px;}
+  .back-link{display:inline-block;font-size:13px;color:rgba(255,255,255,.85);text-decoration:none;margin-bottom:8px;}
+  .back-link:hover{color:#fff;text-decoration:underline;}
+
+  /* ── 章节卡片 ── */
+  main{padding:24px 0 56px;}
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:34px 38px;margin-bottom:20px;
+    box-shadow:0 1px 3px rgba(24,46,90,.04);
+  }
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;}
+  .sec-head .idx{font-size:14px;font-weight:700;color:var(--primary);letter-spacing:1px;}
+  .sec-head h2{font-size:19px;font-weight:700;}
+
+  /* ── 背景与痛点 ── */
+  .bg-grid{display:grid;grid-template-columns:5fr 6fr;gap:26px;align-items:stretch;}
+  .bg-card{
+    background:#f6f9ff;border:1px solid #e2ebf8;border-radius:12px;
+    padding:22px 26px;font-size:15.5px;color:var(--gray);
+    display:flex;align-items:center;
+  }
+  .bg-card b{color:var(--ink);font-weight:600;}
+  .pains{display:flex;flex-direction:column;gap:12px;}
+  .pain{
+    display:flex;gap:14px;align-items:flex-start;
+    border:1px solid var(--line);border-radius:12px;padding:15px 20px;
+  }
+  .pain .dot{
+    flex:none;width:30px;height:30px;border-radius:8px;margin-top:3px;
+    background:#eef3fe;color:var(--primary);
+    font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;
+  }
+  .pain h3{font-size:15.5px;font-weight:700;margin-bottom:2px;}
+  .pain p{font-size:14px;color:var(--gray);line-height:1.6;}
+
+  /* ── 解决方案 ── */
+  .sol-band{
+    background:linear-gradient(90deg,#eef4ff,#f8fbff);
+    border:1px solid #dce6fb;border-radius:12px;padding:19px 26px;
+    font-size:15.5px;
+  }
+  .sol-band .fix{color:var(--primary);font-weight:700;}
+  .flow{display:flex;align-items:stretch;margin-top:28px;}
+  .flow .step{
+    flex:1;background:#fbfcff;border:1px solid var(--line);border-radius:12px;
+    padding:16px 14px;text-align:center;
+  }
+  .flow .step .no{
+    width:26px;height:26px;border-radius:50%;margin:0 auto 8px;
+    background:var(--primary);color:#fff;font-size:13px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .flow .step h4{font-size:15px;font-weight:700;}
+  .flow .step p{font-size:13px;color:var(--gray);margin-top:3px;}
+  .flow .arr{
+    flex:none;width:34px;display:flex;align-items:center;justify-content:center;
+    color:#b9c4da;font-size:18px;font-weight:700;
+  }
+
+  /* ── 实际使用 ── */
+  .story-q{font-size:16.5px;font-weight:700;margin-bottom:18px;}
+  .story-q em{font-style:normal;color:var(--primary);}
+  .steps{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:24px;}
+  .step-card{border:1px solid var(--line);border-radius:12px;padding:17px 20px;background:#fbfcff;}
+  .step-card .lb{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px;
+  }
+  .step-card .lb i{
+    font-style:normal;width:20px;height:20px;border-radius:50%;
+    background:var(--primary);color:#fff;font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step-card p{font-size:14px;color:var(--gray);line-height:1.65;}
+  .step-card p b{color:var(--ink);font-weight:600;}
+  .shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 10px 32px rgba(24,40,80,.10);}
+  .shot video{display:block;width:100%;height:auto;background:#000;}
+  .shot-note{font-size:13.5px;color:var(--gray-lt);text-align:center;margin-top:12px;}
+
+  /* ── 应用价值 ── */
+  table.value{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  table.value th{
+    background:#eef4ff;color:var(--ink);font-size:14.5px;
+    padding:13px 22px;text-align:left;font-weight:700;
+  }
+  table.value th:last-child{color:var(--primary);}
+  table.value td{padding:13px 22px;font-size:14.5px;border-top:1px solid var(--line);vertical-align:top;}
+  table.value td.old{color:var(--gray);width:50%;}
+  table.value td.new{width:50%;font-weight:500;}
+  table.value td.new .v{color:var(--ok);font-weight:700;margin-right:8px;}
+  table.value tr:nth-child(even) td{background:#fafcff;}
+  .value-note{
+    margin-top:18px;font-size:14px;color:var(--gray);
+    border-left:3px solid #dce6fb;padding:2px 0 2px 14px;
+  }
+
+  @media (max-width:860px){
+    .bg-grid{grid-template-columns:1fr;}
+    .steps{grid-template-columns:1fr 1fr;}
+    .flow{flex-direction:column;}
+    .flow .arr{transform:rotate(90deg);width:auto;height:26px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 标题带 -->
+<div class="hero">
+  <div class="wrap">
+    <a class="back-link" href="海牛AI应用案例集.html">← 返回案例列表</a>
+    <h1>某地方资产管理公司<span class="sep">·</span>AI智能业务办理案例</h1>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- 01 业务背景与痛点 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">01</span><h2>业务背景与痛点</h2></div>
+    <div class="bg-grid">
+      <div class="bg-card">
+        <div>
+          <p>某地方资产管理公司日常办公涉及<b>出差申请</b>等事项，员工通过企业现有系统完成<b>申请提交和后续审批</b>。</p>
+        </div>
+      </div>
+      <div class="pains">
+        <div class="pain"><span class="dot">1</span><div><h3>办事要找系统入口</h3><p>办不同的事要打开不同的系统，先要找到对应的申请入口。</p></div></div>
+        <div class="pain"><span class="dot">2</span><div><h3>申请信息要逐项填写</h3><p>事由、行程、人员等信息，要一项一项手动填写和核对。</p></div></div>
+        <div class="pain"><span class="dot">3</span><div><h3>缺少信息还得反复补填</h3><p>信息不完整时要再找资料补充，来回折腾，拖慢办理。</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 AI数字员工解决方案 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">02</span><h2>AI数字员工解决方案</h2></div>
+    <div class="sol-band">
+      AI数字员工<b>连接企业现有系统</b>，员工直接说要办什么即可。
+    </div>
+    <div class="flow">
+      <div class="step"><div class="no">1</div><h4>直接说需求</h4><p>告诉AI要办什么</p></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="no">2</div><h4>检查并补全信息</h4><p>缺少必填信息时主动询问</p></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="no">3</div><h4>连接业务系统</h4><p>员工确认后提交申请</p></div>
+      <div class="arr">→</div>
+      <div class="step"><div class="no">4</div><h4>反馈提交结果</h4><p>告知申请提交成功</p></div>
+    </div>
+  </div>
+
+  <!-- 03 实际使用 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">03</span><h2>实际使用</h2></div>
+    <div class="story-q">一名员工要出差，如何<em>快速提交出差申请</em>？</div>
+    <div class="steps">
+      <div class="step-card">
+        <span class="lb"><i>1</i>发起申请</span>
+        <p>员工直接说：<b>"帮我创建出差行程，去新乡拜访客户，26日上午出发，27日下午返回。"</b></p>
+      </div>
+      <div class="step-card">
+        <span class="lb"><i>2</i>AI主动追问</span>
+        <p>AI数字员工整理信息，发现<b>缺少必填的交通方式</b>，主动向员工询问确认。</p>
+      </div>
+      <div class="step-card">
+        <span class="lb"><i>3</i>确认信息</span>
+        <p>AI数字员工展示<b>整理好的完整申请信息</b>，员工检查确认无误。</p>
+      </div>
+      <div class="step-card">
+        <span class="lb"><i>4</i>提交成功</span>
+        <p>员工确认后，AI数字员工提交申请并<b>反馈提交成功</b>，进入企业原有审批流程。</p>
+      </div>
+    </div>
+    <div class="shot">
+      <video controls preload="metadata" src="出差申请-ai客户端.mp4"></video>
+    </div>
+    <div class="shot-note">申请提交后，仍由企业原有业务系统完成审批。</div>
+  </div>
+
+  <!-- 04 应用价值 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">04</span><h2>应用价值</h2></div>
+    <table class="value">
+      <tr><th>原来的工作方式</th><th>用了AI数字员工之后</th></tr>
+      <tr><td class="old">找到对应系统和申请入口</td><td class="new"><span class="v">✓</span>直接告诉AI要办理的事项</td></tr>
+      <tr><td class="old">自己逐项填写申请信息</td><td class="new"><span class="v">✓</span>AI整理信息，缺少必填项时主动询问</td></tr>
+      <tr><td class="old">手动提交申请</td><td class="new"><span class="v">✓</span>员工确认后，AI提交并反馈成功结果</td></tr>
+    </table>
+    <div class="value-note">同样的方式，也可以根据企业的业务需要，连接其他系统，帮助员工查询信息、填写和提交业务单据。</div>
+  </div>
+
+</main>
+
+</body>
+</html>
