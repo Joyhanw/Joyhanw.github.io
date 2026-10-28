@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海牛AI应用案例集</title>
+<style>
+  :root{
+    --primary:#2153d9; --primary-deep:#1846c2;
+    --ink:#182236; --gray:#5b6577; --gray-lt:#8a93a6;
+    --line:#e7ecf5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--ink); background:#f5f8fc; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 36px;}
+
+  /* ── 顶部蓝色渐变区域 ── */
+  .hero{
+    background:linear-gradient(135deg, #1a4fd6 0%, #2E6BFF 50%, #4a8cff 100%);
+    padding:24px 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute;
+    top:-50%;
+    right:-10%;
+    width:400px;
+    height:400px;
+    background:rgba(255,255,255,0.08);
+    border-radius:50%;
+  }
+  .hero::after{
+    content:'';
+    position:absolute;
+    bottom:-30%;
+    left:-5%;
+    width:300px;
+    height:300px;
+    background:rgba(255,255,255,0.05);
+    border-radius:50%;
+  }
+  .hero h1{
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:.5px;
+    color:#fff;
+    text-align:center;
+    position:relative;
+    z-index:1;
+  }
+
+  main{padding:40px 0 72px;}
+
+  /* ── 2×2 网格布局 ── */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:20px;
+    max-width:880px;
+    margin:0 auto;
+  }
+
+  .case-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:20px 22px 16px;
+    text-decoration:none;
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 1px 3px rgba(24,46,90,.04);
+    transition:transform .15s, box-shadow .15s, border-color .15s;
+  }
+  a.case-card:hover{
+    transform:translateY(-3px);
+    border-color:#bcd0f7;
+    box-shadow:0 10px 28px rgba(24,46,90,.10);
+  }
+
+  /* ── 卡片图标 ── */
+  .card-icon{
+    width:40px;
+    height:40px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:12px;
+  }
+  .card-icon svg{
+    width:20px;
+    height:20px;
+  }
+  .card-icon.blue{background:#eef3fe;}
+  .card-icon.blue svg{stroke:#2153d9;}
+  .card-icon.green{background:#f0faf5;}
+  .card-icon.green svg{stroke:#12855f;}
+  .card-icon.purple{background:#f3f0ff;}
+  .card-icon.purple svg{stroke:#6366f1;}
+  .card-icon.orange{background:#fef3e7;}
+  .card-icon.orange svg{stroke:#f59e0b;}
+
+  /* ── 标签 ── */
+  .tags{display:flex;gap:8px;margin-bottom:12px;}
+  .tag{font-size:12.5px;font-weight:600;padding:3px 12px;border-radius:999px;}
+  .tag.p{background:#eef3fe;color:var(--primary);border:1px solid #dce6fb;}
+  .tag.i{background:#f0faf5;color:#12855f;border:1px solid #d3ecdf;}
+  .tag.gray{background:#f1f3f7;color:#9aa3b5;border:1px solid #e6eaf1;}
+
+  /* ── 卡片内容 ── */
+  .case-card h3{font-size:15.5px;font-weight:700;line-height:1.45;margin-bottom:2px;}
+  .case-card .org{font-size:12.5px;color:var(--gray-lt);margin-bottom:8px;}
+  .case-card .desc{
+    font-size:13px;
+    color:var(--gray);
+    line-height:1.6;
+    margin-bottom:12px;
+    flex:1;
+  }
+
+  /* ── 底部动作 ── */
+  .card-foot{
+    padding-top:12px;
+    border-top:1px solid var(--line);
+    font-size:12.5px;
+    font-weight:600;
+  }
+  a.case-card .card-foot{color:var(--primary);}
+
+  /* ── 占位卡片 ── */
+  .case-card.disabled{cursor:default;}
+  .case-card.disabled h3{color:#5b6577;}
+  .case-card.disabled .desc{color:#9aa3b5;}
+  .case-card.disabled .card-foot{color:#b4bcc9;font-weight:500;border-top-color:#f1f3f7;}
+
+  /* ── 响应式 ── */
+  @media (max-width:860px){
+    .grid{grid-template-columns:1fr;}
+    .hero{padding:20px 0;}
+    .hero h1{font-size:18px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部蓝色渐变区域 -->
+<div class="hero">
+  <div class="wrap">
+    <h1>海牛AI应用案例集</h1>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="grid">
+
+    <!-- 卡片 1：味冠（食品商贸）—— 已完成 -->
+    <a class="case-card" href="智能经营分析案例.html">
+      <div class="card-icon blue">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+        </svg>
+      </div>
+      <div class="tags">
+        <span class="tag p">AI数字员工</span>
+        <span class="tag i">食品商贸</span>
+      </div>
+      <h3>AI智能经营分析案例</h3>
+      <p class="org">某大型食品商贸企业</p>
+      <p class="desc">分析库存和销量，快速找出缺货、滞销商品，辅助采购决策。</p>
+      <div class="card-foot">查看案例 →</div>
+    </a>
+
+    <!-- 卡片 2：河南AMC（资产管理）—— 已完成 -->
+    <a class="case-card" href="智能业务办理案例.html">
+      <div class="card-icon green">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+        </svg>
+      </div>
+      <div class="tags">
+        <span class="tag p">AI数字员工</span>
+        <span class="tag i">资产管理</span>
+      </div>
+      <h3>AI智能业务办理案例</h3>
+      <p class="org">某地方资产管理公司</p>
+      <p class="desc">连接企业现有系统，通过对话发起业务申请，减少员工手动填单和操作。</p>
+      <div class="card-foot">查看案例 →</div>
+    </a>
+
+    <!-- 卡片 3：大金（装备制造）—— 已完成 -->
+    <a class="case-card" href="供应商质量准入案例.html">
+      <div class="card-icon purple">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </div>
+      <div class="tags">
+        <span class="tag p">AI数字员工</span>
+        <span class="tag i">装备制造</span>
+      </div>
+      <h3>AI供应商质量准入案例</h3>
+      <p class="org">某大型制造企业</p>
+      <p class="desc">自动识别供应商提交的资料，核对准入要求，帮助业务人员更快发现材料问题。</p>
+      <div class="card-foot">查看案例 →</div>
+    </a>
+
+    <!-- 卡片 4：泰隆（Vibe Coding）—— 已完成 -->
+    <a class="case-card" href="应用创新案例.html">
+      <div class="card-icon orange">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+        </svg>
+      </div>
+      <div class="tags">
+        <span class="tag p">Vibe Coding</span>
+        <span class="tag i">城市商业银行</span>
+      </div>
+      <h3>Vibe Coding应用创新案例</h3>
+      <p class="org">某城市商业银行</p>
+      <p class="desc">用自然语言描述业务需求，快速生成和调整应用，让业务想法更快变成可用工具。</p>
+      <div class="card-foot">查看案例 →</div>
+    </a>
+
+  </div>
+</main>
+
+</body>
+</html>

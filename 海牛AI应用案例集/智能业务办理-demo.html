@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能业务办理AI数字员工</title>
+<style>
+/* ============== 基础 ============== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --bg: #F6F8FB;
+    --bg-soft: #FBFCFE;
+    --card: #FFFFFF;
+    --border: #E6EAF0;
+    --border-soft: #EFF2F6;
+    --text: #1A2233;
+    --text-2: #4C5670;
+    --text-3: #8B95AB;
+    --primary: #2E6BFF;
+    --primary-soft: #EAF1FF;
+    --primary-grad: linear-gradient(135deg, #2E6BFF 0%, #7B5BFF 100%);
+    --success: #10B981;
+    --success-soft: #D1FAE5;
+    --warning: #F59E0B;
+    --warning-soft: #FEF3C7;
+    --danger:  #E5484D;
+    --danger-soft: #FEE2E2;
+    --info: #6366F1;
+    --info-soft: #E0E7FF;
+    --shadow-sm: 0 1px 2px rgba(16,24,40,0.04), 0 1px 3px rgba(16,24,40,0.04);
+    --shadow-md: 0 4px 12px rgba(16,24,40,0.05), 0 2px 6px rgba(16,24,40,0.04);
+    --shadow-lg: 0 12px 32px rgba(16,24,40,0.08), 0 4px 12px rgba(16,24,40,0.04);
+    --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+button { border: none; background: none; cursor: pointer; font: inherit; color: inherit; }
+input, textarea { font: inherit; color: inherit; outline: none; }
+.hidden { display: none !important; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #D7DCE6; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #B4BCC9; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ============== 顶部导航 ============== */
+.topbar {
+    height: 56px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-name { font-size: 16px; font-weight: 700; letter-spacing: 0.2px; color: var(--text); }
+.current-user { display: flex; align-items: center; gap: 8px; }
+.user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--primary-grad); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 13px;
+}
+.current-user span { font-size: 13px; font-weight: 500; color: var(--text); }
+.back-link { font-size: 12.5px; color: var(--text-2); text-decoration: none; padding: 5px 12px; border: 1px solid var(--border); border-radius: 6px; background: #fff; }
+.back-link:hover { color: var(--primary); border-color: var(--primary); }
+
+/* ============== 对话页 ============== */
+.view-chat { display: flex; height: calc(100vh - 56px); background: var(--bg-soft); }
+.chat-sidebar {
+    flex: 0 0 232px; background: #fff; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+}
+.new-chat-btn {
+    margin: 14px 12px; padding: 9px 12px;
+    background: var(--text); color: #fff; border-radius: 8px;
+    display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500;
+    transition: all .15s; justify-content: center;
+}
+.new-chat-btn:hover { background: #000; }
+.history-section { flex: 1; overflow-y: auto; padding: 6px 12px 14px; }
+.history-section-title { font-size: 11px; color: var(--text-3); margin: 10px 4px 8px; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: space-between; }
+.history-section-title .hs-count { font-size: 10px; background: var(--bg); padding: 1px 8px; border-radius: 999px; }
+.history-list { display: flex; flex-direction: column; gap: 2px; }
+.h-item {
+    padding: 7px 10px; border-radius: 6px; font-size: 12.5px; color: var(--text-2);
+    cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: flex; align-items: center; gap: 6px;
+}
+.h-item:hover { background: var(--border-soft); }
+.h-item.active { background: var(--primary-soft); color: var(--primary); }
+.h-item .h-ico { flex: 0 0 14px; }
+.h-item .h-title { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.h-item.readonly .h-title { color: var(--text-3); }
+.h-item.readonly:hover .h-title { color: var(--text-2); }
+
+/* 主对话区 */
+.chat-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.chat-header {
+    padding: 12px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: #fff;
+}
+.chat-header-left { display: flex; align-items: center; gap: 12px; }
+.agent-icon-sm { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.chat-title { font-size: 15px; font-weight: 600; }
+
+.chat-stream { flex: 1; overflow-y: auto; padding: 24px; }
+.chat-view { max-width: 720px; margin: 0 auto; }
+
+/* 欢迎屏 */
+.welcome { max-width: 680px; margin: 32px auto; text-align: center; padding: 24px 16px; }
+.welcome-avatar {
+    width: 80px; height: 80px; border-radius: 20px;
+    background: linear-gradient(135deg, #EAF1FF, #F4F0FF);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; box-shadow: var(--shadow-md);
+}
+.welcome h2 { font-size: 26px; font-weight: 700; margin-bottom: 10px; }
+.welcome > p { font-size: 14px; color: var(--text-2); line-height: 1.8; margin-bottom: 28px; }
+.quick-cmds { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+
+/* 消息泡 */
+.msg { display: flex; gap: 14px; margin-bottom: 24px; max-width: 720px; margin-left: auto; margin-right: auto; }
+.msg.user { flex-direction: row-reverse; }
+.msg-avatar {
+    width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 13px;
+}
+.msg.user .msg-avatar { background: var(--primary-grad); color: #fff; }
+.msg.ai .msg-avatar { background: linear-gradient(135deg,#EAF1FF,#F4F0FF); border: 1px solid #DCE5F5; }
+.msg-body { flex: 1; min-width: 0; }
+.msg.user .msg-body { text-align: right; }
+.msg-meta { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-3); margin-bottom: 4px; }
+.msg.user .msg-meta { justify-content: flex-end; }
+.msg-meta b { color: var(--text-2); font-weight: 500; }
+.bubble.user-bubble {
+    background: var(--primary); color: #fff;
+    padding: 10px 14px; border-radius: 14px 14px 4px 14px;
+    display: inline-block; max-width: 85%; line-height: 1.6; text-align: left;
+}
+.bubble.ai-bubble {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 4px 14px 14px 14px; padding: 16px 18px;
+    line-height: 1.7; color: var(--text);
+}
+.bubble.ai-bubble > * + * { margin-top: 12px; }
+.bubble.ai-bubble p { line-height: 1.75; font-size: 13.5px; }
+
+/* 处理中 */
+.ai-thinking {
+    display: flex; align-items: center; gap: 8px;
+    background: linear-gradient(90deg, #F4F0FF, #EAF1FF);
+    border-radius: 8px; padding: 8px 12px; font-size: 12.5px; color: var(--text-2);
+    border: 1px solid #E1E7F5;
+}
+.thinking-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); animation: blink 1.4s infinite both; }
+.thinking-dot:nth-child(2) { animation-delay: .2s; }
+.thinking-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
+
+/* 快捷选项 */
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+    padding: 6px 14px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    font-size: 12.5px; color: var(--text-2); white-space: nowrap;
+    transition: all .15s;
+}
+.chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+.chip.used { opacity: .45; pointer-events: none; }
+
+/* ============== 出差申请单卡片 ============== */
+.trip-card { border: 1px solid var(--border); border-radius: var(--r-md); background: #fff; overflow: hidden; }
+.trip-card.submitted { border-color: #BBF7D0; }
+.tc-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: var(--bg-soft); border-bottom: 1px solid var(--border-soft);
+}
+.tc-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.tc-badge { padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+.tc-badge.draft { background: var(--warning-soft); color: #92400E; }
+.tc-badge.confirm { background: var(--info-soft); color: #4338CA; }
+.tc-badge.done { background: var(--success-soft); color: #065F46; }
+.tc-body { padding: 6px 14px 10px; }
+.tc-sec { font-size: 11px; color: var(--text-3); letter-spacing: .5px; margin: 10px 0 2px; }
+.tc-row { display: flex; padding: 5px 0; border-bottom: 1px dashed var(--border-soft); font-size: 13px; }
+.tc-row:last-child { border-bottom: none; }
+.tc-label { flex: 0 0 80px; color: var(--text-3); }
+.tc-val { flex: 1; color: var(--text); }
+.tc-val .sub-note { font-size: 11px; color: var(--text-3); }
+.tc-missing {
+    display: inline-block; padding: 1px 8px; border-radius: 4px;
+    background: var(--danger-soft); color: var(--danger);
+    font-size: 12px; font-weight: 600;
+}
+.tc-foot { display: flex; gap: 10px; justify-content: flex-end; padding: 10px 14px; background: var(--bg-soft); border-top: 1px solid var(--border-soft); }
+.tc-btn { padding: 7px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; transition: all .15s; }
+.tc-btn.primary { background: var(--primary); color: #fff; }
+.tc-btn.primary:hover { background: #1E5BD6; }
+.tc-btn.ghost { background: #fff; border: 1px solid var(--border); color: var(--text-2); }
+.tc-btn.ghost:hover { border-color: var(--primary); color: var(--primary); }
+.tc-modify-row { display: none; flex-wrap: wrap; gap: 8px; padding: 10px 14px; background: var(--bg-soft); border-top: 1px dashed var(--border-soft); }
+.trip-card.modifying .tc-modify-row { display: flex; }
+.trip-card.locked .tc-foot, .trip-card.locked .tc-modify-row { display: none; }
+
+/* ============== 提交成功回执 ============== */
+.receipt-card { border: 1px solid #BBF7D0; border-radius: var(--r-md); background: linear-gradient(180deg, #F0FDF4 0%, #fff 30%); overflow: hidden; }
+.rc-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px; }
+.rc-ico {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--success);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.rc-title { font-size: 15px; font-weight: 700; color: #065F46; }
+.rc-sub { font-size: 12px; color: var(--text-3); margin-top: 1px; }
+.rc-body { padding: 4px 16px 12px; }
+.rc-no {
+    display: flex; align-items: center; gap: 8px;
+    background: #fff; border: 1px solid #D3ECDF; border-radius: 8px;
+    padding: 8px 12px; margin-bottom: 8px; font-size: 13px;
+}
+.rc-no b { font-family: "SF Mono","Menlo",monospace; letter-spacing: .5px; color: #065F46; }
+.rc-status { display: flex; align-items: center; justify-content: space-between; padding: 6px 0 2px; font-size: 13px; }
+
+/* 审批状态徽标（回执与只读会话共用） */
+.dp-status-badge {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    background: var(--warning-soft); color: #92400E; font-size: 12px; font-weight: 600;
+}
+
+.fade-in { animation: fadeIn .35s ease both; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 输入区 */
+.chat-input-bar { padding: 12px 24px 16px; border-top: 1px solid var(--border); background: #fff; }
+.chat-input-inner { max-width: 720px; margin: 0 auto; }
+.input-row {
+    display: flex; align-items: flex-end; gap: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 8px 12px;
+    transition: border-color .15s;
+}
+.input-row:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46,107,255,0.1); }
+.input-row textarea {
+    flex: 1; background: none; border: none; resize: none;
+    font-size: 14px; line-height: 1.5; min-height: 24px; max-height: 160px;
+}
+.input-row textarea::placeholder { color: var(--text-3); }
+.send-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all .15s;
+}
+.send-btn:hover { background: #1E5BD6; }
+.send-btn svg { width: 16px; height: 16px; }
+.send-btn:disabled { background: #C6CEDD; cursor: not-allowed; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .chat-sidebar { display: none; }
+    .tc-label { flex: 0 0 70px; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+        <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2E6BFF"/>
+            <stop offset="100%" stop-color="#7B5BFF"/>
+        </linearGradient>
+    </defs>
+</svg>
+
+<!-- ============== 顶部导航 ============== -->
+<header class="topbar">
+    <div class="topbar-left">
+        <div class="logo">
+            <div class="logo-mark">
+                <svg viewBox="0 0 32 32" width="28" height="28">
+                    <path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/>
+                    <path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/>
+                    <circle cx="13.5" cy="15" r="1.2" fill="#2E6BFF"/>
+                    <circle cx="18.5" cy="15" r="1.2" fill="#2E6BFF"/>
+                </svg>
+            </div>
+            <div class="logo-name">智能业务办理AI数字员工</div>
+        </div>
+    </div>
+    <div class="current-user">
+        <a class="back-link" href="智能业务办理案例.html">← 返回案例</a>
+        <div class="user-avatar">唯</div>
+        <span>智能助手</span>
+    </div>
+</header>
+
+<!-- ============== 对话页 ============== -->
+<main class="view-chat">
+    <!-- 左侧 -->
+    <aside class="chat-sidebar">
+        <button class="new-chat-btn" id="newChatBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            新对话
+        </button>
+        <div class="history-section">
+            <div class="history-section-title"><span>历史会话</span><span class="hs-count">2</span></div>
+            <div class="history-list" id="historyList">
+                <div class="h-item" data-view="trip"><span class="h-ico">🧳</span><span class="h-title">出差申请办理</span></div>
+                <div class="h-item readonly" data-view="leave"><span class="h-ico">📝</span><span class="h-title">请假申请</span></div>
+                <div class="h-item readonly" data-view="expense"><span class="h-ico">💰</span><span class="h-title">费用报销</span></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主区 -->
+    <section class="chat-main">
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <div class="agent-icon-sm" style="background:linear-gradient(135deg,#EAF1FF,#F4F0FF);font-size:18px;">🧳</div>
+                <div class="chat-title" id="chatTitle">智能业务办理AI数字员工</div>
+            </div>
+        </div>
+
+        <!-- 对话流 -->
+        <div class="chat-stream" id="chatStream">
+            <!-- 欢迎屏 -->
+            <div class="welcome" id="welcome">
+                <div class="welcome-avatar">
+                    <svg viewBox="0 0 32 32" width="36" height="36">
+                        <path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/>
+                        <path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/>
+                        <circle cx="13.5" cy="15" r="1.2" fill="#2E6BFF"/>
+                        <circle cx="18.5" cy="15" r="1.2" fill="#2E6BFF"/>
+                    </svg>
+                </div>
+                <h2>你好，我是智能业务办理AI数字员工</h2>
+                <p>直接告诉我你要办理的事项，我会帮你整理申请信息、追问缺失内容，确认后提交到钉钉审批。</p>
+            </div>
+
+            <!-- 主会话（出差申请办理） -->
+            <div class="chat-view hidden" id="view-trip"></div>
+            <!-- 只读演示会话 -->
+            <div class="chat-view hidden" id="view-leave"></div>
+            <div class="chat-view hidden" id="view-expense"></div>
+        </div>
+
+        <!-- 输入区 -->
+        <div class="chat-input-bar">
+            <div class="chat-input-inner">
+                <div class="quick-cmds" id="quickCmds">
+                    <button class="chip" data-cmd="trip">🧳 创建出差申请</button>
+                </div>
+                <div class="input-row">
+                    <textarea id="chatInput" rows="1" placeholder="输入消息，继续办理出差申请……"></textarea>
+                    <button class="send-btn" id="sendBtn" title="发送">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+(function () {
+    'use strict';
+
+    var $ = function (sel) { return document.querySelector(sel); };
+
+    var dom = {
+        chatStream: $('#chatStream'),
+        welcome: $('#welcome'),
+        chatInput: $('#chatInput'),
+        sendBtn: $('#sendBtn'),
+        newChatBtn: $('#newChatBtn'),
+        historyList: $('#historyList'),
+        quickCmds: $('#quickCmds')
+    };
+
+    var EMPLOYEE = '陈晨';
+    var CANON = '帮我创建出差申请，11月2日上午从杭州去上海拜访客户，11月3日下午返回杭州，出行人是张三、李四。';
+
+    /* ──── 会话状态 ──── */
+    // phase: idle(欢迎/未开始) | awaitGo | awaitRet | confirm | done
+    var phase = 'idle';
+    var trip = null;
+    var orderNo = null;
+
+    var views = {
+        trip: $('#view-trip'),
+        leave: $('#view-leave'),
+        expense: $('#view-expense')
+    };
+    var currentView = 'trip';
+
+    /* ──── 基础渲染 ──── */
+    function nowTime() {
+        return new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function appendMsg(view, role, blocks) {
+        var div = document.createElement('div');
+        div.className = 'msg ' + role + ' fade-in';
+
+        var avatar = document.createElement('div');
+        avatar.className = 'msg-avatar';
+        if (role === 'user') {
+            avatar.textContent = '你';
+        } else {
+            avatar.innerHTML = '<svg viewBox="0 0 32 32" width="16" height="16"><path fill="url(#lg1)" d="M16 2 L29 10 L29 22 L16 30 L3 22 L3 10 Z"/><path fill="#fff" opacity="0.95" d="M11 12 Q16 7 21 12 L21 20 Q16 25 11 20 Z"/><circle cx="13.5" cy="15" r="1.2" fill="#2E6BFF"/><circle cx="18.5" cy="15" r="1.2" fill="#2E6BFF"/></svg>';
+        }
+
+        var body = document.createElement('div');
+        body.className = 'msg-body';
+        var meta = document.createElement('div');
+        meta.className = 'msg-meta';
+        meta.innerHTML = '<b>' + (role === 'user' ? '你' : 'AI数字员工') + '</b> ' + nowTime();
+        body.appendChild(meta);
+
+        var bubble = document.createElement('div');
+        bubble.className = role === 'user' ? 'bubble user-bubble' : 'bubble ai-bubble';
+        if (role === 'user') {
+            bubble.textContent = blocks;
+        } else {
+            for (var i = 0; i < blocks.length; i++) {
+                bubble.appendChild(blocks[i]);
+            }
+        }
+        body.appendChild(bubble);
+        div.appendChild(avatar);
+        div.appendChild(body);
+        view.appendChild(div);
+        scrollBottom();
+        return bubble;
+    }
+
+    function thinkingBubble(view, text) {
+        var b = appendMsg(view, 'ai', []);
+        b.innerHTML = '<div class="ai-thinking"><span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span><span>' + text + '</span></div>';
+        return b;
+    }
+
+    function scrollBottom() {
+        dom.chatStream.scrollTop = dom.chatStream.scrollHeight;
+    }
+
+    function el(tag, cls, html) {
+        var d = document.createElement(tag);
+        if (cls) d.className = cls;
+        if (html !== undefined) d.innerHTML = html;
+        return d;
+    }
+
+    function p(text) { return el('div', '', '<p>' + text + '</p>'); }
+
+    function chipRow(items, onClick) {
+        var row = el('div', 'chip-row');
+        items.forEach(function (it) {
+            var c = el('button', 'chip', it);
+            c.addEventListener('click', function () {
+                if (c.classList.contains('used')) return;
+                var siblings = row.querySelectorAll('.chip');
+                for (var i = 0; i < siblings.length; i++) siblings[i].classList.add('used');
+                onClick(it);
+            });
+            row.appendChild(c);
+        });
+        return row;
+    }
+
+    /* ──── 出差申请单卡片 ──── */
+    // state: 'draft' | 'confirm' | 'done'
+    function tripCardEl(state) {
+        var card = el('div', 'trip-card' + (state === 'done' ? ' submitted locked' : ''));
+        var badge = state === 'draft' ? '<span class="tc-badge draft">待补充</span>'
+                  : state === 'confirm' ? '<span class="tc-badge confirm">待确认</span>'
+                  : '<span class="tc-badge done">已提交</span>';
+        card.appendChild(el('div', 'tc-head',
+            '<div class="tc-title">📋 出差申请单</div>' + badge));
+
+        function row(label, val) {
+            return '<div class="tc-row"><div class="tc-label">' + label + '</div><div class="tc-val">' + val + '</div></div>';
+        }
+        var miss = '<span class="tc-missing">待补充</span>';
+        var body = el('div', 'tc-body',
+            '<div class="tc-sec">基本信息</div>'
+            + row('出差事由', trip.reason)
+            + row('出差类型', '普通出差 <span class="sub-note">（系统默认）</span>')
+            + row('经办人', EMPLOYEE)
+            + row('出行人员', trip.people.join('、'))
+            + '<div class="tc-sec">行程安排</div>'
+            + row('去程', trip.goDate + ' ' + trip.goTime + ' · ' + trip.fromCity + ' → ' + trip.toCity)
+            + row('交通方式', state === 'draft' ? miss : trip.goTraffic)
+            + row('回程', trip.retDate + ' ' + trip.retTime + ' · ' + trip.toCity + ' → ' + trip.fromCity)
+            + row('交通方式', state === 'draft' ? miss : trip.retTraffic)
+        );
+        card.appendChild(body);
+
+        if (state === 'confirm') {
+            var foot = el('div', 'tc-foot');
+            var btnModify = el('button', 'tc-btn ghost', '修改信息');
+            var btnSubmit = el('button', 'tc-btn primary', '确认提交');
+            btnModify.addEventListener('click', function () {
+                card.classList.toggle('modifying');
+            });
+            btnSubmit.addEventListener('click', function () { doSubmit(); });
+            foot.appendChild(btnModify);
+            foot.appendChild(btnSubmit);
+            card.appendChild(foot);
+
+            var modRow = el('div', 'tc-modify-row');
+            var m1 = el('button', 'chip', '回程改成11月4日上午');
+            m1.addEventListener('click', function () {
+                applyModify('回程日期已改为11月4日上午。', { retDate: '11月4日', retTime: '上午' });
+            });
+            var m2 = el('button', 'chip', '交通方式换成飞机');
+            m2.addEventListener('click', function () {
+                applyModify('已将往返交通方式改为飞机。', { goTraffic: '飞机', retTraffic: '飞机' });
+            });
+            modRow.appendChild(m1);
+            modRow.appendChild(m2);
+            card.appendChild(modRow);
+        }
+        return card;
+    }
+
+    function lockAllCards() {
+        var cards = views.trip.querySelectorAll('.trip-card');
+        for (var i = 0; i < cards.length; i++) cards[i].classList.add('locked');
+    }
+
+    function applyModify(msgText, patch) {
+        for (var k in patch) trip[k] = patch[k];
+        lockAllCards();
+        aiSay([
+            p(msgText + ' 请再次确认申请信息。'),
+            tripCardEl('confirm')
+        ], '正在更新申请信息…', 450);
+    }
+
+    /* ──── 成功回执 ──── */
+    function receiptEl() {
+        var card = el('div', 'receipt-card');
+        card.appendChild(el('div', 'rc-head',
+            '<div class="rc-ico">✓</div><div><div class="rc-title">出差申请提交成功</div>'
+            + '<div class="rc-sub">已创建钉钉审批记录，等待审批人员处理</div></div>'));
+        var body = el('div', 'rc-body',
+            '<div class="rc-no">📄 申请单号 <b>' + orderNo + '</b></div>'
+            + '<div class="tc-row"><div class="tc-label">出差事由</div><div class="tc-val">' + trip.reason + '</div></div>'
+            + '<div class="tc-row"><div class="tc-label">出行人员</div><div class="tc-val">' + trip.people.join('、') + '</div></div>'
+            + '<div class="tc-row"><div class="tc-label">去程</div><div class="tc-val">' + trip.goDate + ' ' + trip.goTime + ' · ' + trip.fromCity + ' → ' + trip.toCity + ' · ' + trip.goTraffic + '</div></div>'
+            + '<div class="tc-row"><div class="tc-label">回程</div><div class="tc-val">' + trip.retDate + ' ' + trip.retTime + ' · ' + trip.toCity + ' → ' + trip.fromCity + ' · ' + trip.retTraffic + '</div></div>'
+            + '<div class="rc-status"><span>审批状态</span><span class="dp-status-badge">待审批</span></div>'
+        );
+        card.appendChild(body);
+        return card;
+    }
+
+    /* ──── AI 回复 ──── */
+    function aiSay(blocks, thinkText, delay) {
+        var t = thinkingBubble(views.trip, thinkText || '正在处理…');
+        setTimeout(function () {
+            t.innerHTML = '';
+            for (var i = 0; i < blocks.length; i++) t.appendChild(blocks[i]);
+            scrollBottom();
+        }, delay || 650);
+    }
+
+    /* ──── 解析出差需求 ──── */
+    function parseTrip(text) {
+        var dates = text.match(/\d{1,2}月\d{1,2}日/g);
+        var routeM = text.match(/从([一-龥]{2,6}?)(?:出发)?去([一-龥]{2,6}?)(?=拜访|参加|考察|调研|洽谈|开会|培训|办理|出差|，|。|,|$)/);
+        var peopleM = text.match(/出行人[是为]([^，。？！?!.]+)/);
+        var reasonM = text.match(/拜访客户|参加会议|客户拜访|业务洽谈|项目调研|现场服务|参加培训/);
+        if (!dates || dates.length < 2 || !routeM || !peopleM) return null;
+
+        function timeAfter(dateStr) {
+            var idx = text.indexOf(dateStr);
+            var seg = text.substring(idx, idx + dateStr.length + 4);
+            return seg.indexOf('上午') !== -1 ? '上午' : (seg.indexOf('下午') !== -1 ? '下午' : '');
+        }
+        var goDate = dates[0], retDate = dates[1];
+        var m1 = goDate.match(/(\d{1,2})月(\d{1,2})日/);
+        orderNo = 'DEMO-2026'
+            + ('0' + m1[1]).slice(-2)
+            + ('0' + m1[2]).slice(-2) + '-001';
+
+        var people = peopleM[1].split(/[、和,，]/).map(function (s) { return s.trim(); }).filter(function (s) { return s; });
+
+        return {
+            reason: reasonM ? reasonM[0] : '出差办理',
+            people: people,
+            fromCity: routeM[1],
+            toCity: routeM[2],
+            goDate: goDate, goTime: timeAfter(goDate) || '上午',
+            retDate: retDate, retTime: timeAfter(retDate) || '下午',
+            goTraffic: null, retTraffic: null
+        };
+    }
+
+    function matchTraffic(text) {
+        if (/飞机/.test(text)) return '飞机';
+        if (/高铁|动车/.test(text)) return '高铁';
+        if (/火车/.test(text)) return '火车';
+        if (/汽车|大巴|自驾/.test(text)) return '汽车';
+        if (/其他/.test(text)) return '其他';
+        return null;
+    }
+
+    function trafficChips() {
+        return chipRow(['飞机', '高铁', '火车', '汽车', '其他'], function (val) { handleTraffic(val); });
+    }
+
+    /* ──── 流程：发起申请 ──── */
+    function startTrip(text) {
+        trip = parseTrip(text);
+        phase = 'awaitGo';
+        aiSay([
+            p('已根据你提供的信息生成出差申请单草稿。部分必填信息尚未补全，请确认以下内容。'),
+            tripCardEl('draft'),
+            p('还需要补充交通方式：<b>去程（' + trip.fromCity + ' → ' + trip.toCity + '）</b>准备乘坐什么交通工具？'),
+            trafficChips()
+        ], '正在识别出差需求并整理申请信息…', 750);
+    }
+
+    /* ──── 流程：补充交通方式 ──── */
+    function handleTraffic(val) {
+        if (phase === 'awaitGo') {
+            phase = 'awaitRet';
+            trip.goTraffic = val;
+            aiSay([
+                p('好的，去程乘坐<b>' + val + '</b>。'),
+                p('回程（' + trip.toCity + ' → ' + trip.fromCity + '）准备乘坐什么交通工具？'),
+                trafficChips()
+            ], '正在登记交通方式…', 450);
+        } else if (phase === 'awaitRet') {
+            trip.retTraffic = val;
+            phase = 'confirm';
+            lockAllCards();
+            aiSay([
+                p('交通方式已补全。以下是完整的出差申请单，请你确认：'),
+                tripCardEl('confirm')
+            ], '正在生成完整申请单…', 650);
+        }
+    }
+
+    /* ──── 流程：确认 / 修改 ──── */
+    function handleConfirm(text) {
+        var mode = matchTraffic(text);
+        if (/11月4日/.test(text)) {
+            applyModify('回程日期已改为11月4日上午。', { retDate: '11月4日', retTime: '上午' });
+        } else if (mode && /改|换/.test(text)) {
+            applyModify('已将往返交通方式改为' + mode + '。', { goTraffic: mode, retTraffic: mode });
+        } else if (/确认|提交/.test(text)) {
+            doSubmit();
+        } else if (/修改|改/.test(text)) {
+            aiSay([p('可以选择以下快捷修改，或在卡片中点击「修改信息」：'),
+                chipRow(['回程改成11月4日上午', '交通方式换成飞机'], function (val) { handleConfirm(val); })],
+                '正在准备修改选项…', 400);
+        } else {
+            aiSay([p('你可以点击卡片中的「<b>确认提交</b>」，或使用「<b>修改信息</b>」调整内容。')], null, 400);
+        }
+    }
+
+    /* ──── 流程：提交 ──── */
+    function doSubmit() {
+        if (!trip || !trip.goTraffic || !trip.retTraffic) {
+            aiSay([p('申请信息尚未补全，缺少必填的交通方式，暂时无法提交。')], null, 400);
+            return;
+        }
+        lockAllCards();
+        phase = 'submitting';
+        var t = thinkingBubble(views.trip, '正在通过海牛AI权限网关向钉钉提交出差申请……');
+        setTimeout(function () {
+            t.innerHTML = '';
+            t.appendChild(p('<b>出差申请提交成功。</b>已创建钉钉审批记录，等待审批人员处理。'));
+            t.appendChild(receiptEl());
+            t.appendChild(p('申请已进入钉钉审批流程，后续由审批人员在钉钉中审核。'));
+            phase = 'done';
+            scrollBottom();
+        }, 950);
+    }
+
+    /* ──── 消息入口 ──── */
+    function send(text) {
+        if (!text || !text.trim()) return;
+        showView('trip');
+        if (dom.welcome && !dom.welcome.classList.contains('hidden')) {
+            dom.welcome.classList.add('hidden');
+        }
+        appendMsg(views.trip, 'user', text.trim());
+
+        if (/创建出差申请/.test(text)) {
+            lockAllCards();
+            startTrip(text);
+        } else if (phase === 'idle' || phase === 'done') {
+            if (/出差|申请/.test(text)) {
+                startTrip(text);
+            } else {
+                aiSay([
+                    p('当前演示环境聚焦「<b>出差申请</b>」办理。你可以直接发送：'),
+                    p('<b>' + CANON + '</b>'),
+                    chipRow(['使用示例发起'], function () { send(CANON); })
+                ], '正在理解你的需求…', 550);
+            }
+        } else if (phase === 'awaitGo' || phase === 'awaitRet') {
+            // 一句话补齐两段交通方式
+            var bothMode = (/都|两段|往返/.test(text)) ? matchTraffic(text) : null;
+            if (bothMode) {
+                trip.goTraffic = bothMode;
+                trip.retTraffic = bothMode;
+                phase = 'confirm';
+                lockAllCards();
+                aiSay([
+                    p('已记录去程和回程均乘坐<b>' + bothMode + '</b>。以下是完整的出差申请单，请你确认：'),
+                    tripCardEl('confirm')
+                ], '正在生成完整申请单…', 650);
+            } else {
+                handleTraffic(text);
+            }
+        } else if (phase === 'confirm') {
+            handleConfirm(text);
+        } else if (phase === 'submitting') {
+            aiSay([p('申请正在提交中，请稍候…')], null, 400);
+        }
+        dom.chatInput.value = '';
+        dom.chatInput.style.height = 'auto';
+    }
+
+    /* ──── 视图切换 ──── */
+    function showView(name) {
+        currentView = name;
+        for (var k in views) views[k].classList.toggle('hidden', k !== name);
+        var items = dom.historyList.querySelectorAll('.h-item');
+        for (var i = 0; i < items.length; i++) {
+            items[i].classList.toggle('active', items[i].dataset.view === name);
+        }
+        var readonly = (name !== 'trip');
+        dom.chatInput.disabled = readonly;
+        dom.sendBtn.disabled = readonly;
+        dom.chatInput.placeholder = readonly
+            ? '演示会话仅支持查看，发起新对话继续体验'
+            : '输入消息，继续办理出差申请……';
+        if (name !== 'trip' || !dom.welcome.classList.contains('hidden')) {
+            // welcome 仅在 trip 视图未开始时显示
+        }
+        if (name === 'trip') {
+            dom.welcome.classList.toggle('hidden', phase !== 'idle' || views.trip.childNodes.length > 0);
+        } else {
+            dom.welcome.classList.add('hidden');
+        }
+        scrollBottom();
+    }
+
+    dom.historyList.addEventListener('click', function (e) {
+        var item = e.target.closest('.h-item');
+        if (!item) return;
+        showView(item.dataset.view);
+    });
+
+    dom.newChatBtn.addEventListener('click', function () {
+        showView('trip');
+        if (phase === 'idle' && views.trip.childNodes.length === 0) {
+            dom.welcome.classList.remove('hidden');
+        } else {
+            dom.welcome.classList.add('hidden');
+        }
+        dom.chatInput.value = '';
+        dom.chatInput.focus();
+    });
+
+    /* ──── 快捷指令：点击直接发送 ──── */
+    dom.quickCmds.addEventListener('click', function (e) {
+        var chip = e.target.closest('.chip');
+        if (!chip) return;
+        send(CANON);
+    });
+
+    /* ──── 输入事件 ──── */
+    dom.sendBtn.addEventListener('click', function () {
+        send(dom.chatInput.value);
+    });
+    dom.chatInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            send(dom.chatInput.value);
+        }
+    });
+    dom.chatInput.addEventListener('input', function () {
+        dom.chatInput.style.height = 'auto';
+        dom.chatInput.style.height = Math.min(dom.chatInput.scrollHeight, 160) + 'px';
+    });
+
+    /* ──── 只读演示会话内容 ──── */
+    (function fillReadonly() {
+        var leave = views.leave;
+        appendMsg(leave, 'user', '帮我提交请假申请，11月5日请年假一天。');
+        appendMsg(leave, 'ai', [
+            p('已生成请假申请单并提交成功。'),
+            p('申请单号 <b>DEMO-20261105-002</b>，已创建钉钉审批记录，审批状态：<span class="dp-status-badge">待审批</span>。'),
+            p('后续由审批人员在钉钉中完成审核。（本会话为演示记录）')
+        ]);
+
+        var expense = views.expense;
+        appendMsg(expense, 'user', '上周出差的车票费用怎么报销？');
+        appendMsg(expense, 'ai', [
+            p('费用报销需要按企业财务流程提交，当前演示版本开通了<b>出差申请</b>办理。'),
+            p('你可以点击左侧「新对话」，体验用一句话发起出差申请。')
+        ]);
+    })();
+
+    showView('trip');
+})();
+</script>
+</body>
+</html>

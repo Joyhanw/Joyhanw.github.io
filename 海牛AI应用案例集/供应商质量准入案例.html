@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI供应商质量准入案例 · 某大型制造企业</title>
+<style>
+  :root{
+    --primary:#2153d9; --primary-deep:#1846c2;
+    --ink:#182236; --gray:#5b6577; --gray-lt:#8a93a6;
+    --line:#e7ecf5; --ok:#12855f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--ink); background:#f5f8fc; font-size:16px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 36px;}
+
+  /* ── 标题带 ── */
+  .hero{
+    background:linear-gradient(135deg, #1a4fd6 0%, #2E6BFF 50%, #4a8cff 100%);
+    padding:20px 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute;
+    top:-50%;
+    right:-10%;
+    width:400px;
+    height:400px;
+    background:rgba(255,255,255,0.08);
+    border-radius:50%;
+  }
+  .hero .wrap{position:relative;z-index:1;}
+  .hero h1{font-size:18px;font-weight:700;letter-spacing:.5px;color:#fff;}
+  .hero h1 .sep{color:rgba(255,255,255,.5);font-weight:400;margin:0 10px;}
+  .back-link{display:inline-block;font-size:13px;color:rgba(255,255,255,.85);text-decoration:none;margin-bottom:8px;}
+  .back-link:hover{color:#fff;text-decoration:underline;}
+
+  /* ── 章节卡片 ── */
+  main{padding:24px 0 56px;}
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:34px 38px;margin-bottom:20px;
+    box-shadow:0 1px 3px rgba(24,46,90,.04);
+  }
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;}
+  .sec-head .idx{font-size:14px;font-weight:700;color:var(--primary);letter-spacing:1px;}
+  .sec-head h2{font-size:19px;font-weight:700;}
+
+  /* ── 背景与痛点 ── */
+  .bg-grid{display:grid;grid-template-columns:5fr 6fr;gap:26px;align-items:stretch;}
+  .bg-card{
+    background:#f6f9ff;border:1px solid #e2ebf8;border-radius:12px;
+    padding:22px 26px;font-size:15.5px;color:var(--gray);
+    display:flex;align-items:center;
+  }
+  .bg-card b{color:var(--ink);font-weight:600;}
+  .pains{display:flex;flex-direction:column;gap:12px;}
+  .pain{
+    display:flex;gap:14px;align-items:flex-start;
+    border:1px solid var(--line);border-radius:12px;padding:15px 20px;
+  }
+  .pain .dot{
+    flex:none;width:30px;height:30px;border-radius:8px;margin-top:3px;
+    background:#eef3fe;color:var(--primary);
+    font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;
+  }
+  .pain h3{font-size:15.5px;font-weight:700;margin-bottom:2px;}
+  .pain p{font-size:14px;color:var(--gray);line-height:1.6;}
+
+  /* ── 解决方案 ── */
+  .sol-band{
+    background:linear-gradient(90deg,#eef4ff,#f8fbff);
+    border:1px solid #dce6fb;border-radius:12px;padding:19px 26px;
+    font-size:15.5px;
+  }
+  .sol-band .fix{color:var(--primary);font-weight:700;}
+  .flow{display:flex;align-items:stretch;margin-top:28px;}
+  .flow .step{
+    flex:1;background:#fbfcff;border:1px solid var(--line);border-radius:12px;
+    padding:16px 14px;text-align:center;
+  }
+  .flow .step .no{
+    width:26px;height:26px;border-radius:50%;margin:0 auto 8px;
+    background:var(--primary);color:#fff;font-size:13px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .flow .step h4{font-size:15px;font-weight:700;}
+  .flow .step p{font-size:13px;color:var(--gray);margin-top:3px;}
+  .flow .arr{
+    flex:none;width:34px;display:flex;align-items:center;justify-content:center;
+    color:#b9c4da;font-size:18px;font-weight:700;
+  }
+
+  /* ── 协作图 ── */
+  .collab-img{display:block;width:100%;margin-top:28px;border:1px solid var(--line);border-radius:12px;}
+
+  /* ── 实际使用 ── */
+  .story-q{font-size:16.5px;font-weight:700;margin-bottom:18px;}
+  .story-q em{font-style:normal;color:var(--primary);}
+  .steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px;}
+  .step-card{border:1px solid var(--line);border-radius:12px;padding:17px 20px;background:#fbfcff;}
+  .step-card .lb{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px;
+  }
+  .step-card .lb i{
+    font-style:normal;width:20px;height:20px;border-radius:50%;
+    background:var(--primary);color:#fff;font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step-card p{font-size:14px;color:var(--gray);line-height:1.65;}
+  .step-card p b{color:var(--ink);font-weight:600;}
+  .shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 10px 32px rgba(24,40,80,.10);margin-bottom:24px;}
+  .shot img{display:block;width:100%;height:auto;}
+
+  /* ── 检查结果表格 ── */
+  .result-table{
+    width:100%;border-collapse:separate;border-spacing:0;
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    margin-bottom:24px;
+  }
+  .result-table th{
+    background:#eef4ff;color:var(--ink);font-size:14.5px;
+    padding:13px 22px;text-align:left;font-weight:700;
+  }
+  .result-table th:last-child{color:var(--primary);}
+  .result-table td{padding:13px 22px;font-size:14.5px;border-top:1px solid var(--line);vertical-align:top;}
+  .result-table td.item{color:var(--ink);font-weight:500;width:25%;}
+  .result-table td.req{color:var(--gray);width:35%;}
+  .result-table td.result{width:40%;}
+  .result-table tr:nth-child(even) td{background:#fafcff;}
+  .status-ok{color:var(--ok);font-weight:600;}
+  .status-warn{color:#d97706;font-weight:600;}
+  .status-miss{color:#dc2626;font-weight:600;}
+
+  .cta-row{margin-top:28px;text-align:center;}
+  .btn-demo{
+    flex:none;display:inline-flex;align-items:center;gap:10px;
+    background:var(--primary);color:#fff;text-decoration:none;
+    font-size:16px;font-weight:700;padding:14px 46px;border-radius:10px;
+    transition:background .15s;box-shadow:0 4px 14px rgba(33,83,217,.28);
+  }
+  .btn-demo:hover{background:var(--primary-deep);}
+  .btn-demo.disabled{
+    background:#c5cbd6;box-shadow:none;cursor:default;
+  }
+  .btn-demo.disabled:hover{background:#c5cbd6;}
+
+  /* ── 应用价值 ── */
+  table.value{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  table.value th{
+    background:#eef4ff;color:var(--ink);font-size:14.5px;
+    padding:13px 22px;text-align:left;font-weight:700;
+  }
+  table.value th:last-child{color:var(--primary);}
+  table.value td{padding:13px 22px;font-size:14.5px;border-top:1px solid var(--line);vertical-align:top;}
+  table.value td.old{color:var(--gray);width:50%;}
+  table.value td.new{width:50%;font-weight:500;}
+  table.value td.new .v{color:var(--ok);font-weight:700;margin-right:8px;}
+  table.value tr:nth-child(even) td{background:#fafcff;}
+
+  /* ── 价值卡片 ── */
+  .value-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;}
+  .value-card{
+    background:#f6f9ff;border:1px solid #e2ebf8;border-radius:12px;
+    padding:20px 22px;text-align:center;
+  }
+  .value-card .num{
+    font-size:28px;font-weight:800;color:var(--primary);
+    margin-bottom:6px;
+  }
+  .value-card p{font-size:14px;color:var(--gray);}
+
+  @media (max-width:860px){
+    .bg-grid,.steps{grid-template-columns:1fr;}
+    .flow{flex-direction:column;}
+    .flow .arr{transform:rotate(90deg);width:auto;height:26px;}
+    .value-cards{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 标题带 -->
+<div class="hero">
+  <div class="wrap">
+    <a class="back-link" href="海牛AI应用案例集.html">← 返回案例列表</a>
+    <h1>某大型制造企业<span class="sep">·</span>AI供应商质量准入案例</h1>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- 01 业务背景与痛点 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">01</span><h2>业务背景与痛点</h2></div>
+    <div class="bg-grid">
+      <div class="bg-card">
+        <div>
+          <p>某大型制造企业在引入新供应商时，需要收集<b>企业资质、质量管理及相关证明材料</b>，并按照<b>企业准入要求</b>开展质量准入审核。</p>
+        </div>
+      </div>
+      <div class="pains">
+        <div class="pain"><span class="dot">1</span><div><h3>材料多，查看费时间</h3><p>供应商申请涉及多种证明文件，需要逐份查看。</p></div></div>
+        <div class="pain"><span class="dot">2</span><div><h3>要求多，核对易遗漏</h3><p>需要对照准入要求逐项检查，容易遗漏问题。</p></div></div>
+        <div class="pain"><span class="dot">3</span><div><h3>发现问题，反复补材料</h3><p>材料缺失或信息不一致，需要联系供应商补充、更正。</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 AI数字员工解决方案 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">02</span><h2>AI数字员工解决方案</h2></div>
+    <div class="sol-band">
+      <b>海牛AI数字员工</b>预先内置企业<b>供应商准入要求</b>，对企业提交的资质及质量管理材料进行比对检查，识别缺漏和异常，并生成待补充、待核实的问题清单。
+    </div>
+
+    <img class="collab-img" src="大金协作图.png" alt="企业内部AI协作模式：企业审核人员提交供应商材料，海牛AI数字员工依据内置的准入要求进行检查并返回问题清单">
+  </div>
+
+  <!-- 03 实际使用 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">03</span><h2>实际使用</h2></div>
+    <div class="story-q">供应商提交材料后，如何<em>快速发现准入问题</em>？</div>
+    <div class="steps">
+      <div class="step-card">
+        <span class="lb"><i>1</i>上传供应商材料</span>
+        <p>工作人员上传供应商的<b>资质证明、质量管理等材料</b>，发起检查。</p>
+      </div>
+      <div class="step-card">
+        <span class="lb"><i>2</i>AI对照要求检查</span>
+        <p>AI识别材料内容，对照准入要求，提示<b>缺失、过期或信息不一致</b>的问题。</p>
+      </div>
+      <div class="step-card">
+        <span class="lb"><i>3</i>查看问题清单</span>
+        <p>工作人员查看<b>问题清单</b>，确认需要补充或进一步核实的材料。</p>
+      </div>
+    </div>
+
+    <div class="shot">
+      <img src="演示截图-供应商准入检查.png" alt="AI数字员工实际运行界面">
+    </div>
+
+    <div class="cta-row">
+      <a class="btn-demo" href="供应商质量准入-demo.html">体验AI数字员工</a>
+    </div>
+  </div>
+
+  <!-- 04 应用价值 -->
+  <div class="card">
+    <div class="sec-head"><span class="idx">04</span><h2>应用价值</h2></div>
+    <table class="value">
+      <tr><th>原来的工作方式</th><th>用了AI数字员工之后</th></tr>
+      <tr><td class="old">人工逐份翻看供应商材料</td><td class="new"><span class="v">✓</span>AI帮助识别和整理材料内容</td></tr>
+      <tr><td class="old">人工对照要求逐项检查</td><td class="new"><span class="v">✓</span>AI辅助核对，提示缺漏和异常</td></tr>
+      <tr><td class="old">人工整理需要补充的问题</td><td class="new"><span class="v">✓</span>AI整理待补充、待核实问题清单</td></tr>
+    </table>
+  </div>
+
+</main>
+
+</body>
+</html>
