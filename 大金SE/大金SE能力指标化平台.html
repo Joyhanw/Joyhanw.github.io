@@ -3330,7 +3330,7 @@ function handleAct(act, el) {
       renderView(APP.view); break;
     case 'office-detail-back': APP.view = 'dash_comp'; renderShell(); break;
     case 'od-search':
-      APP.q.officeDetail = { kw: ($('#od-kw') || {}).value || '', level: ($('#od-level') || {}).value || '全部等级' };
+      APP.q.officeDetail = { office: ($('#od-office') || {}).value || '全部事务所', kw: ($('#od-kw') || {}).value || '', level: ($('#od-level') || {}).value || '全部等级' };
       renderView(APP.view); break;
     case 'od-reset': APP.q.officeDetail = {}; renderView(APP.view); break;
     /* ---- 审批列表 ---- */
@@ -4802,13 +4802,13 @@ function vTeamBoard(el) {
   ${pageHead('团队看板', '', `<button class="btn" data-act="toast" data-msg="导出本所团队看板报告（演示）"><i class="ri-download-2-line"></i>导出报告</button>`)}
   <div class="dash">
   <div class="filter-bar">
-    ${certYearSelect('dash')}
     <div style="display:flex;align-items:center;gap:8px">
       <span style="font-size:13px;color:var(--g600)">事务所</span>
       <select class="select" data-change="dash-office" style="width:140px">
         ${allOffices.map(x => `<option${dOffice === x ? ' selected' : ''}>${x}</option>`).join('')}
       </select>
     </div>
+    ${certYearSelect('dash')}
   </div>
   <div class="grid grid-3 mt16">
     ${statMini('工程师总数', o.se + '<small>人</small>')}
@@ -4847,9 +4847,9 @@ function seRankTable(scope, back) {
 /* 总部下钻：事务所团队详情（SE业绩/能力排名，点击进入 SE 个人详情） */
 function vOfficeDetail(el) {
   const officeName = APP.officeDetail || '上海事务所';
-  const allMembers = DEMO.members.filter(m => m.office === officeName);
-  let scope = allMembers.slice();
   const q = APP.q.officeDetail || {};
+  const selOffice = q.office || officeName;
+  let scope = DEMO.members.filter(m => selOffice === '全部事务所' || m.office === selOffice);
   const kw = (q.kw || '').trim();
   if (kw) scope = scope.filter(m => m.name.includes(kw));
   if (q.level && q.level !== '全部等级') scope = scope.filter(m => m.level === q.level);
@@ -4859,6 +4859,7 @@ function vOfficeDetail(el) {
   el.innerHTML = `
   ${pageHead('', '', `<button class="btn" data-act="office-detail-back"><i class="ri-arrow-left-line"></i>返回</button>`)}
   <div class="filter-bar mt16">
+    <select class="select" id="od-office" style="min-width:150px">${['全部事务所', ...new Set(DEMO.members.map(m => m.office))].map(c => `<option${selOffice === c ? ' selected' : ''}>${c}</option>`).join('')}</select>
     <input class="input" id="od-kw" placeholder="搜索SE姓名" value="${esc(kw)}" style="min-width:160px">
     <select class="select" id="od-level" style="min-width:130px">${['全部等级', '新人', '1级技术员', '2级高级技术员', '3级技师', '4级工程师', '5级技术主任'].map(c => `<option${(q.level || '全部等级') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>
     <button class="btn btn-primary" data-act="od-search"><i class="ri-search-line"></i>查询</button>
