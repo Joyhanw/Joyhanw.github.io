@@ -49,10 +49,17 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
 .bhead .no{font-size:11px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:1px}
 .bhead .nm{font-size:13.5px;font-weight:700;letter-spacing:.5px}
 .bhead .cnt{margin-left:auto;font-size:10.5px;color:rgba(255,255,255,.75);font-weight:600;letter-spacing:.3px}
-.dbody{padding:10px;display:flex;flex-direction:column;gap:10px;flex:1}
-.sblock{background:#f8fafc;border:1px solid #e6ebf2;border-radius:9px;padding:9px 11px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.dbody{padding:10px;display:flex;flex-direction:column;gap:10px;flex:1;justify-content:center}
+.dbody.multi{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:center}
+.dbody.multi>.sblock:last-child:nth-child(odd){grid-column:1/-1}
+.sblock{background:#f8fafc;border:1px solid #e6ebf2;border-radius:9px;padding:9px 11px;display:flex;flex-direction:column;justify-content:center}
 .sblock .nm{font-size:13.5px;font-weight:700;color:var(--navy);letter-spacing:.5px}
 .sblock .subt{font-size:10.8px;color:var(--muted);margin:3px 0 8px;letter-spacing:.3px}
+.domain.gt .bhead .no{color:rgba(255,255,255,.45)}
+.domain.gt .bhead .nm{color:#aeb9c6}
+.domain.gt .bhead .cnt{color:rgba(255,255,255,.5)}
+.domain.gt .sblock .nm,.domain.gt .chip{color:#7d8b9d}
+.sblock.gt .nm,.sblock.gt .chip{color:#7d8b9d}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #dde5ee;border-radius:6px;padding:3px 9px;font-size:11.5px;color:#253247;font-weight:500;letter-spacing:.3px}
 .chip[data-scen]{cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
@@ -84,7 +91,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
 .crits{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:2px 0 12px}
 .crit{font-size:11px;color:var(--text2);background:#fff;border:1px solid var(--border);border-radius:20px;padding:4px 12px;letter-spacing:.3px}
 .crit b{color:var(--navy);margin-right:5px}
-.cands{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cands{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .ccard{background:#fff;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:10px;padding:13px 16px;cursor:pointer;transition:transform .15s,box-shadow .15s}
 .ccard:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(22,50,79,.14)}
 .ccard .nm{font-size:14px;font-weight:700;color:var(--navy);letter-spacing:.3px;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
@@ -234,20 +241,20 @@ const CHAIN=[
   {nm:'回收复盘',dt:'回款 · 结项 · 沉淀'}
 ];
 
-/* ===== 两大维度 · 12个业务板块 ===== */
+/* ===== 两大维度 · 10个业务板块 ===== */
 const GROUPS=[
   {id:'p1',vl:'第一维度 · 核心资产经营业务',note:'沿资产全生命周期展开 —— 解决资产从哪来、怎么买、怎么管、怎么收回来',boards:['b1','b2','b3','b4','b5','b6']},
-  {id:'p2',vl:'第二维度 · 企业经营与综合管理',note:'管经营 · 管人 · 管钱 · 管机构 · 管风险 · 管知识 —— 综合管理贯穿资产经营全流程',boards:['b7','b8','b9','b10','b11','b12']}
+  {id:'p2',vl:'第二维度 · 企业经营与综合管理',cols:2,note:'管经营 · 管钱 · 管风险 · 管知识 —— 综合管理贯穿资产经营全流程',boards:['b7','b9','b11','b12']}
 ];
 const BOARDS={
-  b1:{g:'p1',no:'01',name:'商机获取与项目拓展',sblocks:[
+  b1:{g:'p1',no:'01',name:'商机获取与项目拓展',gt:1,sblocks:[
     {n:'资产信息收集',t:'公开渠道 · 新包公告 · 批量清单',chips:['s01','s02']},
     {n:'项目拓展辅助',t:'推介材料 · 初步方案',chips:['s05']}
   ]},
   b2:{g:'p1',no:'02',name:'尽职调查与资产估值',sblocks:[
     {n:'债权材料调查',t:'借款合同 · 担保合同 · 催收记录',chips:['s06','s07']},
     {n:'企业与担保调查',t:'经营状况 · 涉诉情况 · 担保效力',chips:['s08','s09']},
-    {n:'企业画像与关联排查',t:'债务人画像 · 关联方排查',chips:['s03','s04']},
+    {n:'企业画像与关联排查',t:'债务人画像 · 关联方排查',chips:['s03','s04'],gt:1},
     {n:'抵押物调查',t:'权证 · 登记 · 查封',chips:['s10']},
     {n:'资产估值',t:'类案成交价 · 市场行情',chips:['s11']},
     {n:'尽调报告',t:'模板汇总 · 初稿成文',chips:['s12']}
@@ -259,8 +266,8 @@ const BOARDS={
   ]},
   b4:{g:'p1',no:'04',name:'投后管理与资产经营',sblocks:[
     {n:'台账与动态监测',t:'台账更新 · 状态扫描',chips:['s18','s19']},
-    {n:'债务人管理',t:'异动预警 · 还款跟踪',chips:['s20','s21']},
-    {n:'抵押物跟踪',t:'价值变化 · 处置时机',chips:['s22']},
+    {n:'债务人管理',t:'异动预警 · 还款跟踪',chips:['s20','s21'],gt:1},
+    {n:'抵押物跟踪',t:'价值变化 · 处置时机',chips:['s22'],gt:1},
     {n:'投后经营分析',t:'定期汇总 · 分析报告',chips:['s23']}
   ]},
   b5:{g:'p1',no:'05',name:'清收处置与资产退出',sblocks:[
@@ -279,14 +286,7 @@ const BOARDS={
     {n:'经营目标管理',t:'进度跟踪 · 偏离提示',chips:['s36']},
     {n:'项目经营管理',t:'异常项目发现',chips:['s37']}
   ]},
-  b8:{g:'p2',no:'08',name:'组织人力与人才管理',sblocks:[
-    {n:'人员能力管理',t:'岗位 · 项目经历 · 专业领域',chips:['s39']},
-    {n:'项目人员分配',t:'组队推荐 · 负荷参考',chips:['s40']},
-    {n:'工作任务管理',t:'进度 · 延期 · 忙闲',chips:['s41']},
-    {n:'绩效管理',t:'项目成果 · 评价参考',chips:['s64']},
-    {n:'人才发展',t:'短板识别 · 成长路径',chips:['s65']}
-  ]},
-  b9:{g:'p2',no:'09',name:'财务资金与成本管理',sblocks:[
+  b9:{g:'p2',no:'08',name:'财务资金与成本管理',sblocks:[
     {n:'项目财务核算',t:'投入 · 费用 · 回款 · 盈亏',chips:['s44']},
     {n:'资金管理',t:'资金缺口 · 安排分析',chips:['s45']},
     {n:'预算管理',t:'预算对比 · 偏差识别',chips:['s66']},
@@ -295,26 +295,13 @@ const BOARDS={
     {n:'现金流管理',t:'回款预测 · 资金预判',chips:['s47']},
     {n:'财务报告',t:'分析报告初稿',chips:['s48']}
   ]},
-  b10:{g:'p2',no:'10',name:'外部合作机构管理',sblocks:[
-    {n:'合作机构准入',t:'资质核验 · 历史合作',chips:['s49']},
-    {n:'合作机构画像',t:'专业领域 · 服务表现',chips:['s50']},
-    {n:'项目机构匹配',t:'选聘推荐 · 比选参考',chips:['s51']},
-    {n:'服务质量管理',t:'办结率 · 周期 · 评价',chips:['s52']},
-    {n:'合作费用管理',t:'结算核验 · 标准比对',chips:['s53']},
-    {n:'合作风险管理',t:'处罚 · 失信 · 异动',chips:['s54']}
-  ]},
-  b11:{g:'p2',no:'11',name:'风险合规与内部审计',sblocks:[
+  b11:{g:'p2',no:'09',name:'风险合规与内部审计',sblocks:[
     {n:'制度与合规',t:'全流程对照检查',chips:['s55']},
     {n:'风险监控',t:'公司级风险视图',chips:['s56']},
-    {n:'内部审计',t:'异常筛查 · 重点定位',chips:['s57']},
-    {n:'监管报送',t:'数据校验 · 材料初稿',chips:['s58']}
+    {n:'内部审计',t:'异常筛查 · 重点定位',chips:['s57']}
   ]},
-  b12:{g:'p2',no:'12',name:'知识管理与办公协同',sblocks:[
-    {n:'内部知识查询',t:'制度流程 · 岗位学习',chips:['s59']},
-    {n:'项目经验沉淀',t:'经验采集 · 案例检索',chips:['s60']},
-    {n:'会议管理',t:'纪要 · 决议 · 待办',chips:['s61']},
-    {n:'文档编写',t:'公文 · 方案 · 汇报材料',chips:['s62']},
-    {n:'跨部门协同',t:'事项跟进 · 到期提醒',chips:['s63']}
+  b12:{g:'p2',no:'10',name:'知识管理与办公协同',sblocks:[
+    {n:'企业知识助手',t:'制度流程 · 经验案例 · 会议纪要',chips:['s59','s60','s61']}
   ]}
 };
 /* ===== AI场景库 · 第一维度（34个） ===== */
@@ -545,24 +532,6 @@ s37:{b:'b7',n:'项目异常分析助手',t:'ana',roles:'经营管理 · 项目�
  ai:'持续扫描项目数据，自动发现异常项目并做初步归因：为什么慢、为什么回款不及预期。',
  flow:['AI 持续扫描项目数据','输出异常项目清单','附初步原因分析','管理层逐项处置'],
  value:'问题项目早发现早处置，不再靠"出了事才知道"。'},
-s39:{b:'b8',n:'人才能力画像助手',t:'ana',roles:'人力部门 · 经营管理层',
- what:'搞清楚每个员工有什么经验、擅长什么。',
- now:'谁有处置经验、谁做过诉讼案件，普遍靠印象和打听。',
- ai:'按岗位、项目经历、专业领域自动生成人员能力画像，用人时按图索骥。',
- flow:['AI 汇总项目档案与人员信息','生成能力画像','用人时检索匹配','定期更新'],
- value:'排兵布阵有依据，不再靠印象找人选。'},
-s40:{b:'b8',n:'项目团队配置推荐',t:'ana',roles:'人力部门 · 项目经理',
- what:'组建项目组时，推荐合适的人选组合。',
- now:'普遍靠项目经理凭关系和印象挑人，忙闲不均没人知道。',
- ai:'按项目类型和难度，结合人员经验、专业背景和当前工作量，推荐匹配的项目团队人选。',
- flow:['录入项目需求','AI 推荐人选组合及理由','人工确认组队','记录项目经历反哺画像'],
- value:'组队更快更匹配，人员负荷更均衡。'},
-s41:{b:'b8',n:'工作任务与负荷分析',t:'ana',roles:'人力部门 · 部门负责人',
- what:'看清各团队的任务量和忙闲情况。',
- now:'谁在超负荷、谁在空转，普遍没有量化依据。',
- ai:'汇总任务进度和项目分派，自动识别延期事项和工作负荷高点，提供调配参考。',
- flow:['AI 定期汇总任务数据','生成负荷视图','识别延期与超负荷','辅助人力调配'],
- value:'忙闲看得见，人力调配不再拍脑袋。'},
 s44:{b:'b9',n:'项目财务分析助手',t:'ana',roles:'财务人员 · 经营管理层',
  what:'看单个项目全周期的投入产出：投了多少、花了多少、收了多少、赚了多少，差异在哪。',
  now:'普遍靠财务手工归集，管理层想问某个项目的账，等好几天。',
@@ -593,42 +562,6 @@ s48:{b:'b9',n:'财务报告生成助手',t:'gen',roles:'财务部门',
  ai:'自动汇总财务数据生成分析报告初稿，异常波动自动附说明提示，人工补充定稿。',
  flow:['AI 归集财务数据','生成分析报告初稿','异常波动附提示','人工补充定稿'],
  value:'报告出得更快，分析重点更突出。'},
-s49:{b:'b10',n:'合作机构准入审核',t:'rec',roles:'法务管理 · 采购管理',
- what:'律所、评估机构入库时的资质审核。',
- now:'普遍靠人工核验资质证照、执业范围，逐份翻看。',
- ai:'自动核查机构资质证照有效性、执业范围，汇总历史合作记录，输出审核意见。',
- flow:['提交入库申请材料','AI 核验资质与执业信息','汇总历史合作情况','人工审定入库'],
- value:'准入审核提速不漏项，把关更严。'},
-s50:{b:'b10',n:'合作机构画像',t:'ana',roles:'法务管理 · 业务部门',
- what:'把每家合作机构的底细摸清：擅长什么、干得怎么样。',
- now:'机构强弱普遍靠口碑印象，缺少客观数据。',
- ai:'汇总机构专业领域、承办案件量、办结率、回款表现、处罚失信信息，形成机构画像页。',
- flow:['AI 定期汇总机构合作数据','生成机构画像','选用时查阅参考','画像持续更新'],
- value:'选机构有数据可依，不再全凭印象。'},
-s51:{b:'b10',n:'合作机构推荐匹配',t:'ana',roles:'业务部门 · 采购管理',
- what:'项目选聘机构时，推荐匹配的机构名单。',
- now:'普遍靠人工比选，比选范围有限。',
- ai:'按项目类型、地域、标的规模，从机构库中推荐匹配名单并附推荐理由。',
- flow:['输入项目需求','AI 推荐匹配机构及理由','人工比选确定','选用结果记录'],
- value:'比选范围更广、匹配更准，选聘更快更公道。'},
-s52:{b:'b10',n:'合作机构评价分析',t:'ana',roles:'法务管理',
- what:'合作机构干得好不好，用数据说话。',
- now:'普遍靠单案印象评价，缺整体视角，续聘与否说不清。',
- ai:'汇总各机构案件办结率、办理周期、回款表现和单案评价，生成服务分析报告——比如"承办案件多但办结率和回款不理想的机构"一目了然。',
- flow:['AI 汇总机构服务数据','生成评价分析报告','标出表现异常机构','作为续聘调整依据'],
- value:'委外机构优胜劣汰有据可依，整体服务质量可管。'},
-s53:{b:'b10',n:'合作费用核验',t:'ana',roles:'财务 · 法务管理',
- what:'律师费、评估费等委外费用结算的合规核验。',
- now:'费用结算与合同约定的核对普遍靠人工，超标准费用不易发现。',
- ai:'自动核对费用结算与合同标准、服务成果的对应关系，超标准或无成果支撑的费用自动提示。',
- flow:['机构提交费用结算','AI 核对合同标准与成果','异常费用提示','人工复核后支付'],
- value:'委外费用不花冤枉钱，结算有理有据。'},
-s54:{b:'b10',n:'合作机构风险监测',t:'ana',roles:'法务管理 · 风控人员',
- what:'合作机构自己出事（处罚、失信、经营异常）早知道。',
- now:'机构自身风险普遍发现滞后，出了事才紧急换机构。',
- ai:'持续监测合作机构的处罚、失信、经营异常信息，变化即时预警，提示暂停合作评估。',
- flow:['AI 定期扫描机构风险信息','异动即时预警','评估是否暂停合作','调整机构库'],
- value:'合作风险早防早换，不停摆在前头。'},
 s55:{b:'b11',n:'全流程合规审查助手',t:'ana',roles:'风控合规人员',
  what:'项目从立项、审批、收购到处置，操作是否符合制度要求。',
  now:'合规检查普遍靠事后抽查，覆盖面有限。',
@@ -647,12 +580,6 @@ s57:{b:'b11',n:'审计异常筛查助手',t:'ana',roles:'审计人员',
  ai:'对项目和财务数据批量扫描，自动发现异常交易、异常费用、异常流程，输出异常线索清单供审计核实。',
  flow:['AI 批量扫描业务与财务数据','输出异常线索清单','审计逐项核实','问题定性整改'],
  value:'审计从抽样式变批量筛查，检查重点有据可依。'},
-s58:{b:'b11',n:'监管报送辅助',t:'gen',roles:'风控合规 · 综合管理',
- what:'监管报表的数据汇总、校验和材料成稿。',
- now:'报送数据多头归集，普遍靠人工核对，完整性一致性易出错。',
- ai:'自动汇总报送数据，校验完整性和一致性，生成报送材料初稿，异常数据提示复核。',
- flow:['AI 归集报送数据','校验完整性与一致性','生成报送材料初稿','复核后报送'],
- value:'报送材料成稿快、返工少，完整性一致性有保障。'},
 s59:{b:'b12',n:'企业知识助手',t:'qa',roles:'全体员工',
  what:'全公司统一的制度流程入口：查制度、查流程、学业务。',
  now:'制度文件散在各处，找规定靠翻文件、问老人；新人学业务靠师傅带，上手慢、口径不一。',
@@ -671,30 +598,6 @@ s61:{b:'b12',n:'会议纪要助手',t:'gen',roles:'综合管理 · 全体员工'
  ai:'上传录音自动转文字，生成纪要初稿：议题、讨论要点、决议、待办事项和责任人。',
  flow:['会上录音或上传','AI 转写并生成纪要初稿','人工校对','决议待办分发跟踪'],
  value:'纪要当会出初稿，决议待办不落空。'},
-s62:{b:'b12',n:'智能材料生成助手',t:'gen',roles:'全体员工',
- what:'通知、方案、总结、汇报材料等日常写作的快速成稿。',
- now:'日常材料写作普遍占用大量时间，格式内容反复琢磨。',
- ai:'按场景生成公文、方案、汇报材料初稿，符合常用格式规范，人工修改定稿。',
- flow:['说明写作需求','AI 生成材料初稿','人工修改完善','定稿使用'],
- value:'日常写作负担明显下降，文档处理效率整体提升。'},
-s63:{b:'b12',n:'跨部门事项跟进',t:'emp',roles:'综合管理',
- what:'跨部门协作事项有人盯、有提醒、有交代。',
- now:'跨部门事项普遍靠开会布置、口头催办，拖没拖常常没人清。',
- ai:'登记跨部门事项后由数字员工持续跟踪，到期自动提醒责任人，定期汇总进展给发起人。',
- flow:['登记跨部门事项','AI 跟踪状态','到期自动提醒责任人','定期汇总进展'],
- value:'协同事项不落空，跨部门配合有据可查。'},
-s64:{b:'b8',n:'绩效分析助手',t:'ana',roles:'人力部门 · 部门负责人',
- what:'把项目成果、任务完成情况汇成绩效评价参考。',
- now:'绩效评价普遍靠人工汇总项目数据，口径不一、费时。',
- ai:'汇总人员参与项目的成果、任务完成质量与工作量，生成绩效评价参考，供考核评议使用（AI 只做辅助分析，不直接决定绩效）。',
- flow:['AI 汇总项目与任务数据','生成绩效评价参考表','部门评议讨论','结果反馈员工'],
- value:'绩效评价有数据可依，评议更公道省时。'},
-s65:{b:'b8',n:'人才培养发展助手',t:'gen',roles:'人力部门 · 各部门负责人',
- what:'看出每个人的能力短板，推荐学什么、往哪发展。',
- now:'人才培养普遍缺依据，培训一刀切，成长路径靠个人摸索。',
- ai:'结合人员能力画像与项目经历，识别经验短板，推荐培训内容与项目锻炼机会，辅助成长路径规划。',
- flow:['AI 比对岗位要求与个人经历','输出能力短板清单','推荐培训与锻炼安排','定期复盘成长情况'],
- value:'人才培养有的放矢，梯队建设有章可循。'},
 s66:{b:'b9',n:'预算执行分析助手',t:'ana',roles:'财务部门 · 各部门负责人',
  what:'预算和实际支出差多少、超了没有，一眼看清。',
  now:'预算执行情况普遍靠人工按月核对，偏差发现滞后。',
@@ -708,7 +611,7 @@ s67:{b:'b9',n:'成本结构分析助手',t:'ana',roles:'财务部门 · 经营�
  flow:['AI 归集成本费用数据','生成成本结构视图','异常变化自动提示','辅助管控决策'],
  value:'花钱的地方看得清，经营效益算得明。'}
 });
-/* ===== 重点候选数字员工（业务端3 + 管理端3） ===== */
+/* ===== 重点候选数字员工（业务端2 + 管理端2） ===== */
 const EMP={
 e1:{n:'智能尽调数字员工',tag:'高频候选',cls:'',ph:'一期优先验证',phc:'',dim:'p1',covers:['s06','s07','s08','s09','s10','s12'],roles:'尽调 · 法务 · 评估人员',
  data:'债权卷宗、借款担保合同、催收记录、抵质押登记、工商司法公开信息',
@@ -732,17 +635,6 @@ e2:{n:'投资决策分析数字员工',tag:'收购关键',cls:'',ph:'二期深�
  p3:'结合历史收购和实际回收数据，辅助优化资产收购策略与投资组合。',
  flow:['录入资产与测算假设','AI 检索同类成交案例','生成多方案收益对比与敏感提示','方案完整性自动核对','辅助报价与投委会决策'],
  value:'报价有据、测算更全面，收购决策讨论更充分。'},
-e3:{n:'智能清收数字员工',tag:'回收关键',cls:'',ph:'分阶段建设',phc:'gray',dim:'p1',covers:['s24','s25','s27','s28','s29','s30'],roles:'清收 · 法务 · 项目经理',
- data:'案件台账、司法文书、被执行人财产线索、处置记录',
- sys:'律所及案件管理系统（已具备）；司法公开信息渠道按需对接',
- review:'处置策略、和解撤诉等关键动作由经办人与管理层确认',
- what:'清收处置决定最终赚多少：找线索、定策略、盯案件一竿子管到底。',
- now:'线索靠人找、文书靠人写、案件靠人催，处置端人力占用最重。',
- p1:'司法文书识别；自动提取案号、法院、裁判结果等信息；生成案件进展记录；起诉状、保全申请等文书初稿生成（律所及案件管理系统已具备落地基础）。',
- p2:'财产线索挖掘；清收策略推荐；案件长期无进展自动提醒；执行节点跟踪；处置渠道对比。',
- p3:'打通资产、案件、回款数据，形成从线索发现、策略制定、诉讼执行到回收复盘的清收闭环。',
- flow:['AI 汇总被执行人财产线索','生成策略建议与类案参考','文书识别自动填报进展','超期案件自动督办','处置渠道对比辅助退出'],
- value:'回收动作更及时，催办从人盯人变系统盯人。'},
 e4:{n:'经营分析数字员工',tag:'管理旗舰',cls:'rose',ph:'一期重点验证',phc:'',dim:'p2',covers:['s35','s36','s37'],roles:'公司领导 · 经营管理部门',
  data:'资产台账、项目经营数据、财务数据、案件与机构数据',
  sys:'资产管理系统、财务系统、案件系统——数据打通程度决定分析完整度，未打通前先做局部分析',
@@ -754,18 +646,7 @@ e4:{n:'经营分析数字员工',tag:'管理旗舰',cls:'rose',ph:'一期重点�
  p3:'主动发现经营问题、推送风险与经营建议，支持管理层持续追问和决策分析。',
  flow:['管理层自然语言提问','AI 跨系统关联业务与财务数据','返回分析结论并定位具体项目','继续追问深挖','定期主动推送异常经营信号'],
  value:'经营情况随口问随时答，问题项目主动浮出——AI 不只是给业务减负，更提升整个公司的管理能力。'},
-e5:{n:'合作机构管理数字员工',tag:'律所系统衔接',cls:'gold',ph:'一期重点验证',phc:'',dim:'p2',covers:['s49','s50','s51','s52','s53','s54'],roles:'法务管理 · 采购管理 · 财务',
- data:'机构档案、律师信息、承办案件、办结情况、服务评价、费用结算',
- sys:'律所及案件管理系统（机构、律师、案件、回款数据已沉淀）；财务系统',
- review:'机构选聘、续聘、暂停合作由管理人员决定',
- what:'AMC 的"供应商"就是律所、评估、拍卖等委外机构——管好机构就是管好处置质量。',
- now:'机构好坏靠口碑印象、评价靠个案感觉，委外费用与机构风险缺少整体管控。',
- p1:'合作机构画像；承办案件数量；案件办结情况；办理周期；服务评价分析；机构综合表现分析（依托律所及案件管理系统已有数据）。',
- p2:'合作机构准入辅助；机构匹配推荐；合作费用核验；机构风险动态监测。',
- p3:'从机构准入、选聘、承办、评价到续聘调整，形成合作机构全生命周期管理。',
- flow:['AI 汇总机构承办案件与回款数据','生成机构画像与服务评价','标出案件多但办结率低的机构','辅助选聘推荐与续聘决策','费用结算自动核验'],
- value:'委外机构优胜劣汰有数据依据——律所系统 AI 方案正是这一场景的落地样板。'},
-e6:{n:'风险合规数字员工',tag:'管理刚需',cls:'',ph:'分阶段建设',phc:'gray',dim:'p2',covers:['s55','s56','s57','s58'],roles:'风控 · 合规 · 审计人员',
+e6:{n:'风险合规数字员工',tag:'管理刚需',cls:'',ph:'分阶段建设',phc:'gray',dim:'p2',covers:['s55','s56','s57'],roles:'风控 · 合规 · 审计人员',
  data:'制度文件、业务与财务数据、项目全流程记录',
  sys:'各业务系统按权限对接；制度库与业务数据基础已具备',
  review:'合规规则以现行制度为准并做版本管理；合规定性与整改要求由合规、审计人员确认',
@@ -795,10 +676,10 @@ function renderGroups(){
   document.getElementById('groups').innerHTML=GROUPS.map(g=>
     '<div class="trunk" style="margin-top:14px"><div class="vline"></div><div class="vlabel">'+g.vl+'</div><div class="vline"></div></div>'+
     '<div class="gnote">'+g.note+'</div>'+
-    '<div class="domains">'+g.boards.map(bid=>{const b=BOARDS[bid];
+    '<div class="domains"'+(g.cols===2?' style="grid-template-columns:repeat(2,1fr)"':'')+'>'+g.boards.map(bid=>{const b=BOARDS[bid];
       let cnt=0;b.sblocks.forEach(sb=>cnt+=sb.chips.length);
-      return '<div class="domain"><div class="bhead"><span class="no">'+b.no+'</span><span class="nm">'+b.name+'</span><span class="cnt">'+cnt+' 个AI点</span></div><div class="dbody">'+
-        b.sblocks.map(sb=>'<div class="sblock"><div class="nm">'+sb.n+'</div><div class="subt">'+sb.t+'</div><div class="chips">'+sb.chips.map(id=>chipHTML(id,bid==='b5'||bid==='b8')).join('')+'</div></div>').join('')+
+      return '<div class="domain'+(b.gt?' gt':'')+'"><div class="bhead"><span class="no">'+b.no+'</span><span class="nm">'+b.name+'</span><span class="cnt">'+cnt+' 个AI点</span></div><div class="dbody'+(b.sblocks.length>=4?' multi':'')+'">'+
+        b.sblocks.map(sb=>'<div class="sblock'+(sb.gt?' gt':'')+'"><div class="nm">'+sb.n+'</div><div class="subt">'+sb.t+'</div><div class="chips">'+sb.chips.map(id=>chipHTML(id,bid==='b5'||sb.gt)).join('')+'</div></div>').join('')+
       '</div></div>';}).join('')+
     '</div>').join('');
 }
