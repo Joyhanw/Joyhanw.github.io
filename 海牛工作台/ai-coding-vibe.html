@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Coding · Vibe Coding</title>
+<style>
+:root{
+  --primary:#1A66FF;--primary-dark:#0F47C7;--primary-light:#E8F0FF;
+  --success:#00B42A;--warning:#FF7D00;--danger:#F53F3F;
+  --text-1:#1D2129;--text-2:#4E5969;--text-3:#86909C;--text-4:#C9CDD4;
+  --bg-page:#F2F3F5;--border:#E5E6EB;--border-light:#EEF0F3;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 2px 10px rgba(0,0,0,.06);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg-page);color:var(--text-1);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:13px;outline:none}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#D8DADF;border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ===== 登录页 ===== */
+.login-page{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,#0F2B46,#123A60 55%,#1A66FF 130%);display:flex;align-items:center;justify-content:center}
+.login-page::before{content:'';position:absolute;right:-120px;top:-120px;width:480px;height:480px;background:radial-gradient(circle,rgba(26,102,255,.35) 0%,transparent 70%);border-radius:50%}
+.login-page::after{content:'';position:absolute;left:-160px;bottom:-160px;width:520px;height:520px;background:radial-gradient(circle,rgba(0,212,255,.18) 0%,transparent 70%);border-radius:50%}
+.login-card{position:relative;width:400px;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:40px 36px;z-index:1}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo-icon{width:56px;height:56px;border-radius:14px;margin:0 auto 12px;background:linear-gradient(135deg,#1A66FF,#00D4FF);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;box-shadow:0 8px 20px rgba(26,102,255,.3)}
+.login-logo-title{font-size:20px;font-weight:700;color:var(--text-1)}
+.login-logo-sub{font-size:12px;color:var(--text-3);margin-top:4px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:12px;color:var(--text-2);margin-bottom:6px}
+.form-input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#FAFBFC;transition:.2s}
+.form-input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px var(--primary-light)}
+.login-btn{width:100%;padding:12px;border-radius:8px;background:var(--primary);color:#fff;font-size:15px;font-weight:600;margin-top:6px;transition:.2s}
+.login-btn:hover{background:var(--primary-dark)}
+.login-tip{text-align:center;font-size:12px;color:var(--text-4);margin-top:16px}
+.login-tip strong{color:var(--primary);font-weight:500}
+
+/* ===== 主布局 ===== */
+.app{display:none;flex-direction:column;height:100vh;overflow:hidden}
+.app.ready{display:flex}
+.header{height:56px;background:#0F2B46;color:#fff;flex-shrink:0;display:flex;align-items:center;padding:0 20px;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:100}
+.logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;letter-spacing:.5px}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,#1A66FF,#00D4FF);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold}
+.logo .sub{font-size:11px;color:rgba(255,255,255,.6);font-weight:400;margin-left:2px}
+.header-nav{display:flex;gap:28px;margin-left:48px;flex:1}
+.header-nav a{color:rgba(255,255,255,.7);font-size:14px;padding:8px 2px;position:relative;transition:.2s;cursor:pointer}
+.header-nav a:hover{color:#fff}
+.header-nav a.active{color:#fff;font-weight:500}
+.header-nav a.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:#1A66FF;border-radius:2px}
+.header-right{display:flex;align-items:center;gap:16px}
+.env-tag{background:rgba(0,180,42,.15);color:#5BFF8A;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid rgba(0,180,42,.3)}
+.user-info{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.2s}
+.user-info:hover{background:rgba(255,255,255,.1)}
+.avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#FF7D00,#FFB400);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500;line-height:1.2}
+
+
+.user-info{position:relative}
+.user-arrow{font-size:10px;color:rgba(255,255,255,.5);margin-left:-2px}
+.user-menu{display:none;position:absolute;top:42px;right:0;width:150px;background:#fff;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);border:1px solid var(--border);overflow:hidden;z-index:500;animation:upIn .18s ease}
+.user-menu.open{display:block}
+@keyframes upIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.user-menu-item{padding:10px 14px;font-size:12.5px;color:var(--text-1);cursor:pointer;display:flex;align-items:center;gap:8px}
+.user-menu-item:hover{background:var(--primary-light);color:var(--primary)}
+.user-menu-item.logout:hover{background:#FFECE8;color:var(--danger)}
+.user-menu-divider{height:1px;background:var(--border-light);margin:4px 0}
+
+/* ===== 首页 ===== */
+.main{flex:1;overflow-y:auto;background:var(--bg-page)}
+
+/* ===== 生成页 ===== */
+.gen-layout{display:flex;height:calc(100vh - 56px);overflow:hidden}
+.gen-main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-page)}
+.gen-topbar{height:52px;background:#fff;border-bottom:1px solid var(--border-light);flex-shrink:0;display:flex;align-items:center;padding:0 16px;gap:12px}
+.gen-topbar-left{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-2);font-size:13px;padding:5px 10px;border-radius:6px;transition:.15s}
+.gen-topbar-left:hover{background:var(--primary-light);color:var(--primary)}
+.gen-topbar-title{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden}
+.gen-topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+.gen-btn{padding:6px 14px;border-radius:6px;font-size:12.5px;color:var(--text-2);border:1px solid var(--border);background:#fff;transition:.15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.gen-btn:hover{border-color:var(--primary);color:var(--primary)}
+.gen-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.gen-btn.primary:hover{background:var(--primary-dark);color:#fff}
+.gen-canvas-area{flex:1;overflow:auto;padding:32px;display:flex;align-items:flex-start;justify-content:center}
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
+.loading-spinner{width:44px;height:44px;border:4px solid var(--primary-light);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-main{font-size:16px;font-weight:600;color:var(--text-1)}
+.loading-step{font-size:13px;color:var(--text-3);background:#fff;padding:5px 14px;border-radius:20px;box-shadow:var(--shadow-sm)}
+.idle-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
+.idle-ico{font-size:52px}
+
+/* 小程序壳（轻量预览 — 黑色粗边框备用版本已移除） */
+.mp-preview-shell{width:375px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.08);border:1px solid var(--border-light);animation:popIn .35s ease;flex-shrink:0}
+@keyframes popIn{from{opacity:.5;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.mp-status-bar{display:flex;justify-content:space-between;padding:10px 22px;background:#F9FAFB;font-size:11px;color:var(--text-1);font-weight:600;border-bottom:1px solid var(--border-light)}
+.mp-body{min-height:560px;background:#F7F8FA;padding-bottom:64px}
+.mp-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;border-bottom:1px solid var(--border-light)}
+.mp-nav-title{font-size:16px;font-weight:600}
+.mp-nav-right{display:flex;gap:14px;color:var(--text-2)}
+.mp-search{padding:10px 16px}
+.mp-search-bar{background:#fff;border-radius:8px;padding:0 12px;display:flex;align-items:center;gap:8px;border:1px solid var(--border)}
+.mp-search-bar input{border:none;padding:9px 0;font-size:13px;flex:1;background:transparent}
+.mp-banner{padding:0 16px}
+.mp-banner-box{background:linear-gradient(135deg,#FF7D00,#FFB400);border-radius:12px;padding:18px;color:#fff;margin:12px 0;position:relative;overflow:hidden}
+.mp-banner-box::after{content:'';position:absolute;right:-20px;top:-20px;width:110px;height:110px;background:radial-gradient(circle,rgba(255,255,255,.25) 0%,transparent 70%);border-radius:50%}
+.mp-banner-title{font-size:18px;font-weight:600;position:relative;z-index:1}
+.mp-banner-sub{font-size:12px;opacity:.85;margin-top:4px;position:relative;z-index:1}
+.mp-section-title{font-size:14px;font-weight:600;color:var(--text-1);padding:12px 16px 8px}
+.mp-list{padding:0 16px;display:flex;flex-direction:column;gap:10px}
+.mp-card{background:#fff;border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow-sm);cursor:pointer;transition:.15s;border:1px solid transparent}
+.mp-card:hover{border-color:var(--primary)}
+.mp-card-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.mp-card-content{flex:1;min-width:0}
+.mp-card-name{font-size:14px;font-weight:600;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-card-meta{font-size:11px;color:var(--text-3);margin-top:4px}
+.mp-card-status{font-size:11px;display:inline-block}
+.mp-card-right{color:var(--text-4);font-size:18px;flex-shrink:0}
+
+
+
+
+
+
+
+.mp-form{padding:4px 16px}
+.mp-form-group{margin-bottom:12px}
+.mp-form-label{font-size:12.5px;color:var(--text-1);font-weight:500;margin-bottom:6px;display:block}
+.red{color:var(--danger);margin-left:2px}
+.mp-form-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:13px;appearance:auto}
+.mp-form-input:focus{border-color:var(--primary)}
+.mp-form-input::placeholder{color:var(--text-4)}
+.mp-submit-btn{display:block;width:calc(100% - 32px);margin:18px auto 8px;padding:12px;border-radius:10px;background:var(--primary);color:#fff;font-size:15px;font-weight:600;text-align:center;transition:.2s}
+.mp-submit-btn:hover{background:var(--primary-dark)}
+.mp-qrcode{text-align:center;padding:26px 20px}
+.mp-qrcode-box{width:150px;height:150px;margin:0 auto 16px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;position:relative}
+.mp-qrcode-box::before{content:'';position:absolute;inset:5px;border-radius:4px;background:repeating-linear-gradient(0deg,#1D2129 0,#1D2129 2px,transparent 2px,transparent 6px);background-size:100% 6px;opacity:.14}
+.qr-dot{width:30px;height:30px;background:var(--primary);border-radius:6px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+.mp-qrcode-tip{font-size:15px;font-weight:600;color:var(--text-1);margin-bottom:6px}
+.mp-qrcode-sub{font-size:12px;color:var(--text-3)}
+.mp-qrcode-time{font-size:11px;color:var(--text-4);margin-top:8px}
+.mp-mine-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.mp-mine-item{background:#fff;border-radius:12px;padding:14px;box-shadow:var(--shadow-sm)}
+.mp-mine-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.mp-mine-item-name{font-size:14px;font-weight:600}
+.mp-mine-item-status{font-size:11px;padding:2px 10px;border-radius:10px}
+.st-registered{background:var(--primary-light);color:var(--primary)}
+.st-checked{background:#E8FFEA;color:var(--success)}
+.st-canceled{background:#F2F3F5;color:var(--text-3)}
+.mp-mine-item-info{font-size:12px;color:var(--text-3)}
+.mp-mine-item-code{font-size:11px;font-family:monospace;color:var(--text-2);margin-top:6px;background:#FAFBFC;padding:4px 8px;border-radius:4px;display:inline-block}
+.mp-empty{text-align:center;padding:50px 20px;color:var(--text-3)}
+.empty-ico{font-size:40px;margin-bottom:8px}
+.mp-tabbar{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border-light);display:flex;z-index:50}
+.mp-tabbar span{flex:1;text-align:center;padding:8px 0 10px;font-size:11px;color:var(--text-3);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:.15s;user-select:none}
+.mp-tabbar span .tab-ico{font-size:18px}
+.mp-tabbar span.tab-active{color:var(--primary);font-weight:500}
+.mp-back-btn{padding:10px 16px;display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text-2);cursor:pointer;width:fit-content}
+.mp-back-btn:hover{color:var(--primary)}
+.phone-body-wrap{position:relative}
+
+/* PC壳 */
+.pc-shell{width:100%;max-width:800px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.12);border:1px solid var(--border);animation:popIn .35s ease;flex-shrink:0}
+.pc-browser-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#F2F3F5;border-bottom:1px solid var(--border-light)}
+.pc-dot{width:10px;height:10px;border-radius:50%}
+.pc-url{flex:1;background:#fff;border-radius:6px;padding:4px 12px;font-size:11px;color:var(--text-3);margin-left:8px}
+.pc-layout{display:flex;min-height:460px}
+.pc-sidebar{width:160px;background:#0F2B46;padding:16px 0;flex-shrink:0}
+.pc-sidebar-logo{color:#fff;font-size:14px;font-weight:700;padding:0 16px 16px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:12px}
+.pc-menu-item{padding:10px 16px;color:rgba(255,255,255,.65);font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.pc-menu-item.active{background:var(--primary);color:#fff}
+.pc-main{flex:1;background:#F7F8FA;padding:18px;overflow-x:auto}
+.pc-main-title{font-size:16px;font-weight:600;margin-bottom:14px}
+.pc-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.pc-stat{background:#fff;border-radius:8px;padding:14px;box-shadow:var(--shadow-sm)}
+.pc-stat-label{font-size:11px;color:var(--text-3);margin-bottom:4px}
+.pc-stat-value{font-size:22px;font-weight:700}
+.pc-table{width:100%;background:#fff;border-radius:8px;overflow:hidden;box-shadow:var(--shadow-sm);border-collapse:collapse}
+.pc-table th{background:#FAFBFC;font-size:11px;color:var(--text-3);text-align:left;padding:9px 12px;border-bottom:1px solid var(--border-light);font-weight:500;white-space:nowrap}
+.pc-table td{padding:9px 12px;font-size:12px;color:var(--text-2);border-bottom:1px solid var(--border-light);white-space:nowrap}
+.pc-table tr:last-child td{border-bottom:none}
+.pc-tag{font-size:10px;padding:2px 8px;border-radius:4px;display:inline-block}
+
+/* 右侧对话 */
+.gen-chat{width:420px;background:#fff;border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .25s,opacity .25s;overflow:hidden}
+.gen-chat.closed{width:0;opacity:0;border:none}
+.gen-chat-head{background:#0F2B46;color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.gen-chat-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.gen-chat-close{font-size:20px;color:rgba(255,255,255,.7);cursor:pointer;padding:4px 6px;border-radius:4px;transition:.15s;line-height:1}
+.gen-chat-close:hover{background:rgba(255,255,255,.15);color:#fff}
+.gen-chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;background:#FAFAF7}
+.gen-chat-msg{display:flex;gap:8px;max-width:100%}
+.gen-chat-msg.user{flex-direction:row-reverse}
+.gen-chat-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
+.gen-chat-bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.65;max-width:88%;word-break:break-word}
+.gen-chat-msg.bot .gen-chat-bubble{background:#fff;color:var(--text-1);border:1px solid var(--border);border-bottom-left-radius:4px}
+.gen-chat-msg.user .gen-chat-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+
+
+
+
+
+.req-label{width:64px;color:var(--text-3);flex-shrink:0}
+.req-value{color:var(--text-1);flex:1}
+
+
+
+
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 12px;border-radius:6px;font-size:12.5px;background:#fff;color:var(--text-2);border:1px solid var(--border);transition:.15s;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--primary);color:var(--primary)}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark);color:#fff}
+
+
+
+.gen-chat-input{padding:10px 12px;border-top:1px solid var(--border-light);display:flex;gap:8px;background:#fff;flex-shrink:0}
+.gen-chat-input textarea{flex:1;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;resize:none;min-height:44px;max-height:110px;font-family:inherit;background:#FAFBFC}
+.gen-chat-input textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light);background:#fff}
+.gen-chat-send{width:44px;height:44px;border-radius:10px;background:var(--primary);color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.gen-chat-send:hover{background:var(--primary-dark)}
+
+/* 浮动对话按钮 */
+.chat-fab{position:fixed;bottom:24px;right:24px;width:46px;height:46px;border-radius:50%;background:var(--primary);color:#fff;font-size:19px;box-shadow:0 4px 14px rgba(26,102,255,.4);display:none;align-items:center;justify-content:center;cursor:pointer;z-index:300;transition:.2s}
+.chat-fab.show{display:flex}
+.chat-fab:hover{background:var(--primary-dark);transform:scale(1.08)}
+
+/* 我的应用 */
+.app-page{padding:24px;max-width:1100px;margin:0 auto}
+.app-page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.app-page-title{font-size:20px;font-weight:700;color:var(--text-1)}
+.app-page-sub{font-size:12px;color:var(--text-3);margin-top:4px}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.app-card{background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border-light);cursor:pointer;transition:.2s}
+.app-card:hover{box-shadow:var(--shadow);transform:translateY(-2px);border-color:var(--primary)}
+.app-card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.app-card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.app-card-name{font-size:15px;font-weight:600;color:var(--text-1)}
+.app-card-ver{font-size:11px;color:var(--text-3);margin-top:2px}
+.app-card-desc{font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.app-card-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border-light)}
+.app-card-status{font-size:11px;padding:2px 10px;border-radius:10px}
+.st-launched{background:#E8FFEA;color:var(--success)}
+.st-generating{background:var(--primary-light);color:var(--primary)}
+
+/* .icon-btn removed — replaced by platform tag */
+.app-empty{text-align:center;padding:60px 20px;color:var(--text-3)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+
+/* 通用标签 */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;font-size:11px;border-radius:4px;line-height:1.6}
+.tag-success{background:#E8FFEA;color:var(--success)}
+.tag-primary{background:var(--primary-light);color:var(--primary)}
+.tag-warning{background:#FFF7E8;color:var(--warning)}
+.tag-gray{background:#F2F3F5;color:var(--text-3)}
+
+/* 弹窗 */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal-mask.open{display:flex}
+.modal{background:#fff;border-radius:12px;width:460px;max-width:92vw;max-height:85vh;display:flex;flex-direction:column;animation:modalIn .25s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{font-size:20px;color:var(--text-3);cursor:pointer;padding:4px}
+.modal-body{padding:18px 20px;overflow-y:auto}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:10px;background:#FAFBFC;flex-shrink:0}
+.modal-foot .btn{padding:8px 20px;font-size:13px}
+.form-select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:#fff;appearance:auto}
+
+/* Toast */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-12px);background:#1D2129;color:#fff;padding:10px 20px;border-radius:6px;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;transition:.25s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.warning{background:var(--warning)}
+
+@media (max-width:1200px){.gen-chat{width:360px}}
+@media (max-width:960px){.gen-chat{width:320px}}
+
+
+/* 平铺详情页（）*/
+.tile-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 12px 4px}
+.tile-detail{background:#fff;border-radius:10px;padding:12px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm)}
+.tile-detail .td-icon{font-size:18px;margin-bottom:6px}
+.tile-detail .td-label{font-size:10px;color:var(--text-3)}
+.tile-detail .td-value{font-size:12.5px;font-weight:600;color:var(--text-1);margin-top:2px}
+.tile-detail-big{grid-column:1/3;background:#fff;border-radius:10px;padding:12px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm)}
+.tile-detail-big .td-desc{font-size:12px;color:var(--text-2);line-height:1.6}
+.tile-detail-act{grid-column:1/3;display:flex;gap:8px}
+.tile-detail-act button{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.2s}
+.tile-detail-act .td-btn-primary{background:var(--primary);color:#fff}
+.tile-detail-act .td-btn-default{background:#F2F3F5;color:var(--text-1)}
+
+/* ===== 首页大输入区 + 示例需求 ===== */
+.home-wrap{max-width:820px;margin:0 auto;padding:48px 24px 40px}
+.home-title{font-size:30px;font-weight:700;color:var(--text-1);text-align:center}
+.home-sub{font-size:14px;color:var(--text-3);text-align:center;margin:10px 0 24px}
+.input-area{background:#fff;border-radius:22px;box-shadow:0 4px 20px rgba(0,0,0,.06);border:1px solid var(--border-light);padding:14px;transition:.2s}
+.input-area:focus-within{border-color:var(--primary);box-shadow:0 6px 24px rgba(26,102,255,.14)}
+.input-big{width:100%;border:none;resize:none;font-size:16px;line-height:1.7;padding:16px;min-height:150px;max-height:220px;background:transparent}
+.input-big::placeholder{color:var(--text-4)}
+.input-tools{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 2px;border-top:1px solid var(--border-light);margin-top:6px}
+.input-tools-left{display:flex;align-items:center;gap:6px}
+.tool-btn{padding:6px 10px;border-radius:6px;font-size:12.5px;color:var(--text-3);transition:.15s;display:flex;align-items:center;gap:4px;background:transparent;border:1px solid transparent}
+.tool-btn:hover{background:var(--primary-light);color:var(--primary)}
+.send-arrow{width:42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0;box-shadow:0 2px 8px rgba(26,102,255,.3);border:none;cursor:pointer;line-height:1}
+.send-arrow:hover{background:var(--primary-dark)}
+.send-arrow:disabled{background:#C9D7F0;box-shadow:none;cursor:not-allowed}
+.home-platform-select{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border-light);width:fit-content}
+.home-platform-select span{padding:8px 18px;font-size:14px;cursor:pointer;color:var(--text-2);transition:.15s;user-select:none;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
+.home-platform-select span:hover{color:var(--primary)}
+.home-platform-select span.active{color:var(--primary);font-weight:600;border-bottom-color:var(--primary)}
+.home-tool-divider{width:1px;height:16px;background:var(--border);margin:0 4px}
+.home-model-select{padding:5px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:12px;color:var(--text-2);appearance:auto;cursor:pointer;transition:.15s;max-width:160px}
+.home-model-select:hover{border-color:var(--primary);color:var(--primary)}
+.input-tools-right{display:flex;align-items:center;gap:10px}
+.reqdoc-optl{color:var(--text-3)}
+
+
+.reqdoc-conv{display:flex;flex-direction:column;gap:12px}
+.reqdoc-conv-msg{display:flex;gap:10px;max-width:100%}
+.reqdoc-conv-msg.user{flex-direction:row-reverse}
+.reqdoc-conv-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;color:#fff}
+.reqdoc-conv-avatar.user{background:linear-gradient(135deg,#FF7D00,#FFB400)}
+.reqdoc-conv-avatar.ai{background:var(--primary)}
+.reqdoc-conv-bubble{padding:12px 16px;border-radius:14px;font-size:14px;line-height:1.7;max-width:88%;word-break:break-word}
+.reqdoc-conv-msg.user .reqdoc-conv-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+.reqdoc-conv-msg.ai .reqdoc-conv-bubble{background:#fff;color:var(--text-1);border:1px solid var(--border);border-bottom-left-radius:4px}
+
+/* ===== 需求说明书页：加宽 + 结构化文档 ===== */
+.reqdoc-page{max-width:960px;margin:0 auto;padding:24px 24px 180px;display:flex;flex-direction:column;gap:14px}
+.reqdoc-card{background:#fff;border-radius:12px;border:1px solid var(--border-light);box-shadow:var(--shadow);overflow:hidden;animation:popIn .35s ease}
+.reqdoc-head{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border-light)}
+.reqdoc-title{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.reqdoc-actions .btn{padding:6px 16px;font-size:12.5px}
+.reqdoc-body{padding:24px 28px}
+.reqdoc-doc-section{margin-bottom:22px}
+.reqdoc-doc-section:last-child{margin-bottom:0}
+.reqdoc-doc-h{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text-1);margin-bottom:8px}
+.reqdoc-doc-h .no{width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:600}
+.reqdoc-doc-p{font-size:13.5px;line-height:1.9;color:var(--text-2)}
+
+.reqdoc-doc-line{display:flex;align-items:baseline;gap:8px;font-size:13.5px;line-height:2;color:var(--text-2)}
+.reqdoc-doc-line .dot{width:5px;height:5px;border-radius:50%;background:var(--primary);flex-shrink:0;align-self:center}
+.reqdoc-editor{border:none;border-radius:0;padding:24px 28px;font-size:13.5px;line-height:1.9;resize:vertical;width:100%;min-height:420px;background:#fff;font-family:inherit;outline:none}
+.reqdoc-editor:focus{box-shadow:inset 0 0 0 2px var(--primary);border-radius:12px}
+.reqdoc-gen-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:#FAFBFC;border-top:1px solid var(--border-light)}
+.reqdoc-gen-hint{font-size:12.5px;color:var(--text-3);display:flex;align-items:center;gap:6px}
+.reqdoc-gen-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 36px;border-radius:10px;background:var(--primary);color:#fff;font-size:14.5px;font-weight:600;transition:.2s;box-shadow:0 4px 14px rgba(26,102,255,.3)}
+.reqdoc-gen-btn:hover{background:var(--primary-dark);box-shadow:0 6px 20px rgba(26,102,255,.4)}
+.reqdoc-chat-bar{position:fixed;bottom:0;left:0;right:0;padding:14px 24px;background:#fff;border-top:1px solid var(--border-light);display:flex;gap:10px;align-items:flex-end;z-index:50;box-shadow:0 -4px 16px rgba(0,0,0,.05)}
+.reqdoc-chat-input{flex:1;border:1px solid var(--border);border-radius:16px;padding:16px 18px;font-size:14px;resize:none;min-height:100px;max-height:140px;font-family:inherit;background:#fff;outline:none;transition:.2s;line-height:1.7;box-sizing:border-box}
+.reqdoc-chat-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.reqdoc-chat-send{width:42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(26,102,255,.3)}
+.reqdoc-chat-send:hover{background:var(--primary-dark)}
+.reqdoc-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:16px}
+
+/* ===== 平铺预览：轻量白底容器 ===== */
+.tiled-grid{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:flex-start;padding:8px}
+.tiled-label{text-align:center;font-size:16px;font-weight:600;color:var(--text-1);margin-bottom:20px}
+.tiled-mini{flex:0 0 auto;width:280px;border-radius:18px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);border:1px solid var(--border);background:#fff;transition:.2s;animation:tileIn .3s ease}
+.tiled-mini:hover{box-shadow:0 8px 28px rgba(0,0,0,.1)}
+@keyframes tileIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tiled-mini-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:#F7F8FA;border-bottom:1px solid var(--border-light);font-size:11px;color:var(--text-3)}
+.tiled-mini-title{padding:12px 14px;font-size:14px;font-weight:600;border-bottom:1px solid var(--border-light)}
+.tiled-mini-body{padding:12px 14px;min-height:110px;font-size:12.5px;color:var(--text-2);line-height:1.7}
+.tiled-mini-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F5F6F7}
+.tiled-mini-item:last-child{border-bottom:none}
+.tiled-mini-item-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.tiled-mini-stat{text-align:center;padding:8px}
+.tiled-mini-stat-val{font-size:18px;font-weight:700;color:var(--text-1)}
+.tiled-mini-stat-lbl{font-size:10px;color:var(--text-3);margin-top:2px}
+.tiled-qr{text-align:center;padding:12px}
+.tiled-qr-box{width:72px;height:72px;margin:0 auto 8px;background:repeating-linear-gradient(0deg,#1D2129 0,#1D2129 2px,transparent 2px,transparent 5px);background-size:100% 5px;opacity:.15}
+.tiled-qr-tip{font-size:11px;font-weight:600;color:var(--text-1)}
+.tiled-pc{width:320px}
+.tiled-pc-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#F2F3F5;border-bottom:1px solid var(--border-light)}
+.tiled-pc-url{flex:1;background:#fff;border-radius:4px;padding:2px 8px;font-size:10px;color:var(--text-3);margin-left:4px}
+
+/* ===== Vibe Coding 嵌入版新增样式 ===== */
+/* 工作区骨架 */
+.wc-body{flex:1;display:flex;overflow:hidden}
+.wc-rail{width:48px;background:#fff;border-right:1px solid var(--border-light);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:6px;flex-shrink:0}
+.rail-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--text-3);cursor:pointer;transition:.15s;position:relative}
+.rail-btn:hover{background:var(--primary-light);color:var(--primary)}
+.rail-btn.active{background:var(--primary-light);color:var(--primary)}
+.rail-tip{position:absolute;left:44px;top:50%;transform:translateY(-50%);background:#1D2129;color:#fff;font-size:11px;padding:3px 8px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:.15s;z-index:400}
+.rail-btn:hover .rail-tip{opacity:1}
+/* 面包屑（深色顶栏） */
+.header .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.55)}
+.header .crumb a{color:rgba(255,255,255,.55);cursor:pointer;transition:.15s}
+.header .crumb a:hover{color:#fff}
+.header .crumb .sep{color:rgba(255,255,255,.3)}
+.header .crumb .cur{color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+.crumb-mid{flex:1;display:flex;justify-content:center;min-width:0}
+/* 需求状态 / 版本 */
+.st-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:2px 10px;border-radius:10px;white-space:nowrap}
+.st-chip i{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.st-chip.req{background:rgba(26,102,255,.18);color:#8FB6FF}
+.st-chip.req i{background:#8FB6FF}
+.st-chip.dev{background:rgba(0,180,42,.15);color:#5BFF8A}
+.st-chip.dev i{background:#5BFF8A}
+.ver-tag{font-size:11px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.1);padding:2px 8px;border-radius:4px;white-space:nowrap}
+/* 文件面板（秒哒式列表） */
+.file-panel{width:264px;background:#fff;border-right:1px solid var(--border-light);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;animation:panelIn .18s ease}
+@keyframes panelIn{from{width:0;opacity:0}to{width:264px;opacity:1}}
+.file-panel-head{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid var(--border-light);flex-shrink:0}
+.file-panel-head .t{font-size:13px;font-weight:600;color:var(--text-1)}
+.file-collapse{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-3);cursor:pointer;font-size:14px}
+.file-collapse:hover{background:var(--primary-light);color:var(--primary)}
+.file-groups{flex:1;overflow-y:auto;padding:4px 8px 16px}
+.file-group-title{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-3);padding:12px 6px 5px;font-weight:500}
+.file-group-add{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-3);font-size:14px;line-height:1}
+.file-group-add:hover{background:var(--primary-light);color:var(--primary)}
+.file-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:.12s;margin-bottom:2px}
+.file-item:hover{background:#F7F8FA}
+.file-item.active{background:var(--primary-light)}
+.file-item .fi-ico{width:24px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;letter-spacing:.2px}
+.fi-ico.t-md{background:#E8F0FF;color:#1A66FF}
+.fi-ico.t-html{background:#FFF7E8;color:#D25F00}
+.fi-ico.t-pdf{background:#FFECE8;color:#F53F3F}
+.fi-ico.t-doc{background:#E8F0FF;color:#1A66FF}
+.fi-ico.t-xls{background:#E8FFEA;color:#00B42A}
+.fi-ico.t-img{background:#F5F0FF;color:#722ED1}
+.fi-ico.t-code{background:#F2F3F5;color:#4E5969}
+.fi-ico.t-css{background:#E8F0FF;color:#1A66FF}
+.fi-ico.t-js{background:#FFF7E8;color:#B8860B}
+.fi-ico.t-sql{background:#E8FFEA;color:#00B42A}
+.file-item .fi-name{flex:1;font-size:12.5px;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-item.active .fi-name{color:var(--primary);font-weight:500}
+.file-empty{padding:10px 8px;font-size:11.5px;color:var(--text-4);line-height:1.6}
+/* 需求沟通阶段布局 */
+.req-layout{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.req-center{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.req-chat-scroll{flex:1;overflow-y:auto}
+.req-chat-inner{max-width:860px;margin:0 auto;padding:24px 24px 30px;display:flex;flex-direction:column;gap:12px}
+.reqdoc-conv-bubble{white-space:pre-line}
+.req-chatbar{padding:12px 24px 16px;background:#fff;border-top:1px solid var(--border-light);display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
+.req-devbar{display:flex;align-items:center;justify-content:flex-end;gap:14px;padding:9px 24px;background:#FAFBFC;border-top:1px solid var(--border-light);flex-shrink:0}
+.req-devbar .hint{font-size:12.5px;color:var(--text-3)}
+/* MD 文件视图 */
+.md-view{flex:1;overflow-y:auto;padding:16px;display:flex}
+.md-view .reqdoc-card{flex:1;display:flex;flex-direction:column;overflow:hidden;align-self:flex-start;min-height:calc(100% - 0px)}
+.md-view .reqdoc-body{flex:1}
+/* HTML 需求说明书预览 */
+.rdoc-view{flex:1;overflow-y:auto;background:var(--bg-page);padding:18px}
+.rdoc-toolbar{max-width:900px;margin:0 auto 12px;display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--border-light);border-radius:10px;padding:9px 16px}
+.rdoc-toolbar .tt{font-size:13px;font-weight:600;color:var(--text-1);display:flex;align-items:center;gap:8px}
+.rdoc-toolbar .tt .ro{font-size:10.5px;font-weight:400;color:var(--text-3);background:#F2F3F5;border-radius:4px;padding:1px 6px}
+.rdoc-paper{max-width:900px;margin:0 auto;background:#fff;border:1px solid var(--border-light);border-radius:4px;padding:44px 52px;box-shadow:var(--shadow-sm)}
+/* 代码预览（开发文件 · 只读演示） */
+.code-pre{background:#0F2B46;color:#D5DBE5;font-family:'SF Mono',Consolas,monospace;font-size:12px;line-height:1.7;padding:16px;border-radius:8px;overflow:auto;max-height:54vh;white-space:pre}
+
+/* ===== 页面一：AI应用需求输入首页（居中极简，参考产品截图）===== */
+.vc-home{flex:1;display:flex;flex-direction:column;justify-content:center;background:
+  radial-gradient(600px 420px at 8% 30%,rgba(26,102,255,.10),transparent 65%),
+  radial-gradient(560px 420px at 96% 82%,rgba(0,212,255,.10),transparent 65%),
+  radial-gradient(700px 500px at 50% 0%,rgba(26,102,255,.06),transparent 70%),
+  linear-gradient(180deg,#F7F9FF,#F2F5FB);overflow-y:auto;position:relative}
+.vc-back{position:absolute;top:20px;left:20px;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:rgba(255,255,255,.75);border:1px solid var(--border-light);color:var(--text-2);font-size:13px;cursor:pointer;transition:.15s;backdrop-filter:blur(4px);z-index:10}
+.vc-back:hover{color:var(--primary);border-color:var(--primary);background:#fff}
+.vc-home-inner{width:100%;max-width:760px;margin:0 auto;padding:24px;display:flex;flex-direction:column}
+.vc-brand{display:flex;align-items:center;justify-content:center;gap:14px}
+.vc-logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#2B7BFF,#1A66FF);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:0 8px 22px rgba(26,102,255,.35);font-weight:800}
+.vc-title{font-size:34px;font-weight:700;color:var(--text-1);letter-spacing:.5px}
+.vc-sub{margin-top:14px;text-align:center;font-size:14px;color:#86909C;letter-spacing:2px}
+.vc-chips{margin:7vh 0 18px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.vc-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:18px;background:#fff;border:1px solid var(--border-light);box-shadow:var(--shadow-sm);font-size:13px;color:var(--text-2);cursor:pointer;transition:.15s}
+.vc-chip:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,102,255,.12)}
+.vc-input-card{background:#fff;border:1px solid #D9E4F5;border-radius:18px;box-shadow:0 8px 30px rgba(26,102,255,.08),0 0 0 4px rgba(26,102,255,.03);transition:.2s}
+.vc-input-card:focus-within{border-color:var(--primary);box-shadow:0 10px 36px rgba(26,102,255,.14),0 0 0 4px rgba(26,102,255,.07)}
+.vc-input{width:100%;border:none;outline:none;resize:none;font-size:15px;line-height:1.8;padding:18px 20px 6px;min-height:110px;max-height:220px;background:transparent;font-family:inherit;color:var(--text-1)}
+.vc-input::placeholder{color:var(--text-4)}
+.vc-tools{display:flex;align-items:center;gap:8px;padding:10px 14px 14px}
+.vc-plus{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text-3);cursor:pointer;transition:.15s;border:none;background:transparent}
+.vc-plus:hover{background:var(--primary-light);color:var(--primary)}
+.vc-pill{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:18px;font-size:13px;color:var(--text-2);background:#fff;border:1px solid var(--border);cursor:pointer;transition:.15s;white-space:nowrap}
+.vc-pill:hover{border-color:var(--primary);color:var(--primary)}
+.vc-pill.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:500}
+.vc-send{margin-left:auto;width:40px;height:40px;border-radius:50%;background:var(--primary);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;transition:.2s;box-shadow:0 2px 10px rgba(26,102,255,.35)}
+.vc-send:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.vc-send:disabled{background:#D5DEF0;box-shadow:none;cursor:not-allowed;transform:none}
+
+/* ===== 工作区顶栏（无面包屑：左返回，右应用名）===== */
+.ws-topbar{height:52px;background:#fff;border-bottom:1px solid var(--border-light);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.ws-back{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;color:var(--text-2);font-size:13px;cursor:pointer;transition:.15s;border:1px solid transparent;background:transparent}
+.ws-back:hover{color:var(--primary);background:var(--primary-light)}
+.ws-topbar-right{display:flex;align-items:center;gap:10px;min-width:0}
+.ws-name{font-size:14px;font-weight:600;color:var(--text-1);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}
+.ws-name:hover{color:var(--primary)}
+.ws-edit{font-size:12px;color:var(--text-3);cursor:pointer;padding:4px;border-radius:6px}
+.ws-edit:hover{background:var(--primary-light);color:var(--primary)}
+.ws-idle{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
+.ws-hint{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid var(--border-light);border-radius:14px;padding:36px 44px;box-shadow:var(--shadow-sm);text-align:center}
+.ws-hint-ico{font-size:40px}
+.ws-hint-t{font-size:16px;font-weight:600;color:var(--text-1)}
+.ws-hint-sub{font-size:12.5px;color:var(--text-3);line-height:1.7}
+.ws-hint-btns{display:flex;gap:10px;margin-top:6px}
+.gen-chat-bubble{white-space:pre-line}
+.rail-sep{width:24px;height:1px;background:var(--border-light);margin:2px 0}
+/* ===== 需求分析动态布局：默认态输入条在底部；打开文件后对话(含说明卡)收到底部对话坞 ===== */
+.dock-chat{flex-shrink:0;border-top:1px solid var(--border-light);background:#fff;display:flex;flex-direction:column}
+.dock-chat-msgs{max-height:240px;min-height:86px;overflow-y:auto;padding:12px 18px;display:flex;flex-direction:column;gap:10px;background:#FAFAF7}
+/* 生成区/默认态：对话流（对话在上，需求说明卡内嵌其下） */
+.req-flow{flex:1;overflow-y:auto;padding:28px 24px}
+.req-flow-inner{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+/* 需求说明卡（内嵌对话流的产物卡片，底部=立即开发） */
+.req-card{background:#fff;border:1px solid var(--border-light);border-radius:12px;box-shadow:var(--shadow-sm);overflow:hidden}
+/* 默认态：说明卡居中展示在主区域 */
+.req-card-center{width:100%;max-width:680px}
+.req-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border-light);background:linear-gradient(180deg,#F7FAFF,#fff)}
+.req-card-head .t{font-size:14.5px;font-weight:600;color:var(--text-1)}
+.req-card-head .ver{font-size:11px;color:var(--primary);background:var(--primary-light);border-radius:4px;padding:2px 8px;font-weight:600}
+.req-card-body{padding:12px 18px;display:flex;flex-direction:column;gap:8px}
+.req-card-row{display:flex;gap:10px;font-size:13px;line-height:1.7}
+.req-card-row .k{flex-shrink:0;color:var(--text-3);width:64px}
+.req-card-row .v{color:var(--text-1)}
+.req-card-files{display:flex;gap:8px;padding:0 18px 12px}
+.req-card-dev{display:flex;justify-content:center;padding:12px;border-top:1px solid var(--border-light);background:#FAFBFC}
+/* 说明书底部主操作条（已并入需求说明卡，此样式保留备用） */
+.doc-actions{flex-shrink:0;display:flex;justify-content:center;align-items:center;padding:10px 16px;background:#fff;border-top:1px solid var(--border-light)}
+
+/* 小程序壳（登录/我的应用等已用场景仍保留，生成预览不再使用黑壳） */
+</style>
+</head>
+<body>
+<!-- 主应用（嵌入海牛工作台，无独立登录，模拟从「子项目集-新建需求」进入） -->
+<div class="app ready" id="app">
+  <header class="header" id="appHeader">
+    <div class="logo">
+      <div class="logo-icon">海</div>
+      <span>海牛工作台</span>
+      <span class="sub">Vibe Coding</span>
+    </div>
+    <div class="crumb-mid"><div class="crumb" id="crumbBar"></div></div>
+    <div class="header-right">
+      <span class="ver-tag" id="verTag">V1.0</span>
+      <span class="st-chip req" id="stChip"><i></i><span id="stChipText">需求沟通中</span></span>
+      <div class="user-info">
+        <div class="avatar">唯</div>
+        <div><div class="user-name" id="headerUserName">唯安</div></div>
+      </div>
+    </div>
+  </header>
+  <div class="wc-body" id="wcBody"></div>
+</div>
+
+<div class="chat-fab" id="chatFab" onclick="toggleChat()">💬</div>
+
+<div class="modal-mask" id="modalMask">
+  <div class="modal" id="modalBox">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">标题</div>
+      <span class="modal-close" onclick="closeModal()">×</span>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const emptyFn=()=>{};
+
+/* ===== 状态 ===== */
+const state={
+  phase:'home',           // home=需求输入首页 req=需求沟通 dev=开发
+  centerView:'chat',      // chat|md|html|canvas
+  filesOpen:false,
+  activeFile:null,
+  platform:'pc',
+  reqName:'未命名需求',
+  reqVer:'V1.0',
+  docReady:false,
+  convMsgs:[],            // 需求沟通对话
+  chatMsgs:[],            // 开发阶段右侧AI对话
+  reqDoc:null,
+  reqFullText:'',
+  reqState:'viewing',
+  generating:false,
+  genStarted:false,
+  genStep:0,
+  currentApp:null,
+  uploadFiles:[],         // 个人上传
+  devFiles:[],            // 开发生成文件
+  chatOpen:true,
+  mpTab:'home',
+};
+const MOCK_UPLOADS=[
+  {name:'业务调研记录.pdf',type:'t-pdf'},
+  {name:'数据字典.xlsx',type:'t-xls'},
+  {name:'业务流程图.png',type:'t-img'},
+  {name:'接口清单.docx',type:'t-doc'},
+];
+const DEV_FILE_TPL=[
+  {id:'dev-0',name:'index.html',type:'t-code',code:'<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n  <meta charset="UTF-8">\n  <title>业务应用</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <!-- 页面结构：依据《需求说明书》「页面结构及页面功能说明」生成 -->\n  <div id="app"></div>\n  <script src="app.js"><\/script>\n</body>\n</html>'},
+  {id:'dev-1',name:'style.css',type:'t-css',code:'/* 样式：依据《需求说明书》关键交互规则生成 */\n.page { max-width: 960px; margin: 0 auto; padding: 24px; }\n.form-item { margin-bottom: 12px; }\n.form-item label { display: block; font-size: 13px; margin-bottom: 6px; }\n.form-item .required::before { content: "*"; color: #f53f3f; }\n.btn-primary { background: #1a66ff; color: #fff; padding: 10px 24px; border-radius: 8px; }'},
+  {id:'dev-2',name:'app.js',type:'t-js',code:'// 交互逻辑：依据《需求说明书》业务流程与校验规则生成\ndocument.addEventListener(\'DOMContentLoaded\', () => {\n  bindForm(\'#main-form\', { required: [\'name\', \'phone\'], onSubmit: submitForm });\n});\n\nasync function submitForm(data) {\n  // 业务规则：重复提交校验由后端幂等处理\n  const res = await api.post(\'/api/submit\', data);\n  if (res.code === 0) showToast(\'提交成功，业务编号：\' + res.data.bizCode);\n}'},
+  {id:'dev-3',name:'api.py',type:'t-code',code:'# 后端接口：依据《需求说明书》数据字段及业务规则生成\nfrom flask import Flask, request, jsonify\napp = Flask(__name__)\n\n@app.route("/api/submit", methods=["POST"])\ndef submit():\n    body = request.get_json()\n    # 校验必填字段 + 业务重复性校验\n    err = validate(body, required=["name", "phone"])\n    if err:\n        return jsonify({"code": 1, "msg": err})\n    biz_code = save_and_gen_code(body)\n    return jsonify({"code": 0, "data": {"bizCode": biz_code}})'},
+  {id:'dev-4',name:'schema.sql',type:'t-sql',code:'-- 数据库设计：依据《需求说明书》数据字段及数据关系生成\nCREATE TABLE biz_record (\n  id          BIGINT PRIMARY KEY AUTO_INCREMENT,\n  person_name VARCHAR(64)  NOT NULL COMMENT \'姓名\',\n  phone       VARCHAR(20)  NOT NULL COMMENT \'手机号\',\n  biz_code    VARCHAR(16)  UNIQUE   COMMENT \'业务编号\',\n  remark      VARCHAR(255) NULL     COMMENT \'备注\',\n  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP\n);'},
+];
+
+/* ===== 场景模板 ===== */
+const SCENES={
+  event:{name:'活动报名小程序',icon:'🎉',color:'#FF7D00',level:'L1',user:'活动参与者',
+    funcs:['活动列表展示','在线报名登记','签到码生成','报名统计查看'],
+    fields:['活动名称','报名人','手机号','参加人数','备注'],
+    md:'# 活动报名小程序\n\n**目标用户**：活动参与者\n\n## 核心功能\n1. 活动列表展示\n2. 在线报名登记\n3. 签到码生成\n4. 报名统计查看',
+    scene:'event',
+    sections:{overview:'面向活动参与者提供的「活动报名小程序」应用，用于完成活动发布、在线报名、签到管理、报名统计的业务闭环。',
+      users:'活动参与者（报名活动、签到入场）、活动管理员（发布活动、查看报名统计）',
+      pages:'活动列表页（展示所有活动，支持搜索筛选）、在线报名页（填写表单提交报名）、签到码页（生成并展示签到码）、报名统计页（查看活动报名数据）、活动管理后台（PC端活动发布与管理）',
+      flow:'① 管理员发布活动 → ② 用户在活动列表中选择活动 → ③ 填写报名信息提交 → ④ 系统生成签到码 → ⑤ 活动当天现场扫码签到 → ⑥ 管理员查看报名统计',
+      rules:'⚡ 每人同一活动仅可报名一次\n⚡ 签到码有效期至活动结束\n⚡ 活动名额已满自动关闭报名\n⚡ 报名截止后不可取消',
+      fields:[
+        {name:'活动名称',type:'文本',req:'是',note:'活动标题'},
+        {name:'报名人',type:'文本',req:'是',},
+        {name:'手机号',type:'手机号',req:'是',},
+        {name:'参加人数',type:'数字',req:'否',},
+        {name:'备注',type:'文本',req:'否',}
+      ],
+      notImpl:'微信消息推送提醒\n报名费用在线支付\n活动评价与反馈\n数据分析报表导出',
+      acceptance:'✅ 管理员可发布/编辑/下架活动\n✅ 用户可查看活动列表并报名\n✅ 报名后生成唯一签到码\n✅ 管理员查看报名统计概览'
+    }},
+  visit:{name:'客户拜访管理',icon:'📋',color:'#1A66FF',level:'L1',user:'客户经理',
+    funcs:['拜访记录登记','拜访计划安排','拜访报告生成','客户画像查看'],
+    fields:['客户姓名','拜访时间','拜访目的'],
+    md:'# 客户拜访管理\n\n**目标用户**：客户经理\n\n## 核心功能\n1. 拜访记录登记\n2. 拜访计划安排\n3. 拜访报告生成\n4. 客户画像查看',
+    scene:'visit',
+    sections:{overview:'面向客户经理提供的「客户拜访管理」应用，用于完成拜访计划安排、拜访记录登记、拜访报告生成、客户画像查看的业务闭环。',
+      users:'客户经理（拜访全流程管理）、销售主管（查看团队拜访统计）',
+      pages:'拜访计划页（查看和安排拜访计划）、拜访登记页（记录每次拜访详情）、拜访报告页（查看拜访总结报告）、客户画像页（查看客户信息和历史拜访）、数据统计页（拜访数据概览）',
+      flow:'① 客户经理制定拜访计划 → ② 执行拜访并登记记录 → ③ 系统生成拜访报告 → ④ 更新客户画像 → ⑤ 主管查看团队拜访数据',
+      rules:'⚡ 拜访记录需在拜访后24小时内提交\n⚡ 每月至少完成8次客户拜访\n⚡ 新客户拜访需主管审批\n⚡ 拜访报告自动归档至客户档案',
+      fields:[
+        {name:'客户名称',type:'文本',req:'是'},
+        {name:'拜访时间',type:'日期时间',req:'是'},
+        {name:'拜访目的',type:'文本',req:'是'},
+        {name:'拜访摘要',type:'文本',req:'否'},
+        {name:'下次跟进',type:'日期',req:'否'}
+      ],
+      notImpl:'拜访轨迹GPS定位\n客户满意度评分\n拜访费用报销\n智能拜访提醒推送',
+      acceptance:'✅ 客户经理可登记拜访记录\n✅ 支持拜访计划安排\n✅ 拜访报告自动生成\n✅ 查看客户历史拜访数据'
+    }},
+  pm:{name:'项目管理后台系统',icon:'🗂️',color:'#1A66FF',level:'L1',user:'项目经理与团队成员',
+    funcs:['项目看板展示','任务创建与分配','任务进度更新','项目统计查看'],
+    fields:['任务标题','负责人','截止日期'],
+    md:'# 项目管理后台系统\n\n**目标用户**：项目经理与团队成员\n\n## 核心功能\n1. 项目看板展示\n2. 任务创建与分配\n3. 任务进度更新\n4. 项目统计查看',
+    scene:'pm',
+    sections:{overview:'面向项目经理与团队成员提供的「项目管理后台系统」，用于完成项目创建、任务分配、进度跟踪、统计查看的协作闭环。',
+      users:'项目经理（创建项目、分配任务、查看统计）、团队成员（查看并更新自己的任务）',
+      pages:'项目看板页（项目卡片与状态总览）、任务列表页（按项目/负责人/状态筛选）、新建任务页（表单录入）、任务详情页（进度更新）、统计页（项目与任务数据概览）',
+      flow:'① 项目经理创建项目并分配任务 → ② 成员查看自己的任务列表 → ③ 更新任务进度与状态 → ④ 项目经理查看看板与统计 → ⑤ 任务完成归档',
+      rules:'⚡ 任务负责人仅可指定一人\n⚡ 任务状态：待处理 / 进行中 / 已完成\n⚡ 截止日期不能早于今天\n⚡ 项目统计每日凌晨自动汇总',
+      fields:[
+        {name:'任务标题',type:'文本',req:'是',note:'任务名称'},
+        {name:'负责人',type:'人员',req:'是',},
+        {name:'截止日期',type:'日期',req:'是',},
+        {name:'优先级',type:'单选',req:'否',note:'高/中/低'},
+        {name:'任务描述',type:'长文本',req:'否',}
+      ],
+      notImpl:'甘特图视图\n消息推送提醒\n跨项目资源调配\n自定义字段扩展',
+      acceptance:'✅ 项目经理可创建项目并分配任务\n✅ 成员可查看并更新任务进度\n✅ 看板按状态列展示任务\n✅ 统计页展示项目与任务概览'
+    }},
+  board:{name:'营销活动看板',icon:'📊',color:'#00B42A',level:'L1',user:'市场运营人员',
+    funcs:['活动数据概览','参与人数统计','转化率分析','活动效果对比'],
+    fields:['活动名称','参与人数','报名人数','转化率'],
+    md:'# 营销活动看板\n\n**目标用户**：市场运营人员\n\n## 核心功能\n1. 活动数据概览\n2. 参与人数统计\n3. 转化率分析\n4. 活动效果对比',
+    scene:'board',
+    sections:{overview:'面向市场运营人员提供的「营销活动看板」，用于完成活动数据统计、参与人数监控、转化率分析与活动效果对比的数据分析闭环。',
+      users:'市场运营人员（查看活动数据、分析转化效果）、市场负责人（对比活动效果、复盘决策）',
+      pages:'数据概览页（核心指标卡片与趋势图）、参与人数页（各活动参与/报名人数明细）、转化率页（漏斗与渠道转化分析）、效果对比页（多活动横向对比表格与图表）',
+      flow:'① 活动数据自动汇总 → ② 运营人员查看看板概览 → ③ 下钻查看参与人数与转化明细 → ④ 多活动横向对比 → ⑤ 输出复盘结论',
+      rules:'⚡ 数据每小时自动更新\n⚡ 转化率 = 报名人数 ÷ 活动曝光量\n⚡ 已下架活动保留历史数据\n⚡ 对比至少选择两个活动',
+      fields:[
+        {name:'活动名称',type:'文本',req:'是',note:'关联营销活动'},
+        {name:'参与人数',type:'数字',req:'是',},
+        {name:'报名人数',type:'数字',req:'是',},
+        {name:'转化率',type:'百分比',req:'是',note:'自动计算'},
+        {name:'渠道来源',type:'单选',req:'否',}
+      ],
+      notImpl:'自定义指标配置\n数据大屏投放模式\n定时报告邮件推送\n多维度交叉下钻',
+      acceptance:'✅ 看板展示活动核心指标概览\n✅ 参与人数支持按活动/时间查看\n✅ 转化率自动计算并展示漏斗\n✅ 支持多活动效果横向对比'
+    }},
+};
+
+const EVENT_ACTIVITIES=[
+  {name:'青春交友 · 城市定向跑',date:'2026-09-10',time:'14:00',status:'名额紧张',color:'#E8F0FF',icon:'🎊',desc:'城市定向跑活动，组队完成趣味任务，速度与智慧的较量！'},
+  {name:'瑜伽体验公开课',date:'2026-09-12',time:'19:00',status:'报名中',color:'#E8FFEA',icon:'🧘',desc:'专业瑜伽导师带领，放松身心，感受身体与心灵的平衡。'},
+  {name:'新员工入职培训',date:'2026-09-15',time:'09:00',status:'报名中',color:'#FFF7E8',icon:'🎓',desc:'为新入职员工准备的全面入职培训课程，了解企业文化。'},
+];
+const MY_REGISTRATIONS=[
+  {name:'青春交友 · 城市定向跑',date:'2026-09-10',time:'14:00',status:'已签到',code:'QK-8321'},
+  {name:'瑜伽体验公开课',date:'2026-09-12',time:'19:00',status:'已报名',code:'QK-8322'},
+];
+
+/* ===== 进入 Vibe Coding（模拟海牛工作台 · 项目集详情 · 新增需求）===== */
+const VC_HOME_DEFAULT='帮我做一个营销活动看板，支持活动数据统计、参与人数、转化率分析及活动效果对比';
+const VC_HOME_PLACEHOLDER='例如：'+VC_HOME_DEFAULT+'……';
+function enterVibe(){
+  state.phase='home';state.centerView='';state.filesOpen=false;state.activeFile=null;
+  state.reqName='未命名应用';state.docReady=false;state.reqState='viewing';state.reqVer='V1.0';
+  state.uploadFiles=[];state.devFiles=[];state.currentApp=null;state.chatOpen=true;
+  state.convMsgs=[];state.homeInput=VC_HOME_DEFAULT;state.reqDraft='';state.devDraft='';
+  renderApp();
+}
+function renderHome(){
+  $('wcBody').innerHTML=`<div class="vc-home">
+    <button class="vc-back" onclick="leaveHome()">← 返回</button>
+    <div class="vc-home-inner">
+      <div class="vc-input-card">
+        <textarea class="vc-input" id="vcHomeInput" placeholder="${VC_HOME_PLACEHOLDER}" oninput="onHomeInputChange()">${escapeHtml(state.homeInput||'')}</textarea>
+        <div class="vc-tools">
+          <button class="vc-plus" title="上传参考资料" onclick="showToast('支持上传 PDF / Word / Excel / 图片参考资料（演示）','info')">＋</button>
+          <span class="vc-pill ${state.platform==='pc'?'active':''}" onclick="selPlatform('pc')">🖥️ PC应用</span>
+          <span class="vc-pill ${state.platform==='mp'?'active':''}" onclick="selPlatform('mp')">📱 小程序应用</span>
+          <span class="vc-pill ${state.platform==='h5'?'active':''}" onclick="selPlatform('h5')">🌐 H5应用</span>
+          <button class="vc-send" id="vcHomeSend" ${state.homeInput&&state.homeInput.trim()?'':'disabled'} title="生成" onclick="startReqFromHome()">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function onHomeInputChange(){
+  const i=$('vcHomeInput');
+  state.homeInput=i?i.value:'';
+  const b=$('vcHomeSend');
+  if(b)b.disabled=!state.homeInput.trim();
+}
+function selPlatform(pf){
+  state.platform=pf;
+  renderHome();
+  showToast('已切换至'+({pc:'PC应用',mp:'小程序应用',h5:'H5应用'})[pf],'info',1200);
+}
+/* AI 提炼应用名称：去掉口语前缀，取第一个分句 */
+function aiNameFromText(text){
+  let t=String(text||'').replace(/^(帮我|请帮我|我想|我要|麻烦|请)?(做一个|做个|开发一个|开发个|制作一个|搭一个)?(一个)?/,'').trim();
+  t=t.split(/[，。；,;：:]/)[0].trim();
+  if(!t)t=String(text||'').split(/[，。；,;：:]/)[0].trim();
+  if(t.length>12)t=t.slice(0,12);
+  return t||'未命名应用';
+}
+function startReqFromHome(){
+  const i=$('vcHomeInput');
+  const text=((i&&i.value)||state.homeInput||'').trim();
+  if(!text){showToast('请描述你的需求','info');return;}
+  state.homeInput=VC_HOME_DEFAULT;state.reqDraft='';
+  state.phase='req';
+  state.centerView='';state.filesOpen=false;state.activeFile=null;
+  state.reqName=aiNameFromText(text);
+  state.docReady=false;state.reqState='viewing';
+  /* 免追问：确认需求后直接生成说明书，对话在上、分析状态在下 */
+  state.convMsgs=[
+    {role:'user',text},
+    {role:'ai',text:`好的，已理解你的需求「${state.reqName}」。\n正在为你生成《需求说明书》（MD + HTML），生成后将直接展示在中间工作区。`},
+  ];
+  state.convLoading=true;state.convLoadingText='正在梳理需求，生成《需求说明书》（MD + HTML）…';
+  renderApp();scrollConv();
+  setTimeout(generateReqDoc,2000);
+}
+function leaveHome(){
+  const i=$('vcHomeInput');
+  const v=i?i.value.trim():'';
+  /* 预填示例句不算未提交输入，改过才需要离开确认 */
+  if(v&&v!==VC_HOME_DEFAULT){
+    openModal('离开确认','<div style="font-size:13px;line-height:1.9">你输入的需求内容尚未提交，离开后将丢失。<br>确定返回海牛工作台项目集列表吗？</div>',()=>{goWorkbench();return true;});
+  }else{
+    goWorkbench();
+  }
+}
+/* ===== 返回海牛工作台：同步需求名称与状态后跳转 ===== */
+const WB_PAGE='ai-coding.html';
+function wbSync(){
+  try{
+    if(!state.wbReqId)return;
+    localStorage.setItem('hn_vc_req_'+state.wbReqId,JSON.stringify({id:state.wbReqId,name:state.reqName,status:state.wbStatus||'draft'}));
+  }catch(e){}
+}
+function goWorkbench(){wbSync();location.href=WB_PAGE;}
+
+function genTime(){const d=new Date();const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}
+function escapeHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ===== 渲染总入口（三阶段统一：无面包屑，返回逻辑一致）===== */
+function renderApp(){
+  const hd=$('appHeader');
+  if(hd)hd.style.display='none';
+  if(state.phase==='home'){renderHome();updateFab();return;}
+  if(state.phase==='req'){renderReqWs();updateFab();return;}
+  renderGen();updateFab();
+}
+/* ===== 需求阶段工作区（三态动态布局）=====
+   生成中：中间=生成进度提示，对话框(消息+输入)在页面底部
+   默认态（首次生成需求卡）：中间=需求说明卡，对话框(消息+输入)在页面底部
+   文件查看态：点MD/HTML → 文件在正中间画布区，对话框(含说明卡)在右侧栏
+   开发态：点立即开发 → 画布+右侧对话框（renderGen） */
+function renderReqWs(){
+  const b=$('wcBody');
+  const fileOpen=!!state.activeFile;
+  const flowHTML=state.convMsgs.map(renderMsg).join('')+(state.convLoading?convLoadingHTML():'');
+  const ph=state.activeFile==='md'?'针对《需求说明书.md》输入修改意见，Enter 发送…'
+    :state.activeFile==='html'?'针对《需求说明书.html》输入修改意见，Enter 发送…'
+    :'继续描述你的修改需求，例如“增加附件上传，去掉审批流程”…';
+  const chatInputHTML=`<textarea id="reqdocChatInput" placeholder="${ph}" rows="1" oninput="state.reqDraft=this.value" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();reqChatSend()}">${escapeHtml(state.reqDraft||'')}</textarea>
+      <button class="gen-chat-send" onclick="reqChatSend()">➤</button>`;
+  b.innerHTML=`<aside class="wc-rail">${railBtn('file','📄','文件',state.filesOpen)}</aside>
+  ${state.filesOpen?filePanelHTML():''}
+  <div class="gen-main">
+    <div class="ws-topbar">
+      <button class="ws-back" onclick="goWorkbench()">← 返回项目集</button>
+      <div class="ws-topbar-right">
+        <span class="ws-name" id="wsNameText" title="点击修改应用名称" onclick="editAppName()">📄 ${escapeHtml(state.reqName)}</span>
+        <span class="ws-edit" title="修改应用名称" onclick="editAppName()">✏</span>
+      </div>
+    </div>
+    ${fileOpen?wsCenterHTML()
+      :`<div class="req-flow" id="genChatMsgs"><div class="req-flow-inner">${flowHTML}</div></div>`}
+    ${fileOpen?'':`<div class="dock-chat">
+      <div class="gen-chat-input">${chatInputHTML}</div>
+    </div>`}
+  </div>
+  ${fileOpen?`<div class="gen-chat" id="genChatPanel">
+    <div class="gen-chat-head">
+      <div class="gen-chat-title">🤖 AI助手 <span style="font-size:11px;opacity:.7;font-weight:400">需求分析</span></div>
+    </div>
+    <div class="gen-chat-msgs" id="genChatMsgs">${flowHTML}</div>
+    <div class="gen-chat-input">${chatInputHTML}</div>
+  </div>`:''}`;
+}
+function wsCenterHTML(){
+  if(state.centerView==='html')return htmlViewHTML();
+  return mdViewHTML();
+}
+function railBtn(id,icon,tip,active){
+  return `<div class="rail-btn${active?' active':''}" id="rail-${id}" onclick="onRailClick('${id}')">${icon}<span class="rail-tip">${tip}</span></div>`;
+}
+function onRailClick(id){
+  if(id==='back'){goWorkbench();return;}
+  if(state.phase==='req'){toggleFiles(!state.filesOpen);return;}
+  if(id==='canvas'){state.centerView='canvas';state.activeFile=null;state.filesOpen=false;renderGen();return;}
+  if(id==='file'){toggleFiles(!state.filesOpen);return;}
+}
+function toggleFiles(open){
+  state.filesOpen=open;
+  if(state.phase==='req'){
+    /* 需求阶段：收起列表 = 关闭文件，恢复默认态（说明书居中 + 对话回底部） */
+    if(!open){state.activeFile=null;state.centerView='';}
+    renderApp();
+  }else{
+    if(!open&&state.centerView!=='canvas'){state.centerView='canvas';state.activeFile=null;}
+    renderGen();
+  }
+}
+
+/* ===== 文件面板（对话生成 / 个人上传 / 开发生成文件）===== */
+function convFiles(){
+  return state.docReady?[
+    {id:'md',name:'需求说明书.md',type:'t-md'},
+    {id:'html',name:'需求说明书.html',type:'t-html'},
+  ]:[];
+}
+function filePanelHTML(){
+  const uf=state.uploadFiles,df=state.devFiles,cf=convFiles();
+  return `<aside class="file-panel">
+    <div class="file-panel-head"><span class="t">文件</span><span class="file-collapse" title="收起文件列表" onclick="toggleFiles(false)">«</span></div>
+    <div class="file-groups">
+      <div class="file-group-title"><span>对话生成</span></div>
+      ${cf.length?cf.map(fileItemHTML).join(''):'<div class="file-empty">AI 生成《需求说明书》后，MD 与 HTML 文件将出现在这里</div>'}
+      <div class="file-group-title"><span>上传资料</span><span class="file-group-add" title="上传文件" onclick="mockUpload()">＋</span></div>
+      ${uf.length?uf.map(fileItemHTML).join(''):'<div class="file-empty">支持 PDF / Word / Excel / 图片等业务资料</div>'}
+      <div class="file-group-title"><span>开发生成文件</span></div>
+      ${df.length?df.map(fileItemHTML).join(''):`<div class="file-empty">${state.phase==='dev'?'开发完成后，前端 / 后端 / 数据库文件将出现在这里':'点击「立即开发」后，代码文件将出现在这里'}</div>`}
+    </div>
+  </aside>`;
+}
+function fileItemHTML(f){
+  return `<div class="file-item${state.activeFile===f.id?' active':''}" onclick="openFile('${f.id}')"><span class="fi-ico ${f.type}">${fiText(f.type)}</span><span class="fi-name">${f.name}</span></div>`;
+}
+function fiText(t){
+  return {'t-md':'MD','t-html':'H','t-pdf':'PDF','t-doc':'DOC','t-xls':'XLS','t-img':'IMG','t-code':'</>','t-css':'CSS','t-js':'JS','t-sql':'SQL'}[t]||'·';
+}
+function openFile(id){
+  if(id==='md'||id==='html'){
+    state.activeFile=id;state.centerView=id;
+    /* 需求阶段打开文件 → 文件查看态：列表展开 + 对话流(含说明卡)切换右侧栏 */
+    if(state.phase==='req'){state.filesOpen=true;}
+    refreshCenter();return;
+  }
+  const f=state.uploadFiles.find(x=>x.id===id);
+  if(f){
+    state.activeFile=id;refreshCenter();
+    openModal('附件信息',`<div style="font-size:13px;line-height:2"><div><b>${f.name}</b></div><div style="color:var(--text-3);font-size:12.5px">大小：${f.size}</div><div style="color:var(--text-3);font-size:12.5px;margin-top:6px">上传资料将作为需求沟通的参考资料（一期预留）</div></div>`,null,true);
+    return;
+  }
+  const d=state.devFiles.find(x=>x.id===id);
+  if(d){
+    state.activeFile=id;refreshCenter();
+    openModal('📄 '+d.name,`<pre class="code-pre">${escapeHtml(d.code)}</pre><div style="font-size:11.5px;color:var(--text-3);margin-top:8px">开发生成文件 · 只读演示（实际由开发工具打开）</div>`,null,true);
+  }
+}
+function mockUpload(){
+  const tpl=MOCK_UPLOADS[state.uploadFiles.length%MOCK_UPLOADS.length];
+  const f={id:'up-'+(state.uploadFiles.length+1),name:tpl.name,type:tpl.type,size:(Math.round((0.2+Math.random()*2)*10)/10)+' MB'};
+  state.uploadFiles.push(f);
+  showToast('已上传 '+f.name+'（演示）','success');
+  refreshCenter();
+}
+function refreshCenter(){
+  if(state.phase==='req')renderApp();else renderGen();
+}
+/* 关闭文件：恢复默认态（需求阶段列表收缩+对话流回中间；开发阶段回画布） */
+function closeFile(){
+  state.activeFile=null;
+  if(state.phase==='req'){state.centerView='';state.filesOpen=false;renderApp();}
+  else{state.centerView='canvas';renderGen();}
+}
+function convLoadingHTML(){
+  return `<div class="gen-chat-msg ai"><div class="gen-chat-avatar" style="background:#1A66FF">🤖</div><div class="gen-chat-bubble" style="display:flex;align-items:center;gap:10px"><span class="loading-spinner" style="width:16px;height:16px;border-width:2.5px"></span><span style="color:var(--text-2)">${state.convLoadingText||'正在生成《需求说明书》…'}</span></div></div>`;
+}
+function scrollConv(){
+  setTimeout(()=>{const el=$('genChatMsgs');if(el)el.scrollTop=el.scrollHeight;},50);
+}
+
+/* ===== 需求说明书.md 视图（沿用现有编辑体验）===== */
+function mdViewHTML(){
+  if(!state.docReady)return '<div class="md-view"></div>';
+  const ed=state.reqState==='editing';
+  return `<div class="md-view"><div class="reqdoc-card">
+    <div class="reqdoc-head">
+      <div class="reqdoc-title">📝 需求说明书.md <span style="font-size:10.5px;color:var(--text-3);font-weight:400;background:#F2F3F5;border-radius:4px;padding:1px 6px">可编辑</span></div>
+      <div class="reqdoc-actions">${ed
+        ?`<button class="btn" onclick="cancelReqDocEdit()">✕ 取消</button><button class="btn btn-primary" onclick="saveReqDoc()">✓ 保存</button>`
+        :`<button class="btn" onclick="closeFile()">✕ 关闭</button><button class="btn" onclick="editReqDoc()">✏ 编辑</button>`}</div>
+    </div>
+    ${ed?`<textarea class="reqdoc-editor" id="reqdocEditor" placeholder="可修改需求说明书的完整内容，保存后将同步重新生成 HTML">${state.reqFullText||''}</textarea>`
+      :`<div class="reqdoc-body">${reqDocStructuredHTML()}</div>`}
+  </div></div>`;
+}
+
+/* ===== 需求说明书.html 视图（只读预览 + 下载）===== */
+function htmlViewHTML(){
+  if(!state.docReady)return '<div class="rdoc-view"></div>';
+  return `<div class="rdoc-view">
+    <div class="rdoc-toolbar">
+      <span class="tt">📄 需求说明书.html <span class="ro">只读 · 由 MD 同步生成</span></span>
+      <div style="display:flex;gap:8px"><button class="btn" onclick="closeFile()">✕ 关闭</button><button class="btn" onclick="downloadReqHTML()">⬇ 下载 HTML</button></div>
+    </div>
+    <div class="rdoc-paper"><div class="rd-doc">${reqDocBodyHTML()}</div></div>
+  </div>`;
+}
+
+/* ===== 结构化视图（与 HTML 文档同源）===== */
+function reqDocStructuredHTML(){
+  const r=state.reqDoc;if(!r)return '';
+  const sec=r.sections||{};
+  return `<div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">1</span>应用概述</div>
+      <p class="reqdoc-doc-p">${sec.overview||''}</p></div>
+    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">2</span>用户与使用场景</div>
+      <p class="reqdoc-doc-p">${sec.users||r.user}</p></div>
+    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">3</span>页面与功能</div>
+      <div class="reqdoc-doc-line"><span class="dot"></span><span>${(r.funcs||[]).join('、')}</span></div>
+      <p class="reqdoc-doc-p" style="margin-top:6px">${sec.pages||''}</p></div>
+    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">4</span>核心流程</div>
+      ${(sec.flow||'').split('\n').filter(Boolean).map(x=>`<div class="reqdoc-doc-line"><span class="dot"></span><span>${x}</span></div>`).join('')}</div>
+    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">5</span>关键业务规则</div>
+      ${(sec.rules||'').split('\n').filter(Boolean).map(x=>`<div class="reqdoc-doc-line"><span class="dot"></span><span>${x}</span></div>`).join('')}</div>
+    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">6</span>数据字段</div>
+      ${(sec.fields||[]).map(f=>`<div class="reqdoc-doc-line"><span class="dot"></span><span><strong>${f.name}</strong>（${f.type}，<span class="${f.req==='是'?'':'reqdoc-optl'}">${f.req==='是'?'必填':'选填'}</span>）${f.note?`<span style="color:var(--text-3)">— ${f.note}</span>`:''}</span></div>`).join('')}</div>
+    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">7</span>本期不实现功能</div>
+      ${(sec.notImpl||'').split('\n').filter(Boolean).map(x=>`<div class="reqdoc-doc-line"><span class="dot" style="background:var(--text-4)"></span><span style="color:var(--text-3)">${x}</span></div>`).join('')}</div>
+    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">8</span>验收重点</div>
+      ${(sec.acceptance||'').split('\n').filter(Boolean).map(x=>`<div class="reqdoc-doc-line"><span class="dot" style="background:var(--success)"></span><span>${x}</span></div>`).join('')}</div>`;
+}
+/* ===== 需求说明书 HTML 文档生成（正式企业文档风格，供预览与下载）===== */
+const RD_CSS=`
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;color:#1D2129;font-size:13.5px;line-height:1.9;background:#fff;margin:0}
+.rd-doc{max-width:860px;margin:0 auto;padding:48px 56px}
+.rd-doctitle{font-size:24px;font-weight:700;margin:0 0 4px;color:#1D2129}
+.rd-sub{color:#86909C;font-size:12px;margin-bottom:22px}
+.rd-meta{width:100%;border-collapse:collapse;margin:0 0 24px;font-size:12.5px}
+.rd-meta th,.rd-meta td{border:1px solid #E5E6EB;padding:8px 12px;text-align:left;vertical-align:top}
+.rd-meta th{background:#F7F8FA;color:#4E5969;font-weight:500;width:110px;white-space:nowrap}
+.rd-toc{background:#F7F8FA;border:1px solid #E5E6EB;border-radius:8px;padding:14px 20px;margin:0 0 26px}
+.rd-toc-t{font-weight:600;font-size:13px;margin-bottom:8px;color:#1D2129}
+.rd-toc a{display:block;color:#1A66FF;text-decoration:none;font-size:12.5px;padding:2px 0}
+.rd-toc a:hover{text-decoration:underline}
+.rd-h2{font-size:16px;font-weight:700;margin:26px 0 10px;padding-left:10px;border-left:3px solid #1A66FF;color:#1D2129}
+.rd-p{margin:6px 0;color:#1D2129}
+.rd-doc ul{margin:6px 0;padding-left:20px;color:#4E5969}
+.rd-doc ol{margin:6px 0;padding-left:22px;color:#4E5969}
+.rd-doc li{margin:3px 0}
+.rd-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px}
+.rd-table th{background:#F7F8FA;border:1px solid #E5E6EB;padding:7px 10px;text-align:left;font-weight:500;color:#4E5969}
+.rd-table td{border:1px solid #E5E6EB;padding:7px 10px;color:#1D2129}
+.rd-note{background:#F7F8FA;border-radius:6px;padding:10px 14px;font-size:12.5px;color:#4E5969;margin:8px 0}
+@media print{.rd-toc{background:#fff}.rd-h2{page-break-after:avoid}}
+`;
+
+function reqDocBodyHTML(){
+  const r=state.reqDoc;if(!r)return '';
+  const s=r.sections||{};
+  const ch=[];
+  ch.push({t:'项目背景与建设目标',h:`<p class="rd-p">${s.overview||''}</p>`});
+  ch.push({t:'用户角色与使用场景',h:`<p class="rd-p">${s.users||r.user||''}</p>`});
+  ch.push({t:'业务流程',h:`<ol>${(s.flow||'').split('\n').filter(Boolean).map(x=>`<li>${x.replace(/^[①②③④⑤⑥⑦⑧⑨⑩]\s*/,'')}</li>`).join('')}</ol>`});
+  ch.push({t:'功能模块说明',h:`<ul>${(r.funcs||[]).map(f=>`<li>${f}</li>`).join('')}</ul>`});
+  ch.push({t:'页面结构及页面功能说明',h:`<ul>${(s.pages||'').split('\n').filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>`});
+  ch.push({t:'关键交互规则',h:`<ul>${(s.rules||'').split('\n').filter(Boolean).map(x=>`<li>${x.replace(/^⚡\s*/,'')}</li>`).join('')}</ul>`});
+  ch.push({t:'数据字段及数据关系',h:`<table class="rd-table"><tr><th style="width:130px">字段名称</th><th style="width:100px">类型</th><th style="width:60px">必填</th><th>说明</th></tr>${(s.fields||[]).map(f=>`<tr><td>${f.name}</td><td>${f.type}</td><td>${f.req==='是'?'是':'否'}</td><td>${f.note||'—'}</td></tr>`).join('')}</table>`});
+  if((s.notImpl||'').trim())ch.push({t:'本期边界（暂不实现）',h:`<div class="rd-note">以下内容本期不实现，作为后续迭代边界：</div><ul>${s.notImpl.split('\n').filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>`});
+  ch.push({t:'验收标准',h:`<ul>${(s.acceptance||'').split('\n').filter(Boolean).map(x=>`<li>${x.replace(/^✅\s*/,'')}</li>`).join('')}</ul>`});
+  const toc=ch.map((c,i)=>`<a href="#sec-${i+1}">${i+1}. ${c.t}</a>`).join('');
+  const body=ch.map((c,i)=>`<h2 class="rd-h2" id="sec-${i+1}">${i+1}. ${c.t}</h2>${c.h}`).join('');
+  return `<h1 class="rd-doctitle">${r.name} 需求说明书</h1>
+  <div class="rd-sub">由海牛 Vibe Coding AI 基于需求对话生成 · 可交给开发人员作为需求输入</div>
+  <table class="rd-meta">
+    <tr><th>需求名称</th><td>${r.name}</td></tr>
+    <tr><th>文档版本</th><td>${state.reqVer}</td></tr>
+    <tr><th>生成时间</th><td>${genTime()}</td></tr>
+    <tr><th>需求状态</th><td>${state.phase==='dev'?'已确认 · 开发中':'待确认'}</td></tr>
+    <tr><th>目标用户</th><td>${r.user||'—'}</td></tr>
+  </table>
+  <div class="rd-toc"><div class="rd-toc-t">目录</div>${toc}</div>
+  ${body}`;
+}
+
+function buildStandaloneReqHTML(){
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${state.reqDoc?state.reqDoc.name+' 需求说明书':'需求说明书'}</title>
+<style>${RD_CSS}</style>
+</head>
+<body>
+<div class="rd-doc">${reqDocBodyHTML()}</div>
+</body>
+</html>`;
+}
+
+function downloadReqHTML(){
+  if(!state.docReady)return;
+  const blob=new Blob([buildStandaloneReqHTML()],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='需求说明书.html';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  showToast('需求说明书.html 已下载','success');
+}
+
+/* ===== MD 主文件生成与回写（MD 为可编辑主文件，HTML 由其同步生成）===== */
+function buildReqMD(){
+  const r=state.reqDoc;if(!r)return '';
+  const s=r.sections||{};
+  return `# ${r.name}
+
+**目标用户**：${r.user||'—'}
+**文档版本**：${state.reqVer}
+**生成时间**：${genTime()}
+
+## 一、项目背景与建设目标
+${s.overview||''}
+
+## 二、用户角色与使用场景
+${s.users||''}
+
+## 三、业务流程
+${(s.flow||'').split('\n').filter(Boolean).map(x=>'- '+x).join('\n')}
+
+## 四、功能模块说明
+${(r.funcs||[]).map((f,i)=>`${i+1}. ${f}`).join('\n')}
+
+## 五、页面结构及页面功能说明
+${(s.pages||'').split('\n').filter(Boolean).map(x=>'- '+x).join('\n')}
+
+## 六、关键交互规则
+${(s.rules||'').split('\n').filter(Boolean).map(x=>'- '+x.replace(/^⚡\s*/,'')).join('\n')}
+
+## 七、数据字段及数据关系
+| 字段名称 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+${(s.fields||[]).map(f=>`| ${f.name} | ${f.type} | ${f.req==='是'?'是':'否'} | ${f.note||'—'} |`).join('\n')}
+
+## 八、本期边界（暂不实现）
+${(s.notImpl||'').split('\n').filter(Boolean).map(x=>'- '+x).join('\n')}
+
+## 九、验收标准
+${(s.acceptance||'').split('\n').filter(Boolean).map(x=>'- '+x.replace(/^✅\s*/,'')).join('\n')}`;
+}
+
+function parseReqMD(m){
+  const r=state.reqDoc;if(!r)return;
+  const lines=String(m||'').split('\n');
+  const n=m.match(/^#\s+(.+)$/m);if(n)r.name=n[1].trim();
+  const u=m.match(/\*\*目标用户\*\*：(.+)/);if(u)r.user=u[1].trim();
+  const fi=lines.findIndex(l=>l.includes('功能模块说明'));
+  if(fi>-1){
+    const fs=[];
+    for(let i=fi+1;i<lines.length;i++){
+      const t=lines[i].trim();
+      if(/^##\s/.test(t))break;
+      const mm=t.match(/^\d+\.\s*(.+)$/);
+      if(mm)fs.push(mm[1]);
+    }
+    if(fs.length)r.funcs=fs;
+  }
+}
+/* ===== 需求沟通对话（说明书生成后持续更新；生成中的留言不重复触发生成）===== */
+function reqChatSend(){
+  const inp=$('reqdocChatInput');
+  const text=inp?inp.value.trim():'';
+  if(!text){showToast('请输入需求内容','info');return;}
+  if(inp)inp.value='';
+  state.reqDraft='';
+  state.convMsgs.push({role:'user',text});
+  /* 不关闭正在查看的文档：AI 上下文与用户当前预览关联 */
+  if(!state.docReady){
+    if(state.convLoading){renderApp();scrollConv();return;}
+    state.convLoading=true;state.convLoadingText='正在梳理需求，生成《需求说明书》（MD + HTML）…';
+    renderApp();scrollConv();
+    setTimeout(generateReqDoc,1600);
+  }else{
+    applyReqSupplement(text);
+  }
+}
+
+function generateReqDoc(){
+  const allText=state.convMsgs.filter(m=>m.role==='user').map(m=>m.text).join('；');
+  const sc=detectScene(allText);
+  const tpl=SCENES[sc];
+  state.reqDoc=JSON.parse(JSON.stringify(tpl));
+  state.reqDoc.scene=sc;
+  state.reqDoc.name=state.reqName;/* 应用名称全局统一：以进入时 AI 提炼的名称为准 */
+  state.reqFullText=buildReqMD();
+  state.docReady=true;
+  state.reqState='viewing';
+  state.convLoading=false;
+  /* 需求说明卡内嵌对话流：对话在上、卡片在下，后续补充消息继续排在卡片后 */
+  state.centerView='';state.activeFile=null;
+  state.convMsgs.push({role:'ai',text:'✅ 《需求说明书》已生成（MD + HTML），点击下方卡片可打开文件查看；确认无误后点击卡片底部「立即开发」。'});
+  state.convMsgs.push({type:'reqcard'});
+  renderApp();scrollConv();
+}
+
+function applyReqSupplement(text){
+  const r=state.reqDoc;
+  r.funcs=Array.from(new Set([...(r.funcs||[]),text]));
+  r.sections=r.sections||{};
+  r.sections.pages=(r.sections.pages||'')+'\n'+text+'（由对话补充）';
+  state.reqFullText=buildReqMD();
+  const ctx=state.centerView==='html'?'（针对你正在查看的《需求说明书.html》）':state.centerView==='md'?'（针对你正在编辑的《需求说明书.md》）':'';
+  state.convMsgs.push({role:'ai',text:`${ctx}已将补充需求纳入说明书：\n· 「${text.length>20?text.slice(0,20)+'…':text}」已写入功能模块与页面说明\n· 需求说明书.md 与 需求说明书.html 已同步更新`});
+  renderApp();scrollConv();
+  showToast('MD 与 HTML 已同步更新','success');
+}
+
+/* ===== 应用名称全局统一：右上角改名，同步 MD / HTML ===== */
+function editAppName(){
+  openModal('修改应用名称',`<input id="appNameInput" class="modal-input" style="width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13.5px" value="${escapeHtml(state.reqName)}" maxlength="30" placeholder="请输入应用名称">`,()=>{
+    const inp=$('appNameInput');
+    const v=inp?inp.value.trim():'';
+    if(!v){showToast('应用名称不能为空','info');return false;}
+    state.reqName=v;
+    if(state.reqDoc){state.reqDoc.name=v;state.reqFullText=buildReqMD();}
+    wbSync();
+    showToast('应用名称已保存，说明书已同步更新','success');
+    return true;
+  });
+}
+
+/* ===== MD 编辑（沿用现有编辑体验；保存后同步重建 HTML）===== */
+function editReqDoc(){state.reqState='editing';refreshCenter();}
+function cancelReqDocEdit(){state.reqState='viewing';refreshCenter();}
+function saveReqDoc(){
+  const ta=$('reqdocEditor');
+  if(ta)state.reqFullText=ta.value;
+  parseReqMD(state.reqFullText);
+  state.reqFullText=buildReqMD();
+  state.reqState='viewing';
+  if(state.reqDoc&&state.reqDoc.name)state.reqName=state.reqDoc.name;
+  showToast('需求说明书.md 已保存，HTML 已同步重新生成','success');
+  refreshCenter();
+}
+
+/* ===== 立即开发：明确交接动作 —— 保存说明书 → 传递上传资料 → 传递需求上下文 → 进入开发 ===== */
+function startDev(){
+  if(!state.docReady)return;
+  parseReqMD(state.reqFullText);
+  state.reqFullText=buildReqMD();
+  state.phase='dev';
+  state.centerView='canvas';
+  state.filesOpen=false;
+  state.activeFile=null;
+  state.currentApp=null;state.chatOpen=true;
+  state.devDraft='';
+  if(state.wbReqId){state.wbStatus='developing';wbSync();}
+  const n=state.uploadFiles.length;
+  state.chatMsgs=[
+    {role:'user',text:'需求已确认，开始开发'},
+    {role:'bot',text:'✅ 《需求说明书》（MD + HTML）已保存'},
+    ...(n?[{role:'bot',text:'📎 已随需求传递 '+n+' 份上传资料'}]:[]),
+    {role:'bot',text:'🤖 需求上下文已传递给开发智能体：《'+state.reqName+' 需求说明书》（'+state.reqVer+'）+ 沟通记录。<span style="color:var(--primary);cursor:pointer" onclick="showReqCtx()">展开摘要</span>'},
+    {role:'bot',text:'🚀 正在启动开发…'},
+  ];
+  renderGen();
+  setTimeout(genApp,900);
+}
+function showReqCtx(){
+  const r=state.reqDoc;if(!r)return;
+  const s=r.sections||{};
+  openModal('📄 需求上下文 · '+r.name+'（'+state.reqVer+'）',
+    `<div style="font-size:12.5px;line-height:2">
+      <div><b>目标用户</b>：${r.user||'—'}</div>
+      <div><b>功能模块</b>（${(r.funcs||[]).length}）：<span style="color:var(--text-2)">${(r.funcs||[]).join('、')}</span></div>
+      <div><b>数据字段</b>（${(s.fields||[]).length}）：${(s.fields||[]).map(f=>f.name).join('、')}</div>
+      <div><b>业务规则</b>：${(s.rules||'').split('\n').filter(Boolean).length} 条 · <b>验收标准</b>：${(s.acceptance||'').split('\n').filter(Boolean).length} 条</div>
+      <div style="color:var(--text-3);margin-top:8px">以上内容已作为完整上下文传入本次开发对话。</div>
+    </div>`,null,true);
+}
+
+function detectScene(text){
+  if(text.includes('看板')||text.includes('转化率')||text.includes('数据统计')||text.includes('统计分析'))return 'board';
+  if(text.includes('报名')||text.includes('活动')||text.includes('签到'))return 'event';
+  if(text.includes('拜访')||text.includes('客户'))return 'visit';
+  if(text.includes('项目')||text.includes('任务')||text.includes('后台'))return 'pm';
+  return 'board';
+}
+
+function genApp(){
+  state.generating=true;state.genStarted=true;state.genStep=0;
+  if(state.reqFullText){state.chatMsgs.push({role:'bot',text:'📋 需求说明书.html 已随上下文传入本次开发对话',small:true});}
+  renderGen();
+  const steps=['🏗️ 理解需求中...','🔍 分析业务场景...','🔌 匹配平台能力...','📄 生成页面结构...','🧩 组装业务功能...','✅ 应用完成中...'];
+  showStepsBar(steps,0);
+  let step=0;
+  const t=setInterval(()=>{
+    step++;
+    if(step<steps.length){
+      state.genStep=step;showStepsBar(steps,step);updateGenLoading();
+      state.chatMsgs.push({role:'bot',text:steps[step],small:true});
+      renderChat();
+    }
+    else{clearInterval(t);finishGenApp();}
+  },750);
+}
+
+function showStepsBar(s,idx){
+  const stepsEl=document.getElementById('genStepsBar');
+  if(!stepsEl)return;
+  stepsEl.innerHTML=s.map(function(st,i){return '<span'+(i<idx?' class="done"':i===idx?' class="active"':'')+'>'+st+'</span>';}).join('');
+}
+function renderChat(){
+  const el=document.getElementById('genChatMsgs');
+  if(!el)return;
+  el.innerHTML=state.chatMsgs.map(renderMsg).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function finishGenApp(){
+  state.generating=false;
+  const sc=state.reqDoc.scene||'event';
+  const app={
+    id:'APP-DEV',
+    name:state.reqDoc.name,
+    icon:SCENES[sc].icon,
+    color:SCENES[sc].color,
+    ver:'v1.0.0',status:'已上线',
+    desc:state.reqDoc.funcs.map((f,i)=>`${i+1}. ${f}`).join('；'),
+    scene:sc,date:'2026-09-03',platform:state.platform,
+  };
+  state.currentApp=app;
+  state.devFiles=DEV_FILE_TPL.map(f=>Object.assign({},f));
+  state.chatMsgs.push({role:'bot',text:'🎉 开发完成！已生成前端页面、后端接口与数据库文件，左侧「文件 → 开发生成文件」可查看。'});
+  state.chatMsgs.push({role:'bot',text:'右侧对话框可继续提出修改意见，例如：增加字段、调整按钮位置、修改页面样式、增加筛选条件等。'});
+  renderGen();scrollChat();
+}
+
+/* ===== 返回 / 对话开关 ===== */
+function toggleChat(){state.chatOpen=!state.chatOpen;renderGen();}
+function closeChat(){state.chatOpen=false;renderGen();}
+
+/* ===== 渲染开发页（与需求阶段同构：左rail顶部返回图标，无面包屑；画布与右侧AI助手保持原有交互）===== */
+function renderGen(){
+  const hasApp=!!state.currentApp;
+  const topRight=hasApp?`<button class="gen-btn primary" onclick="publishApp()">🚀 发布</button>`:'';
+  const centerBlock=state.centerView==='md'?mdViewHTML():state.centerView==='html'?htmlViewHTML():`<div class="gen-canvas-area">${state.generating?genLoading():hasApp?genPreview(state.currentApp):genIdle()}</div>`;
+  $('wcBody').innerHTML=`<aside class="wc-rail">
+    <div class="rail-btn" onclick="goWorkbench()">←<span class="rail-tip">返回项目集</span></div>
+    <div class="rail-sep"></div>
+    ${railBtn('canvas','🖥️','预览',state.centerView==='canvas')}
+    ${railBtn('file','📄','文件',state.filesOpen)}
+  </aside>
+  ${state.filesOpen?filePanelHTML():''}
+  <div class="gen-main">
+    <div class="ws-topbar">
+      <div></div>
+      <div class="ws-topbar-right">
+        <span class="ws-name" id="wsNameText" title="点击修改应用名称" onclick="editAppName()">✨ ${escapeHtml(state.reqName)}</span>
+        <span class="ws-edit" title="修改应用名称" onclick="editAppName()">✏</span>
+        ${topRight}
+      </div>
+    </div>
+    ${centerBlock}
+  </div>
+  <div class="gen-chat ${state.chatOpen?'':'closed'}" id="genChatPanel">
+    <div class="gen-chat-head">
+      <div class="gen-chat-title">🤖 AI助手 <span style="font-size:11px;opacity:.7;font-weight:400">应用开发</span></div>
+      <span class="gen-chat-close" onclick="closeChat()">×</span>
+    </div>
+    <div class="gen-chat-msgs" id="genChatMsgs">${state.chatMsgs.map(renderMsg).join('')}</div>
+    <div class="gen-chat-input">
+      <textarea id="genChatInput" placeholder="输入需求或修改意见..." rows="1" oninput="state.devDraft=this.value" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend()}">${escapeHtml(state.devDraft||'')}</textarea>
+      <button class="gen-chat-send" onclick="chatSend()">➤</button>
+    </div>
+  </div>`;
+  updateFab();
+}
+function renderMsg(m){
+  if(m.type==='reqcard')return reqCardHTML();
+  if(m.type==='req')return '';
+  const avatar=`<div class="gen-chat-avatar" style="${m.role==='user'?'background:linear-gradient(135deg,#FF7D00,#FFB400)':'background:#1A66FF'}">${m.role==='user'?'我':'🤖'}</div>`;
+  const smallCls=m.small?' style="font-size:12px"':'';
+  return `<div class="gen-chat-msg ${m.role}">${avatar}<div class="gen-chat-bubble"${smallCls}>${m.text||''}</div></div>`;
+}
+
+/* 需求说明卡：内嵌对话流的产物卡片，底部=立即开发 */
+function reqCardHTML(){
+  const r=state.reqDoc;if(!r)return '';
+  return `<div class="req-card">
+    <div class="req-card-head"><span class="t">📄 ${escapeHtml(r.name)} · 需求说明书</span><span class="ver">${state.reqVer}</span></div>
+    <div class="req-card-body">
+      <div class="req-card-row"><span class="k">目标用户</span><span class="v">${escapeHtml(r.user||'—')}</span></div>
+      <div class="req-card-row"><span class="k">功能模块</span><span class="v">${(r.funcs||[]).map(escapeHtml).join('、')}</span></div>
+    </div>
+    <div class="req-card-files">
+      <button class="btn" onclick="openFile('md')">📝 需求说明书.md</button>
+      <button class="btn" onclick="openFile('html')">📄 需求说明书.html</button>
+    </div>
+    <div class="req-card-dev"><button class="reqdoc-gen-btn" style="padding:10px 34px;font-size:14px" onclick="startDev()">⚡ 立即开发</button></div>
+  </div>`;
+}
+
+function genIdle(){return `<div class="idle-state"><div class="idle-ico">🤖</div><div class="loading-main">等待AI生成你的应用</div><div class="loading-step">生成完成后将在这里预览</div></div>`;}
+function genLoading(){return `<div class="loading-state"><div class="loading-spinner"></div><div class="loading-main">AI正在${state.generating?'生成':'处理'}你的应用</div><div class="loading-step">${['理解需求中...','分析业务场景中...','匹配平台能力中...','生成需求说明书中...','生成页面结构中...','组装业务功能中...','应用完成中...'][state.genStep]||'处理中...'}</div></div>`;}
+function updateGenLoading(){const e=document.querySelector('.loading-step');if(e)e.textContent=['理解需求中...','分析业务场景中...','匹配平台能力中...','生成需求说明书中...','生成页面结构中...','组装业务功能中...','应用完成中...'][state.genStep]||'处理中...';}
+function updateFab(){const f=$('chatFab');if(!f)return;f.className='chat-fab'+(state.phase==='dev'&&!state.chatOpen?' show':'');}
+
+/* ===== 应用预览 ===== */
+function genPreview(app){
+  var sc=app.scene||'event';
+  var tiles=getTiledPages(sc);
+  if(!tiles||tiles.length===0){return state.platform==='mp'?mpPreview(app):pcPreview(app);}
+  var isMp=state.platform==='mp'||state.platform==='h5';
+  var labelEl=state.platform==='pc'?'💻 PC应用预览':state.platform==='h5'?'🌐 H5应用预览':'📱 小程序应用预览';
+  return '<div class="tiled-label">'+labelEl+'</div><div class="tiled-grid">'+
+    tiles.map(function(t){return renderTile(t,isMp);}).join('')+'</div>';
+}
+function renderTile(t,isMp){
+  if(isMp){
+    return '<div class="tiled-mini"><div class="tiled-mini-bar"><span>9:41</span><span>📶 🔋</span></div>'+
+      '<div class="tiled-mini-title">'+t.title+'</div>'+
+      '<div class="tiled-mini-body">'+t.body+'</div></div>';
+  }
+  return '<div class="tiled-mini tiled-pc"><div class="tiled-pc-bar"><span class="pc-dot" style="background:#F53F3F"></span><span class="pc-dot" style="background:#FF7D00"></span><span class="pc-dot" style="background:#00B42A"></span><span class="tiled-pc-url">app.hainiu.com</span></div>'+
+    '<div class="tiled-mini-title">'+t.title+'</div>'+
+    '<div class="tiled-mini-body">'+t.body+'</div></div>';
+}
+function getTiledPages(sc){
+  var P={"event":[
+    {title:"活动列表",body:'<div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#E8F0FF">🎊</div><div>青春交友·城市定向跑<br><span style="font-size:10px;color:var(--text-3)">9月10日 14:00</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#E8FFEA">🧘</div><div>瑜伽体验公开课<br><span style="font-size:10px;color:var(--text-3)">9月12日 19:00</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#FFF7E8">🎓</div><div>新员工入职培训<br><span style="font-size:10px;color:var(--text-3)">9月15日 09:00</span></div></div>'},
+    {title:"在线报名",body:'<div style="display:flex;flex-direction:column;gap:8px"><div><span style="font-size:10px;color:var(--text-3)">姓名</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请输入姓名</span></div><div><span style="font-size:10px;color:var(--text-3)">手机号</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请输入手机号</span></div><div style="margin-top:6px;padding:8px;background:var(--primary);color:#fff;border-radius:6px;text-align:center;font-size:12px;font-weight:600">提交报名</div></div>'},
+    {title:"签到码",body:'<div class="tiled-qr"><div class="tiled-qr-box"></div><div class="tiled-qr-tip">QK-8321</div><div style="font-size:10px;color:var(--text-3);margin-top:4px">签到码</div></div>'},
+    {title:"我的报名",body:'<div class="tiled-mini-item"><div style="font-size:13px">青春交友·城市定向跑</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#E8FFEA;color:var(--success);margin-left:auto">已签到</span></div><div class="tiled-mini-item"><div style="font-size:13px">瑜伽体验公开课</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--primary-light);color:var(--primary);margin-left:auto">已报名</span></div>'}
+  ],"visit":[
+    {title:"拜访列表",body:'<div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#DBEAFE">🏢</div><div>台州泰隆机械厂<br><span style="font-size:10px;color:var(--text-3)">今日上午</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#D1FAE5">🏪</div><div>临海小商品超市<br><span style="font-size:10px;color:var(--text-3)">昨日下午</span></div></div></div>'},
+    {title:"拜访登记",body:'<div style="display:flex;flex-direction:column;gap:8px"><div><span style="font-size:10px;color:var(--text-3)">客户名称</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请选择客户</span></div><div><span style="font-size:10px;color:var(--text-3)">拜访类型</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">新客拜访</span></div><div style="margin-top:6px;padding:8px;background:var(--primary);color:#fff;border-radius:6px;text-align:center;font-size:12px;font-weight:600">提交拜访记录</div></div>'},
+    {title:"数据统计",body:'<div style="display:flex;gap:8px;justify-content:space-around"><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">28</div><div class="tiled-mini-stat-lbl">本月拜访</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">92%</div><div class="tiled-mini-stat-lbl">完成率</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">6</div><div class="tiled-mini-stat-lbl">新增客户</div></div></div>'}
+  ],"pm":[
+    {title:"项目看板",body:'<div style="display:flex;gap:8px;justify-content:space-around"><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">6</div><div class="tiled-mini-stat-lbl">进行中项目</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">42</div><div class="tiled-mini-stat-lbl">全部任务</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">87%</div><div class="tiled-mini-stat-lbl">按时完成率</div></div></div><div class="tiled-mini-item" style="margin-top:8px"><div class="tiled-mini-item-icon" style="background:#E8F0FF">🗂️</div><div>CRM系统二期<br><span style="font-size:10px;color:var(--text-3)">进行中 · 截止9月30日</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#E8FFEA">📦</div><div>供应商门户改版<br><span style="font-size:10px;color:var(--text-3)">进行中 · 截止10月15日</span></div></div>'},
+    {title:"任务列表",body:'<div class="tiled-mini-item"><div style="font-size:13px">客户数据导入接口</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#FFF7E8;color:var(--warning);margin-left:auto">进行中</span></div><div class="tiled-mini-item"><div style="font-size:13px">报表导出功能</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#F2F3F5;color:var(--text-3);margin-left:auto">待处理</span></div><div class="tiled-mini-item"><div style="font-size:13px">登录页改版</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#E8FFEA;color:var(--success);margin-left:auto">已完成</span></div>'},
+    {title:"新建任务",body:'<div style="display:flex;flex-direction:column;gap:8px"><div><span style="font-size:10px;color:var(--text-3)">任务标题</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请输入任务标题</span></div><div><span style="font-size:10px;color:var(--text-3)">负责人</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请选择负责人</span></div><div style="margin-top:6px;padding:8px;background:var(--primary);color:#fff;border-radius:6px;text-align:center;font-size:12px;font-weight:600">创建任务</div></div>'},
+    {title:"项目统计",body:'<div style="display:flex;gap:8px;justify-content:space-around"><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">18</div><div class="tiled-mini-stat-lbl">本周新增</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">12</div><div class="tiled-mini-stat-lbl">已完成</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">3</div><div class="tiled-mini-stat-lbl">已延期</div></div></div>'}
+  ],"board":[
+    {title:"数据概览",body:'<div style="display:flex;gap:8px;justify-content:space-around"><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">5</div><div class="tiled-mini-stat-lbl">进行中活动</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">12.6万</div><div class="tiled-mini-stat-lbl">总曝光</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">8.4%</div><div class="tiled-mini-stat-lbl">平均转化率</div></div></div><div style="display:flex;align-items:flex-end;gap:6px;height:56px;margin-top:10px;padding:0 4px"><div style="flex:1;background:#E8F0FF;border-radius:3px 3px 0 0;height:40%"></div><div style="flex:1;background:#E8F0FF;border-radius:3px 3px 0 0;height:65%"></div><div style="flex:1;background:#1A66FF;border-radius:3px 3px 0 0;height:100%"></div><div style="flex:1;background:#E8F0FF;border-radius:3px 3px 0 0;height:55%"></div><div style="flex:1;background:#E8F0FF;border-radius:3px 3px 0 0;height:75%"></div></div>'},
+    {title:"参与人数",body:'<div class="tiled-mini-item"><div style="font-size:13px">618年中大促</div><span style="font-size:10px;color:var(--text-3);margin-left:auto">4,218 人参与</span></div><div class="tiled-mini-item"><div style="font-size:13px">新品试用招募</div><span style="font-size:10px;color:var(--text-3);margin-left:auto">2,150 人参与</span></div><div class="tiled-mini-item"><div style="font-size:13px">会员日抽奖</div><span style="font-size:10px;color:var(--text-3);margin-left:auto">6,802 人参与</span></div>'},
+    {title:"转化率分析",body:'<div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;width:44px;color:var(--text-3)">曝光</span><div style="flex:1;height:14px;background:#1A66FF;border-radius:3px"></div><span style="font-size:10px">12.6万</span></div><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;width:44px;color:var(--text-3)">点击</span><div style="flex:1;height:14px;background:#5B8CFF;border-radius:3px;width:62%"></div><span style="font-size:10px">3.1万</span></div><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;width:44px;color:var(--text-3)">报名</span><div style="flex:1;height:14px;background:#94B4FF;border-radius:3px;width:34%"></div><span style="font-size:10px">1.06万</span></div></div>'},
+    {title:"效果对比",body:'<div class="tiled-mini-item"><div style="font-size:13px">618年中大促</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#E8FFEA;color:var(--success);margin-left:auto">转化 9.2%</span></div><div class="tiled-mini-item"><div style="font-size:13px">新品试用招募</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#E8F0FF;color:var(--primary);margin-left:auto">转化 6.8%</span></div><div class="tiled-mini-item"><div style="font-size:13px">会员日抽奖</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#FFF7E8;color:var(--warning);margin-left:auto">转化 5.4%</span></div>'}
+  ]};
+  return P[sc]||P.event;
+}
+
+function mpPreview(app){
+  return `<div class="mp-preview-shell">
+    <div class="mp-status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="phone-body-wrap"><div class="mp-body" id="mpBody">${mpPage('home')}</div>
+    <div class="mp-tabbar" id="mpTabbar">
+      <span data-t="home" class="tab-active" onclick="mpPage('home')"><span class="tab-ico">🏠</span>活动</span>
+      <span data-t="mine" onclick="mpPage('mine')"><span class="tab-ico">📝</span>我的报名</span>
+      <span data-t="setting" onclick="showToast('个人设置','info')"><span class="tab-ico">👤</span>我的</span>
+    </div></div></div>`;
+}
+
+function mpPage(t){
+  state.mpTab=t;
+  const b=$('mpBody');const tb=$('mpTabbar');
+  if(tb)tb.querySelectorAll('span').forEach(s=>s.className=s.dataset.t===t?'tab-active':'');
+  let html='';
+  if(t==='home'){
+    html=`<div class="mp-nav"><div class="mp-nav-title">🎉 活动列表</div><div class="mp-nav-right"><span onclick="showToast('搜索','info')">🔍</span></div></div>
+    <div class="mp-search"><div class="mp-search-bar">🔍 <input placeholder="搜索活动名称..."></div></div>
+    <div class="mp-banner"><div class="mp-banner-box"><div class="mp-banner-title">全民健身月</div><div class="mp-banner-sub">参与活动赢积分，兑换精美礼品</div></div></div>
+    <div class="mp-section-title">推荐活动</div><div class="mp-list">`;
+    EVENT_ACTIVITIES.forEach((a,i)=>{
+      const sClass=a.status==='名额紧张'?'tag tag-warning':'tag tag-primary';
+      html+=`<div class="mp-card" data-idx="${i}" onclick="showEDetail(${i})"><div class="mp-card-icon" style="background:${a.color}">${a.icon}</div>
+        <div class="mp-card-content"><div class="mp-card-name">${a.name}</div>
+        <div class="mp-card-meta">${a.date} ${a.time}</div>
+        <span class="mp-card-status ${sClass}">${a.status}</span></div>
+        <span class="mp-card-right">›</span></div>`;
+    });
+    html+=`</div>`;
+  }else if(t==='mine'){
+    html=`<div class="mp-nav"><div class="mp-nav-title">📝 我的报名</div></div>`;
+    if(MY_REGISTRATIONS.length===0){
+      html+=`<div class="mp-empty"><div class="empty-ico">📭</div><div>暂无报名记录</div></div>`;
+    }else{
+      html+=`<div class="mp-mine-list">`;
+      MY_REGISTRATIONS.forEach(r=>{
+        const sC=r.status==='已签到'?'st-checked':'st-registered';
+        html+=`<div class="mp-mine-item"><div class="mp-mine-item-top"><div class="mp-mine-item-name">${r.name}</div><span class="mp-mine-item-status ${sC}">${r.status}</span></div>
+          <div class="mp-mine-item-info">${r.date} ${r.time||''}</div>${r.code?`<div class="mp-mine-item-code">签到码：${r.code}</div>`:''}</div>`;
+      });
+      html+=`</div>`;
+    }
+  }else{
+    html=`<div class="mp-nav"><div class="mp-nav-title">👤 个人中心</div></div>
+    <div class="mp-empty"><div class="empty-ico" style="font-size:56px">👤</div><div>唯安</div><div style="font-size:12px;color:var(--text-3);margin-top:4px">业务创新者</div></div>`;
+  }
+  if(b)b.innerHTML=html;
+}
+
+function showEDetail(idx){
+  const a=EVENT_ACTIVITIES[idx];
+  const b=$('mpBody');if(!b)return;
+  b.innerHTML=`<div class="mp-back-btn" onclick="mpPage('home')">← 返回列表</div>
+    <div class="tile-detail-grid">
+      <div class="tile-detail"><div class="td-icon">📅</div><div class="td-label">活动时间</div><div class="td-value">${a.date} ${a.time}</div></div>
+      <div class="tile-detail"><div class="td-icon">🏷️</div><div class="td-label">活动状态</div><div class="td-value"><span class="tag ${a.status==='名额紧张'?'tag-warning':'tag-primary'}">${a.status}</span></div></div>
+      <div class="tile-detail"><div class="td-icon">📍</div><div class="td-label">活动地点</div><div class="td-value">海牛大厦A座3层活动中心</div></div>
+      <div class="tile-detail"><div class="td-icon">🏢</div><div class="td-label">举办方</div><div class="td-value">海牛科技 · 行政部</div></div>
+      <div class="tile-detail-big"><div class="td-label" style="margin-bottom:3px;font-size:11px">活动介绍</div>
+        <div style="font-size:12.5px;color:var(--text-2);line-height:1.7">${a.desc}</div></div>
+      <div class="tile-detail-act">
+        <button class="td-btn-primary" onclick="showReg(${idx})">立即报名</button>
+        <button class="td-btn-default" onclick="showToast('暂不开放','info')">收藏</button>
+      </div>
+    </div>`;
+}
+
+function showReg(idx){
+  const a=EVENT_ACTIVITIES[idx];
+  const b=$('mpBody');if(!b)return;
+  b.innerHTML=`<div class="mp-back-btn" onclick="showEDetail(${idx})">← 返回活动详情</div>
+    <div style="padding:12px 16px;font-size:15px;font-weight:600">${a.name} · 报名</div>
+    <div class="mp-form"><div class="mp-form-group"><label class="mp-form-label">姓名 <span class="red">*</span></label><input class="mp-form-input" placeholder="请输入姓名"></div>
+    <div class="mp-form-group"><label class="mp-form-label">手机号 <span class="red">*</span></label><input class="mp-form-input" placeholder="请输入手机号"></div>
+    <div class="mp-form-group"><label class="mp-form-label">参加人数</label><select class="mp-form-input" style="appearance:auto"><option>1人</option><option>2人</option><option>3人</option></select></div>
+    <div class="mp-form-group"><label class="mp-form-label">备注</label><input class="mp-form-input" placeholder="如有特殊需求请注明"></div></div>
+    <button class="mp-submit-btn" onclick="submitReg(${idx})">提交报名</button>`;
+}
+
+function submitReg(idx){
+  const a=EVENT_ACTIVITIES[idx];const b=$('mpBody');if(!b)return;
+  const code='QK-'+Math.floor(1000+Math.random()*9000);
+  b.innerHTML=`<div style="text-align:center;padding:30px 20px"><div style="font-size:48px;margin-bottom:12px">🎉</div>
+    <div style="font-size:16px;font-weight:600;margin-bottom:4px">报名成功！</div>
+    <div style="font-size:13px;color:var(--text-2);margin-bottom:20px">${a.name}</div>
+    <div class="mp-qrcode"><div class="mp-qrcode-box"><div class="qr-dot">✓</div></div>
+    <div class="mp-qrcode-tip">签到码：${code}</div>
+    <div class="mp-qrcode-sub">活动当天出示此码签到</div></div></div>`;
+  if(!MY_REGISTRATIONS.find(r=>r.name===a.name)){
+    MY_REGISTRATIONS.unshift({name:a.name,date:a.date,time:a.time,status:'已报名',code});
+  }
+}
+
+function pcPreview(app){
+  return `<div class="pc-shell"><div class="pc-browser-bar"><span class="pc-dot" style="background:#F53F3F"></span><span class="pc-dot" style="background:#FF7D00"></span><span class="pc-dot" style="background:#00B42A"></span>
+    <span class="pc-url">https://app.hainiu.com/activity · 活动报名管理后台</span></div>
+    <div class="pc-layout">
+      <div class="pc-sidebar"><div class="pc-sidebar-logo">🎉 活动后台</div>
+      <div class="pc-menu-item active">🏠 活动管理</div><div class="pc-menu-item" onclick="showToast('报名列表','info')">📝 报名列表</div>
+      <div class="pc-menu-item" onclick="showToast('签到管理','info')">✅ 签到管理</div><div class="pc-menu-item" onclick="showToast('报名统计','info')">📊 报名统计</div>
+      <div class="pc-menu-item" onclick="showToast('系统设置','info')">⚙ 系统设置</div></div>
+      <div class="pc-main">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="pc-main-title" style="margin-bottom:0">📊 报名统计</div>
+          <div style="display:flex;gap:8px"><button class="gen-btn" onclick="showToast('新增活动','info')">＋ 新增活动</button>
+          <button class="gen-btn primary" onclick="showToast('数据已导出','success')">📤 导出</button></div></div>
+        <div class="pc-stat-grid"><div class="pc-stat"><div class="pc-stat-label">活动总数</div><div class="pc-stat-value">12</div></div>
+        <div class="pc-stat"><div class="pc-stat-label">累计报名</div><div class="pc-stat-value">356 人</div></div>
+        <div class="pc-stat"><div class="pc-stat-label">今日新增</div><div class="pc-stat-value">28 人</div></div></div>
+        <div class="pc-main-title">📝 最新报名</div>
+        <table class="pc-table"><tr><th>报名人</th><th>活动</th><th>手机号</th><th>报名时间</th><th>状态</th><th>签到码</th></tr>
+        <tr><td>张三</td><td>城市定向跑</td><td>138****0001</td><td>2026-09-03 14:30</td><td><span class="pc-tag tag-success">已签到</span></td><td style="font-family:monospace">QK-8321</td></tr>
+        <tr><td>李四</td><td>瑜伽体验课</td><td>138****0002</td><td>2026-09-03 10:15</td><td><span class="pc-tag tag-primary">已报名</span></td><td style="font-family:monospace">QK-8322</td></tr>
+        <tr><td>王五</td><td>入职培训</td><td>138****0003</td><td>2026-09-02 16:45</td><td><span class="pc-tag tag-gray">待确认</span></td><td style="font-family:monospace">QK-8323</td></tr>
+        <tr><td>赵六</td><td>瑜伽体验课</td><td>138****0004</td><td>2026-09-02 09:00</td><td><span class="pc-tag tag-success">已签到</span></td><td style="font-family:monospace">QK-8324</td></tr></table>
+      </div></div></div>`;
+}
+
+/* ===== 对话互动 ===== */
+function chatSend(){
+  const inp=$('genChatInput');
+  if(!inp||!inp.value.trim())return;
+  const text=inp.value.trim();inp.value='';state.devDraft='';
+  state.chatMsgs.push({role:'user',text});
+  state.chatMsgs.push({role:'bot',text:'好的，修改需求已记录。我会结合《需求说明书.html》上下文更新应用；左侧「文件」可随时查看需求文档与最新代码。'});
+  renderGen();scrollChat();
+}
+
+function scrollChat(){
+  setTimeout(()=>{
+    const el=$('genChatMsgs');
+    if(el)el.scrollTop=el.scrollHeight;
+  },50);
+}
+
+/* ===== 弹窗 ===== */
+function openModal(title,body,confirmFn,hideFooter){
+  $('modalTitle').textContent=title;
+  $('modalBody').innerHTML=body;
+  if(hideFooter){$('modalFoot').style.display='none';}else{
+    $('modalFoot').style.display='flex';
+    $('modalFoot').innerHTML=`<button class="btn" onclick="closeModal()">取消</button><button class="btn btn-primary" id="modalConfirmBtn">确定</button>`;
+    $('modalConfirmBtn').onclick=()=>{const r=confirmFn?confirmFn():true;if(r!==false)closeModal();};
+  }
+  const mb=$('modalMask');if(mb)mb.classList.add('open');
+}
+function closeModal(){$('modalMask').classList.remove('open');}
+
+let toastTimer=null;
+function showToast(msg,type='info',dur=2000){
+  const t=$('toast');
+  t.className='toast show '+type;
+  t.innerHTML=msg||'';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* ===== 发布：同步需求状态为「已发布」===== */
+function publishApp(){
+  state.wbStatus='done';
+  wbSync();
+  showToast('应用已发布 ✨ 工作台需求状态已更新为「已发布」','success');
+}
+
+/* ===== 海牛工作台联动入口 =====
+   ?entry=new&id=xx  新建需求 → 需求输入首页（新的需求沟通会话）
+   ?entry=req&id=xx  需求详情 → 草稿=需求沟通（说明书已生成）；开发中/已发布=生成应用详情页
+   无参数直接打开 = 原默认首页 */
+function vcEntry(){
+  const qs=new URLSearchParams(location.search);
+  const entry=qs.get('entry');
+  const id=qs.get('id');
+  let req=null;
+  if(id){try{req=JSON.parse(localStorage.getItem('hn_vc_req_'+id)||'null');}catch(e){}}
+  enterVibe();
+  if(id)state.wbReqId=id;
+  if(req)state.wbStatus=req.status||'draft';
+  if(entry==='req'&&req){openReqFromWB(req);}
+  else if(entry==='new'){showToast('需求记录已创建（草稿），描述你的需求开始沟通','info',2600);}
+}
+function openReqFromWB(req){
+  state.reqName=req.name||'未命名需求';
+  const sc=detectScene(req.name);
+  const tpl=SCENES[sc];
+  state.reqDoc=JSON.parse(JSON.stringify(tpl));
+  state.reqDoc.scene=sc;
+  state.reqDoc.name=state.reqName;
+  state.reqFullText=buildReqMD();
+  state.docReady=true;state.reqState='viewing';state.convLoading=false;
+  state.phase='req';state.centerView='';state.filesOpen=false;state.activeFile=null;
+  state.convMsgs=[
+    {role:'ai',text:'✅ 已载入「'+state.reqName+'」的需求沟通记录，《需求说明书》（MD + HTML）已生成。可继续对话补充需求，确认后点击卡片底部「立即开发」。'},
+    {type:'reqcard'},
+  ];
+  if(req.status==='developing'||req.status==='done'){
+    state.phase='dev';state.centerView='canvas';state.filesOpen=false;state.activeFile=null;state.chatOpen=true;state.devDraft='';
+    const app={id:'APP-DEV',name:state.reqName,icon:tpl.icon,color:tpl.color,ver:'v1.0.0',status:'已上线',
+      desc:state.reqDoc.funcs.map((f,i)=>(i+1)+'. '+f).join('；'),scene:sc,date:genTime().slice(0,10),platform:state.platform};
+    state.currentApp=app;
+    state.devFiles=DEV_FILE_TPL.map(f=>Object.assign({},f));
+    state.chatMsgs=[
+      {role:'user',text:'需求已确认，开始开发'},
+      {role:'bot',text:'✅ 《需求说明书》（MD + HTML）已保存'},
+      {role:'bot',text:'🤖 需求上下文已传递给开发智能体：《'+state.reqName+' 需求说明书》（'+state.reqVer+'）。<span style="color:var(--primary);cursor:pointer" onclick="showReqCtx()">展开摘要</span>'},
+      {role:'bot',text:'🚀 开发完成，可继续提出修改意见或点击右上角「发布」。'},
+    ];
+  }
+  renderApp();scrollConv();
+}
+vcEntry();
+</script>
+</body>
+</html>

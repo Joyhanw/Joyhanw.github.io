@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Coding - 开发中心</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: #1d2b3a;
+    background: linear-gradient(180deg, #d9e9fb 0%, #e8f1fc 22%, #f6faff 100%) fixed;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  input, select, textarea { font-family: inherit; outline: none; }
+
+  /* ============ 顶部导航 ============ */
+  .topbar {
+    height: 56px; background: #fff; display: flex; align-items: center;
+    padding: 0 28px; box-shadow: 0 1px 4px rgba(30,60,120,.06);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .logo { color: #1a66ff; font-size: 17px; font-weight: 700; letter-spacing: .5px; white-space: nowrap; }
+  .nav { display: flex; align-items: center; height: 100%; margin-left: 48px; flex: 1; }
+  .nav-item {
+    color: #4e5969; font-size: 14px; margin-right: 44px; line-height: 56px;
+    cursor: pointer; position: relative; white-space: nowrap; user-select: none;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .nav-item:hover { color: #1a66ff; }
+  .nav-item.active { color: #1a66ff; font-weight: 500; }
+  .nav-item.active::after {
+    content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+    bottom: 0; width: 26px; height: 3px; border-radius: 2px; background: #1a66ff;
+  }
+  .nav-item .caret { transition: transform .15s; }
+  .nav-item.dd-open .caret { transform: rotate(180deg); }
+  .top-right { display: flex; align-items: center; gap: 14px; }
+  .version-pill {
+    border: 1px solid #dfe5ee; background: #f7f9fc; color: #6b7686;
+    font-size: 12px; padding: 4px 12px; border-radius: 6px; white-space: nowrap;
+  }
+  .help-pill {
+    display: flex; align-items: center; gap: 6px; background: #f2f7ff; color: #1a66ff;
+    font-size: 13px; padding: 6px 14px; border-radius: 18px; cursor: pointer; white-space: nowrap;
+  }
+  .help-pill:hover { background: #e3eeff; }
+  .help-ic {
+    width: 15px; height: 15px; border: 1.3px solid currentColor; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;
+  }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #35c26b, #1ea153);
+    color: #fff; font-size: 13px; display: flex; align-items: center; justify-content: center;
+  }
+  .uname { color: #1d2b3a; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+
+  /* ============ 页面主体 ============ */
+  .page { padding: 20px 24px 40px; max-width: 1560px; margin: 0 auto; }
+
+  /* 项目集详情头部 */
+  .detail-head { display: flex; align-items: center; margin-bottom: 16px; padding: 0 4px; }
+  .back-btn {
+    display: flex; align-items: center; gap: 6px; color: #4e5969; font-size: 13px;
+    background: #fff; border: 1px solid #e2e8f2; border-radius: 8px; padding: 7px 14px 7px 10px;
+    cursor: pointer; transition: all .15s;
+  }
+  .back-btn:hover { color: #1a66ff; border-color: #9db9f5; }
+  .detail-name { font-size: 18px; font-weight: 700; margin-left: 16px; }
+  .detail-head .head-space { flex: 1; }
+
+  /* ============ 模块容器 ============ */
+  .module {
+    background: #fff; border-radius: 14px; padding: 20px 24px 18px;
+    margin-bottom: 20px; box-shadow: 0 2px 8px rgba(30,80,160,.05);
+  }
+  .module-head { display: flex; align-items: center; margin-bottom: 18px; }
+  .module-title { font-size: 15px; font-weight: 600; color: #1d2b3a; white-space: nowrap; }
+  .module-title .cnt { font-weight: 500; color: #4e5969; margin-left: 2px; }
+  .search-box {
+    margin-left: 20px; display: flex; align-items: center; gap: 8px;
+    border: 1px solid #e2e8f2; border-radius: 8px; height: 34px; padding: 0 12px;
+    width: 224px; background: #fff; transition: border-color .15s;
+  }
+  .search-box:focus-within { border-color: #1a66ff; }
+  .search-box input { border: none; width: 100%; font-size: 13px; color: #1d2b3a; background: transparent; }
+  .search-box input::placeholder { color: #a8b2c1; }
+  .head-space { flex: 1; }
+
+  .btn { border: none; border-radius: 8px; height: 34px; padding: 0 16px; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; }
+  .btn-primary { background: #1a66ff; color: #fff; }
+  .btn-primary:hover { background: #0f56e8; }
+  .btn-default { background: #fff; border: 1px solid #dfe5ee; color: #4e5969; }
+  .btn-default:hover { border-color: #b9c6d8; color: #1d2b3a; }
+  .btn-danger { background: #f53f3f; color: #fff; }
+  .btn-danger:hover { background: #e03434; }
+  .btn .plus { font-size: 15px; font-weight: 500; margin-top: -1px; }
+
+  /* ============ 卡片 ============ */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; min-height: 20px; }
+  .card {
+    position: relative; background: #fff; border: 1px solid #e7edf5; border-radius: 10px;
+    padding: 16px 18px 14px; cursor: pointer; transition: all .15s;
+  }
+  .card:hover { box-shadow: 0 6px 16px rgba(31,102,255,.12); transform: translateY(-1px); border-color: #d4e2fa; }
+  .card-top { display: flex; gap: 12px; align-items: flex-start; }
+  .icon-box {
+    width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+    background: linear-gradient(135deg, #6aa6ff, #2e6bef);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .icon-box.req { background: linear-gradient(135deg, #7fb0ff, #3b7bf0); }
+  .card-mid { flex: 1; min-width: 0; padding-right: 20px; }
+  .card-name { font-size: 15px; font-weight: 600; color: #1d2b3a; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-desc { font-size: 12.5px; color: #8a94a6; margin-top: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-foot { margin-top: 16px; display: flex; align-items: center; font-size: 13px; color: #4e5969; }
+  .card-foot .muted { color: #8a94a6; }
+  .divider { width: 1px; height: 12px; background: #e5eaf2; margin: 0 14px; }
+  .status { display: inline-flex; align-items: center; font-size: 13px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+
+  /* 三点按钮 */
+  .dot-btn {
+    position: absolute; top: 12px; right: 12px; width: 26px; height: 26px;
+    border: none; background: transparent; border-radius: 6px; color: #86909c;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dot-btn:hover { background: #f2f6fc; color: #1a66ff; }
+
+  /* ============ 下拉菜单 ============ */
+  .menu {
+    position: fixed; z-index: 120; background: #fff; border: 1px solid #e9eef5;
+    border-radius: 8px; box-shadow: 0 8px 24px rgba(29,43,58,.13); padding: 6px;
+    min-width: 136px; animation: menuIn .12s ease-out;
+  }
+  @keyframes menuIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .menu-item {
+    padding: 8px 14px; border-radius: 6px; font-size: 13px; color: #1d2b3a;
+    cursor: pointer; white-space: nowrap;
+  }
+  .menu-item:hover { background: #f2f7ff; color: #1a66ff; }
+  .menu-item.danger { color: #f53f3f; }
+  .menu-item.danger:hover { background: #fef0ef; color: #f53f3f; }
+  .menu-item.active { color: #1a66ff; font-weight: 600; }
+
+  /* ============ 分页 ============ */
+  .page-foot { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 16px; font-size: 12.5px; color: #86909c; }
+  .pg {
+    min-width: 26px; height: 26px; border: 1px solid #e2e8f2; background: #fff; border-radius: 6px;
+    color: #4e5969; font-size: 12.5px; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .pg.cur { border-color: #1a66ff; color: #1a66ff; }
+  .pg.disabled { color: #c3ccd8; cursor: default; }
+  .pg-size { border: 1px solid #e2e8f2; border-radius: 6px; padding: 5px 10px; background: #fff; }
+
+  .empty { color: #a8b2c1; font-size: 13px; padding: 28px 0; text-align: center; grid-column: 1 / -1; }
+
+  /* ============ 弹窗 ============ */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(23,35,55,.45); z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn .15s ease-out;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal { background: #fff; border-radius: 12px; width: 440px; max-width: calc(100vw - 40px); box-shadow: 0 16px 48px rgba(15,30,60,.2); animation: modalIn .18s ease-out; }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+  .modal-head { font-size: 16px; font-weight: 600; padding: 20px 24px 6px; color: #1d2b3a; }
+  .modal-body { padding: 14px 24px 4px; }
+  .form-item { margin-bottom: 16px; }
+  .form-item label { display: block; font-size: 13px; color: #1d2b3a; margin-bottom: 8px; font-weight: 500; }
+  .star { color: #f53f3f; margin-right: 2px; }
+  .form-item input, .form-item select {
+    width: 100%; height: 36px; border: 1px solid #dfe5ee; border-radius: 8px;
+    padding: 0 12px; font-size: 13px; color: #1d2b3a; background: #fff; transition: border-color .15s;
+  }
+  .form-item select { appearance: auto; }
+  .form-item input:focus, .form-item select:focus { border-color: #1a66ff; }
+  .form-item input.err { border-color: #f53f3f; }
+  .confirm-text { font-size: 14px; color: #1d2b3a; line-height: 1.6; }
+  .confirm-sub { font-size: 13px; color: #86909c; margin-top: 8px; }
+  .modal-foot { padding: 14px 24px 20px; display: flex; justify-content: flex-end; gap: 10px; }
+
+  /* ============ Toast ============ */
+  #toast {
+    position: fixed; left: 50%; bottom: 44px; transform: translateX(-50%) translateY(8px);
+    background: rgba(29,43,58,.92); color: #fff; padding: 10px 20px; border-radius: 8px;
+    font-size: 13px; z-index: 300; opacity: 0; pointer-events: none; transition: all .2s;
+    max-width: 70vw;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航：完全沿用海牛工作台现有结构 -->
+<header class="topbar">
+  <div class="logo">AI Coding</div>
+  <nav class="nav">
+    <div class="nav-item" data-action="nav-stub" data-name="概览">概览</div>
+    <div class="nav-item active" data-action="nav-dd" id="navDev">开发中心
+      <svg class="caret" width="10" height="10" viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="nav-item" data-action="nav-stub" data-name="应用中心">应用中心</div>
+    <div class="nav-item" data-action="nav-stub" data-name="模板中心">模板中心</div>
+    <div class="nav-item" data-action="nav-stub" data-name="数据中心">数据中心</div>
+  </nav>
+  <div class="top-right">
+    <span class="version-pill" data-action="reset-demo" title="点击重置演示数据" style="cursor:pointer">版本 8.1.1.1</span>
+    <span class="help-pill" data-action="nav-stub" data-name="帮助中心"><span class="help-ic">?</span>帮助中心</span>
+    <span class="avatar">唯</span>
+    <span class="uname" data-action="nav-stub" data-name="个人中心">唯安
+      <svg width="9" height="9" viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" stroke="#86909c" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+    </span>
+  </div>
+</header>
+
+<main class="page" id="app"></main>
+
+<div id="toast"></div>
+
+<script>
+/* ==================== 数据 ==================== */
+var DATA = {
+  projectSets: [
+    { id: 'ps1',  name: '宁波银行消费金融项目', parentId: null },
+    { id: 'ps1a', name: '消费金融业务系统',     parentId: 'ps1' },
+    { id: 'ps1b', name: '合作机构管理系统',     parentId: 'ps1' },
+    { id: 'ps2',  name: '河南AMC业务系统',      parentId: null },
+    { id: 'ps3',  name: '大金供应商管理项目',   parentId: null }
+  ],
+  requirements: [
+    { id: 'r1', name: '消费金融客户管理',       status: 'developing', psId: 'ps1' },
+    { id: 'r2', name: '合作机构材料智能审核',   status: 'draft',      psId: 'ps1' },
+    { id: 'r3', name: '供应商准入管理',         status: 'done',       psId: 'ps3' },
+    { id: 'r4', name: '案件管理优化需求',       status: 'draft',      psId: 'ps2' }
+  ],
+  backends: [
+    { id: 'b1',  name: '消费金融核心服务', desc: '客户与额度中心', status: 'running', psId: 'ps1' },
+    { id: 'b1b', name: '合作机构数据服务', desc: '机构数据接入',   status: 'stopped', psId: 'ps1' },
+    { id: 'b2',  name: 'AMC案件管理后端',  desc: '案件管理中心',   status: 'running', psId: 'ps2' },
+    { id: 'b3',  name: '供应商管理后端',   desc: '供应商准入管理', status: 'stopped', psId: 'ps3' }
+  ],
+  frontends: [
+    { id: 'f1',  name: '消费金融管理端', desc: '进件审批工作台', status: 'running', psId: 'ps1' },
+    { id: 'f1b', name: '合作机构管理端', desc: '机构协同工作台', status: 'stopped', psId: 'ps1' },
+    { id: 'f2',  name: 'AMC业务管理端',  desc: '案件管理界面',   status: 'running', psId: 'ps2' },
+    { id: 'f3',  name: '供应商管理端',   desc: '供应商协同门户', status: 'stopped', psId: 'ps3' }
+  ]
+};
+var idSeq = 100;
+var view = { type: 'outer' };   // outer | detail(id)
+
+var STATUS_REQ  = { draft: { t: '草稿', c: '#86909c' }, developing: { t: '开发中', c: '#1a66ff' }, done: { t: '已发布', c: '#00b451' } };
+var STATUS_PROJ = { running: { t: '启动中', c: '#00b451' }, stopped: { t: '已停止', c: '#f53f3f' } };
+
+/* ===== 与 Vibe Coding 页面联动 ===== */
+var VC_PAGE = 'ai-coding-vibe.html';
+var LS_DATA = 'hn_wb_data_v1';
+function saveData() { try { localStorage.setItem(LS_DATA, JSON.stringify(DATA)); } catch (e) {} }
+function loadData() {
+  try {
+    var s = localStorage.getItem(LS_DATA);
+    if (s) { var d = JSON.parse(s); if (d && d.projectSets && d.requirements) DATA = d; }
+  } catch (e) {}
+}
+function wbStoreReq(r) { try { localStorage.setItem('hn_vc_req_' + r.id, JSON.stringify({ id: r.id, name: r.name, status: r.status })); } catch (e) {} }
+function openReqVC(id) {
+  var r = DATA.requirements.find(function (x) { return x.id === id; });
+  if (!r) return;
+  wbStoreReq(r);
+  location.href = VC_PAGE + '?entry=req&id=' + id;
+}
+
+
+/* ==================== 工具 ==================== */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function findPS(id) { return DATA.projectSets.find(function (p) { return p.id === id; }); }
+function parentName(ps) { return ps.parentId && findPS(ps.parentId) ? findPS(ps.parentId).name : '无'; }
+function childrenOf(id) { return DATA.projectSets.filter(function (p) { return p.parentId === id; }); }
+function topSets() { return DATA.projectSets.filter(function (p) { return !p.parentId; }); }
+function reqsOf(id) { return DATA.requirements.filter(function (r) { return r.psId === id; }); }
+
+function icon(kind) {
+  if (kind === 'folder') {
+    return '<span class="icon-box"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M3 5.5A1.5 1.5 0 0 1 4.5 4h5.1l2 2.5h8A1.4 1.4 0 0 1 21 7.9V18a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18z"/><path fill="#cfe0ff" d="M3 9.5h18V11H3z" opacity=".35"/></svg></span>';
+  }
+  if (kind === 'doc') {
+    return '<span class="icon-box req"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M6 2h9l5 5v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path fill="#cfe0ff" d="M15 2v5h5z"/><rect x="8.5" y="11" width="8" height="1.6" rx=".8" fill="#5f97ff"/><rect x="8.5" y="14.5" width="8" height="1.6" rx=".8" fill="#5f97ff"/><rect x="8.5" y="18" width="5" height="1.6" rx=".8" fill="#5f97ff"/></svg></span>';
+  }
+  /* layers：后端 / 前端 */
+  return '<span class="icon-box"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12 3l9 5-9 5-9-5 9-5z"/><path fill="#fff" opacity=".7" d="M3.7 11.6L12 16l8.3-4.4 1.7 1-10 5.5-10-5.5 1.7-1z"/><path fill="#fff" opacity=".45" d="M3.7 14.9L12 19.3l8.3-4.4 1.7 1-10 5.5-10-5.5 1.7-1z"/></svg></span>';
+}
+function dotBtnSvg() {
+  return '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="8" cy="13" r="1.5"/></svg>';
+}
+function searchSvg() {
+  return '<svg width="14" height="14" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" stroke="#9aa5b5" stroke-width="1.4" fill="none"/><path d="M10.5 10.5L14 14" stroke="#9aa5b5" stroke-width="1.4" stroke-linecap="round"/></svg>';
+}
+
+/* ==================== 卡片模板 ==================== */
+function psCard(ps) {
+  return '<div class="card" data-action="open-detail" data-id="' + ps.id + '" data-name="' + esc(ps.name) + '">' +
+    '<div class="card-top">' + icon('folder') +
+      '<div class="card-mid"><div class="card-name">' + esc(ps.name) + '</div>' +
+      '<div class="card-desc">所属项目集：' + esc(parentName(ps)) + '</div></div>' +
+    '</div></div>';
+}
+function reqCard(r) {
+  var s = STATUS_REQ[r.status] || STATUS_REQ.draft;
+  return '<div class="card" data-action="req-click" data-id="' + r.id + '" data-name="' + esc(r.name) + '">' +
+    '<button class="dot-btn" data-action="req-menu" data-id="' + r.id + '" title="更多操作">' + dotBtnSvg() + '</button>' +
+    '<div class="card-top">' + icon('doc') +
+      '<div class="card-mid"><div class="card-name">' + esc(r.name) + '</div></div>' +
+    '</div>' +
+    '<div class="card-foot"><span class="status"><i class="dot" style="background:' + s.c + '"></i>' + s.t + '</span></div>' +
+  '</div>';
+}
+function projCard(p, kind) {
+  var s = STATUS_PROJ[p.status] || STATUS_PROJ.stopped;
+  return '<div class="card" data-action="proj-stub" data-kind="' + kind + '" data-name="' + esc(p.name) + '">' +
+    '<div class="card-top">' + icon(kind) +
+      '<div class="card-mid"><div class="card-name">' + esc(p.name) + '</div>' +
+      '<div class="card-desc">' + esc(p.desc || '') + '</div></div>' +
+    '</div>' +
+    '<div class="card-foot"><span class="status"><i class="dot" style="background:' + s.c + '"></i>' + s.t + '</span>' +
+      '<i class="divider"></i><span class="muted">我的角色：成员</span></div>' +
+  '</div>';
+}
+
+/* ==================== 模块模板 ==================== */
+function moduleSection(title, count, cards, opts) {
+  opts = opts || {};
+  var searchPlaceholder = opts.searchPlaceholder || '搜索项目';
+  var html = '<section class="module">' +
+    '<div class="module-head">' +
+      '<div class="module-title">' + title + '<span class="cnt">(' + count + ')</span></div>' +
+      '<div class="search-box">' + searchSvg() + '<input class="mod-search" data-list="' + opts.listId + '" placeholder="' + searchPlaceholder + '"></div>' +
+      '<div class="head-space"></div>' +
+      (opts.addBtn || '') +
+    '</div>' +
+    '<div class="card-grid" id="' + opts.listId + '">' +
+      (cards || '<div class="empty">暂无数据</div>') +
+    '</div>' +
+    '<div class="page-foot">共' + count + '个' +
+      '<button class="pg disabled">‹</button><button class="pg cur">1</button><button class="pg disabled">›</button>' +
+      '<span class="pg-size">8条/页</span>' +
+    '</div>' +
+  '</section>';
+  return html;
+}
+
+function renderOuter() {
+  var addBtnOuter = '<button class="btn btn-primary" data-action="outer-add"><span class="plus">+</span>新增</button>';
+  return '' +
+    moduleSection('项目集', topSets().length, topSets().map(psCard).join(''),
+      { listId: 'list-ps', searchPlaceholder: '搜索项目集', addBtn: addBtnOuter }) +
+    moduleSection('需求', DATA.requirements.length, DATA.requirements.map(reqCard).join(''),
+      { listId: 'list-req', searchPlaceholder: '搜索需求' }) +
+    moduleSection('后端', DATA.backends.length, DATA.backends.map(function (b) { return projCard(b, 'backend'); }).join(''),
+      { listId: 'list-be', searchPlaceholder: '搜索项目' }) +
+    moduleSection('前端', DATA.frontends.length, DATA.frontends.map(function (f) { return projCard(f, 'frontend'); }).join(''),
+      { listId: 'list-fe', searchPlaceholder: '搜索项目' });
+}
+
+function renderDetail(psId) {
+  var ps = findPS(psId);
+  if (!ps) { view = { type: 'outer' }; return renderOuter(); }
+  var addBtnDetail = '<button class="btn btn-primary" data-action="detail-add"><span class="plus">+</span>新增</button>';
+  var head = '<div class="detail-head">' +
+    '<button class="back-btn" data-action="back">' +
+      '<svg width="13" height="13" viewBox="0 0 14 14"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>返回' +
+    '</button>' +
+    '<div class="detail-name">' + esc(ps.name) + '</div>' +
+    '<div class="head-space"></div>' + addBtnDetail +
+  '</div>';
+  return head +
+    moduleSection('项目集', childrenOf(psId).length, childrenOf(psId).map(psCard).join(''),
+      { listId: 'list-ps', searchPlaceholder: '搜索项目集' }) +
+    moduleSection('需求', reqsOf(psId).length, reqsOf(psId).map(reqCard).join(''),
+      { listId: 'list-req', searchPlaceholder: '搜索需求' }) +
+    moduleSection('后端', DATA.backends.filter(function (b) { return b.psId === psId; }).length,
+      DATA.backends.filter(function (b) { return b.psId === psId; }).map(function (b) { return projCard(b, 'backend'); }).join(''),
+      { listId: 'list-be', searchPlaceholder: '搜索项目' }) +
+    moduleSection('前端', DATA.frontends.filter(function (f) { return f.psId === psId; }).length,
+      DATA.frontends.filter(function (f) { return f.psId === psId; }).map(function (f) { return projCard(f, 'frontend'); }).join(''),
+      { listId: 'list-fe', searchPlaceholder: '搜索项目' });
+}
+
+function render() {
+  document.getElementById('app').innerHTML = view.type === 'detail' ? renderDetail(view.id) : renderOuter();
+  bindSearch();
+}
+function bindSearch() {
+  document.querySelectorAll('.mod-search').forEach(function (inp) {
+    inp.addEventListener('input', function () {
+      var q = inp.value.trim().toLowerCase();
+      document.querySelectorAll('#' + inp.dataset.list + ' .card').forEach(function (c) {
+        c.style.display = (c.dataset.name || '').toLowerCase().indexOf(q) > -1 ? '' : 'none';
+      });
+    });
+  });
+}
+
+/* ==================== 菜单 ==================== */
+var currentMenu = null, menuAnchor = null;
+function closeMenus() {
+  if (currentMenu) { currentMenu.remove(); currentMenu = null; menuAnchor = null; }
+  var nd = document.getElementById('navDev');
+  if (nd) nd.classList.remove('dd-open');
+}
+function showMenu(anchor, items) {
+  closeMenus();
+  var m = document.createElement('div');
+  m.className = 'menu';
+  items.forEach(function (it) {
+    var d = document.createElement('div');
+    d.className = 'menu-item' + (it.danger ? ' danger' : '') + (it.active ? ' active' : '');
+    d.textContent = it.label;
+    d.onclick = function () { closeMenus(); it.fn && it.fn(); };
+    m.appendChild(d);
+  });
+  document.body.appendChild(m);
+  var r = anchor.getBoundingClientRect();
+  var left = Math.max(8, Math.min(r.right - m.offsetWidth, window.innerWidth - m.offsetWidth - 8));
+  m.style.left = left + 'px';
+  m.style.top = (r.bottom + 6) + 'px';
+  currentMenu = m; menuAnchor = anchor;
+}
+
+/* ==================== 弹窗 ==================== */
+function openModal(innerHtml) {
+  closeMenus();
+  var ov = document.createElement('div');
+  ov.className = 'overlay';
+  ov.innerHTML = '<div class="modal">' + innerHtml + '</div>';
+  ov.addEventListener('click', function (e) { if (e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
+  return ov;
+}
+
+/* 新建项目集：只填名称，所属项目集由进入上下文自动确定 */
+function createProjectSet(parentId) {
+  var ov = openModal(
+    '<div class="modal-head">新建项目集</div>' +
+    '<div class="modal-body">' +
+      '<div class="form-item"><label><span class="star">*</span>项目集名称</label><input id="f-ps-name" placeholder="请输入项目集名称"></div>' +
+    '</div>' +
+    '<div class="modal-foot"><button class="btn btn-default" data-close>取消</button><button class="btn btn-primary" data-ok>确定</button></div>'
+  );
+  ov.querySelector('[data-close]').onclick = function () { ov.remove(); };
+  ov.querySelector('[data-ok]').onclick = function () {
+    var name = ov.querySelector('#f-ps-name').value.trim();
+    if (!name) { ov.querySelector('#f-ps-name').classList.add('err'); toast('请输入项目集名称'); return; }
+    var ps = { id: 'ps' + (++idSeq), name: name, parentId: parentId || null };
+    DATA.projectSets.push(ps);
+    saveData();
+    ov.remove();
+    view = { type: 'detail', id: ps.id };
+    render();
+    toast('项目集创建成功');
+  };
+}
+
+/* 新增需求：创建草稿需求记录，进入 Vibe Coding 新的需求沟通会话 */
+function addRequirement(psId) {
+  var r = { id: 'r' + (++idSeq), name: '未命名需求', status: 'draft', psId: psId };
+  DATA.requirements.push(r);
+  wbStoreReq(r);
+  saveData();
+  location.href = VC_PAGE + '?entry=new&id=' + r.id;
+}
+
+/* 新增后端 / 前端项目（沿用现有流程的模拟） */
+function createProject(kind, psId) {
+  var isBe = kind === 'backend';
+  var ov = openModal(
+    '<div class="modal-head">' + (isBe ? '新建后端项目' : '新建前端项目') + '</div>' +
+    '<div class="modal-body">' +
+      '<div class="form-item"><label><span class="star">*</span>项目名称</label><input id="f-p-name" placeholder="请输入项目名称"></div>' +
+      '<div class="form-item"><label>项目描述</label><input id="f-p-desc" placeholder="请输入项目描述"></div>' +
+    '</div>' +
+    '<div class="modal-foot"><button class="btn btn-default" data-close>取消</button><button class="btn btn-primary" data-ok>确定</button></div>'
+  );
+  ov.querySelector('[data-close]').onclick = function () { ov.remove(); };
+  ov.querySelector('[data-ok]').onclick = function () {
+    var name = ov.querySelector('#f-p-name').value.trim();
+    if (!name) { ov.querySelector('#f-p-name').classList.add('err'); toast('请输入项目名称'); return; }
+    var desc = ov.querySelector('#f-p-desc').value.trim();
+    var p = { id: (isBe ? 'b' : 'f') + (++idSeq), name: name, desc: desc, status: 'stopped', psId: psId };
+    (isBe ? DATA.backends : DATA.frontends).push(p);
+    saveData();
+    ov.remove();
+    render();
+    toast('创建成功');
+  };
+}
+
+/* 编辑需求 */
+function editRequirement(id) {
+  var r = DATA.requirements.find(function (x) { return x.id === id; });
+  if (!r) return;
+  var ov = openModal(
+    '<div class="modal-head">编辑需求</div>' +
+    '<div class="modal-body">' +
+      '<div class="form-item"><label><span class="star">*</span>需求名称</label><input id="f-r-name" value="' + esc(r.name) + '"></div>' +
+    '</div>' +
+    '<div class="modal-foot"><button class="btn btn-default" data-close>取消</button><button class="btn btn-primary" data-ok>确定</button></div>'
+  );
+  ov.querySelector('[data-close]').onclick = function () { ov.remove(); };
+  ov.querySelector('[data-ok]').onclick = function () {
+    var name = ov.querySelector('#f-r-name').value.trim();
+    if (!name) { ov.querySelector('#f-r-name').classList.add('err'); toast('请输入需求名称'); return; }
+    r.name = name;
+    wbStoreReq(r);
+    saveData();
+    ov.remove();
+    render();
+    toast('已保存');
+  };
+}
+
+/* 删除需求（二次确认） */
+function deleteRequirement(id) {
+  var r = DATA.requirements.find(function (x) { return x.id === id; });
+  if (!r) return;
+  var ov = openModal(
+    '<div class="modal-head">删除需求</div>' +
+    '<div class="modal-body"><p class="confirm-text">确定删除需求「' + esc(r.name) + '」吗？</p>' +
+    '<p class="confirm-sub">删除后不可恢复。</p></div>' +
+    '<div class="modal-foot"><button class="btn btn-default" data-close>取消</button><button class="btn btn-danger" data-ok>删除</button></div>'
+  );
+  ov.querySelector('[data-close]').onclick = function () { ov.remove(); };
+  ov.querySelector('[data-ok]').onclick = function () {
+    DATA.requirements = DATA.requirements.filter(function (x) { return x.id !== id; });
+    try { localStorage.removeItem('hn_vc_req_' + id); } catch (e) {}
+    saveData();
+    ov.remove();
+    render();
+    toast('已删除');
+  };
+}
+
+/* ==================== Toast ==================== */
+var toastTimer = null;
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2200);
+}
+
+/* ==================== 事件 ==================== */
+document.addEventListener('click', function (e) {
+  /* 点击菜单和触发器以外区域：关闭菜单 */
+  if (!e.target.closest('.menu') && !e.target.closest('[data-action="nav-dd"]') &&
+      !e.target.closest('[data-action="outer-add"]') && !e.target.closest('[data-action="detail-add"]') &&
+      !e.target.closest('[data-action="req-menu"]')) {
+    closeMenus();
+  }
+  var t = e.target.closest('[data-action]');
+  if (!t) return;
+  var action = t.dataset.action;
+
+  if (action === 'nav-dd') {
+    if (menuAnchor === t && currentMenu) { closeMenus(); }
+    else {
+      t.classList.add('dd-open');
+      showMenu(t, [
+        { label: '项目', active: true, fn: function () { view = { type: 'outer' }; render(); } },
+        { label: '前端', fn: function () { toast('模拟跳转：前端（MyBricks）入口'); } }
+      ]);
+    }
+  } else if (action === 'nav-stub') {
+    toast('原型演示：「' + (t.dataset.name || '') + '」不在本次改造范围');
+  } else if (action === 'outer-add') {
+    if (menuAnchor === t && currentMenu) { closeMenus(); }
+    else {
+      showMenu(t, [ { label: '新增项目集', fn: function () { createProjectSet(null); } } ]);
+    }
+  } else if (action === 'detail-add') {
+    if (menuAnchor === t && currentMenu) { closeMenus(); }
+    else {
+      var psId = view.id;
+      showMenu(t, [
+        { label: '项目集',   fn: function () { createProjectSet(psId); } },
+        { label: '需求',     fn: function () { addRequirement(psId); } },
+        { label: '后端项目', fn: function () { createProject('backend', psId); } },
+        { label: '前端项目', fn: function () { createProject('frontend', psId); } }
+      ]);
+    }
+  } else if (action === 'open-detail') {
+    view = { type: 'detail', id: t.dataset.id };
+    render();
+  } else if (action === 'back') {
+    view = { type: 'outer' };
+    render();
+  } else if (action === 'req-click') {
+    openReqVC(t.dataset.id);
+  } else if (action === 'req-menu') {
+    var rid = t.dataset.id;
+    showMenu(t, [
+      { label: '编辑', fn: function () { editRequirement(rid); } },
+      { label: '删除', danger: true, fn: function () { deleteRequirement(rid); } }
+    ]);
+  } else if (action === 'proj-stub') {
+    var kind = t.dataset.kind === 'backend' ? '后端' : '前端';
+    toast('模拟进入' + kind + '工程「' + t.dataset.name + '」（原有入口）');
+  } else if (action === 'reset-demo') {
+    var rov = openModal(
+      '<div class="modal-head">重置演示数据</div>' +
+      '<div class="modal-body"><p class="confirm-text">确定清除所有演示操作记录吗？</p>' +
+      '<p class="confirm-sub">将恢复到初始示例数据。</p></div>' +
+      '<div class="modal-foot"><button class="btn btn-default" data-close>取消</button><button class="btn btn-danger" data-ok>重置</button></div>'
+    );
+    rov.querySelector('[data-close]').onclick = function () { rov.remove(); };
+    rov.querySelector('[data-ok]').onclick = function () {
+      try {
+        localStorage.removeItem(LS_DATA);
+        Object.keys(localStorage).filter(function (k) { return k.indexOf('hn_vc_req_') === 0; }).forEach(function (k) { localStorage.removeItem(k); });
+      } catch (e) {}
+      rov.remove();
+      location.reload();
+    };
+  }
+});
+
+/* 启动：恢复演示数据 → 同步 Vibe Coding 内产生的改名与状态 → 渲染 */
+loadData();
+(function () {
+  try {
+    DATA.requirements.forEach(function (r) {
+      var s = localStorage.getItem('hn_vc_req_' + r.id);
+      if (!s) return;
+      var o = JSON.parse(s);
+      if (o.name && o.name !== '未命名需求') r.name = o.name;
+      if (o.status && STATUS_REQ[o.status]) r.status = o.status;
+    });
+    saveData();
+  } catch (e) {}
+})();
+render();
+</script>
+</body>
+</html>
