@@ -87,41 +87,14 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .gen-btn:hover{border-color:var(--primary);color:var(--primary)}
 .gen-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
 .gen-btn.primary:hover{background:var(--primary-dark);color:#fff}
-.gen-canvas-area{flex:1;overflow:auto;padding:32px;display:flex;align-items:flex-start;justify-content:center}
-.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
 .loading-spinner{width:44px;height:44px;border:4px solid var(--primary-light);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-main{font-size:16px;font-weight:600;color:var(--text-1)}
 .loading-step{font-size:13px;color:var(--text-3);background:#fff;padding:5px 14px;border-radius:20px;box-shadow:var(--shadow-sm)}
-.idle-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
 .idle-ico{font-size:52px}
 
 /* 小程序壳（轻量预览 — 黑色粗边框备用版本已移除） */
-.mp-preview-shell{width:375px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.08);border:1px solid var(--border-light);animation:popIn .35s ease;flex-shrink:0}
 @keyframes popIn{from{opacity:.5;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
-.mp-status-bar{display:flex;justify-content:space-between;padding:10px 22px;background:#F9FAFB;font-size:11px;color:var(--text-1);font-weight:600;border-bottom:1px solid var(--border-light)}
-.mp-body{min-height:560px;background:#F7F8FA;padding-bottom:64px}
-.mp-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;border-bottom:1px solid var(--border-light)}
-.mp-nav-title{font-size:16px;font-weight:600}
-.mp-nav-right{display:flex;gap:14px;color:var(--text-2)}
-.mp-search{padding:10px 16px}
-.mp-search-bar{background:#fff;border-radius:8px;padding:0 12px;display:flex;align-items:center;gap:8px;border:1px solid var(--border)}
-.mp-search-bar input{border:none;padding:9px 0;font-size:13px;flex:1;background:transparent}
-.mp-banner{padding:0 16px}
-.mp-banner-box{background:linear-gradient(135deg,#FF7D00,#FFB400);border-radius:12px;padding:18px;color:#fff;margin:12px 0;position:relative;overflow:hidden}
-.mp-banner-box::after{content:'';position:absolute;right:-20px;top:-20px;width:110px;height:110px;background:radial-gradient(circle,rgba(255,255,255,.25) 0%,transparent 70%);border-radius:50%}
-.mp-banner-title{font-size:18px;font-weight:600;position:relative;z-index:1}
-.mp-banner-sub{font-size:12px;opacity:.85;margin-top:4px;position:relative;z-index:1}
-.mp-section-title{font-size:14px;font-weight:600;color:var(--text-1);padding:12px 16px 8px}
-.mp-list{padding:0 16px;display:flex;flex-direction:column;gap:10px}
-.mp-card{background:#fff;border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow-sm);cursor:pointer;transition:.15s;border:1px solid transparent}
-.mp-card:hover{border-color:var(--primary)}
-.mp-card-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.mp-card-content{flex:1;min-width:0}
-.mp-card-name{font-size:14px;font-weight:600;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mp-card-meta{font-size:11px;color:var(--text-3);margin-top:4px}
-.mp-card-status{font-size:11px;display:inline-block}
-.mp-card-right{color:var(--text-4);font-size:18px;flex-shrink:0}
 
 
 
@@ -129,41 +102,12 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 
 
 
-.mp-form{padding:4px 16px}
-.mp-form-group{margin-bottom:12px}
-.mp-form-label{font-size:12.5px;color:var(--text-1);font-weight:500;margin-bottom:6px;display:block}
 .red{color:var(--danger);margin-left:2px}
-.mp-form-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:13px;appearance:auto}
-.mp-form-input:focus{border-color:var(--primary)}
-.mp-form-input::placeholder{color:var(--text-4)}
-.mp-submit-btn{display:block;width:calc(100% - 32px);margin:18px auto 8px;padding:12px;border-radius:10px;background:var(--primary);color:#fff;font-size:15px;font-weight:600;text-align:center;transition:.2s}
-.mp-submit-btn:hover{background:var(--primary-dark)}
-.mp-qrcode{text-align:center;padding:26px 20px}
-.mp-qrcode-box{width:150px;height:150px;margin:0 auto 16px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;position:relative}
-.mp-qrcode-box::before{content:'';position:absolute;inset:5px;border-radius:4px;background:repeating-linear-gradient(0deg,#1D2129 0,#1D2129 2px,transparent 2px,transparent 6px);background-size:100% 6px;opacity:.14}
 .qr-dot{width:30px;height:30px;background:var(--primary);border-radius:6px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
-.mp-qrcode-tip{font-size:15px;font-weight:600;color:var(--text-1);margin-bottom:6px}
-.mp-qrcode-sub{font-size:12px;color:var(--text-3)}
-.mp-qrcode-time{font-size:11px;color:var(--text-4);margin-top:8px}
-.mp-mine-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
-.mp-mine-item{background:#fff;border-radius:12px;padding:14px;box-shadow:var(--shadow-sm)}
-.mp-mine-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.mp-mine-item-name{font-size:14px;font-weight:600}
-.mp-mine-item-status{font-size:11px;padding:2px 10px;border-radius:10px}
 .st-registered{background:var(--primary-light);color:var(--primary)}
 .st-checked{background:#E8FFEA;color:var(--success)}
 .st-canceled{background:#F2F3F5;color:var(--text-3)}
-.mp-mine-item-info{font-size:12px;color:var(--text-3)}
-.mp-mine-item-code{font-size:11px;font-family:monospace;color:var(--text-2);margin-top:6px;background:#FAFBFC;padding:4px 8px;border-radius:4px;display:inline-block}
-.mp-empty{text-align:center;padding:50px 20px;color:var(--text-3)}
 .empty-ico{font-size:40px;margin-bottom:8px}
-.mp-tabbar{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border-light);display:flex;z-index:50}
-.mp-tabbar span{flex:1;text-align:center;padding:8px 0 10px;font-size:11px;color:var(--text-3);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:.15s;user-select:none}
-.mp-tabbar span .tab-ico{font-size:18px}
-.mp-tabbar span.tab-active{color:var(--primary);font-weight:500}
-.mp-back-btn{padding:10px 16px;display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text-2);cursor:pointer;width:fit-content}
-.mp-back-btn:hover{color:var(--primary)}
-.phone-body-wrap{position:relative}
 
 /* PC壳 */
 .pc-shell{width:100%;max-width:800px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.12);border:1px solid var(--border);animation:popIn .35s ease;flex-shrink:0}
@@ -188,12 +132,8 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .pc-tag{font-size:10px;padding:2px 8px;border-radius:4px;display:inline-block}
 
 /* 右侧对话 */
-.gen-chat{width:420px;background:#fff;border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .25s,opacity .25s;overflow:hidden}
-.gen-chat.closed{width:0;opacity:0;border:none}
 .gen-chat-head{background:#0F2B46;color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .gen-chat-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
-.gen-chat-close{font-size:20px;color:rgba(255,255,255,.7);cursor:pointer;padding:4px 6px;border-radius:4px;transition:.15s;line-height:1}
-.gen-chat-close:hover{background:rgba(255,255,255,.15);color:#fff}
 .gen-chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;background:#FAFAF7}
 .gen-chat-msg{display:flex;gap:8px;max-width:100%}
 .gen-chat-msg.user{flex-direction:row-reverse}
@@ -227,9 +167,6 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .gen-chat-send:hover{background:var(--primary-dark)}
 
 /* 浮动对话按钮 */
-.chat-fab{position:fixed;bottom:24px;right:24px;width:46px;height:46px;border-radius:50%;background:var(--primary);color:#fff;font-size:19px;box-shadow:0 4px 14px rgba(26,102,255,.4);display:none;align-items:center;justify-content:center;cursor:pointer;z-index:300;transition:.2s}
-.chat-fab.show{display:flex}
-.chat-fab:hover{background:var(--primary-dark);transform:scale(1.08)}
 
 /* 我的应用 */
 .app-page{padding:24px;max-width:1100px;margin:0 auto}
@@ -320,78 +257,18 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .home-model-select{padding:5px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:12px;color:var(--text-2);appearance:auto;cursor:pointer;transition:.15s;max-width:160px}
 .home-model-select:hover{border-color:var(--primary);color:var(--primary)}
 .input-tools-right{display:flex;align-items:center;gap:10px}
-.reqdoc-optl{color:var(--text-3)}
 
 
-.reqdoc-conv{display:flex;flex-direction:column;gap:12px}
-.reqdoc-conv-msg{display:flex;gap:10px;max-width:100%}
-.reqdoc-conv-msg.user{flex-direction:row-reverse}
-.reqdoc-conv-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;color:#fff}
-.reqdoc-conv-avatar.user{background:linear-gradient(135deg,#FF7D00,#FFB400)}
-.reqdoc-conv-avatar.ai{background:var(--primary)}
-.reqdoc-conv-bubble{padding:12px 16px;border-radius:14px;font-size:14px;line-height:1.7;max-width:88%;word-break:break-word}
-.reqdoc-conv-msg.user .reqdoc-conv-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
-.reqdoc-conv-msg.ai .reqdoc-conv-bubble{background:#fff;color:var(--text-1);border:1px solid var(--border);border-bottom-left-radius:4px}
 
 /* ===== 需求说明书页：加宽 + 结构化文档 ===== */
-.reqdoc-page{max-width:960px;margin:0 auto;padding:24px 24px 180px;display:flex;flex-direction:column;gap:14px}
-.reqdoc-card{background:#fff;border-radius:12px;border:1px solid var(--border-light);box-shadow:var(--shadow);overflow:hidden;animation:popIn .35s ease}
-.reqdoc-head{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border-light)}
-.reqdoc-title{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
-.reqdoc-actions .btn{padding:6px 16px;font-size:12.5px}
-.reqdoc-body{padding:24px 28px}
-.reqdoc-doc-section{margin-bottom:22px}
-.reqdoc-doc-section:last-child{margin-bottom:0}
-.reqdoc-doc-h{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text-1);margin-bottom:8px}
-.reqdoc-doc-h .no{width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:600}
-.reqdoc-doc-p{font-size:13.5px;line-height:1.9;color:var(--text-2)}
 
-.reqdoc-doc-line{display:flex;align-items:baseline;gap:8px;font-size:13.5px;line-height:2;color:var(--text-2)}
-.reqdoc-doc-line .dot{width:5px;height:5px;border-radius:50%;background:var(--primary);flex-shrink:0;align-self:center}
-.reqdoc-editor{border:none;border-radius:0;padding:24px 28px;font-size:13.5px;line-height:1.9;resize:vertical;width:100%;min-height:420px;background:#fff;font-family:inherit;outline:none}
-.reqdoc-editor:focus{box-shadow:inset 0 0 0 2px var(--primary);border-radius:12px}
-.reqdoc-gen-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:#FAFBFC;border-top:1px solid var(--border-light)}
-.reqdoc-gen-hint{font-size:12.5px;color:var(--text-3);display:flex;align-items:center;gap:6px}
-.reqdoc-gen-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 36px;border-radius:10px;background:var(--primary);color:#fff;font-size:14.5px;font-weight:600;transition:.2s;box-shadow:0 4px 14px rgba(26,102,255,.3)}
-.reqdoc-gen-btn:hover{background:var(--primary-dark);box-shadow:0 6px 20px rgba(26,102,255,.4)}
-.reqdoc-chat-bar{position:fixed;bottom:0;left:0;right:0;padding:14px 24px;background:#fff;border-top:1px solid var(--border-light);display:flex;gap:10px;align-items:flex-end;z-index:50;box-shadow:0 -4px 16px rgba(0,0,0,.05)}
-.reqdoc-chat-input{flex:1;border:1px solid var(--border);border-radius:16px;padding:16px 18px;font-size:14px;resize:none;min-height:100px;max-height:140px;font-family:inherit;background:#fff;outline:none;transition:.2s;line-height:1.7;box-sizing:border-box}
-.reqdoc-chat-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
-.reqdoc-chat-send{width:42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(26,102,255,.3)}
-.reqdoc-chat-send:hover{background:var(--primary-dark)}
-.reqdoc-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:16px}
 
 /* ===== 平铺预览：轻量白底容器 ===== */
-.tiled-grid{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:flex-start;padding:8px}
-.tiled-label{text-align:center;font-size:16px;font-weight:600;color:var(--text-1);margin-bottom:20px}
-.tiled-mini{flex:0 0 auto;width:280px;border-radius:18px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);border:1px solid var(--border);background:#fff;transition:.2s;animation:tileIn .3s ease}
-.tiled-mini:hover{box-shadow:0 8px 28px rgba(0,0,0,.1)}
 @keyframes tileIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.tiled-mini-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:#F7F8FA;border-bottom:1px solid var(--border-light);font-size:11px;color:var(--text-3)}
-.tiled-mini-title{padding:12px 14px;font-size:14px;font-weight:600;border-bottom:1px solid var(--border-light)}
-.tiled-mini-body{padding:12px 14px;min-height:110px;font-size:12.5px;color:var(--text-2);line-height:1.7}
-.tiled-mini-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F5F6F7}
-.tiled-mini-item:last-child{border-bottom:none}
-.tiled-mini-item-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.tiled-mini-stat{text-align:center;padding:8px}
-.tiled-mini-stat-val{font-size:18px;font-weight:700;color:var(--text-1)}
-.tiled-mini-stat-lbl{font-size:10px;color:var(--text-3);margin-top:2px}
-.tiled-qr{text-align:center;padding:12px}
-.tiled-qr-box{width:72px;height:72px;margin:0 auto 8px;background:repeating-linear-gradient(0deg,#1D2129 0,#1D2129 2px,transparent 2px,transparent 5px);background-size:100% 5px;opacity:.15}
-.tiled-qr-tip{font-size:11px;font-weight:600;color:var(--text-1)}
-.tiled-pc{width:320px}
-.tiled-pc-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#F2F3F5;border-bottom:1px solid var(--border-light)}
-.tiled-pc-url{flex:1;background:#fff;border-radius:4px;padding:2px 8px;font-size:10px;color:var(--text-3);margin-left:4px}
 
 /* ===== Vibe Coding 嵌入版新增样式 ===== */
 /* 工作区骨架 */
 .wc-body{flex:1;display:flex;overflow:hidden}
-.wc-rail{width:48px;background:#fff;border-right:1px solid var(--border-light);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:6px;flex-shrink:0}
-.rail-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--text-3);cursor:pointer;transition:.15s;position:relative}
-.rail-btn:hover{background:var(--primary-light);color:var(--primary)}
-.rail-btn.active{background:var(--primary-light);color:var(--primary)}
-.rail-tip{position:absolute;left:44px;top:50%;transform:translateY(-50%);background:#1D2129;color:#fff;font-size:11px;padding:3px 8px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:.15s;z-index:400}
-.rail-btn:hover .rail-tip{opacity:1}
 /* 面包屑（深色顶栏） */
 .header .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.55)}
 .header .crumb a{color:rgba(255,255,255,.55);cursor:pointer;transition:.15s}
@@ -408,7 +285,6 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .st-chip.dev i{background:#5BFF8A}
 .ver-tag{font-size:11px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.1);padding:2px 8px;border-radius:4px;white-space:nowrap}
 /* 文件面板（秒哒式列表） */
-.file-panel{width:264px;background:#fff;border-right:1px solid var(--border-light);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;animation:panelIn .18s ease}
 @keyframes panelIn{from{width:0;opacity:0}to{width:264px;opacity:1}}
 .file-panel-head{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid var(--border-light);flex-shrink:0}
 .file-panel-head .t{font-size:13px;font-weight:600;color:var(--text-1)}
@@ -440,14 +316,10 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .req-center{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .req-chat-scroll{flex:1;overflow-y:auto}
 .req-chat-inner{max-width:860px;margin:0 auto;padding:24px 24px 30px;display:flex;flex-direction:column;gap:12px}
-.reqdoc-conv-bubble{white-space:pre-line}
 .req-chatbar{padding:12px 24px 16px;background:#fff;border-top:1px solid var(--border-light);display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
 .req-devbar{display:flex;align-items:center;justify-content:flex-end;gap:14px;padding:9px 24px;background:#FAFBFC;border-top:1px solid var(--border-light);flex-shrink:0}
 .req-devbar .hint{font-size:12.5px;color:var(--text-3)}
 /* MD 文件视图 */
-.md-view{flex:1;overflow-y:auto;padding:16px;display:flex}
-.md-view .reqdoc-card{flex:1;display:flex;flex-direction:column;overflow:hidden;align-self:flex-start;min-height:calc(100% - 0px)}
-.md-view .reqdoc-body{flex:1}
 /* HTML 需求说明书预览 */
 .rdoc-view{flex:1;overflow-y:auto;background:var(--bg-page);padding:18px}
 .rdoc-toolbar{max-width:900px;margin:0 auto 12px;display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--border-light);border-radius:10px;padding:9px 16px}
@@ -496,37 +368,97 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
 .ws-name:hover{color:var(--primary)}
 .ws-edit{font-size:12px;color:var(--text-3);cursor:pointer;padding:4px;border-radius:6px}
 .ws-edit:hover{background:var(--primary-light);color:var(--primary)}
-.ws-idle{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
 .ws-hint{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid var(--border-light);border-radius:14px;padding:36px 44px;box-shadow:var(--shadow-sm);text-align:center}
 .ws-hint-ico{font-size:40px}
 .ws-hint-t{font-size:16px;font-weight:600;color:var(--text-1)}
 .ws-hint-sub{font-size:12.5px;color:var(--text-3);line-height:1.7}
 .ws-hint-btns{display:flex;gap:10px;margin-top:6px}
 .gen-chat-bubble{white-space:pre-line}
-.rail-sep{width:24px;height:1px;background:var(--border-light);margin:2px 0}
 /* ===== 需求分析动态布局：默认态输入条在底部；打开文件后对话(含说明卡)收到底部对话坞 ===== */
-.dock-chat{flex-shrink:0;border-top:1px solid var(--border-light);background:#fff;display:flex;flex-direction:column}
-.dock-chat-msgs{max-height:240px;min-height:86px;overflow-y:auto;padding:12px 18px;display:flex;flex-direction:column;gap:10px;background:#FAFAF7}
 /* 生成区/默认态：对话流（对话在上，需求说明卡内嵌其下） */
-.req-flow{flex:1;overflow-y:auto;padding:28px 24px}
-.req-flow-inner{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
-/* 需求说明卡（内嵌对话流的产物卡片，底部=立即开发） */
-.req-card{background:#fff;border:1px solid var(--border-light);border-radius:12px;box-shadow:var(--shadow-sm);overflow:hidden}
 /* 默认态：说明卡居中展示在主区域 */
-.req-card-center{width:100%;max-width:680px}
-.req-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border-light);background:linear-gradient(180deg,#F7FAFF,#fff)}
-.req-card-head .t{font-size:14.5px;font-weight:600;color:var(--text-1)}
-.req-card-head .ver{font-size:11px;color:var(--primary);background:var(--primary-light);border-radius:4px;padding:2px 8px;font-weight:600}
-.req-card-body{padding:12px 18px;display:flex;flex-direction:column;gap:8px}
-.req-card-row{display:flex;gap:10px;font-size:13px;line-height:1.7}
-.req-card-row .k{flex-shrink:0;color:var(--text-3);width:64px}
-.req-card-row .v{color:var(--text-1)}
-.req-card-files{display:flex;gap:8px;padding:0 18px 12px}
-.req-card-dev{display:flex;justify-content:center;padding:12px;border-top:1px solid var(--border-light);background:#FAFBFC}
 /* 说明书底部主操作条（已并入需求说明卡，此样式保留备用） */
-.doc-actions{flex-shrink:0;display:flex;justify-content:center;align-items:center;padding:10px 16px;background:#fff;border-top:1px solid var(--border-light)}
 
 /* 小程序壳（登录/我的应用等已用场景仍保留，生成预览不再使用黑壳） */
+
+/* ===== 统一双栏工作区 ===== */
+.ws-page{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;background:var(--bg-page)}
+.ws-split{flex:1;display:flex;min-height:0;overflow:hidden}
+.ws-canvas{width:60%;min-width:320px;overflow:auto;display:flex;flex-direction:column;padding:18px;position:relative}
+.ws-divider{width:10px;flex-shrink:0;cursor:col-resize;display:flex;align-items:center;justify-content:center;background:#F0F1F3;border-left:1px solid var(--border-light)}
+.ws-divider:hover{background:#E3ECFF}
+.ws-divider-handle{width:4px;height:44px;border-radius:4px;background:#C9CFD8}
+.ws-chat{flex:1;min-width:0;display:flex;flex-direction:column;background:#fff;border-left:1px solid var(--border-light)}
+.ws-topbar-left{display:flex;align-items:center;gap:10px;min-width:0}
+.ws-topbar-right{display:flex;align-items:center;gap:10px}
+.ws-status{font-size:11px;padding:3px 10px;border-radius:12px;flex-shrink:0}
+.gen-chat-msg.ai .gen-chat-bubble{background:#fff;color:var(--text-1);border:1px solid var(--border);border-bottom-left-radius:4px}
+.req-card-lite{white-space:normal;display:flex;flex-direction:column;gap:9px;min-width:260px}
+.rc-title{font-size:13px;font-weight:600;color:var(--text-1);padding-bottom:8px;border-bottom:1px dashed var(--border-light)}
+.rc-row{display:flex;gap:12px;font-size:12.5px;line-height:1.7}
+.rc-k{flex-shrink:0;width:72px;color:var(--text-3);font-weight:500}
+.rc-v{flex:1;min-width:0;color:var(--text-2)}
+.ws-status.st-analyze{background:#E8F0FF;color:var(--primary)}
+.ws-status.st-chat{background:#F0F1F3;color:var(--text-2)}
+.ws-status.st-gen{background:#FFF3E8;color:#D25F00}
+.ws-status.st-done{background:#E8FFEA;color:var(--success)}
+.canvas-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-3)}
+.canvas-empty .ce-ico{font-size:44px}
+.canvas-empty .ce-t{font-size:15px;font-weight:600;color:var(--text-2)}
+.canvas-empty .ce-d{font-size:12.5px}
+.gen-progress{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+.gp-head{display:flex;flex-direction:column;align-items:center;gap:12px}
+.gp-head .loading-spinner{width:34px;height:34px;border-width:3px}
+.gp-steps{display:flex;flex-direction:column;gap:9px;min-width:300px}
+.gp-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-3);padding:9px 14px;border:1px solid var(--border-light);border-radius:10px;background:#fff}
+.gp-step.active{color:var(--primary);border-color:var(--primary-light);background:#F5F9FF;font-weight:600}
+.gp-step.done{color:var(--text-2)}
+.mod-overlay{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;font-weight:600;color:var(--primary);animation:modFlash 1s ease-in-out infinite}
+@keyframes modFlash{0%,100%{background:rgba(232,240,255,.15)}50%{background:rgba(26,102,255,.14)}}
+.chat-attach{border:none;background:none;font-size:16px;cursor:pointer;padding:2px 4px;flex-shrink:0;opacity:.75}
+.chat-attach:hover{opacity:1}
+.app-wrap{flex:1;display:flex;flex-direction:column;gap:12px;min-height:0}
+.rc-line{font-size:12.5px;color:var(--text-2);padding:2px 0 2px 12px;position:relative;line-height:1.6}
+.rc-line::before{content:'·';position:absolute;left:2px;color:var(--text-3)}
+.app-stat-row{display:flex;gap:12px;flex-wrap:wrap}
+.app-stat{flex:1;min-width:118px;background:#fff;border:1px solid var(--border-light);border-radius:10px;padding:13px 16px}
+.as-v{font-size:22px;font-weight:700;color:var(--text-1,#1D2129)}
+.as-l{font-size:11.5px;color:var(--text-3);margin-top:3px}
+.app-card{background:#fff;border:1px solid var(--border-light);border-radius:10px;padding:14px 16px}
+.app-card-t{font-size:13px;font-weight:600;margin-bottom:10px}
+.app-bars{display:flex;align-items:flex-end;gap:10px;height:118px;padding:0 6px 22px 6px}
+.app-bar{flex:1;background:#E8F0FF;border-radius:4px 4px 0 0;position:relative}
+.app-bar.hot{background:var(--primary)}
+.app-bar-lbl{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:10.5px;color:var(--text-3)}
+.app-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border-light);border-radius:10px;overflow:hidden}
+.app-table th{background:#F7F8FA;font-size:11.5px;color:var(--text-3);text-align:left;padding:9px 12px;font-weight:500}
+.app-table td{font-size:12.5px;padding:9px 12px;border-top:1px solid var(--border-light)}
+.app-tag{font-size:11px;padding:2px 9px;border-radius:9px;white-space:nowrap}
+.app-tag.g{background:#E8FFEA;color:var(--success)}
+.app-tag.b{background:#E8F0FF;color:var(--primary)}
+.app-tag.o{background:#FFF3E8;color:#D25F00}
+.app-funnel-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.app-funnel-lbl{font-size:12px;color:var(--text-2);width:52px;flex-shrink:0}
+.app-funnel-bar{height:22px;border-radius:5px;color:#fff;font-size:11px;display:flex;align-items:center;padding:0 8px;min-width:44px}
+.app-funnel-val{font-size:12px;color:var(--text-2);width:64px;flex-shrink:0}
+.app-ev-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border-light);border-radius:10px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.app-ev-item:hover{border-color:var(--primary-light);box-shadow:var(--shadow-sm)}
+.app-ev-ico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.app-ev-name{font-size:13px;font-weight:600;color:var(--text-1,#1D2129)}
+.app-ev-meta{font-size:11px;color:var(--text-3);margin-top:2px}
+.app-ev-arrow{margin-left:auto;color:var(--text-3);font-size:16px}
+.app-form{background:#fff;border:1px solid var(--border-light);border-radius:10px;padding:14px}
+.app-form-l{font-size:11.5px;color:var(--text-3);margin:10px 0 4px}
+.app-form-v{font-size:13px;padding:8px 10px;background:#F7F8FA;border-radius:6px}
+.app-qr{width:130px;height:130px;margin:0 auto;background:repeating-conic-gradient(#1D2129 0 25%,#fff 0 50%) 0 0/16px 16px;border:6px solid #fff;box-shadow:0 0 0 1px var(--border)}
+/* 手机壳（mp / h5 生成结果） */
+.phone-shell{width:300px;margin:0 auto;background:#fff;border:9px solid #1D2129;border-radius:30px;overflow:hidden;display:flex;flex-direction:column;height:560px;box-shadow:0 12px 40px rgba(0,0,0,.14);flex-shrink:0}
+.phone-top{height:42px;display:flex;align-items:center;justify-content:center;background:#fff;border-bottom:1px solid var(--border-light);font-size:13px;font-weight:600;flex-shrink:0;gap:6px}
+.phone-body{flex:1;overflow:auto;background:#F7F8FA;padding:12px}
+.phone-tabbar{display:flex;border-top:1px solid var(--border-light);background:#fff;flex-shrink:0}
+.phone-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:10px;color:var(--text-3);cursor:pointer}
+.phone-tab.active{color:var(--primary)}
+.phone-tab .pi{font-size:15px}
 </style>
 </head>
 <body>
@@ -551,7 +483,6 @@ input,textarea,select{font-family:inherit;font-size:13px;outline:none}
   <div class="wc-body" id="wcBody"></div>
 </div>
 
-<div class="chat-fab" id="chatFab" onclick="toggleChat()">💬</div>
 
 <div class="modal-mask" id="modalMask">
   <div class="modal" id="modalBox">
@@ -572,27 +503,27 @@ const emptyFn=()=>{};
 
 /* ===== 状态 ===== */
 const state={
-  phase:'home',           // home=需求输入首页 req=需求沟通 dev=开发
-  centerView:'chat',      // chat|md|html|canvas
-  filesOpen:false,
-  activeFile:null,
+  phase:'home',           // home=需求输入首页 ws=统一双栏工作区
+  stage:'analyze',        // analyze需求分析中 chat需求沟通中 generating生成中 done已完成
+  splitPct:60,            // 左侧画布宽度百分比（拖拽范围 40~65）
+  appTab:0,               // 生成应用内当前页签
   platform:'pc',
-  reqName:'未命名需求',
+  reqName:'未命名应用',
   reqVer:'V1.0',
-  docReady:false,
-  convMsgs:[],            // 需求沟通对话
-  chatMsgs:[],            // 开发阶段右侧AI对话
+  convMsgs:[],            // 唯一对话流（用户输入/AI回复/需求说明卡）
+  convLoading:false,
+  convLoadingText:'',
   reqDoc:null,
-  reqFullText:'',
-  reqState:'viewing',
-  generating:false,
-  genStarted:false,
-  genStep:0,
+  uploadFiles:[],         // 上传参考资料（对话上下文）
   currentApp:null,
-  uploadFiles:[],         // 个人上传
-  devFiles:[],            // 开发生成文件
-  chatOpen:true,
-  mpTab:'home',
+  generating:false,
+  genStep:0,
+  genTimer:null,
+  modifying:false,
+  homeInput:'',
+  reqDraft:'',
+  wbReqId:null,
+  wbStatus:null,
 };
 const MOCK_UPLOADS=[
   {name:'业务调研记录.pdf',type:'t-pdf'},
@@ -600,13 +531,7 @@ const MOCK_UPLOADS=[
   {name:'业务流程图.png',type:'t-img'},
   {name:'接口清单.docx',type:'t-doc'},
 ];
-const DEV_FILE_TPL=[
-  {id:'dev-0',name:'index.html',type:'t-code',code:'<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n  <meta charset="UTF-8">\n  <title>业务应用</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <!-- 页面结构：依据《需求说明书》「页面结构及页面功能说明」生成 -->\n  <div id="app"></div>\n  <script src="app.js"><\/script>\n</body>\n</html>'},
-  {id:'dev-1',name:'style.css',type:'t-css',code:'/* 样式：依据《需求说明书》关键交互规则生成 */\n.page { max-width: 960px; margin: 0 auto; padding: 24px; }\n.form-item { margin-bottom: 12px; }\n.form-item label { display: block; font-size: 13px; margin-bottom: 6px; }\n.form-item .required::before { content: "*"; color: #f53f3f; }\n.btn-primary { background: #1a66ff; color: #fff; padding: 10px 24px; border-radius: 8px; }'},
-  {id:'dev-2',name:'app.js',type:'t-js',code:'// 交互逻辑：依据《需求说明书》业务流程与校验规则生成\ndocument.addEventListener(\'DOMContentLoaded\', () => {\n  bindForm(\'#main-form\', { required: [\'name\', \'phone\'], onSubmit: submitForm });\n});\n\nasync function submitForm(data) {\n  // 业务规则：重复提交校验由后端幂等处理\n  const res = await api.post(\'/api/submit\', data);\n  if (res.code === 0) showToast(\'提交成功，业务编号：\' + res.data.bizCode);\n}'},
-  {id:'dev-3',name:'api.py',type:'t-code',code:'# 后端接口：依据《需求说明书》数据字段及业务规则生成\nfrom flask import Flask, request, jsonify\napp = Flask(__name__)\n\n@app.route("/api/submit", methods=["POST"])\ndef submit():\n    body = request.get_json()\n    # 校验必填字段 + 业务重复性校验\n    err = validate(body, required=["name", "phone"])\n    if err:\n        return jsonify({"code": 1, "msg": err})\n    biz_code = save_and_gen_code(body)\n    return jsonify({"code": 0, "data": {"bizCode": biz_code}})'},
-  {id:'dev-4',name:'schema.sql',type:'t-sql',code:'-- 数据库设计：依据《需求说明书》数据字段及数据关系生成\nCREATE TABLE biz_record (\n  id          BIGINT PRIMARY KEY AUTO_INCREMENT,\n  person_name VARCHAR(64)  NOT NULL COMMENT \'姓名\',\n  phone       VARCHAR(20)  NOT NULL COMMENT \'手机号\',\n  biz_code    VARCHAR(16)  UNIQUE   COMMENT \'业务编号\',\n  remark      VARCHAR(255) NULL     COMMENT \'备注\',\n  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP\n);'},
-];
+
 
 /* ===== 场景模板 ===== */
 const SCENES={
@@ -615,6 +540,7 @@ const SCENES={
     fields:['活动名称','报名人','手机号','参加人数','备注'],
     md:'# 活动报名小程序\n\n**目标用户**：活动参与者\n\n## 核心功能\n1. 活动列表展示\n2. 在线报名登记\n3. 签到码生成\n4. 报名统计查看',
     scene:'event',
+    pending:['报名人数上限未明确','签到方式待确认（扫码 / 验码）'],
     sections:{overview:'面向活动参与者提供的「活动报名小程序」应用，用于完成活动发布、在线报名、签到管理、报名统计的业务闭环。',
       users:'活动参与者（报名活动、签到入场）、活动管理员（发布活动、查看报名统计）',
       pages:'活动列表页（展示所有活动，支持搜索筛选）、在线报名页（填写表单提交报名）、签到码页（生成并展示签到码）、报名统计页（查看活动报名数据）、活动管理后台（PC端活动发布与管理）',
@@ -635,6 +561,7 @@ const SCENES={
     fields:['客户姓名','拜访时间','拜访目的'],
     md:'# 客户拜访管理\n\n**目标用户**：客户经理\n\n## 核心功能\n1. 拜访记录登记\n2. 拜访计划安排\n3. 拜访报告生成\n4. 客户画像查看',
     scene:'visit',
+    pending:['拜访评价维度待确认','数据权限范围待确认'],
     sections:{overview:'面向客户经理提供的「客户拜访管理」应用，用于完成拜访计划安排、拜访记录登记、拜访报告生成、客户画像查看的业务闭环。',
       users:'客户经理（拜访全流程管理）、销售主管（查看团队拜访统计）',
       pages:'拜访计划页（查看和安排拜访计划）、拜访登记页（记录每次拜访详情）、拜访报告页（查看拜访总结报告）、客户画像页（查看客户信息和历史拜访）、数据统计页（拜访数据概览）',
@@ -655,6 +582,7 @@ const SCENES={
     fields:['任务标题','负责人','截止日期'],
     md:'# 项目管理后台系统\n\n**目标用户**：项目经理与团队成员\n\n## 核心功能\n1. 项目看板展示\n2. 任务创建与分配\n3. 任务进度更新\n4. 项目统计查看',
     scene:'pm',
+    pending:['里程碑模板待确认','成员角色权限待确认'],
     sections:{overview:'面向项目经理与团队成员提供的「项目管理后台系统」，用于完成项目创建、任务分配、进度跟踪、统计查看的协作闭环。',
       users:'项目经理（创建项目、分配任务、查看统计）、团队成员（查看并更新自己的任务）',
       pages:'项目看板页（项目卡片与状态总览）、任务列表页（按项目/负责人/状态筛选）、新建任务页（表单录入）、任务详情页（进度更新）、统计页（项目与任务数据概览）',
@@ -675,6 +603,7 @@ const SCENES={
     fields:['活动名称','参与人数','报名人数','转化率'],
     md:'# 营销活动看板\n\n**目标用户**：市场运营人员\n\n## 核心功能\n1. 活动数据概览\n2. 参与人数统计\n3. 转化率分析\n4. 活动效果对比',
     scene:'board',
+    pending:['统计周期未明确（默认按日汇总）','效果对比基准维度待确认'],
     sections:{overview:'面向市场运营人员提供的「营销活动看板」，用于完成活动数据统计、参与人数监控、转化率分析与活动效果对比的数据分析闭环。',
       users:'市场运营人员（查看活动数据、分析转化效果）、市场负责人（对比活动效果、复盘决策）',
       pages:'数据概览页（核心指标卡片与趋势图）、参与人数页（各活动参与/报名人数明细）、转化率页（漏斗与渠道转化分析）、效果对比页（多活动横向对比表格与图表）',
@@ -706,12 +635,16 @@ const MY_REGISTRATIONS=[
 const VC_HOME_DEFAULT='帮我做一个营销活动看板，支持活动数据统计、参与人数、转化率分析及活动效果对比';
 const VC_HOME_PLACEHOLDER='例如：'+VC_HOME_DEFAULT+'……';
 function enterVibe(){
-  state.phase='home';state.centerView='';state.filesOpen=false;state.activeFile=null;
-  state.reqName='未命名应用';state.docReady=false;state.reqState='viewing';state.reqVer='V1.0';
-  state.uploadFiles=[];state.devFiles=[];state.currentApp=null;state.chatOpen=true;
-  state.convMsgs=[];state.homeInput=VC_HOME_DEFAULT;state.reqDraft='';state.devDraft='';
+  state.phase='home';state.stage='analyze';state.splitPct=60;state.appTab=0;
+  state.reqName='未命名应用';state.reqVer='V1.0';
+  state.uploadFiles=[];state.currentApp=null;state.modifying=false;
+  state.generating=false;state.genStep=0;state.genTimer=null;
+  state.convMsgs=[];state.convLoading=false;state.convLoadingText='';
+  state.homeInput=VC_HOME_DEFAULT;state.reqDraft='';
+  state.wbReqId=null;state.wbStatus=null;
   renderApp();
 }
+
 function renderHome(){
   $('wcBody').innerHTML=`<div class="vc-home">
     <button class="vc-back" onclick="leaveHome()">← 返回</button>
@@ -753,19 +686,18 @@ function startReqFromHome(){
   const text=((i&&i.value)||state.homeInput||'').trim();
   if(!text){showToast('请描述你的需求','info');return;}
   state.homeInput=VC_HOME_DEFAULT;state.reqDraft='';
-  state.phase='req';
-  state.centerView='';state.filesOpen=false;state.activeFile=null;
+  state.phase='ws';state.stage='analyze';state.appTab=0;
   state.reqName=aiNameFromText(text);
-  state.docReady=false;state.reqState='viewing';
-  /* 免追问：确认需求后直接生成说明书，对话在上、分析状态在下 */
+  /* 免追问：直接进入统一工作区，AI 自动分析需求 */
   state.convMsgs=[
     {role:'user',text},
-    {role:'ai',text:`好的，已理解你的需求「${state.reqName}」。\n正在为你生成《需求说明书》（MD + HTML），生成后将直接展示在中间工作区。`},
+    {role:'ai',text:`好的，已理解你的需求「${state.reqName}」。\n正在分析需求，整理应用目标、使用角色、核心功能与业务规则，稍后生成需求说明卡。`},
   ];
-  state.convLoading=true;state.convLoadingText='正在梳理需求，生成《需求说明书》（MD + HTML）…';
+  state.convLoading=true;state.convLoadingText='正在分析需求…';
   renderApp();scrollConv();
   setTimeout(generateReqDoc,2000);
 }
+
 function leaveHome(){
   const i=$('vcHomeInput');
   const v=i?i.value.trim():'';
@@ -793,345 +725,25 @@ function escapeHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'
 function renderApp(){
   const hd=$('appHeader');
   if(hd)hd.style.display='none';
-  if(state.phase==='home'){renderHome();updateFab();return;}
-  if(state.phase==='req'){renderReqWs();updateFab();return;}
-  renderGen();updateFab();
-}
-/* ===== 需求阶段工作区（三态动态布局）=====
-   生成中：中间=生成进度提示，对话框(消息+输入)在页面底部
-   默认态（首次生成需求卡）：中间=需求说明卡，对话框(消息+输入)在页面底部
-   文件查看态：点MD/HTML → 文件在正中间画布区，对话框(含说明卡)在右侧栏
-   开发态：点立即开发 → 画布+右侧对话框（renderGen） */
-function renderReqWs(){
-  const b=$('wcBody');
-  const fileOpen=!!state.activeFile;
-  const flowHTML=state.convMsgs.map(renderMsg).join('')+(state.convLoading?convLoadingHTML():'');
-  const ph=state.activeFile==='md'?'针对《需求说明书.md》输入修改意见，Enter 发送…'
-    :state.activeFile==='html'?'针对《需求说明书.html》输入修改意见，Enter 发送…'
-    :'继续描述你的修改需求，例如“增加附件上传，去掉审批流程”…';
-  const chatInputHTML=`<textarea id="reqdocChatInput" placeholder="${ph}" rows="1" oninput="state.reqDraft=this.value" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();reqChatSend()}">${escapeHtml(state.reqDraft||'')}</textarea>
-      <button class="gen-chat-send" onclick="reqChatSend()">➤</button>`;
-  b.innerHTML=`<aside class="wc-rail">${railBtn('file','📄','文件',state.filesOpen)}</aside>
-  ${state.filesOpen?filePanelHTML():''}
-  <div class="gen-main">
-    <div class="ws-topbar">
-      <button class="ws-back" onclick="goWorkbench()">← 返回项目集</button>
-      <div class="ws-topbar-right">
-        <span class="ws-name" id="wsNameText" title="点击修改应用名称" onclick="editAppName()">📄 ${escapeHtml(state.reqName)}</span>
-        <span class="ws-edit" title="修改应用名称" onclick="editAppName()">✏</span>
-      </div>
-    </div>
-    ${fileOpen?wsCenterHTML()
-      :`<div class="req-flow" id="genChatMsgs"><div class="req-flow-inner">${flowHTML}</div></div>`}
-    ${fileOpen?'':`<div class="dock-chat">
-      <div class="gen-chat-input">${chatInputHTML}</div>
-    </div>`}
-  </div>
-  ${fileOpen?`<div class="gen-chat" id="genChatPanel">
-    <div class="gen-chat-head">
-      <div class="gen-chat-title">🤖 AI助手 <span style="font-size:11px;opacity:.7;font-weight:400">需求分析</span></div>
-    </div>
-    <div class="gen-chat-msgs" id="genChatMsgs">${flowHTML}</div>
-    <div class="gen-chat-input">${chatInputHTML}</div>
-  </div>`:''}`;
-}
-function wsCenterHTML(){
-  if(state.centerView==='html')return htmlViewHTML();
-  return mdViewHTML();
-}
-function railBtn(id,icon,tip,active){
-  return `<div class="rail-btn${active?' active':''}" id="rail-${id}" onclick="onRailClick('${id}')">${icon}<span class="rail-tip">${tip}</span></div>`;
-}
-function onRailClick(id){
-  if(id==='back'){goWorkbench();return;}
-  if(state.phase==='req'){toggleFiles(!state.filesOpen);return;}
-  if(id==='canvas'){state.centerView='canvas';state.activeFile=null;state.filesOpen=false;renderGen();return;}
-  if(id==='file'){toggleFiles(!state.filesOpen);return;}
-}
-function toggleFiles(open){
-  state.filesOpen=open;
-  if(state.phase==='req'){
-    /* 需求阶段：收起列表 = 关闭文件，恢复默认态（说明书居中 + 对话回底部） */
-    if(!open){state.activeFile=null;state.centerView='';}
-    renderApp();
-  }else{
-    if(!open&&state.centerView!=='canvas'){state.centerView='canvas';state.activeFile=null;}
-    renderGen();
-  }
+  if(state.phase==='home'){renderHome();return;}
+  renderWs();
 }
 
-/* ===== 文件面板（对话生成 / 个人上传 / 开发生成文件）===== */
-function convFiles(){
-  return state.docReady?[
-    {id:'md',name:'需求说明书.md',type:'t-md'},
-    {id:'html',name:'需求说明书.html',type:'t-html'},
-  ]:[];
-}
-function filePanelHTML(){
-  const uf=state.uploadFiles,df=state.devFiles,cf=convFiles();
-  return `<aside class="file-panel">
-    <div class="file-panel-head"><span class="t">文件</span><span class="file-collapse" title="收起文件列表" onclick="toggleFiles(false)">«</span></div>
-    <div class="file-groups">
-      <div class="file-group-title"><span>对话生成</span></div>
-      ${cf.length?cf.map(fileItemHTML).join(''):'<div class="file-empty">AI 生成《需求说明书》后，MD 与 HTML 文件将出现在这里</div>'}
-      <div class="file-group-title"><span>上传资料</span><span class="file-group-add" title="上传文件" onclick="mockUpload()">＋</span></div>
-      ${uf.length?uf.map(fileItemHTML).join(''):'<div class="file-empty">支持 PDF / Word / Excel / 图片等业务资料</div>'}
-      <div class="file-group-title"><span>开发生成文件</span></div>
-      ${df.length?df.map(fileItemHTML).join(''):`<div class="file-empty">${state.phase==='dev'?'开发完成后，前端 / 后端 / 数据库文件将出现在这里':'点击「立即开发」后，代码文件将出现在这里'}</div>`}
-    </div>
-  </aside>`;
-}
-function fileItemHTML(f){
-  return `<div class="file-item${state.activeFile===f.id?' active':''}" onclick="openFile('${f.id}')"><span class="fi-ico ${f.type}">${fiText(f.type)}</span><span class="fi-name">${f.name}</span></div>`;
-}
-function fiText(t){
-  return {'t-md':'MD','t-html':'H','t-pdf':'PDF','t-doc':'DOC','t-xls':'XLS','t-img':'IMG','t-code':'</>','t-css':'CSS','t-js':'JS','t-sql':'SQL'}[t]||'·';
-}
-function openFile(id){
-  if(id==='md'||id==='html'){
-    state.activeFile=id;state.centerView=id;
-    /* 需求阶段打开文件 → 文件查看态：列表展开 + 对话流(含说明卡)切换右侧栏 */
-    if(state.phase==='req'){state.filesOpen=true;}
-    refreshCenter();return;
-  }
-  const f=state.uploadFiles.find(x=>x.id===id);
-  if(f){
-    state.activeFile=id;refreshCenter();
-    openModal('附件信息',`<div style="font-size:13px;line-height:2"><div><b>${f.name}</b></div><div style="color:var(--text-3);font-size:12.5px">大小：${f.size}</div><div style="color:var(--text-3);font-size:12.5px;margin-top:6px">上传资料将作为需求沟通的参考资料（一期预留）</div></div>`,null,true);
-    return;
-  }
-  const d=state.devFiles.find(x=>x.id===id);
-  if(d){
-    state.activeFile=id;refreshCenter();
-    openModal('📄 '+d.name,`<pre class="code-pre">${escapeHtml(d.code)}</pre><div style="font-size:11.5px;color:var(--text-3);margin-top:8px">开发生成文件 · 只读演示（实际由开发工具打开）</div>`,null,true);
-  }
-}
 function mockUpload(){
   const tpl=MOCK_UPLOADS[state.uploadFiles.length%MOCK_UPLOADS.length];
   const f={id:'up-'+(state.uploadFiles.length+1),name:tpl.name,type:tpl.type,size:(Math.round((0.2+Math.random()*2)*10)/10)+' MB'};
   state.uploadFiles.push(f);
+  state.convMsgs.push({role:'user',text:'📎 上传参考资料：'+f.name});
+  state.convMsgs.push({role:'ai',text:'已收到参考资料「'+f.name+'」，将作为需求上下文参与后续分析与生成。'});
   showToast('已上传 '+f.name+'（演示）','success');
-  refreshCenter();
+  renderWs();scrollConv();
 }
-function refreshCenter(){
-  if(state.phase==='req')renderApp();else renderGen();
-}
-/* 关闭文件：恢复默认态（需求阶段列表收缩+对话流回中间；开发阶段回画布） */
-function closeFile(){
-  state.activeFile=null;
-  if(state.phase==='req'){state.centerView='';state.filesOpen=false;renderApp();}
-  else{state.centerView='canvas';renderGen();}
-}
+
 function convLoadingHTML(){
-  return `<div class="gen-chat-msg ai"><div class="gen-chat-avatar" style="background:#1A66FF">🤖</div><div class="gen-chat-bubble" style="display:flex;align-items:center;gap:10px"><span class="loading-spinner" style="width:16px;height:16px;border-width:2.5px"></span><span style="color:var(--text-2)">${state.convLoadingText||'正在生成《需求说明书》…'}</span></div></div>`;
+  return `<div class="gen-chat-msg ai"><div class="gen-chat-avatar" style="background:#1A66FF">🤖</div><div class="gen-chat-bubble" style="display:flex;align-items:center;gap:10px"><span class="loading-spinner" style="width:16px;height:16px;border-width:2.5px"></span><span style="color:var(--text-2)">${state.convLoadingText||'正在分析需求…'}</span></div></div>`;
 }
 function scrollConv(){
   setTimeout(()=>{const el=$('genChatMsgs');if(el)el.scrollTop=el.scrollHeight;},50);
-}
-
-/* ===== 需求说明书.md 视图（沿用现有编辑体验）===== */
-function mdViewHTML(){
-  if(!state.docReady)return '<div class="md-view"></div>';
-  const ed=state.reqState==='editing';
-  return `<div class="md-view"><div class="reqdoc-card">
-    <div class="reqdoc-head">
-      <div class="reqdoc-title">📝 需求说明书.md <span style="font-size:10.5px;color:var(--text-3);font-weight:400;background:#F2F3F5;border-radius:4px;padding:1px 6px">可编辑</span></div>
-      <div class="reqdoc-actions">${ed
-        ?`<button class="btn" onclick="cancelReqDocEdit()">✕ 取消</button><button class="btn btn-primary" onclick="saveReqDoc()">✓ 保存</button>`
-        :`<button class="btn" onclick="closeFile()">✕ 关闭</button><button class="btn" onclick="editReqDoc()">✏ 编辑</button>`}</div>
-    </div>
-    ${ed?`<textarea class="reqdoc-editor" id="reqdocEditor" placeholder="可修改需求说明书的完整内容，保存后将同步重新生成 HTML">${state.reqFullText||''}</textarea>`
-      :`<div class="reqdoc-body">${reqDocStructuredHTML()}</div>`}
-  </div></div>`;
-}
-
-/* ===== 需求说明书.html 视图（只读预览 + 下载）===== */
-function htmlViewHTML(){
-  if(!state.docReady)return '<div class="rdoc-view"></div>';
-  return `<div class="rdoc-view">
-    <div class="rdoc-toolbar">
-      <span class="tt">📄 需求说明书.html <span class="ro">只读 · 由 MD 同步生成</span></span>
-      <div style="display:flex;gap:8px"><button class="btn" onclick="closeFile()">✕ 关闭</button><button class="btn" onclick="downloadReqHTML()">⬇ 下载 HTML</button></div>
-    </div>
-    <div class="rdoc-paper"><div class="rd-doc">${reqDocBodyHTML()}</div></div>
-  </div>`;
-}
-
-/* ===== 结构化视图（与 HTML 文档同源）===== */
-function reqDocStructuredHTML(){
-  const r=state.reqDoc;if(!r)return '';
-  const sec=r.sections||{};
-  return `<div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">1</span>应用概述</div>
-      <p class="reqdoc-doc-p">${sec.overview||''}</p></div>
-    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">2</span>用户与使用场景</div>
-      <p class="reqdoc-doc-p">${sec.users||r.user}</p></div>
-    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">3</span>页面与功能</div>
-      <div class="reqdoc-doc-line"><span class="dot"></span><span>${(r.funcs||[]).join('、')}</span></div>
-      <p class="reqdoc-doc-p" style="margin-top:6px">${sec.pages||''}</p></div>
-    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">4</span>核心流程</div>
-      ${(sec.flow||'').split('\n').filter(Boolean).map(x=>`<div class="reqdoc-doc-line"><span class="dot"></span><span>${x}</span></div>`).join('')}</div>
-    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">5</span>关键业务规则</div>
-      ${(sec.rules||'').split('\n').filter(Boolean).map(x=>`<div class="reqdoc-doc-line"><span class="dot"></span><span>${x}</span></div>`).join('')}</div>
-    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">6</span>数据字段</div>
-      ${(sec.fields||[]).map(f=>`<div class="reqdoc-doc-line"><span class="dot"></span><span><strong>${f.name}</strong>（${f.type}，<span class="${f.req==='是'?'':'reqdoc-optl'}">${f.req==='是'?'必填':'选填'}</span>）${f.note?`<span style="color:var(--text-3)">— ${f.note}</span>`:''}</span></div>`).join('')}</div>
-    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">7</span>本期不实现功能</div>
-      ${(sec.notImpl||'').split('\n').filter(Boolean).map(x=>`<div class="reqdoc-doc-line"><span class="dot" style="background:var(--text-4)"></span><span style="color:var(--text-3)">${x}</span></div>`).join('')}</div>
-    <div class="reqdoc-doc-section"><div class="reqdoc-doc-h"><span class="no">8</span>验收重点</div>
-      ${(sec.acceptance||'').split('\n').filter(Boolean).map(x=>`<div class="reqdoc-doc-line"><span class="dot" style="background:var(--success)"></span><span>${x}</span></div>`).join('')}</div>`;
-}
-/* ===== 需求说明书 HTML 文档生成（正式企业文档风格，供预览与下载）===== */
-const RD_CSS=`
-body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;color:#1D2129;font-size:13.5px;line-height:1.9;background:#fff;margin:0}
-.rd-doc{max-width:860px;margin:0 auto;padding:48px 56px}
-.rd-doctitle{font-size:24px;font-weight:700;margin:0 0 4px;color:#1D2129}
-.rd-sub{color:#86909C;font-size:12px;margin-bottom:22px}
-.rd-meta{width:100%;border-collapse:collapse;margin:0 0 24px;font-size:12.5px}
-.rd-meta th,.rd-meta td{border:1px solid #E5E6EB;padding:8px 12px;text-align:left;vertical-align:top}
-.rd-meta th{background:#F7F8FA;color:#4E5969;font-weight:500;width:110px;white-space:nowrap}
-.rd-toc{background:#F7F8FA;border:1px solid #E5E6EB;border-radius:8px;padding:14px 20px;margin:0 0 26px}
-.rd-toc-t{font-weight:600;font-size:13px;margin-bottom:8px;color:#1D2129}
-.rd-toc a{display:block;color:#1A66FF;text-decoration:none;font-size:12.5px;padding:2px 0}
-.rd-toc a:hover{text-decoration:underline}
-.rd-h2{font-size:16px;font-weight:700;margin:26px 0 10px;padding-left:10px;border-left:3px solid #1A66FF;color:#1D2129}
-.rd-p{margin:6px 0;color:#1D2129}
-.rd-doc ul{margin:6px 0;padding-left:20px;color:#4E5969}
-.rd-doc ol{margin:6px 0;padding-left:22px;color:#4E5969}
-.rd-doc li{margin:3px 0}
-.rd-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px}
-.rd-table th{background:#F7F8FA;border:1px solid #E5E6EB;padding:7px 10px;text-align:left;font-weight:500;color:#4E5969}
-.rd-table td{border:1px solid #E5E6EB;padding:7px 10px;color:#1D2129}
-.rd-note{background:#F7F8FA;border-radius:6px;padding:10px 14px;font-size:12.5px;color:#4E5969;margin:8px 0}
-@media print{.rd-toc{background:#fff}.rd-h2{page-break-after:avoid}}
-`;
-
-function reqDocBodyHTML(){
-  const r=state.reqDoc;if(!r)return '';
-  const s=r.sections||{};
-  const ch=[];
-  ch.push({t:'项目背景与建设目标',h:`<p class="rd-p">${s.overview||''}</p>`});
-  ch.push({t:'用户角色与使用场景',h:`<p class="rd-p">${s.users||r.user||''}</p>`});
-  ch.push({t:'业务流程',h:`<ol>${(s.flow||'').split('\n').filter(Boolean).map(x=>`<li>${x.replace(/^[①②③④⑤⑥⑦⑧⑨⑩]\s*/,'')}</li>`).join('')}</ol>`});
-  ch.push({t:'功能模块说明',h:`<ul>${(r.funcs||[]).map(f=>`<li>${f}</li>`).join('')}</ul>`});
-  ch.push({t:'页面结构及页面功能说明',h:`<ul>${(s.pages||'').split('\n').filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>`});
-  ch.push({t:'关键交互规则',h:`<ul>${(s.rules||'').split('\n').filter(Boolean).map(x=>`<li>${x.replace(/^⚡\s*/,'')}</li>`).join('')}</ul>`});
-  ch.push({t:'数据字段及数据关系',h:`<table class="rd-table"><tr><th style="width:130px">字段名称</th><th style="width:100px">类型</th><th style="width:60px">必填</th><th>说明</th></tr>${(s.fields||[]).map(f=>`<tr><td>${f.name}</td><td>${f.type}</td><td>${f.req==='是'?'是':'否'}</td><td>${f.note||'—'}</td></tr>`).join('')}</table>`});
-  if((s.notImpl||'').trim())ch.push({t:'本期边界（暂不实现）',h:`<div class="rd-note">以下内容本期不实现，作为后续迭代边界：</div><ul>${s.notImpl.split('\n').filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>`});
-  ch.push({t:'验收标准',h:`<ul>${(s.acceptance||'').split('\n').filter(Boolean).map(x=>`<li>${x.replace(/^✅\s*/,'')}</li>`).join('')}</ul>`});
-  const toc=ch.map((c,i)=>`<a href="#sec-${i+1}">${i+1}. ${c.t}</a>`).join('');
-  const body=ch.map((c,i)=>`<h2 class="rd-h2" id="sec-${i+1}">${i+1}. ${c.t}</h2>${c.h}`).join('');
-  return `<h1 class="rd-doctitle">${r.name} 需求说明书</h1>
-  <div class="rd-sub">由海牛 Vibe Coding AI 基于需求对话生成 · 可交给开发人员作为需求输入</div>
-  <table class="rd-meta">
-    <tr><th>需求名称</th><td>${r.name}</td></tr>
-    <tr><th>文档版本</th><td>${state.reqVer}</td></tr>
-    <tr><th>生成时间</th><td>${genTime()}</td></tr>
-    <tr><th>需求状态</th><td>${state.phase==='dev'?'已确认 · 开发中':'待确认'}</td></tr>
-    <tr><th>目标用户</th><td>${r.user||'—'}</td></tr>
-  </table>
-  <div class="rd-toc"><div class="rd-toc-t">目录</div>${toc}</div>
-  ${body}`;
-}
-
-function buildStandaloneReqHTML(){
-  return `<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${state.reqDoc?state.reqDoc.name+' 需求说明书':'需求说明书'}</title>
-<style>${RD_CSS}</style>
-</head>
-<body>
-<div class="rd-doc">${reqDocBodyHTML()}</div>
-</body>
-</html>`;
-}
-
-function downloadReqHTML(){
-  if(!state.docReady)return;
-  const blob=new Blob([buildStandaloneReqHTML()],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='需求说明书.html';
-  document.body.appendChild(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-  showToast('需求说明书.html 已下载','success');
-}
-
-/* ===== MD 主文件生成与回写（MD 为可编辑主文件，HTML 由其同步生成）===== */
-function buildReqMD(){
-  const r=state.reqDoc;if(!r)return '';
-  const s=r.sections||{};
-  return `# ${r.name}
-
-**目标用户**：${r.user||'—'}
-**文档版本**：${state.reqVer}
-**生成时间**：${genTime()}
-
-## 一、项目背景与建设目标
-${s.overview||''}
-
-## 二、用户角色与使用场景
-${s.users||''}
-
-## 三、业务流程
-${(s.flow||'').split('\n').filter(Boolean).map(x=>'- '+x).join('\n')}
-
-## 四、功能模块说明
-${(r.funcs||[]).map((f,i)=>`${i+1}. ${f}`).join('\n')}
-
-## 五、页面结构及页面功能说明
-${(s.pages||'').split('\n').filter(Boolean).map(x=>'- '+x).join('\n')}
-
-## 六、关键交互规则
-${(s.rules||'').split('\n').filter(Boolean).map(x=>'- '+x.replace(/^⚡\s*/,'')).join('\n')}
-
-## 七、数据字段及数据关系
-| 字段名称 | 类型 | 必填 | 说明 |
-|---|---|---|---|
-${(s.fields||[]).map(f=>`| ${f.name} | ${f.type} | ${f.req==='是'?'是':'否'} | ${f.note||'—'} |`).join('\n')}
-
-## 八、本期边界（暂不实现）
-${(s.notImpl||'').split('\n').filter(Boolean).map(x=>'- '+x).join('\n')}
-
-## 九、验收标准
-${(s.acceptance||'').split('\n').filter(Boolean).map(x=>'- '+x.replace(/^✅\s*/,'')).join('\n')}`;
-}
-
-function parseReqMD(m){
-  const r=state.reqDoc;if(!r)return;
-  const lines=String(m||'').split('\n');
-  const n=m.match(/^#\s+(.+)$/m);if(n)r.name=n[1].trim();
-  const u=m.match(/\*\*目标用户\*\*：(.+)/);if(u)r.user=u[1].trim();
-  const fi=lines.findIndex(l=>l.includes('功能模块说明'));
-  if(fi>-1){
-    const fs=[];
-    for(let i=fi+1;i<lines.length;i++){
-      const t=lines[i].trim();
-      if(/^##\s/.test(t))break;
-      const mm=t.match(/^\d+\.\s*(.+)$/);
-      if(mm)fs.push(mm[1]);
-    }
-    if(fs.length)r.funcs=fs;
-  }
-}
-/* ===== 需求沟通对话（说明书生成后持续更新；生成中的留言不重复触发生成）===== */
-function reqChatSend(){
-  const inp=$('reqdocChatInput');
-  const text=inp?inp.value.trim():'';
-  if(!text){showToast('请输入需求内容','info');return;}
-  if(inp)inp.value='';
-  state.reqDraft='';
-  state.convMsgs.push({role:'user',text});
-  /* 不关闭正在查看的文档：AI 上下文与用户当前预览关联 */
-  if(!state.docReady){
-    if(state.convLoading){renderApp();scrollConv();return;}
-    state.convLoading=true;state.convLoadingText='正在梳理需求，生成《需求说明书》（MD + HTML）…';
-    renderApp();scrollConv();
-    setTimeout(generateReqDoc,1600);
-  }else{
-    applyReqSupplement(text);
-  }
 }
 
 function generateReqDoc(){
@@ -1140,94 +752,56 @@ function generateReqDoc(){
   const tpl=SCENES[sc];
   state.reqDoc=JSON.parse(JSON.stringify(tpl));
   state.reqDoc.scene=sc;
-  state.reqDoc.name=state.reqName;/* 应用名称全局统一：以进入时 AI 提炼的名称为准 */
-  state.reqFullText=buildReqMD();
-  state.docReady=true;
-  state.reqState='viewing';
-  state.convLoading=false;
-  /* 需求说明卡内嵌对话流：对话在上、卡片在下，后续补充消息继续排在卡片后 */
-  state.centerView='';state.activeFile=null;
-  state.convMsgs.push({role:'ai',text:'✅ 《需求说明书》已生成（MD + HTML），点击下方卡片可打开文件查看；确认无误后点击卡片底部「立即开发」。'});
+  state.reqDoc.name=state.reqName;/* 应用名称全局统一 */
+  normalizeReqDoc();
+  state.stage='chat';state.convLoading=false;
+  state.convMsgs.push({role:'ai',text:'✅ 需求分析完成，以下是结构化需求说明卡。你可以继续补充或调整需求（例如：增加活动审核功能、报名人数设置上限），我会同步更新卡片；确认无误后，发送「立即生成」开始创建应用。'});
   state.convMsgs.push({type:'reqcard'});
-  renderApp();scrollConv();
+  state.reqDraft='立即生成';/* 沟通阶段预填，一键发送 */
+  renderWs();scrollConv();
 }
 
 function applyReqSupplement(text){
   const r=state.reqDoc;
-  r.funcs=Array.from(new Set([...(r.funcs||[]),text]));
-  r.sections=r.sections||{};
-  r.sections.pages=(r.sections.pages||'')+'\n'+text+'（由对话补充）';
-  state.reqFullText=buildReqMD();
-  const ctx=state.centerView==='html'?'（针对你正在查看的《需求说明书.html》）':state.centerView==='md'?'（针对你正在编辑的《需求说明书.md》）':'';
-  state.convMsgs.push({role:'ai',text:`${ctx}已将补充需求纳入说明书：\n· 「${text.length>20?text.slice(0,20)+'…':text}」已写入功能模块与页面说明\n· 需求说明书.md 与 需求说明书.html 已同步更新`});
-  renderApp();scrollConv();
-  showToast('MD 与 HTML 已同步更新','success');
+  const added=[];const removedPending=[];
+  const addFunc=f=>{if(!(r.funcs||[]).includes(f)){r.funcs.push(f);added.push('核心功能 +「'+f+'」');}};
+  const addRule=ru=>{r.rules=r.rules||[];if(!r.rules.includes(ru)){r.rules.push(ru);added.push('关键规则 +「'+ru+'」');}};
+  const dropPending=k=>{(r.pending||[]).slice().forEach(p=>{if(p.includes(k)){r.pending=r.pending.filter(x=>x!==p);removedPending.push(p);}});};
+  if(/审核/.test(text)){addFunc('活动审核管理');addRule('⚡ 新增活动需审核通过后对外发布');}
+  if(/签到/.test(text)){addFunc('二维码签到');}
+  if(/上限|限额/.test(text)){addRule('⚡ 报名人数上限：500人/场');dropPending('上限');}
+  if(/月度|按月|统计周期/.test(text)){addRule('⚡ 支持按月度统计查看数据');dropPending('统计周期');}
+  if(/导出/.test(text)){addFunc('数据导出');}
+  if(/布局|样式|风格|颜色/.test(text)){addRule('⚡ 页面要求：'+(text.length>26?text.slice(0,26)+'…':text));}
+  const short=text.length>20?text.slice(0,20)+'…':text;
+  if(added.length){
+    state.convMsgs.push({role:'ai',text:'好的，已结合历史沟通更新需求理解，需求说明卡已更新：\n'+added.map(a=>'· '+a).join('\n')+(removedPending.length?'\n· 待确认事项 -「'+removedPending.join('」「')+'」已确认':'')});
+  }else{
+    const ru='⚡ '+short;
+    r.rules=r.rules||[];
+    if(!r.rules.includes(ru)){r.rules.push(ru);}
+    state.convMsgs.push({role:'ai',text:'好的，已记录你的补充「'+short+'」，并同步更新到需求说明卡。'});
+  }
+  state.convMsgs.push({type:'reqcard'});
+  state.reqDraft='立即生成';
+  renderWs();scrollConv();
+  showToast('需求说明卡已更新','success');
 }
 
-/* ===== 应用名称全局统一：右上角改名，同步 MD / HTML ===== */
 function editAppName(){
   openModal('修改应用名称',`<input id="appNameInput" class="modal-input" style="width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13.5px" value="${escapeHtml(state.reqName)}" maxlength="30" placeholder="请输入应用名称">`,()=>{
     const inp=$('appNameInput');
     const v=inp?inp.value.trim():'';
     if(!v){showToast('应用名称不能为空','info');return false;}
     state.reqName=v;
-    if(state.reqDoc){state.reqDoc.name=v;state.reqFullText=buildReqMD();}
+    if(state.reqDoc)state.reqDoc.name=v;
     wbSync();
-    showToast('应用名称已保存，说明书已同步更新','success');
+    showToast('应用名称已保存','success');
     return true;
   });
 }
 
 /* ===== MD 编辑（沿用现有编辑体验；保存后同步重建 HTML）===== */
-function editReqDoc(){state.reqState='editing';refreshCenter();}
-function cancelReqDocEdit(){state.reqState='viewing';refreshCenter();}
-function saveReqDoc(){
-  const ta=$('reqdocEditor');
-  if(ta)state.reqFullText=ta.value;
-  parseReqMD(state.reqFullText);
-  state.reqFullText=buildReqMD();
-  state.reqState='viewing';
-  if(state.reqDoc&&state.reqDoc.name)state.reqName=state.reqDoc.name;
-  showToast('需求说明书.md 已保存，HTML 已同步重新生成','success');
-  refreshCenter();
-}
-
-/* ===== 立即开发：明确交接动作 —— 保存说明书 → 传递上传资料 → 传递需求上下文 → 进入开发 ===== */
-function startDev(){
-  if(!state.docReady)return;
-  parseReqMD(state.reqFullText);
-  state.reqFullText=buildReqMD();
-  state.phase='dev';
-  state.centerView='canvas';
-  state.filesOpen=false;
-  state.activeFile=null;
-  state.currentApp=null;state.chatOpen=true;
-  state.devDraft='';
-  if(state.wbReqId){state.wbStatus='developing';wbSync();}
-  const n=state.uploadFiles.length;
-  state.chatMsgs=[
-    {role:'user',text:'需求已确认，开始开发'},
-    {role:'bot',text:'✅ 《需求说明书》（MD + HTML）已保存'},
-    ...(n?[{role:'bot',text:'📎 已随需求传递 '+n+' 份上传资料'}]:[]),
-    {role:'bot',text:'🤖 需求上下文已传递给开发智能体：《'+state.reqName+' 需求说明书》（'+state.reqVer+'）+ 沟通记录。<span style="color:var(--primary);cursor:pointer" onclick="showReqCtx()">展开摘要</span>'},
-    {role:'bot',text:'🚀 正在启动开发…'},
-  ];
-  renderGen();
-  setTimeout(genApp,900);
-}
-function showReqCtx(){
-  const r=state.reqDoc;if(!r)return;
-  const s=r.sections||{};
-  openModal('📄 需求上下文 · '+r.name+'（'+state.reqVer+'）',
-    `<div style="font-size:12.5px;line-height:2">
-      <div><b>目标用户</b>：${r.user||'—'}</div>
-      <div><b>功能模块</b>（${(r.funcs||[]).length}）：<span style="color:var(--text-2)">${(r.funcs||[]).join('、')}</span></div>
-      <div><b>数据字段</b>（${(s.fields||[]).length}）：${(s.fields||[]).map(f=>f.name).join('、')}</div>
-      <div><b>业务规则</b>：${(s.rules||'').split('\n').filter(Boolean).length} 条 · <b>验收标准</b>：${(s.acceptance||'').split('\n').filter(Boolean).length} 条</div>
-      <div style="color:var(--text-3);margin-top:8px">以上内容已作为完整上下文传入本次开发对话。</div>
-    </div>`,null,true);
-}
-
 function detectScene(text){
   if(text.includes('看板')||text.includes('转化率')||text.includes('数据统计')||text.includes('统计分析'))return 'board';
   if(text.includes('报名')||text.includes('活动')||text.includes('签到'))return 'event';
@@ -1236,305 +810,251 @@ function detectScene(text){
   return 'board';
 }
 
-function genApp(){
-  state.generating=true;state.genStarted=true;state.genStep=0;
-  if(state.reqFullText){state.chatMsgs.push({role:'bot',text:'📋 需求说明书.html 已随上下文传入本次开发对话',small:true});}
-  renderGen();
-  const steps=['🏗️ 理解需求中...','🔍 分析业务场景...','🔌 匹配平台能力...','📄 生成页面结构...','🧩 组装业务功能...','✅ 应用完成中...'];
-  showStepsBar(steps,0);
-  let step=0;
-  const t=setInterval(()=>{
-    step++;
-    if(step<steps.length){
-      state.genStep=step;showStepsBar(steps,step);updateGenLoading();
-      state.chatMsgs.push({role:'bot',text:steps[step],small:true});
-      renderChat();
-    }
-    else{clearInterval(t);finishGenApp();}
-  },750);
-}
-
-function showStepsBar(s,idx){
-  const stepsEl=document.getElementById('genStepsBar');
-  if(!stepsEl)return;
-  stepsEl.innerHTML=s.map(function(st,i){return '<span'+(i<idx?' class="done"':i===idx?' class="active"':'')+'>'+st+'</span>';}).join('');
-}
-function renderChat(){
-  const el=document.getElementById('genChatMsgs');
-  if(!el)return;
-  el.innerHTML=state.chatMsgs.map(renderMsg).join('');
-  el.scrollTop=el.scrollHeight;
-}
-function finishGenApp(){
-  state.generating=false;
-  const sc=state.reqDoc.scene||'event';
-  const app={
-    id:'APP-DEV',
-    name:state.reqDoc.name,
-    icon:SCENES[sc].icon,
-    color:SCENES[sc].color,
-    ver:'v1.0.0',status:'已上线',
-    desc:state.reqDoc.funcs.map((f,i)=>`${i+1}. ${f}`).join('；'),
-    scene:sc,date:'2026-09-03',platform:state.platform,
-  };
-  state.currentApp=app;
-  state.devFiles=DEV_FILE_TPL.map(f=>Object.assign({},f));
-  state.chatMsgs.push({role:'bot',text:'🎉 开发完成！已生成前端页面、后端接口与数据库文件，左侧「文件 → 开发生成文件」可查看。'});
-  state.chatMsgs.push({role:'bot',text:'右侧对话框可继续提出修改意见，例如：增加字段、调整按钮位置、修改页面样式、增加筛选条件等。'});
-  renderGen();scrollChat();
-}
-
-/* ===== 返回 / 对话开关 ===== */
-function toggleChat(){state.chatOpen=!state.chatOpen;renderGen();}
-function closeChat(){state.chatOpen=false;renderGen();}
-
-/* ===== 渲染开发页（与需求阶段同构：左rail顶部返回图标，无面包屑；画布与右侧AI助手保持原有交互）===== */
-function renderGen(){
-  const hasApp=!!state.currentApp;
-  const topRight=hasApp?`<button class="gen-btn primary" onclick="publishApp()">🚀 发布</button>`:'';
-  const centerBlock=state.centerView==='md'?mdViewHTML():state.centerView==='html'?htmlViewHTML():`<div class="gen-canvas-area">${state.generating?genLoading():hasApp?genPreview(state.currentApp):genIdle()}</div>`;
-  $('wcBody').innerHTML=`<aside class="wc-rail">
-    <div class="rail-btn" onclick="goWorkbench()">←<span class="rail-tip">返回项目集</span></div>
-    <div class="rail-sep"></div>
-    ${railBtn('canvas','🖥️','预览',state.centerView==='canvas')}
-    ${railBtn('file','📄','文件',state.filesOpen)}
-  </aside>
-  ${state.filesOpen?filePanelHTML():''}
-  <div class="gen-main">
-    <div class="ws-topbar">
-      <div></div>
-      <div class="ws-topbar-right">
-        <span class="ws-name" id="wsNameText" title="点击修改应用名称" onclick="editAppName()">✨ ${escapeHtml(state.reqName)}</span>
-        <span class="ws-edit" title="修改应用名称" onclick="editAppName()">✏</span>
-        ${topRight}
-      </div>
-    </div>
-    ${centerBlock}
-  </div>
-  <div class="gen-chat ${state.chatOpen?'':'closed'}" id="genChatPanel">
-    <div class="gen-chat-head">
-      <div class="gen-chat-title">🤖 AI助手 <span style="font-size:11px;opacity:.7;font-weight:400">应用开发</span></div>
-      <span class="gen-chat-close" onclick="closeChat()">×</span>
-    </div>
-    <div class="gen-chat-msgs" id="genChatMsgs">${state.chatMsgs.map(renderMsg).join('')}</div>
-    <div class="gen-chat-input">
-      <textarea id="genChatInput" placeholder="输入需求或修改意见..." rows="1" oninput="state.devDraft=this.value" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend()}">${escapeHtml(state.devDraft||'')}</textarea>
-      <button class="gen-chat-send" onclick="chatSend()">➤</button>
-    </div>
-  </div>`;
-  updateFab();
-}
 function renderMsg(m){
-  if(m.type==='reqcard')return reqCardHTML();
+  if(m.type==='reqcard'){return `<div class="gen-chat-msg ai"><div class="gen-chat-avatar" style="background:#1A66FF">🤖</div><div class="gen-chat-bubble">${reqCardHTML()}</div></div>`;}
   if(m.type==='req')return '';
   const avatar=`<div class="gen-chat-avatar" style="${m.role==='user'?'background:linear-gradient(135deg,#FF7D00,#FFB400)':'background:#1A66FF'}">${m.role==='user'?'我':'🤖'}</div>`;
   const smallCls=m.small?' style="font-size:12px"':'';
   return `<div class="gen-chat-msg ${m.role}">${avatar}<div class="gen-chat-bubble"${smallCls}>${m.text||''}</div></div>`;
 }
 
-/* 需求说明卡：内嵌对话流的产物卡片，底部=立即开发 */
 function reqCardHTML(){
   const r=state.reqDoc;if(!r)return '';
-  return `<div class="req-card">
-    <div class="req-card-head"><span class="t">📄 ${escapeHtml(r.name)} · 需求说明书</span><span class="ver">${state.reqVer}</span></div>
-    <div class="req-card-body">
-      <div class="req-card-row"><span class="k">目标用户</span><span class="v">${escapeHtml(r.user||'—')}</span></div>
-      <div class="req-card-row"><span class="k">功能模块</span><span class="v">${(r.funcs||[]).map(escapeHtml).join('、')}</span></div>
-    </div>
-    <div class="req-card-files">
-      <button class="btn" onclick="openFile('md')">📝 需求说明书.md</button>
-      <button class="btn" onclick="openFile('html')">📄 需求说明书.html</button>
-    </div>
-    <div class="req-card-dev"><button class="reqdoc-gen-btn" style="padding:10px 34px;font-size:14px" onclick="startDev()">⚡ 立即开发</button></div>
+  const row=(k,v)=>`<div class="rc-row"><span class="rc-k">${k}</span><span class="rc-v">${v}</span></div>`;
+  const list=(k,arr)=>`<div class="rc-row"><span class="rc-k">${k}</span><span class="rc-v">${(arr&&arr.length)?arr.map(x=>`<div class="rc-line">${x}</div>`).join(''):'—'}</span></div>`;
+  const sec=r.sections||{};
+  return `<div class="req-card-lite">
+    <div class="rc-title">📄 ${escapeHtml(r.name)} · 需求说明卡</div>
+    ${row('应用目标',escapeHtml(sec.overview||'—'))}
+    ${row('使用角色',escapeHtml(sec.users||r.user||'—'))}
+    ${list('核心功能',(r.funcs||[]).map(escapeHtml))}
+    ${list('业务流程',String(sec.flow||'').split('→').map(x=>x.trim()).filter(Boolean).map(escapeHtml))}
+    ${list('关键规则',(r.rules||[]).map(escapeHtml))}
+    ${list('待确认事项',(r.pending||[]).map(escapeHtml))}
   </div>`;
 }
 
-function genIdle(){return `<div class="idle-state"><div class="idle-ico">🤖</div><div class="loading-main">等待AI生成你的应用</div><div class="loading-step">生成完成后将在这里预览</div></div>`;}
-function genLoading(){return `<div class="loading-state"><div class="loading-spinner"></div><div class="loading-main">AI正在${state.generating?'生成':'处理'}你的应用</div><div class="loading-step">${['理解需求中...','分析业务场景中...','匹配平台能力中...','生成需求说明书中...','生成页面结构中...','组装业务功能中...','应用完成中...'][state.genStep]||'处理中...'}</div></div>`;}
-function updateGenLoading(){const e=document.querySelector('.loading-step');if(e)e.textContent=['理解需求中...','分析业务场景中...','匹配平台能力中...','生成需求说明书中...','生成页面结构中...','组装业务功能中...','应用完成中...'][state.genStep]||'处理中...';}
-function updateFab(){const f=$('chatFab');if(!f)return;f.className='chat-fab'+(state.phase==='dev'&&!state.chatOpen?' show':'');}
+/* ===== 统一双栏工作区（需求沟通 + 应用生成 同一工作区）=====
+   首页发送 → 双栏工作区：stage=analyze(需求分析中) → chat(需求沟通中·说明卡在对话流)
+   → 输入「立即生成」→ generating(左侧画布真实进度) → done(左侧单页可交互应用+可继续自然语言修改) */
+const GEN_TRIGGER_RE=/(立即生成|开始生成|直接生成|生成应用|开始开发|按照目前的需求(开始)?(生成|开发)|按目前的需求(开始)?(生成|开发))/;
+const GEN_ASK_RE=/可以(开始|生成)(了)?(吗|么)|能(开始|生成)(了)?(吗|么)|准备好(了)?(吗|么)/;
+const GEN_STEPS=['🔍 解析需求与开发上下文','🧭 规划应用页面结构','🧩 生成页面与业务功能','⚙️ 配置数据与业务规则','✅ 校验完成，准备发布'];
+const BOARD_PAGES=[
+ {icon:'📊',title:'数据概览',body:`<div class="app-stat-row">
+   <div class="app-stat"><div class="as-v">5</div><div class="as-l">进行中活动</div></div>
+   <div class="app-stat"><div class="as-v">12.6万</div><div class="as-l">活动总曝光</div></div>
+   <div class="app-stat"><div class="as-v">3.1万</div><div class="as-l">页面点击</div></div>
+   <div class="app-stat"><div class="as-v">8.4%</div><div class="as-l">平均转化率</div></div></div>
+ <div class="app-card"><div class="app-card-t">近 6 周活动曝光趋势</div><div class="app-bars">
+   <div class="app-bar" style="height:40%"><span class="app-bar-lbl">W1</span></div>
+   <div class="app-bar" style="height:65%"><span class="app-bar-lbl">W2</span></div>
+   <div class="app-bar hot" style="height:100%"><span class="app-bar-lbl">W3</span></div>
+   <div class="app-bar" style="height:55%"><span class="app-bar-lbl">W4</span></div>
+   <div class="app-bar" style="height:75%"><span class="app-bar-lbl">W5</span></div>
+   <div class="app-bar" style="height:88%"><span class="app-bar-lbl">W6</span></div></div></div>
+ <div class="app-card"><div class="app-card-t">今日要点</div>
+   <div class="rc-line">「618年中大促」参与人数突破 4,200，转化率 9.2% 领跑</div>
+   <div class="rc-line">「会员日抽奖」曝光环比 +18%，建议追加投放</div></div>`},
+ {icon:'👥',title:'参与人数',body:`<table class="app-table"><tr><th>活动名称</th><th>参与人数</th><th>报名人数</th><th>状态</th></tr>
+   <tr><td>618年中大促</td><td>4,218</td><td>1,866</td><td><span class="app-tag g">进行中</span></td></tr>
+   <tr><td>会员日抽奖</td><td>6,802</td><td>3,210</td><td><span class="app-tag g">进行中</span></td></tr>
+   <tr><td>品牌联合直播</td><td>5,210</td><td>2,106</td><td><span class="app-tag b">今日上线</span></td></tr>
+   <tr><td>新品试用招募</td><td>2,150</td><td>980</td><td><span class="app-tag o">即将结束</span></td></tr>
+   <tr><td>周末秒杀专场</td><td>3,390</td><td>1,450</td><td><span class="app-tag g">进行中</span></td></tr></table>`},
+ {icon:'📈',title:'转化率分析',body:`<div class="app-card"><div class="app-card-t">整体转化漏斗</div>
+   <div class="app-funnel-row"><span class="app-funnel-lbl">曝光</span><div class="app-funnel-bar" style="width:100%;background:#1A66FF">100%</div><span class="app-funnel-val">12.6万</span></div>
+   <div class="app-funnel-row"><span class="app-funnel-lbl">点击</span><div class="app-funnel-bar" style="width:62%;background:#5B8CFF">24.6%</div><span class="app-funnel-val">3.1万</span></div>
+   <div class="app-funnel-row"><span class="app-funnel-lbl">报名</span><div class="app-funnel-bar" style="width:34%;background:#94B4FF">8.4%</div><span class="app-funnel-val">1.06万</span></div></div>
+ <div class="app-card"><div class="app-card-t">分渠道转化率</div>
+   <div class="rc-line">小程序端 10.2%（最优）</div><div class="rc-line">H5 端 7.8%</div><div class="rc-line">线下物料扫码 4.5%</div></div>`},
+ {icon:'⚖️',title:'效果对比',body:`<table class="app-table"><tr><th>活动</th><th>曝光</th><th>转化率</th><th>对比</th></tr>
+   <tr><td>618年中大促</td><td>4.6万</td><td>9.2%</td><td><span class="app-tag g">基准 +0.8pp</span></td></tr>
+   <tr><td>会员日抽奖</td><td>3.8万</td><td>11.2%</td><td><span class="app-tag g">最优</span></td></tr>
+   <tr><td>周末秒杀专场</td><td>2.9万</td><td>8.1%</td><td><span class="app-tag o">-0.3pp</span></td></tr>
+   <tr><td>新品试用招募</td><td>1.3万</td><td>6.8%</td><td><span class="app-tag b">需优化</span></td></tr></table>`},
+];
+const EVENT_PAGES=[
+ {icon:'🎊',title:'活动列表',body:EVENT_ACTIVITIES.map(a=>`<div class="app-ev-item" onclick="showToast('${a.name} · 活动详情（演示）','info')"><div class="app-ev-ico" style="background:${a.color}">${a.icon}</div><div><div class="app-ev-name">${a.name}</div><div class="app-ev-meta">${a.date} ${a.time} · ${a.status}</div></div><span class="app-ev-arrow">›</span></div>`).join('')},
+ {icon:'📝',title:'在线报名',body:`<div class="app-form"><div class="app-form-l">选择活动</div><div class="app-form-v">青春交友 · 城市定向跑</div>
+   <div class="app-form-l">姓名</div><div class="app-form-v" style="color:var(--text-3)">请输入姓名</div>
+   <div class="app-form-l">手机号</div><div class="app-form-v" style="color:var(--text-3)">请输入手机号</div>
+   <button class="gen-btn primary" style="width:100%;margin-top:12px" onclick="showToast('报名成功（演示）','success')">提交报名</button></div>`},
+ {icon:'✅',title:'签到码',body:`<div style="text-align:center;padding:26px 0"><div class="app-qr"></div><div style="font-family:monospace;font-size:18px;font-weight:700;margin-top:12px">QK-8321</div><div style="font-size:11px;color:var(--text-3);margin-top:4px">向工作人员出示此码完成签到</div></div>`},
+ {icon:'📋',title:'我的报名',body:MY_REGISTRATIONS.map(r=>`<div class="app-ev-item" style="cursor:default"><div class="app-ev-ico" style="background:#E8F0FF">🎫</div><div><div class="app-ev-name">${r.name}</div><div class="app-ev-meta">${r.date} ${r.time} · 签到码 ${r.code}</div></div><span class="app-tag ${r.status==='已签到'?'g':'b'}">${r.status}</span></div>`).join('')},
+];
+const VISIT_PAGES=[
+ {icon:'🗓️',title:'拜访计划',body:`<table class="app-table"><tr><th>客户</th><th>时间</th><th>状态</th></tr><tr><td>杭州恒生科技</td><td>09-05 14:00</td><td><span class="app-tag b">待拜访</span></td></tr><tr><td>宁波港通物流</td><td>09-06 10:00</td><td><span class="app-tag b">待拜访</span></td></tr><tr><td>苏州锦程制造</td><td>09-03 15:30</td><td><span class="app-tag g">已完成</span></td></tr></table>`},
+ {icon:'📍',title:'拜访打卡',body:`<div class="app-card"><div class="app-card-t">当前拜访：杭州恒生科技</div><div style="height:120px;background:#E8F0FF;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:13px">📍 地图定位签到（演示）</div><button class="gen-btn primary" style="width:100%;margin-top:12px" onclick="showToast('打卡成功（演示）','success')">到店打卡</button></div>`},
+ {icon:'📝',title:'拜访记录',body:`<div class="app-form"><div class="app-form-l">拜访对象</div><div class="app-form-v">杭州恒生科技 · 采购部</div><div class="app-form-l">沟通纪要</div><div class="app-form-v" style="color:var(--text-3)">记录本次沟通要点…</div><div class="app-form-l">下一步计划</div><div class="app-form-v" style="color:var(--text-3)">如：寄送样品、报价跟进</div><button class="gen-btn primary" style="width:100%;margin-top:12px" onclick="showToast('拜访记录已保存（演示）','success')">保存记录</button></div>`},
+ {icon:'📊',title:'拜访统计',body:`<div class="app-stat-row"><div class="app-stat"><div class="as-v">28</div><div class="as-l">本月拜访</div></div><div class="app-stat"><div class="as-v">86%</div><div class="as-l">准时率</div></div><div class="app-stat"><div class="as-v">19</div><div class="as-l">有效商机</div></div></div>`},
+];
+const PM_PAGES=[
+ {icon:'📦',title:'项目看板',body:`<div class="app-stat-row"><div class="app-stat"><div class="as-v">6</div><div class="as-l">进行中项目</div></div><div class="app-stat"><div class="as-v">23</div><div class="as-l">本周任务</div></div><div class="app-stat"><div class="as-v">92%</div><div class="as-l">按时完成率</div></div></div><table class="app-table"><tr><th>项目</th><th>负责人</th><th>进度</th><th>状态</th></tr><tr><td>CRM 二期</td><td>王工</td><td>68%</td><td><span class="app-tag b">进行中</span></td></tr><tr><td>官网改版</td><td>李工</td><td>45%</td><td><span class="app-tag b">进行中</span></td></tr><tr><td>数据中台</td><td>张工</td><td>100%</td><td><span class="app-tag g">已验收</span></td></tr></table>`},
+ {icon:'✅',title:'任务列表',body:`<table class="app-table"><tr><th>任务</th><th>负责人</th><th>截止</th><th>状态</th></tr><tr><td>接口联调</td><td>王工</td><td>09-06</td><td><span class="app-tag o">进行中</span></td></tr><tr><td>UI 走查</td><td>陈工</td><td>09-05</td><td><span class="app-tag g">已完成</span></td></tr><tr><td>压测报告</td><td>李工</td><td>09-08</td><td><span class="app-tag b">待启动</span></td></tr></table>`},
+ {icon:'👥',title:'成员进度',body:`<div class="app-card"><div class="rc-line">王工 · 本周任务 5 / 完成 4</div><div class="rc-line">李工 · 本周任务 4 / 完成 2</div><div class="rc-line">陈工 · 本周任务 3 / 完成 3</div></div>`},
+ {icon:'📈',title:'项目统计',body:`<div class="app-card"><div class="app-card-t">近 6 周任务完成趋势</div><div class="app-bars"><div class="app-bar" style="height:45%"><span class="app-bar-lbl">W1</span></div><div class="app-bar" style="height:60%"><span class="app-bar-lbl">W2</span></div><div class="app-bar" style="height:52%"><span class="app-bar-lbl">W3</span></div><div class="app-bar" style="height:78%"><span class="app-bar-lbl">W4</span></div><div class="app-bar hot" style="height:100%"><span class="app-bar-lbl">W5</span></div><div class="app-bar" style="height:70%"><span class="app-bar-lbl">W6</span></div></div></div>`},
+];
+const APP_PAGES={event:EVENT_PAGES,visit:VISIT_PAGES,pm:PM_PAGES,board:BOARD_PAGES};
 
-/* ===== 应用预览 ===== */
-function genPreview(app){
-  var sc=app.scene||'event';
-  var tiles=getTiledPages(sc);
-  if(!tiles||tiles.length===0){return state.platform==='mp'?mpPreview(app):pcPreview(app);}
-  var isMp=state.platform==='mp'||state.platform==='h5';
-  var labelEl=state.platform==='pc'?'💻 PC应用预览':state.platform==='h5'?'🌐 H5应用预览':'📱 小程序应用预览';
-  return '<div class="tiled-label">'+labelEl+'</div><div class="tiled-grid">'+
-    tiles.map(function(t){return renderTile(t,isMp);}).join('')+'</div>';
+function statusMeta(){
+  if(state.stage==='analyze')return{cls:'st-analyze',text:'需求分析中'};
+  if(state.stage==='generating')return{cls:'st-gen',text:'应用生成中'};
+  if(state.stage==='done'&&state.wbStatus==='done')return{cls:'st-done',text:'已发布'};
+  return{cls:'st-done',text:'已完成'};
 }
-function renderTile(t,isMp){
-  if(isMp){
-    return '<div class="tiled-mini"><div class="tiled-mini-bar"><span>9:41</span><span>📶 🔋</span></div>'+
-      '<div class="tiled-mini-title">'+t.title+'</div>'+
-      '<div class="tiled-mini-body">'+t.body+'</div></div>';
-  }
-  return '<div class="tiled-mini tiled-pc"><div class="tiled-pc-bar"><span class="pc-dot" style="background:#F53F3F"></span><span class="pc-dot" style="background:#FF7D00"></span><span class="pc-dot" style="background:#00B42A"></span><span class="tiled-pc-url">app.hainiu.com</span></div>'+
-    '<div class="tiled-mini-title">'+t.title+'</div>'+
-    '<div class="tiled-mini-body">'+t.body+'</div></div>';
-}
-function getTiledPages(sc){
-  var P={"event":[
-    {title:"活动列表",body:'<div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#E8F0FF">🎊</div><div>青春交友·城市定向跑<br><span style="font-size:10px;color:var(--text-3)">9月10日 14:00</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#E8FFEA">🧘</div><div>瑜伽体验公开课<br><span style="font-size:10px;color:var(--text-3)">9月12日 19:00</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#FFF7E8">🎓</div><div>新员工入职培训<br><span style="font-size:10px;color:var(--text-3)">9月15日 09:00</span></div></div>'},
-    {title:"在线报名",body:'<div style="display:flex;flex-direction:column;gap:8px"><div><span style="font-size:10px;color:var(--text-3)">姓名</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请输入姓名</span></div><div><span style="font-size:10px;color:var(--text-3)">手机号</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请输入手机号</span></div><div style="margin-top:6px;padding:8px;background:var(--primary);color:#fff;border-radius:6px;text-align:center;font-size:12px;font-weight:600">提交报名</div></div>'},
-    {title:"签到码",body:'<div class="tiled-qr"><div class="tiled-qr-box"></div><div class="tiled-qr-tip">QK-8321</div><div style="font-size:10px;color:var(--text-3);margin-top:4px">签到码</div></div>'},
-    {title:"我的报名",body:'<div class="tiled-mini-item"><div style="font-size:13px">青春交友·城市定向跑</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#E8FFEA;color:var(--success);margin-left:auto">已签到</span></div><div class="tiled-mini-item"><div style="font-size:13px">瑜伽体验公开课</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--primary-light);color:var(--primary);margin-left:auto">已报名</span></div>'}
-  ],"visit":[
-    {title:"拜访列表",body:'<div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#DBEAFE">🏢</div><div>台州泰隆机械厂<br><span style="font-size:10px;color:var(--text-3)">今日上午</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#D1FAE5">🏪</div><div>临海小商品超市<br><span style="font-size:10px;color:var(--text-3)">昨日下午</span></div></div></div>'},
-    {title:"拜访登记",body:'<div style="display:flex;flex-direction:column;gap:8px"><div><span style="font-size:10px;color:var(--text-3)">客户名称</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请选择客户</span></div><div><span style="font-size:10px;color:var(--text-3)">拜访类型</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">新客拜访</span></div><div style="margin-top:6px;padding:8px;background:var(--primary);color:#fff;border-radius:6px;text-align:center;font-size:12px;font-weight:600">提交拜访记录</div></div>'},
-    {title:"数据统计",body:'<div style="display:flex;gap:8px;justify-content:space-around"><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">28</div><div class="tiled-mini-stat-lbl">本月拜访</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">92%</div><div class="tiled-mini-stat-lbl">完成率</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">6</div><div class="tiled-mini-stat-lbl">新增客户</div></div></div>'}
-  ],"pm":[
-    {title:"项目看板",body:'<div style="display:flex;gap:8px;justify-content:space-around"><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">6</div><div class="tiled-mini-stat-lbl">进行中项目</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">42</div><div class="tiled-mini-stat-lbl">全部任务</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">87%</div><div class="tiled-mini-stat-lbl">按时完成率</div></div></div><div class="tiled-mini-item" style="margin-top:8px"><div class="tiled-mini-item-icon" style="background:#E8F0FF">🗂️</div><div>CRM系统二期<br><span style="font-size:10px;color:var(--text-3)">进行中 · 截止9月30日</span></div></div><div class="tiled-mini-item"><div class="tiled-mini-item-icon" style="background:#E8FFEA">📦</div><div>供应商门户改版<br><span style="font-size:10px;color:var(--text-3)">进行中 · 截止10月15日</span></div></div>'},
-    {title:"任务列表",body:'<div class="tiled-mini-item"><div style="font-size:13px">客户数据导入接口</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#FFF7E8;color:var(--warning);margin-left:auto">进行中</span></div><div class="tiled-mini-item"><div style="font-size:13px">报表导出功能</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#F2F3F5;color:var(--text-3);margin-left:auto">待处理</span></div><div class="tiled-mini-item"><div style="font-size:13px">登录页改版</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#E8FFEA;color:var(--success);margin-left:auto">已完成</span></div>'},
-    {title:"新建任务",body:'<div style="display:flex;flex-direction:column;gap:8px"><div><span style="font-size:10px;color:var(--text-3)">任务标题</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请输入任务标题</span></div><div><span style="font-size:10px;color:var(--text-3)">负责人</span><br><span style="padding:4px 8px;background:#F5F6F7;border-radius:4px;display:block">请选择负责人</span></div><div style="margin-top:6px;padding:8px;background:var(--primary);color:#fff;border-radius:6px;text-align:center;font-size:12px;font-weight:600">创建任务</div></div>'},
-    {title:"项目统计",body:'<div style="display:flex;gap:8px;justify-content:space-around"><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">18</div><div class="tiled-mini-stat-lbl">本周新增</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">12</div><div class="tiled-mini-stat-lbl">已完成</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">3</div><div class="tiled-mini-stat-lbl">已延期</div></div></div>'}
-  ],"board":[
-    {title:"数据概览",body:'<div style="display:flex;gap:8px;justify-content:space-around"><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">5</div><div class="tiled-mini-stat-lbl">进行中活动</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">12.6万</div><div class="tiled-mini-stat-lbl">总曝光</div></div><div class="tiled-mini-stat"><div class="tiled-mini-stat-val">8.4%</div><div class="tiled-mini-stat-lbl">平均转化率</div></div></div><div style="display:flex;align-items:flex-end;gap:6px;height:56px;margin-top:10px;padding:0 4px"><div style="flex:1;background:#E8F0FF;border-radius:3px 3px 0 0;height:40%"></div><div style="flex:1;background:#E8F0FF;border-radius:3px 3px 0 0;height:65%"></div><div style="flex:1;background:#1A66FF;border-radius:3px 3px 0 0;height:100%"></div><div style="flex:1;background:#E8F0FF;border-radius:3px 3px 0 0;height:55%"></div><div style="flex:1;background:#E8F0FF;border-radius:3px 3px 0 0;height:75%"></div></div>'},
-    {title:"参与人数",body:'<div class="tiled-mini-item"><div style="font-size:13px">618年中大促</div><span style="font-size:10px;color:var(--text-3);margin-left:auto">4,218 人参与</span></div><div class="tiled-mini-item"><div style="font-size:13px">新品试用招募</div><span style="font-size:10px;color:var(--text-3);margin-left:auto">2,150 人参与</span></div><div class="tiled-mini-item"><div style="font-size:13px">会员日抽奖</div><span style="font-size:10px;color:var(--text-3);margin-left:auto">6,802 人参与</span></div>'},
-    {title:"转化率分析",body:'<div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;width:44px;color:var(--text-3)">曝光</span><div style="flex:1;height:14px;background:#1A66FF;border-radius:3px"></div><span style="font-size:10px">12.6万</span></div><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;width:44px;color:var(--text-3)">点击</span><div style="flex:1;height:14px;background:#5B8CFF;border-radius:3px;width:62%"></div><span style="font-size:10px">3.1万</span></div><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;width:44px;color:var(--text-3)">报名</span><div style="flex:1;height:14px;background:#94B4FF;border-radius:3px;width:34%"></div><span style="font-size:10px">1.06万</span></div></div>'},
-    {title:"效果对比",body:'<div class="tiled-mini-item"><div style="font-size:13px">618年中大促</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#E8FFEA;color:var(--success);margin-left:auto">转化 9.2%</span></div><div class="tiled-mini-item"><div style="font-size:13px">新品试用招募</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#E8F0FF;color:var(--primary);margin-left:auto">转化 6.8%</span></div><div class="tiled-mini-item"><div style="font-size:13px">会员日抽奖</div><span style="font-size:10px;padding:2px 8px;border-radius:8px;background:#FFF7E8;color:var(--warning);margin-left:auto">转化 5.4%</span></div>'}
-  ]};
-  return P[sc]||P.event;
-}
-
-function mpPreview(app){
-  return `<div class="mp-preview-shell">
-    <div class="mp-status-bar"><span>9:41</span><span>📶 🔋</span></div>
-    <div class="phone-body-wrap"><div class="mp-body" id="mpBody">${mpPage('home')}</div>
-    <div class="mp-tabbar" id="mpTabbar">
-      <span data-t="home" class="tab-active" onclick="mpPage('home')"><span class="tab-ico">🏠</span>活动</span>
-      <span data-t="mine" onclick="mpPage('mine')"><span class="tab-ico">📝</span>我的报名</span>
-      <span data-t="setting" onclick="showToast('个人设置','info')"><span class="tab-ico">👤</span>我的</span>
-    </div></div></div>`;
-}
-
-function mpPage(t){
-  state.mpTab=t;
-  const b=$('mpBody');const tb=$('mpTabbar');
-  if(tb)tb.querySelectorAll('span').forEach(s=>s.className=s.dataset.t===t?'tab-active':'');
-  let html='';
-  if(t==='home'){
-    html=`<div class="mp-nav"><div class="mp-nav-title">🎉 活动列表</div><div class="mp-nav-right"><span onclick="showToast('搜索','info')">🔍</span></div></div>
-    <div class="mp-search"><div class="mp-search-bar">🔍 <input placeholder="搜索活动名称..."></div></div>
-    <div class="mp-banner"><div class="mp-banner-box"><div class="mp-banner-title">全民健身月</div><div class="mp-banner-sub">参与活动赢积分，兑换精美礼品</div></div></div>
-    <div class="mp-section-title">推荐活动</div><div class="mp-list">`;
-    EVENT_ACTIVITIES.forEach((a,i)=>{
-      const sClass=a.status==='名额紧张'?'tag tag-warning':'tag tag-primary';
-      html+=`<div class="mp-card" data-idx="${i}" onclick="showEDetail(${i})"><div class="mp-card-icon" style="background:${a.color}">${a.icon}</div>
-        <div class="mp-card-content"><div class="mp-card-name">${a.name}</div>
-        <div class="mp-card-meta">${a.date} ${a.time}</div>
-        <span class="mp-card-status ${sClass}">${a.status}</span></div>
-        <span class="mp-card-right">›</span></div>`;
-    });
-    html+=`</div>`;
-  }else if(t==='mine'){
-    html=`<div class="mp-nav"><div class="mp-nav-title">📝 我的报名</div></div>`;
-    if(MY_REGISTRATIONS.length===0){
-      html+=`<div class="mp-empty"><div class="empty-ico">📭</div><div>暂无报名记录</div></div>`;
-    }else{
-      html+=`<div class="mp-mine-list">`;
-      MY_REGISTRATIONS.forEach(r=>{
-        const sC=r.status==='已签到'?'st-checked':'st-registered';
-        html+=`<div class="mp-mine-item"><div class="mp-mine-item-top"><div class="mp-mine-item-name">${r.name}</div><span class="mp-mine-item-status ${sC}">${r.status}</span></div>
-          <div class="mp-mine-item-info">${r.date} ${r.time||''}</div>${r.code?`<div class="mp-mine-item-code">签到码：${r.code}</div>`:''}</div>`;
-      });
-      html+=`</div>`;
-    }
-  }else{
-    html=`<div class="mp-nav"><div class="mp-nav-title">👤 个人中心</div></div>
-    <div class="mp-empty"><div class="empty-ico" style="font-size:56px">👤</div><div>唯安</div><div style="font-size:12px;color:var(--text-3);margin-top:4px">业务创新者</div></div>`;
-  }
-  if(b)b.innerHTML=html;
-}
-
-function showEDetail(idx){
-  const a=EVENT_ACTIVITIES[idx];
-  const b=$('mpBody');if(!b)return;
-  b.innerHTML=`<div class="mp-back-btn" onclick="mpPage('home')">← 返回列表</div>
-    <div class="tile-detail-grid">
-      <div class="tile-detail"><div class="td-icon">📅</div><div class="td-label">活动时间</div><div class="td-value">${a.date} ${a.time}</div></div>
-      <div class="tile-detail"><div class="td-icon">🏷️</div><div class="td-label">活动状态</div><div class="td-value"><span class="tag ${a.status==='名额紧张'?'tag-warning':'tag-primary'}">${a.status}</span></div></div>
-      <div class="tile-detail"><div class="td-icon">📍</div><div class="td-label">活动地点</div><div class="td-value">海牛大厦A座3层活动中心</div></div>
-      <div class="tile-detail"><div class="td-icon">🏢</div><div class="td-label">举办方</div><div class="td-value">海牛科技 · 行政部</div></div>
-      <div class="tile-detail-big"><div class="td-label" style="margin-bottom:3px;font-size:11px">活动介绍</div>
-        <div style="font-size:12.5px;color:var(--text-2);line-height:1.7">${a.desc}</div></div>
-      <div class="tile-detail-act">
-        <button class="td-btn-primary" onclick="showReg(${idx})">立即报名</button>
-        <button class="td-btn-default" onclick="showToast('暂不开放','info')">收藏</button>
+function renderWs(){
+  const b=$('wcBody');
+  const st=statusMeta();
+  const ph=state.stage==='analyze'?'AI 正在分析需求，可先输入补充信息…'
+    :state.stage==='generating'?'正在生成应用，请稍候…'
+    :state.stage==='done'?'描述修改意见，Enter 发送，例如「增加筛选条件」…'
+    :'继续补充或调整需求；确认无误后发送「立即生成」开始创建应用…';
+  b.innerHTML=`<div class="ws-page">
+    <div class="ws-topbar">
+      <div class="ws-topbar-left">
+        <button class="ws-back" onclick="goWorkbench()">← 返回项目集</button>
+        <span class="ws-name" id="wsNameText" title="点击修改应用名称" onclick="editAppName()">📄 ${escapeHtml(state.reqName)}</span>
+        <span class="ws-edit" title="修改应用名称" onclick="editAppName()">✏</span>
       </div>
-    </div>`;
+      <div class="ws-topbar-right">
+        ${state.stage!=='chat'?`<span class="ws-status ${st.cls}">${st.text}</span>`:''}
+        ${state.currentApp?'<button class="gen-btn primary" onclick="publishApp()">🚀 发布</button>':''}
+      </div>
+    </div>
+    <div class="ws-split" id="wsSplit">
+      <div class="ws-canvas" id="wsCanvasL">${canvasViewHTML()}</div>
+      <div class="ws-divider" onmousedown="dividerDown(event)" title="拖拽调整分栏比例"><span class="ws-divider-handle"></span></div>
+      <div class="ws-chat">
+        <div class="gen-chat-head"><div class="gen-chat-title">🤖 AI助手</div></div>
+        <div class="gen-chat-msgs" id="genChatMsgs">${state.convMsgs.map(renderMsg).join('')}${state.convLoading?convLoadingHTML():''}</div>
+        <div class="gen-chat-input">
+          <button class="chat-attach" title="上传参考资料（作为对话上下文）" onclick="mockUpload()">📎</button>
+          <textarea id="wsChatInput" placeholder="${ph}" rows="1" oninput="state.reqDraft=this.value" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();wsChatSend()}">${escapeHtml(state.reqDraft||'')}</textarea>
+          <button class="gen-chat-send" onclick="wsChatSend()">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  applySplit();
 }
-
-function showReg(idx){
-  const a=EVENT_ACTIVITIES[idx];
-  const b=$('mpBody');if(!b)return;
-  b.innerHTML=`<div class="mp-back-btn" onclick="showEDetail(${idx})">← 返回活动详情</div>
-    <div style="padding:12px 16px;font-size:15px;font-weight:600">${a.name} · 报名</div>
-    <div class="mp-form"><div class="mp-form-group"><label class="mp-form-label">姓名 <span class="red">*</span></label><input class="mp-form-input" placeholder="请输入姓名"></div>
-    <div class="mp-form-group"><label class="mp-form-label">手机号 <span class="red">*</span></label><input class="mp-form-input" placeholder="请输入手机号"></div>
-    <div class="mp-form-group"><label class="mp-form-label">参加人数</label><select class="mp-form-input" style="appearance:auto"><option>1人</option><option>2人</option><option>3人</option></select></div>
-    <div class="mp-form-group"><label class="mp-form-label">备注</label><input class="mp-form-input" placeholder="如有特殊需求请注明"></div></div>
-    <button class="mp-submit-btn" onclick="submitReg(${idx})">提交报名</button>`;
+function canvasViewHTML(){
+  if(state.modifying&&state.currentApp)return `<div class="app-wrap">${appInteractiveHTML()}</div><div class="mod-overlay">🔄 正在修改中</div>`;
+  if(state.stage==='generating')return genProgressHTML();
+  if(state.currentApp)return `<div class="app-wrap">${appInteractiveHTML()}</div>`;
+  return canvasEmptyHTML();
 }
-
-function submitReg(idx){
-  const a=EVENT_ACTIVITIES[idx];const b=$('mpBody');if(!b)return;
-  const code='QK-'+Math.floor(1000+Math.random()*9000);
-  b.innerHTML=`<div style="text-align:center;padding:30px 20px"><div style="font-size:48px;margin-bottom:12px">🎉</div>
-    <div style="font-size:16px;font-weight:600;margin-bottom:4px">报名成功！</div>
-    <div style="font-size:13px;color:var(--text-2);margin-bottom:20px">${a.name}</div>
-    <div class="mp-qrcode"><div class="mp-qrcode-box"><div class="qr-dot">✓</div></div>
-    <div class="mp-qrcode-tip">签到码：${code}</div>
-    <div class="mp-qrcode-sub">活动当天出示此码签到</div></div></div>`;
-  if(!MY_REGISTRATIONS.find(r=>r.name===a.name)){
-    MY_REGISTRATIONS.unshift({name:a.name,date:a.date,time:a.time,status:'已报名',code});
+function canvasEmptyHTML(){
+  return `<div class="canvas-empty"><div class="ce-ico">🪄</div><div class="ce-t">应用将在这里生成</div><div class="ce-d">请在右侧与 AI 完善需求，发送「立即生成」后开始创建应用</div></div>`;
+}
+function genProgressHTML(){
+  const i=state.genStep;
+  return `<div class="gen-progress"><div class="gp-head"><div class="loading-spinner"></div><div class="loading-main">正在生成应用：${escapeHtml(state.reqName)}</div></div>
+    <div class="gp-steps">${GEN_STEPS.map((s,j)=>`<div class="gp-step ${j<i?'done':j===i?'active':''}"><span class="gp-ico">${j<i?'✅':j===i?'⏳':'○'}</span>${s}</div>`).join('')}</div></div>`;
+}
+function appInteractiveHTML(){
+  const app=state.currentApp;
+  const pages=APP_PAGES[app.scene]||BOARD_PAGES;
+  const i=Math.min(state.appTab||0,pages.length-1);
+  if(state.platform==='pc'){
+    return `<div class="pc-shell" style="max-width:none">
+      <div class="pc-browser-bar"><span class="pc-dot" style="background:#F53F3F"></span><span class="pc-dot" style="background:#FF7D00"></span><span class="pc-dot" style="background:#00B42A"></span>
+        <span class="pc-url">https://app.hainiu.com/${app.scene} · ${escapeHtml(app.name)}</span></div>
+      <div class="pc-layout">
+        <div class="pc-sidebar"><div class="pc-sidebar-logo">${app.icon} ${escapeHtml(app.name)}</div>
+          ${pages.map((p,j)=>`<div class="pc-menu-item${j===i?' active':''}" onclick="setAppTab(${j})">${p.icon} ${p.title}</div>`).join('')}
+        </div>
+        <div class="pc-main"><div class="pc-main-title">${pages[i].icon} ${pages[i].title}</div>${pages[i].body}</div>
+      </div></div>`;
   }
+  return `<div class="phone-shell">
+    <div class="phone-top">${app.icon} ${escapeHtml(app.name)}</div>
+    <div class="phone-body">${pages[i].body}</div>
+    <div class="phone-tabbar">${pages.map((p,j)=>`<div class="phone-tab${j===i?' active':''}" onclick="setAppTab(${j})"><span class="pi">${p.icon}</span><span>${p.title}</span></div>`).join('')}</div>
+  </div>`;
+}
+function setAppTab(i){
+  state.appTab=i;
+  const el=$('wsCanvasL');
+  if(el)el.innerHTML=canvasViewHTML();
+}
+function clampSplit(p){return Math.max(40,Math.min(65,p));}
+function applySplit(){const c=$('wsCanvasL');if(c)c.style.width=state.splitPct+'%';}
+function dividerDown(e){
+  e.preventDefault();
+  const move=ev=>{const r=$('wsSplit').getBoundingClientRect();state.splitPct=clampSplit((ev.clientX-r.left)/r.width*100);applySplit();};
+  const up=()=>{document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);document.body.style.cursor='';};
+  document.addEventListener('mousemove',move);
+  document.addEventListener('mouseup',up);
+  document.body.style.cursor='col-resize';
+}
+function wsChatSend(){
+  const inp=$('wsChatInput');
+  const text=((inp&&inp.value)||'').trim();
+  if(!text)return;
+  inp.value='';state.reqDraft='';
+  state.convMsgs.push({role:'user',text});
+  if(state.convLoading){state.convMsgs.push({role:'ai',text:'收到，正在结合你的补充一起分析需求。'});renderWs();scrollConv();return;}
+  if(GEN_TRIGGER_RE.test(text)){startGeneration();return;}
+  if(state.stage==='generating'){state.convMsgs.push({role:'ai',text:'⏳ 正在生成应用，请稍候；完成后可直接继续提出修改意见。'});renderWs();scrollConv();return;}
+  if(GEN_ASK_RE.test(text)){state.convMsgs.push({role:'ai',text:'可以！当前需求说明卡已完整。确认无误请回复「立即生成」，我将开始创建应用；如需继续调整，直接告诉我即可。'});renderWs();scrollConv();return;}
+  if(state.stage==='done'){applyAppModify(text);return;}
+  applyReqSupplement(text);
+}
+function startGeneration(){
+  if(state.stage==='generating'||state.stage==='done')return;
+  state.stage='generating';state.generating=true;state.genStep=0;state.modifying=false;
+  if(state.wbReqId){state.wbStatus='developing';wbSync();}/* 已点击立即生成 → 开发中 */
+  state.convMsgs.push({role:'ai',text:'🚀 收到「立即生成」指令，开始创建应用「'+state.reqName+'」。'});
+  const rounds=state.convMsgs.filter(m=>m.role==='user').length;
+  const ctx=['首页原始需求','需求说明卡'];
+  if(rounds>1)ctx.splice(1,0,(rounds-1)+' 轮沟通补充');
+  if(state.uploadFiles.length)ctx.push(state.uploadFiles.length+' 份参考资料');
+  state.convMsgs.push({role:'ai',text:'📦 开发上下文：'+ctx.join(' + '),small:true});
+  renderWs();scrollConv();
+  let i=0;
+  state.genTimer=setInterval(()=>{
+    i++;
+    if(i<GEN_STEPS.length){state.genStep=i;state.convMsgs.push({role:'ai',text:GEN_STEPS[i],small:true});renderWs();scrollConv();}
+    else{clearInterval(state.genTimer);finishGeneration();}
+  },750);
+}
+function finishGeneration(){
+  state.generating=false;state.genStep=0;
+  const sc=(state.reqDoc&&state.reqDoc.scene)||detectScene(state.reqName);
+  state.currentApp=buildApp(sc);
+  state.stage='done';
+  state.convMsgs.push({role:'ai',text:'🎉 应用已生成完成！左侧画布可以直接点击交互查看各个页面。'});
+  state.convMsgs.push({role:'ai',text:'你可以继续用自然语言描述修改意见（例如：把标题颜色改蓝、增加筛选条件），我会同步更新应用。',small:true});
+  renderWs();scrollConv();
+}
+function buildApp(sc){
+  const tpl=SCENES[sc]||SCENES.board;
+  return {id:'APP-DEV',name:state.reqDoc?state.reqDoc.name:state.reqName,icon:tpl.icon,color:tpl.color,
+    desc:(state.reqDoc.funcs||[]).map((f,i)=>(i+1)+'. '+f).join('；'),scene:sc,date:genTime().slice(0,10),platform:state.platform};
+}
+function normalizeReqDoc(){
+  const r=state.reqDoc;if(!r)return;
+  const sec=r.sections=r.sections||{};
+  r.rules=(sec.rules||'').split('\n').filter(Boolean);
+  r.pending=(r.pending||[]).slice();
+}
+function applyAppModify(text){
+  const short=text.length>24?text.slice(0,24)+'…':text;
+  let ack;
+  if(/颜色|样式|风格|布局/.test(text))ack='好的，已按反馈调整页面样式与布局，左侧画布即为最新效果。';
+  else if(/筛选|过滤|条件/.test(text))ack='已增加数据筛选能力，可在应用内按条件过滤查看。';
+  else if(/字段/.test(text))ack='已更新数据字段配置，相关页面已同步。';
+  else if(/导出/.test(text))ack='已支持数据导出，可在应用内直接操作。';
+  else ack='好的，修改需求「'+short+'」已记录并更新到应用，左侧画布可查看最新效果；可继续提出调整意见。';
+  state.convMsgs.push({role:'ai',text:ack});
+  state.modifying=true;renderWs();scrollConv();
+  setTimeout(()=>{state.modifying=false;
+    state.convMsgs.push({role:'ai',text:'✅ 应用已按反馈更新完成。'});
+    renderWs();scrollConv();},1200);
 }
 
-function pcPreview(app){
-  return `<div class="pc-shell"><div class="pc-browser-bar"><span class="pc-dot" style="background:#F53F3F"></span><span class="pc-dot" style="background:#FF7D00"></span><span class="pc-dot" style="background:#00B42A"></span>
-    <span class="pc-url">https://app.hainiu.com/activity · 活动报名管理后台</span></div>
-    <div class="pc-layout">
-      <div class="pc-sidebar"><div class="pc-sidebar-logo">🎉 活动后台</div>
-      <div class="pc-menu-item active">🏠 活动管理</div><div class="pc-menu-item" onclick="showToast('报名列表','info')">📝 报名列表</div>
-      <div class="pc-menu-item" onclick="showToast('签到管理','info')">✅ 签到管理</div><div class="pc-menu-item" onclick="showToast('报名统计','info')">📊 报名统计</div>
-      <div class="pc-menu-item" onclick="showToast('系统设置','info')">⚙ 系统设置</div></div>
-      <div class="pc-main">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <div class="pc-main-title" style="margin-bottom:0">📊 报名统计</div>
-          <div style="display:flex;gap:8px"><button class="gen-btn" onclick="showToast('新增活动','info')">＋ 新增活动</button>
-          <button class="gen-btn primary" onclick="showToast('数据已导出','success')">📤 导出</button></div></div>
-        <div class="pc-stat-grid"><div class="pc-stat"><div class="pc-stat-label">活动总数</div><div class="pc-stat-value">12</div></div>
-        <div class="pc-stat"><div class="pc-stat-label">累计报名</div><div class="pc-stat-value">356 人</div></div>
-        <div class="pc-stat"><div class="pc-stat-label">今日新增</div><div class="pc-stat-value">28 人</div></div></div>
-        <div class="pc-main-title">📝 最新报名</div>
-        <table class="pc-table"><tr><th>报名人</th><th>活动</th><th>手机号</th><th>报名时间</th><th>状态</th><th>签到码</th></tr>
-        <tr><td>张三</td><td>城市定向跑</td><td>138****0001</td><td>2026-09-03 14:30</td><td><span class="pc-tag tag-success">已签到</span></td><td style="font-family:monospace">QK-8321</td></tr>
-        <tr><td>李四</td><td>瑜伽体验课</td><td>138****0002</td><td>2026-09-03 10:15</td><td><span class="pc-tag tag-primary">已报名</span></td><td style="font-family:monospace">QK-8322</td></tr>
-        <tr><td>王五</td><td>入职培训</td><td>138****0003</td><td>2026-09-02 16:45</td><td><span class="pc-tag tag-gray">待确认</span></td><td style="font-family:monospace">QK-8323</td></tr>
-        <tr><td>赵六</td><td>瑜伽体验课</td><td>138****0004</td><td>2026-09-02 09:00</td><td><span class="pc-tag tag-success">已签到</span></td><td style="font-family:monospace">QK-8324</td></tr></table>
-      </div></div></div>`;
-}
 
-/* ===== 对话互动 ===== */
-function chatSend(){
-  const inp=$('genChatInput');
-  if(!inp||!inp.value.trim())return;
-  const text=inp.value.trim();inp.value='';state.devDraft='';
-  state.chatMsgs.push({role:'user',text});
-  state.chatMsgs.push({role:'bot',text:'好的，修改需求已记录。我会结合《需求说明书.html》上下文更新应用；左侧「文件」可随时查看需求文档与最新代码。'});
-  renderGen();scrollChat();
-}
-
-function scrollChat(){
-  setTimeout(()=>{
-    const el=$('genChatMsgs');
-    if(el)el.scrollTop=el.scrollHeight;
-  },50);
-}
-
-/* ===== 弹窗 ===== */
 function openModal(title,body,confirmFn,hideFooter){
   $('modalTitle').textContent=title;
   $('modalBody').innerHTML=body;
@@ -1560,12 +1080,13 @@ function showToast(msg,type='info',dur=2000){
 function publishApp(){
   state.wbStatus='done';
   wbSync();
+  renderWs();/* 顶栏状态胶囊同步为「已发布」 */
   showToast('应用已发布 ✨ 工作台需求状态已更新为「已发布」','success');
 }
 
 /* ===== 海牛工作台联动入口 =====
    ?entry=new&id=xx  新建需求 → 需求输入首页（新的需求沟通会话）
-   ?entry=req&id=xx  需求详情 → 草稿=需求沟通（说明书已生成）；开发中/已发布=生成应用详情页
+   ?entry=req&id=xx  需求详情 → 所有状态（草稿/开发中/已发布）统一进需求沟通态，继续跟AI沟通
    无参数直接打开 = 原默认首页 */
 function vcEntry(){
   const qs=new URLSearchParams(location.search);
@@ -1581,34 +1102,34 @@ function vcEntry(){
 }
 function openReqFromWB(req){
   state.reqName=req.name||'未命名需求';
+  state.wbStatus=req.status||'draft';/* 状态胶囊与载入需求一致（已发布→已发布） */
   const sc=detectScene(req.name);
   const tpl=SCENES[sc];
   state.reqDoc=JSON.parse(JSON.stringify(tpl));
-  state.reqDoc.scene=sc;
-  state.reqDoc.name=state.reqName;
-  state.reqFullText=buildReqMD();
-  state.docReady=true;state.reqState='viewing';state.convLoading=false;
-  state.phase='req';state.centerView='';state.filesOpen=false;state.activeFile=null;
+  state.reqDoc.scene=sc;state.reqDoc.name=state.reqName;
+  normalizeReqDoc();
+  state.convLoading=false;state.phase='ws';state.appTab=0;
+  state.currentApp=null;state.modifying=false;state.generating=false;state.genTimer=null;
+  /* 草稿=沟通态（画布空白可续聊）；开发中/已发布=直接展示已生成应用画布 */
+  const stMsg={
+    draft:'✅ 已载入「'+state.reqName+'」的需求沟通记录与需求说明卡。可继续对话补充需求，确认后发送「立即生成」创建应用。',
+    developing:'✅ 已载入「'+state.reqName+'」的需求沟通记录，该需求已进入开发。左侧画布为已生成的应用，可继续对话沟通或直接提出修改意见。',
+    done:'✅ 已载入「'+state.reqName+'」的需求沟通记录，该需求已发布应用。左侧画布为已生成的应用，可继续对话迭代优化。'
+  };
   state.convMsgs=[
-    {role:'ai',text:'✅ 已载入「'+state.reqName+'」的需求沟通记录，《需求说明书》（MD + HTML）已生成。可继续对话补充需求，确认后点击卡片底部「立即开发」。'},
+    {role:'ai',text:stMsg[req.status]||stMsg.draft},
     {type:'reqcard'},
   ];
   if(req.status==='developing'||req.status==='done'){
-    state.phase='dev';state.centerView='canvas';state.filesOpen=false;state.activeFile=null;state.chatOpen=true;state.devDraft='';
-    const app={id:'APP-DEV',name:state.reqName,icon:tpl.icon,color:tpl.color,ver:'v1.0.0',status:'已上线',
-      desc:state.reqDoc.funcs.map((f,i)=>(i+1)+'. '+f).join('；'),scene:sc,date:genTime().slice(0,10),platform:state.platform};
-    state.currentApp=app;
-    state.devFiles=DEV_FILE_TPL.map(f=>Object.assign({},f));
-    state.chatMsgs=[
-      {role:'user',text:'需求已确认，开始开发'},
-      {role:'bot',text:'✅ 《需求说明书》（MD + HTML）已保存'},
-      {role:'bot',text:'🤖 需求上下文已传递给开发智能体：《'+state.reqName+' 需求说明书》（'+state.reqVer+'）。<span style="color:var(--primary);cursor:pointer" onclick="showReqCtx()">展开摘要</span>'},
-      {role:'bot',text:'🚀 开发完成，可继续提出修改意见或点击右上角「发布」。'},
-    ];
+    state.stage='done';
+    state.currentApp=buildApp(sc);
+  }else{
+    state.stage='chat';
+    state.reqDraft='立即生成';/* 沟通阶段预填，一键发送 */
   }
   renderApp();scrollConv();
 }
-vcEntry();
-</script>
+
+vcEntry();</script>
 </body>
 </html>
