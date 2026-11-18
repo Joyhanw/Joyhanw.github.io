@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SE考试中心</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--primary:#1a6cff;--primary-weak:#eaf1ff;--success:#00b578;--danger:#f53f3f;--warning:#ff8f1f;--bg:#f5f6f8;--card:#fff;--text:#1d2129;--text2:#4e5969;--text3:#86909c;--border:#e8e9ec;--radius:12px;--shadow:0 4px 16px rgba(0,0,0,.05)}
+html,body{height:100%}
+html{background:#e3e6ed}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto;border-left:1px solid #d6dae3;border-right:1px solid #d6dae3;box-shadow:0 0 28px rgba(15,23,42,.1)}
+.page{display:none;min-height:100vh;flex-direction:column}
+.page.active{display:flex}
+.btn{border:none;border-radius:22px;height:44px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:#fff;color:var(--primary);border:1.5px solid var(--primary)}
+.btn[disabled]{opacity:.45;cursor:default}
+/* ---------- 登录页 ---------- */
+.login-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 26px 10vh}
+.login-logo{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#1a6cff,#0d47a1);color:#fff;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.login-title{font-size:20px;font-weight:700;text-align:center;margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text3);text-align:center;margin-bottom:26px}
+.login-field{margin-bottom:14px}
+.login-field .lb{font-size:13px;color:var(--text2);margin-bottom:6px;font-weight:600}
+.login-btn{width:100%;margin-top:8px}
+.login-err{font-size:12.5px;color:var(--danger);margin:2px 0 4px;min-height:18px;text-align:center}
+.login-foot{margin-top:22px;text-align:center;font-size:11.5px;color:var(--text3)}
+/* ---------- 首页 ---------- */
+.hero{background:linear-gradient(135deg,#1a6cff,#0d47a1);color:#fff;padding:30px 20px 28px;text-align:center;border-radius:0 0 20px 20px}
+.hero h1{font-size:22px;font-weight:700;margin-bottom:12px}
+.stu-chip{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:5px 18px;font-size:13.5px}
+.list-wrap{padding:16px 16px 40px}
+.entry-card{display:flex;align-items:center;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 16px;margin-bottom:14px;cursor:pointer;transition:all .15s}
+.entry-card:active{transform:scale(.99)}
+.ec-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#fff;margin-right:13px;flex-shrink:0}
+.ec-icon.in{background:linear-gradient(135deg,#1a6cff,#0d47a1)}
+.ec-icon.ok{background:linear-gradient(135deg,#00b578,#00915f)}
+.ec-main{flex:1;min-width:0}
+.ec-title{font-size:16px;font-weight:700}
+.ec-sub{font-size:12.5px;color:var(--text3);margin-top:2px}
+.ec-count{font-size:26px;font-weight:800;color:var(--primary);margin-right:6px}
+.ec-arrow{color:var(--text3);font-size:20px;line-height:1}
+/* ---------- 顶栏 ---------- */
+.topbar{position:sticky;top:0;background:#fff;z-index:20;display:flex;align-items:center;height:50px;padding:0 10px;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+.back-btn{display:flex;align-items:center;color:var(--primary);font-size:14px;padding:8px 10px 8px 2px;cursor:pointer}
+.back-btn .arr{font-size:18px;line-height:1;margin-right:1px}
+.tb-title{position:absolute;left:50%;transform:translateX(-50%);font-size:16px;font-weight:700;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ---------- 状态标签 ---------- */
+.tag{display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;flex-shrink:0}
+.tg-blue{background:var(--primary-weak);color:var(--primary)}
+.tg-gray{background:#f0f1f4;color:var(--text3)}
+.tg-green{background:#e8f7f0;color:#0a9f6b}
+.tg-red{background:#fdeaea;color:#d12b2b}
+.tg-orange{background:#fdf0e3;color:#d97a12}
+/* ---------- 考试卡片 ---------- */
+.exam-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px}
+.exam-card.clickable{cursor:pointer}
+.exam-card.clickable:active{transform:scale(.995)}
+.ex-row1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ex-name{font-size:15.5px;font-weight:700;flex:1;line-height:1.45}
+.ex-time{display:flex;align-items:center;font-size:12.5px;color:var(--text3);margin-top:7px}
+.ex-time .ic{margin-right:4px}
+.ex-meta{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:11px;border-top:1px solid var(--border)}
+.ex-try{font-size:13px;color:var(--text2)}
+.ex-try b{color:var(--text);font-weight:700}
+.ex-btns{display:flex;gap:10px}
+.ex-btns .btn{height:36px;padding:0 18px;font-size:13.5px;border-radius:18px}
+.ex-score{text-align:right}
+.ex-score .v{font-size:21px;font-weight:800;color:var(--primary);line-height:1.2}
+.ex-score .v.wait{font-size:15px;color:var(--warning);font-weight:600}
+.ex-score .l{font-size:11px;color:var(--text3);margin-top:1px}
+.ex-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.ex-detail-link{font-size:13px;color:var(--primary);font-weight:600}
+.empty-tip{padding:60px 0;text-align:center;font-size:13.5px;color:var(--text3)}
+/* ---------- 查询区 ---------- */
+.query-wrap{padding:12px 16px 0}
+.query-bar{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 14px}
+.q-input{width:100%;height:38px;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;font-size:14px;background:#fafbfc;outline:none;color:var(--text);-webkit-appearance:none;appearance:none}
+.q-input:focus{border-color:var(--primary);background:#fff}
+.q-row{display:flex;gap:10px;margin-top:10px}
+.q-row .grow2{flex:1.6}
+.q-row .grow1{flex:1}
+.q-btn{height:38px;font-size:14px;border-radius:10px;padding:0 14px;flex:1}
+/* ---------- 信息格 ---------- */
+.info-grid{display:flex;flex-wrap:wrap;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.info-grid .item{width:50%;padding:12px 14px;border-bottom:1px solid var(--border)}
+.info-grid .item:nth-child(odd){border-right:1px solid var(--border)}
+.info-grid .item:nth-last-child(-n+2){border-bottom:none}
+.info-grid .item .label{font-size:12px;color:var(--text3);margin-bottom:4px}
+.info-grid .item .value{font-size:15px;font-weight:600}
+.info-grid .item.full{width:100%;border-right:none}
+.sec-title{font-size:13px;color:var(--text3);margin:18px 0 10px;padding-left:8px;border-left:3px solid var(--primary)}
+/* ---------- 计划详情 ---------- */
+.sum-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 16px 18px;text-align:center;margin-bottom:14px}
+.sum-score{font-size:38px;font-weight:800;color:var(--primary);line-height:1.15}
+.sum-score.wait{font-size:22px;color:var(--warning)}
+.sum-score-label{font-size:12px;color:var(--text3);margin:3px 0 12px}
+.badge-lg{display:inline-block;padding:5px 22px;border-radius:20px;font-size:14px;font-weight:700}
+.badge-lg.tg-green{border:1px solid #bde9d6}
+.badge-lg.tg-red{border:1px solid #f5c4c4}
+.badge-lg.tg-orange{border:1px solid #f2d3a8}
+.att-row{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:13px 16px;margin-bottom:10px;cursor:pointer}
+.att-row:active{transform:scale(.995)}
+.att-r1{display:flex;justify-content:space-between;align-items:center}
+.att-n{font-size:14.5px;font-weight:700}
+.att-r2{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.att-score{font-size:17px;font-weight:800;color:var(--text)}
+.att-score.wait{font-size:13px;color:var(--warning);font-weight:600}
+.att-date{font-size:12.5px;color:var(--text3)}
+.att-link{font-size:12.5px;color:var(--primary);font-weight:600;margin-top:8px}
+/* ---------- 答题明细 ---------- */
+.q-type{display:inline-block;font-size:12px;padding:2px 8px;border-radius:4px;margin-right:8px;vertical-align:2px}
+.q-type.judge{background:#e8f7f0;color:#0a9f6b}
+.q-type.single{background:var(--primary-weak);color:var(--primary)}
+.q-type.multi{background:#fdf0e3;color:#d97a12}
+.q-type.fill{background:#eef0fb;color:#5b5bd6}
+.q-type.essay{background:#f6ecff;color:#9854e0}
+.aq-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px}
+.aq-head{font-size:14.5px;font-weight:600;line-height:1.6;margin-bottom:10px}
+.aq-head .no{color:var(--text3);font-weight:700;margin-right:2px}
+.aq-row{font-size:13.5px;margin-top:8px;line-height:1.7}
+.aq-row .lb{color:var(--text3);font-size:12.5px;margin-right:8px;flex-shrink:0}
+.aq-row .val{background:var(--bg);border-radius:6px;padding:5px 10px;display:inline-block}
+.aq-row .val.good{background:#f0faf5;border:1px solid #bde9d6}
+.aq-row .val.zero{background:#fdf2f2;border:1px dashed #f5c4c4}
+.aq-row .val.waitv{background:#fffaf2;border:1px dashed #f2d3a8;color:var(--warning)}
+.aq-flex{display:flex;align-items:flex-start}
+</style>
+</head>
+<body>
+
+<!-- ============ 页面0 登录页 ============ -->
+<div class="page" id="page-login">
+  <div class="login-body">
+    <div class="login-logo">SE</div>
+    <div class="login-title">SE考试中心</div>
+    <div class="login-sub">请输入身份信息进入考试中心</div>
+    <div class="login-field">
+      <div class="lb">姓名</div>
+      <input class="q-input" id="login-name" placeholder="请输入姓名" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <div class="lb">唯一码/担当号</div>
+      <input class="q-input" id="login-code" placeholder="请输入唯一码/担当号" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-err" id="login-err"></div>
+    <button class="btn btn-primary login-btn" onclick="doLogin()">进入考试中心</button>
+    <div class="login-foot">演示环境：任意姓名与唯一码/担当号即可进入</div>
+  </div>
+</div>
+
+<!-- ============ 页面1 已完成考试（登录后直达） ============ -->
+<div class="page" id="page-done">
+  <div class="hero" style="padding:22px 20px 24px;position:relative">
+    <div class="back-btn" style="position:absolute;top:14px;right:14px;color:#fff;opacity:.85" onclick="doLogout()">退出登录</div>
+    <h1 style="font-size:20px;margin-bottom:10px">SE考试中心</h1>
+    <div class="stu-chip" id="stu-chip"></div>
+  </div>
+  <div class="query-wrap">
+    <div class="query-bar">
+      <input class="q-input" id="q-name" placeholder="考试名称" autocomplete="off">
+      <div class="q-row">
+        <input class="q-input grow1" type="date" id="q-start">
+        <input class="q-input grow1" type="date" id="q-end">
+      </div>
+      <div class="q-row">
+        <select class="q-input grow2" id="q-status">
+          <option value="">全部状态</option>
+          <option value="pass">已通过</option>
+          <option value="fail">未通过</option>
+          <option value="grading">阅卷中</option>
+        </select>
+        <button class="btn btn-primary q-btn grow1" onclick="renderDoneList()">查询</button>
+        <button class="btn btn-outline q-btn grow1" onclick="resetQuery()">重置</button>
+      </div>
+    </div>
+  </div>
+  <div class="list-wrap" id="done-list"></div>
+</div>
+
+<!-- ============ 页面4 考试计划成绩详情 ============ -->
+<div class="page" id="page-plan">
+  <div class="topbar">
+    <div class="back-btn" onclick="backToDone()"><span class="arr">&#8249;</span>返回</div>
+    <div class="tb-title" id="plan-title"></div>
+  </div>
+  <div class="list-wrap" id="plan-body"></div>
+</div>
+
+<!-- ============ 页面5 单次考试详情 ============ -->
+<div class="page" id="page-attempt">
+  <div class="topbar">
+    <div class="back-btn" onclick="backToPlan()"><span class="arr">&#8249;</span>返回</div>
+    <div class="tb-title">考试详情</div>
+  </div>
+  <div class="list-wrap" id="attempt-body"></div>
+</div>
+<script>
+/* ================= 数据 ================= */
+var STUDENT = { name:'唯安', org:'杭州协力店A' };
+
+var PLAN_LIST = [
+  {
+    id:'plan-se-basic', name:'SE基础能力认证考试', passLine:60,
+    start:'2026-11-16 09:00', end:'2026-11-18 18:00', dur:60, maxTry:3,
+    questions:[
+      {type:'single', score:10, stem:'制冷剂R22属于以下哪类制冷剂？', opts:['HFCs类','HCFCs类','CFCs类','自然工质类'], answer:'B', ref:'HCFCs类。R22含有氯原子，对臭氧层有破坏作用，属HCFCs类，正逐步被淘汰。'},
+      {type:'judge', score:10, stem:'空调室外机安装高度距地面超过2.5米时，应设置防护栏。', answer:'正确', ref:'安装高度超过2.5米需设置防护栏，符合高处作业安全规范。'},
+      {type:'single', score:10, stem:'中央空调水系统中，冷冻水供回水温差一般设计为多少？', opts:['3℃','5℃','7℃','10℃'], answer:'B', ref:'冷冻水供回水温差通常按5℃设计，是能效与舒适性的平衡点。'},
+      {type:'multi', score:15, stem:'以下属于空调系统节能措施的有？（多选）', opts:['变频调速','热回收','提高送风温度','合理分区'], answer:['A','B','D'], ref:'提高送风温度会降低舒适性，不属于节能措施；变频调速、热回收、合理分区均为有效节能手段。'},
+      {type:'multi', score:15, stem:'空调水系统中，常用的水泵配置方式有哪些？（多选）', opts:['定频泵','变频泵','一用一备','串联运行'], answer:['A','B','C'], ref:'串联运行一般用于特殊高扬程场景，不是常用配置。'},
+      {type:'fill', score:20, stem:'空调能效比EER的英文全称是____。', answer:'Energy Efficiency Ratio', ref:'EER = Energy Efficiency Ratio（能源效率比）。'},
+      {type:'essay', score:20, stem:'请简述空调系统安装完成后需要进行哪些调试工作。', ref:'包括冷媒压力测试、真空干燥、追加制冷剂、开机运行测试、参数设定与调整、系统平衡调试等。'}
+    ],
+    attempts:[
+      {n:1, date:'2026-11-16', time:'2026-11-16 10:23', dur:'38分钟', score:52, pass:false,
+       answers:['A','正确','C',['A','B','D'],['A','B'],'Energy Efficient Ratio','安装完成后需进行真空干燥、追加冷媒、开机试运行等调试工作。'],
+       got:[0,10,0,15,0,0,17]}
+    ]
+  },
+  {
+    id:'plan-hvac', name:'空调专业理论考试', passLine:60,
+    start:'2026-11-19 09:00', end:'2026-11-19 18:00', dur:45, maxTry:2,
+    questions:[], attempts:[]
+  },
+  {
+    id:'plan-service', name:'售后服务规范认证考试', passLine:60,
+    start:'2026-10-10 09:00', end:'2026-10-25 18:00', dur:60, maxTry:3,
+    questions:[
+      {type:'single', score:10, stem:'在大金维修资料中，Te代表什么温度？', opts:['蒸发温度','冷凝温度','外气温度','过冷度'], answer:'A', ref:'Te=蒸发温度，Tc=冷凝温度，Ta=外气温度。'},
+      {type:'judge', score:10, stem:'多联机系统制冷剂管路等效长度超过上限后，机组能力会衰减。', answer:'正确', ref:'管路超长导致冷媒回油与能力衰减，需按上限要求设计管路。'},
+      {type:'single', score:10, stem:'焊接作业结束后，关闭气瓶的标准顺序首先是？', opts:['关闭瓶阀','关闭焊枪阀','打开焊枪阀放气','关闭减压阀'], answer:'A', ref:'焊接结束后应先关闭瓶阀，再关闭减压阀，最后打开焊枪阀放气。'},
+      {type:'multi', score:15, stem:'以下关于售后服务规范的说法正确的有？（多选）', opts:['上门前需联系客户确认时间','作业完成后需清理现场','维修旧件无需告知客户','需向客户讲解操作方法'], answer:['A','B','D'], ref:'维修换下的旧件应告知客户并按规范处理，C错误；其余均为服务规范要求。'},
+      {type:'multi', score:15, stem:'服务工单完工时需上传哪些资料？（多选）', opts:['作业照片','维修单据','客户签名确认','施工图纸'], answer:['A','B','C'], ref:'完工需上传作业照片、维修单据及客户签名确认，施工图纸不属于完工资料。'},
+      {type:'essay', score:20, stem:'请简述接到用户报修后的标准处理流程。', ref:'受理登记→联系客户预约→上门检测→报价确认→维修作业→完工验证→清理现场→工单归档。'},
+      {type:'fill', score:20, stem:'售后服务的时效标准：接单后应在____小时内联系客户。', answer:'2', ref:'接单后2小时内联系客户，预约上门时间。'}
+    ],
+    attempts:[
+      {n:1, date:'2026-10-10', time:'2026-10-10 09:40', dur:'40分钟', score:52, pass:false,
+       answers:['A','错误','A',['A','D'],['A','B','C'],'接单后联系客户预约上门，完成维修后提交工单。','12'],
+       got:[10,0,10,0,15,17,0]},
+
+      {n:2, date:'2026-10-18', time:'2026-10-18 14:41', dur:'41分钟', score:58, pass:false,
+       answers:['A','正确','C',['A','B','D'],['A','B','C'],'接到报修后应及时联系客户并安排上门服务。','24'],
+       got:[10,10,0,15,15,8,0]},
+
+      {n:3, date:'2026-10-25', time:'2026-10-25 15:45', dur:'45分钟', score:82, pass:true,
+       answers:['A','正确','A',['A','B','D'],['A','B','D'],'受理登记后联系客户预约上门，检测确认故障后报价，客户确认后维修，完工验证并清理现场，最后工单归档。','2'],
+       got:[10,10,10,15,0,17,20]},
+
+    ]
+  },
+  {
+    id:'plan-install', name:'家用空调安装理论考试', passLine:60, grading:true,
+    start:'2026-11-10 09:00', end:'2026-11-20 18:00', dur:45, maxTry:1,
+    questions:[
+      {type:'single', score:10, stem:'分体式空调安装后，首次运行前必须进行的工序是？', opts:['抽真空','直接开机','补充氮气','清洗滤网'], answer:'A', ref:'安装后必须抽真空排除管路空气与水分，方可开机运行。'},
+      {type:'judge', score:10, stem:'空调安装作业时，只要系好安全带就可以不设地面监护人员。', answer:'错误', ref:'高处作业除系安全带外，必须设置地面监护人员配合作业。'},
+      {type:'single', score:10, stem:'R410A制冷剂追加时应采用什么方式充注？', opts:['液态充注','气态充注','任意方式','无需追加'], answer:'A', ref:'R410A为近共沸混合制冷剂，应以液态方式充注，保证成分比例一致。'},
+      {type:'multi', score:20, stem:'空调安装完成后需检查确认的项目有？（多选）', opts:['排水试验','接口检漏','电源电压','噪音与振动'], answer:['A','B','C','D'], ref:'排水、检漏、电压、噪音振动均为安装完工后必须检查确认的项目。'},
+      {type:'essay', score:25, stem:'请简述分体式空调安装的完整作业流程。', ref:'安装位置确认→室内外机固定→管路连接→排水试验→抽真空→冷媒追加→电气接线→试运行确认。'},
+      {type:'essay', score:25, stem:'请说明空调移机作业的注意事项。', ref:'移机前需回收制冷剂，拆卸时保护管路接口，重新安装后需抽真空、检漏并补充冷媒，确认运行参数正常。'}
+    ],
+    attempts:[
+      {n:1, date:'2026-11-10', time:'2026-11-10 16:44', dur:'44分钟', score:null, pass:null,
+       answers:['A','错误','B',['A','B','C','D'],'分体式空调安装需经安装定位、管路连接、抽真空、冷媒追加、试运行等步骤。','移机需回收冷媒、拆卸并重新安装，注意防止冷媒泄漏和管路损伤。'],
+       got:[10,10,0,20,null,null]}
+    ]
+  }
+];
+
+var TYPE_MAP = {judge:'判断题', single:'单选题', multi:'多选题', fill:'填空题', essay:'简答题'};
+var LETTERS = ['A','B','C','D','E','F'];
+
+/* ================= 基础工具 ================= */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function pad(n){ return n<10?'0'+n:''+n; }
+function parseTime(str){
+  var p = str.replace(/-/g,' ').replace(/:/g,' ').split(/\s+/);
+  return new Date(+p[0], +p[1]-1, +p[2], +p[3], +p[4]).getTime();
+}
+function fmtRange(s, e){
+  var sd = s.slice(0,10), ed = e.slice(0,10);
+  if(sd === ed) return sd + ' ' + s.slice(11,16) + '—' + e.slice(11,16);
+  return sd + ' 至 ' + ed;
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  $(id).classList.add('active');
+}
+var scrollMem = {};
+function saveScroll(k){ scrollMem[k] = window.scrollY; }
+
+/* ================= 状态计算 ================= */
+function planStatus(p){
+  if(p.attempts.length >= p.maxTry) return 'maxed';
+  var now = Date.now();
+  if(now < parseTime(p.start)) return 'pending';
+  if(now <= parseTime(p.end)) return 'ongoing';
+  return 'finished';
+}
+function refsOpen(p){ return Date.now() > parseTime(p.end); }
+function planFinal(p){
+  if(p.attempts.length === 0) return null;
+  return p.attempts.reduce(function(m, a){ return a.n > m.n ? a : m; });
+}
+function donePlans(){
+  return PLAN_LIST.filter(function(p){ return p.attempts.length > 0; })
+    .sort(function(a, b){ return planFinal(b).date < planFinal(a).date ? -1 : 1; });
+}
+function planResult(p){
+  if(p.grading) return 'grading';
+  return planFinal(p).pass ? 'pass' : 'fail';
+}
+
+/* ================= 登录 / 退出 ================= */
+function renderChip(){
+  $('stu-chip').textContent = STUDENT.name + ' · ' + STUDENT.org;
+}
+function doLogin(){
+  var name = $('login-name').value.trim();
+  var code = $('login-code').value.trim();
+  var err = $('login-err');
+  if(!name && !code){ err.textContent = '请输入姓名和唯一码/担当号'; return; }
+  if(!name){ err.textContent = '请输入姓名'; return; }
+  if(!code){ err.textContent = '请输入唯一码/担当号'; return; }
+  err.textContent = '';
+  STUDENT.name = name;
+  STUDENT.code = code;
+  renderChip();
+  renderDoneList();
+  showPage('page-done');
+  window.scrollTo(0,0);
+}
+function doLogout(){
+  $('login-name').value = '';
+  $('login-code').value = '';
+  $('login-err').textContent = '';
+  showPage('page-login');
+  window.scrollTo(0,0);
+}
+
+/* ================= 页面3 已完成 ================= */
+function renderDoneList(){
+  var wrap = $('done-list');
+  var kw = $('q-name').value.trim();
+  var ds = $('q-start').value, de = $('q-end').value;
+  var st = $('q-status').value;
+  var list = donePlans().filter(function(p){
+    if(kw && p.name.indexOf(kw) < 0) return false;
+    if(ds && p.start.slice(0,10) < ds) return false;
+    if(de && p.end.slice(0,10) > de) return false;
+    if(st && planResult(p) !== st) return false;
+    return true;
+  });
+  if(list.length === 0){ wrap.innerHTML = '<div class="empty-tip">暂无考试记录</div>'; return; }
+  wrap.innerHTML = list.map(function(p, i){
+    var res = planResult(p);
+    var tag = res === 'grading' ? '<span class="tag tg-orange">阅卷中</span>'
+      : res === 'pass' ? '<span class="tag tg-green">已通过</span>' : '<span class="tag tg-red">未通过</span>';
+    var score = res === 'grading'
+      ? '<div class="v wait">待发布</div>'
+      : '<div class="v">' + planFinal(p).score + '分</div>';
+    var idx = PLAN_LIST.indexOf(p);
+    return '<div class="exam-card clickable" onclick="openPlan(' + idx + ')">' +
+      '<div class="ex-row1"><div class="ex-name">' + esc(p.name) + '</div>' + tag + '</div>' +
+      '<div class="ex-time"><span class="ic">&#9201;</span>完成时间：' + planFinal(p).time + '</div>' +
+      '<div class="ex-bottom"><span class="ex-try">考试次数 <b>' + p.attempts.length + '</b> 次</span>' +
+      '<div class="ex-score">' + score + '<div class="l">最终成绩</div></div></div>' +
+      '<div class="ex-detail-link">查看详情 &#8250;</div>' +
+      '</div>';
+  }).join('');
+}
+function resetQuery(){
+  $('q-name').value = ''; $('q-start').value = ''; $('q-end').value = ''; $('q-status').value = '';
+  renderDoneList();
+}
+
+/* ================= 页面4 计划成绩详情 ================= */
+function openPlan(idx){
+  curPlan = PLAN_LIST[idx];
+  saveScroll('page-done');
+  renderPlan();
+  showPage('page-plan');
+  window.scrollTo(0,0);
+}
+function backToDone(){
+  renderDoneList();
+  showPage('page-done');
+  window.scrollTo(0, scrollMem['page-done'] || 0);
+}
+function renderPlan(){
+  var p = curPlan;
+  $('plan-title').textContent = p.name;
+  var res = planResult(p);
+  var badge = res === 'grading' ? '<span class="badge-lg tg-orange">阅卷中</span>'
+    : res === 'pass' ? '<span class="badge-lg tg-green">通过</span>' : '<span class="badge-lg tg-red">未通过</span>';
+  var scoreHtml = res === 'grading'
+    ? '<div class="sum-score wait">待发布</div>'
+    : '<div class="sum-score">' + planFinal(p).score + '<span style="font-size:16px;font-weight:600">分</span></div>';
+  var attempts = p.attempts.slice().sort(function(a,b){ return b.n - a.n; });
+  var h = '<div class="sum-card">' + scoreHtml +
+    '<div class="sum-score-label">最终成绩</div>' + badge + '</div>' +
+    '<div class="info-grid">' +
+    '<div class="item"><div class="label">最终总用时</div><div class="value">' + (res === 'grading' ? '—' : planFinal(p).dur) + '</div></div>' +
+    '<div class="item"><div class="label">考试次数</div><div class="value">' + p.attempts.length + '次</div></div>' +
+    '<div class="item"><div class="label">阅卷状态</div><div class="value">' + (p.grading ? '阅卷中' : '已完成') + '</div></div>' +
+    '<div class="item"><div class="label">及格线</div><div class="value">' + p.passLine + '分</div></div>' +
+    '</div>' +
+    '<div class="sec-title">考试记录</div>';
+  h += attempts.map(function(a){
+    var atag = p.grading ? '<span class="tag tg-orange">阅卷中</span>'
+      : a.pass ? '<span class="tag tg-green">通过</span>' : '<span class="tag tg-red">未通过</span>';
+    var asc = p.grading ? '<span class="att-score wait">成绩待发布</span>' : '<span class="att-score">' + a.score + '分</span>';
+    return '<div class="att-row" onclick="openAttempt(' + a.n + ')">' +
+      '<div class="att-r1"><span class="att-n">第' + a.n + '次考试</span>' + atag + '</div>' +
+      '<div class="att-r2">' + asc + '<span class="att-date">' + a.time + '</span></div>' +
+      '<div class="att-link">查看本次考试详情 &#8250;</div>' +
+      '</div>';
+  }).join('');
+  $('plan-body').innerHTML = h;
+}
+
+/* ================= 页面5 单次考试详情 ================= */
+function openAttempt(n){
+  curAttempt = curPlan.attempts.filter(function(a){ return a.n === n; })[0];
+  saveScroll('page-plan');
+  renderAttempt();
+  showPage('page-attempt');
+  window.scrollTo(0,0);
+}
+function backToPlan(){
+  renderPlan();
+  showPage('page-plan');
+  window.scrollTo(0, scrollMem['page-plan'] || 0);
+}
+function ansText(q, val){
+  if(val === undefined || val === null || val === '') return '未作答';
+  if(q.type === 'multi'){
+    return val.map(function(v){
+      var i = LETTERS.indexOf(v);
+      return v + '. ' + (i >= 0 ? q.opts[i] : '');
+    }).join('、');
+  }
+  if(q.type === 'judge') return String(val);
+  if(q.type === 'single'){
+    var i = LETTERS.indexOf(String(val));
+    return String(val) + '. ' + (i >= 0 ? q.opts[i] : '');
+  }
+  return String(val);
+}
+function refText(q){
+  if(q.type === 'multi'){
+    return q.answer.map(function(v){
+      var i = LETTERS.indexOf(v);
+      return v + '. ' + (i >= 0 ? q.opts[i] : '');
+    }).join('、');
+  }
+  if(q.type === 'single'){
+    var i = LETTERS.indexOf(String(q.answer));
+    return String(q.answer) + '. ' + (i >= 0 ? q.opts[i] : '');
+  }
+  return String(q.answer);
+}
+function renderAttempt(){
+  var p = curPlan, a = curAttempt;
+  var res = p.grading ? 'grading' : (a.pass ? 'pass' : 'fail');
+  var resTag = res === 'grading' ? '<span class="tag tg-orange">阅卷中</span>'
+    : res === 'pass' ? '<span class="tag tg-green">通过</span>' : '<span class="tag tg-red">未通过</span>';
+  var h = '<div class="info-grid">' +
+    '<div class="item full"><div class="label">考试名称</div><div class="value">' + esc(p.name) + '</div></div>' +
+    '<div class="item"><div class="label">本次考试时间</div><div class="value">' + a.date + '</div></div>' +
+    '<div class="item"><div class="label">本次考试用时</div><div class="value">' + a.dur + '</div></div>' +
+    '<div class="item"><div class="label">本次成绩</div><div class="value">' + (p.grading ? '待发布' : a.score + '分') + '</div></div>' +
+    '<div class="item"><div class="label">及格线</div><div class="value">' + p.passLine + '分</div></div>' +
+    '<div class="item full" style="display:flex;justify-content:space-between;align-items:center"><div class="label" style="margin:0">考试结果</div>' + resTag + '</div>' +
+    '</div>' +
+    '<div class="sec-title">答题明细</div>';
+  var open = refsOpen(p);
+  p.questions.forEach(function(q, i){
+    var got = a.got[i];
+    var scoreVal = got === null || got === undefined
+      ? '<span class="val waitv">待阅卷</span>'
+      : '<span class="val ' + (got >= q.score ? 'good' : (got > 0 ? '' : 'zero')) + '">' + got + '/' + q.score + '分</span>';
+    var refVal = open
+      ? '<span class="val">' + esc(refText(q)) + '</span>'
+      : '<span style="font-size:12.5px;color:var(--text3)">考试结束后统一开放</span>';
+    h += '<div class="aq-card">' +
+      '<div class="aq-head"><span class="no">' + (i+1) + '.</span><span class="q-type ' + q.type + '">' + TYPE_MAP[q.type] + '</span>' + esc(q.stem) + '</div>' +
+      '<div class="aq-row aq-flex"><span class="lb">我的答案</span><span class="val ' + (got !== null && got !== undefined && got > 0 ? 'good' : (got === 0 ? 'zero' : '')) + '">' + esc(ansText(q, a.answers[i])) + '</span></div>' +
+      '<div class="aq-row aq-flex"><span class="lb">本题得分</span>' + scoreVal + '</div>' +
+      '<div class="aq-row aq-flex"><span class="lb">参考答案</span>' + refVal + '</div>' +
+      '</div>';
+  });
+  $('attempt-body').innerHTML = h;
+}
+
+/* ================= 初始化 ================= */
+(function init(){
+  showPage('page-login');
+})();
+</script>
+</body>
+</html>
