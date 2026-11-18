@@ -65,6 +65,15 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .c1{background:var(--c1)}.c2{background:var(--c2)}.c3{background:var(--c3)}.c4{background:var(--c4)}.c5{background:var(--c5)}.c6{background:var(--c6)}.c7{background:var(--c7)}
 
+/* 重点能力标签：填充色突出 */
+.chip.hl{font-weight:700}
+.chip.hl1{background:#fdf1e0;border-color:#d97706;color:#a15c07}
+.chip.hl2{background:#e3f5f9;border-color:#0891b2;color:#0d7286}
+.chip.hl3{background:#f1ebfd;border-color:#7c3aed;color:#5d2ec9}
+.chip.hl4{background:#e9f6ee;border-color:#16a34a;color:#107d3c}
+.chip.hl5{background:#fdecec;border-color:#dc2626;color:#ab2020}
+.chip.hl:hover{filter:brightness(.97)}
+
 /* 图例 */
 .legend{display:flex;justify-content:center;gap:12px;margin:10px 0 14px;flex-wrap:wrap}
 .lg{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 12px}
@@ -901,6 +910,9 @@ function openCap(id){
 }
 function closeCap(){drawer.classList.remove("on");mask.classList.remove("on");drawer.setAttribute("aria-hidden","true");document.body.style.overflow="";}
 window.closeCap=closeCap;
+/* 重点能力标签填充：准入材料审核 / 材料核验·合同核验 / 产品经营分析·客群分层分析 / 经营报告·汇报材料生成 / 智能质检·规则合规检查 */
+const HLMAP={zscl:"hl1",clhy:"hl2",hthy:"hl2",cpjy:"hl3",kqfc:"hl3",jybg:"hl4",hbcl:"hl4",znzj:"hl5",gzhg:"hl5"};
+document.querySelectorAll(".chip[data-cap]").forEach(ch=>{const h=HLMAP[ch.dataset.cap];if(h)ch.classList.add("hl",h)});
 document.addEventListener("click",e=>{const t=e.target.closest("[data-cap]");if(t)openCap(t.dataset.cap)});
 mask.addEventListener("click",closeCap);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCap()});
