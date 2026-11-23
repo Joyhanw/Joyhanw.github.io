@@ -5989,7 +5989,7 @@ function kpiDrawerBody(r, idx) {
       ${statMini('三天完成率', f.three + '%')}
     </div>
     <table class="tbl">
-      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th><th>操作</th></tr>
+      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th>${APP.view === 'pb_members' ? '' : '<th>操作</th>'}</tr>
       ${orders.length ? orders.map(({ o, i }) => `<tr>
         <td class="mono">${o.no}</td>
         <td>${o.recvDate}</td>
@@ -6000,8 +6000,8 @@ function kpiDrawerBody(r, idx) {
         <td>${kpiYesNo(o.nextDay)}</td>
         <td>${kpiYesNo(o.oneTime)}</td>
         <td>${kpiYesNo(o.threeDay)}</td>
-        <td><button class="btn btn-sm btn-danger" data-act="kpi-del-order" data-pidx="${idx}" data-oidx="${i}"><i class="ri-delete-bin-line"></i>删除</button></td>
-      </tr>`).join('') : '<tr><td colspan="10"><div class="empty"><i class="ri-inbox-line"></i>暂无工单明细</div></td></tr>'}
+        ${APP.view === 'pb_members' ? '' : `<td><button class="btn btn-sm btn-danger" data-act="kpi-del-order" data-pidx="${idx}" data-oidx="${i}"><i class="ri-delete-bin-line"></i>删除</button></td>`}
+      </tr>`).join('') : `<tr><td colspan="${APP.view === 'pb_members' ? 9 : 10}"><div class="empty"><i class="ri-inbox-line"></i>暂无工单明细</div></td></tr>`}
     </table>
   `;
 }
@@ -6378,7 +6378,7 @@ function vPbMembers(el) {
   </div>
   <div class="card mt16" style="overflow-x:auto">
     <table class="tbl">
-      <tr><th style="width:70px">排名</th><th>人员姓名</th><th>工号</th><th>岗位</th><th>所属组织</th><th>年度</th><th class="right">KPI得分</th><th class="right">当日出动率</th><th class="right">次日上门率${kpiInfoIcon('实际首次上门日 - 受理日期 ≤ 1')}</th><th class="right">一次完成率${kpiInfoIcon('实际首日上门日 = 完工日\n一次完成率 = 一次完成作业单 / SE总单')}</th><th class="right">三日内完成率${kpiInfoIcon('完工日 - 实际首日上门日 ≤ 2\n三日内完成率 = 三天内完成作业单 / 总单')}</th><th>操作</th></tr>
+      <tr><th style="width:70px">排名</th><th>人员姓名</th><th>工号</th><th>岗位</th><th>所属组织</th><th>年度</th><th class="right">KPI得分</th><th class="right">当日出动率</th><th class="right">次日上门率${kpiInfoIcon('实际首次上门日 - 受理日期 ≤ 1')}</th><th class="right">一次完成率${kpiInfoIcon('实际首日上门日 = 完工日\n一次完成率 = 一次完成作业单 / SE总单')}</th><th class="right">三日内完成率${kpiInfoIcon('完工日 - 实际首日上门日 ≤ 2\n三日内完成率 = 三天内完成作业单 / 总单')}</th></tr>
       ${rows.length ? rows.map((r, i) => `<tr>
         <td class="fw600">${r.rank}</td>
         <td class="fw600"><a href="javascript:;" data-act="pb-view" data-idx="${i}" style="color:var(--e600);text-decoration:none">${pbOuterBadge()}${esc(r.name)}</a></td>
@@ -6391,11 +6391,8 @@ function vPbMembers(el) {
         <td class="right num">${(r.nextDayRate * 100).toFixed(0)}%</td>
         <td class="right num">${(r.oneTimeRate * 100).toFixed(0)}%</td>
         <td class="right num">${(r.threeDayRate * 100).toFixed(0)}%</td>
-        <td style="white-space:nowrap">
-          <button class="btn btn-sm" data-act="pb-view" data-idx="${i}"><i class="ri-eye-line"></i>查看</button>
-          <button class="btn btn-sm btn-danger" data-act="kpi-del" data-idx="${i}"><i class="ri-delete-bin-line"></i>删除</button>
-        </td></tr>`).join('')
-      : '<tr><td colspan="12"><div class="empty"><i class="ri-inbox-line"></i>无符合条件的记录</div></td></tr>'}
+        </tr>`).join('')
+      : '<tr><td colspan="11"><div class="empty"><i class="ri-inbox-line"></i>无符合条件的记录</div></td></tr>'}
     </table>
   </div>`;
 }
