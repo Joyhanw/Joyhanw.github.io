@@ -77,6 +77,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .fill-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;outline:none;background:#fafbfc;transition:border .15s}
 .fill-input:focus{border-color:var(--primary);background:#fff}
 .fill-input[readonly]{background:#f0f1f4;color:var(--text2)}
+.fill-chip{display:inline-block;background:#eef4ff;color:#2b6de8;border:1px solid #c6d9ff;border-radius:5px;padding:0 6px;font-size:12px;font-weight:700;margin:0 2px;vertical-align:middle;user-select:none}
+.fill-lead-h5{font-size:14px;color:var(--text2);margin-top:10px;display:flex;align-items:flex-start;gap:2px;line-height:1.6}
+.fill-lead-h5 .fill-chip{flex:none;margin-top:2px}
+.fill-area-h5{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
+.fill-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.fill-row .fill-num{flex:none;font-size:12px;font-weight:700;color:#2b6de8;white-space:nowrap}
+.fill-row .fill-input{flex:1;margin-top:0}
+.q-img-h5{display:block;max-width:100%;border:1px solid var(--border);border-radius:10px;margin-top:12px}
+.q-sub-h5{padding-top:12px;margin-top:12px}
+.q-sub-h5+.q-sub-h5{border-top:1px dashed var(--border)}
+.q-sub-title-h5{font-size:14.5px;font-weight:700;color:var(--text)}
 .essay-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;outline:none;background:#fafbfc;min-height:160px;resize:vertical;font-family:inherit;transition:border .15s}
 .essay-textarea:focus{border-color:var(--primary);background:#fff}
 .essay-textarea[readonly]{background:#f0f1f4;color:var(--text2)}
@@ -199,13 +210,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .org-search{padding:12px 16px;border-bottom:1px solid var(--border)}
 .org-search input{width:100%;height:38px;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;font-size:14px;outline:none;background:var(--bg)}
 .org-search input:focus{border-color:var(--primary);background:#fff}
-.org-list{overflow-y:auto;padding:8px 12px calc(16px + env(safe-area-inset-bottom))}
+.org-list{overflow-y:auto;padding:8px 12px}
 .org-row{padding:12px;border-radius:10px;cursor:pointer;transition:background .15s}
 .org-row:active{background:var(--primary-weak)}
 .org-row .r-name{font-size:15px;font-weight:600}
 .org-row .r-path{font-size:12px;color:var(--text3);margin-top:2px}
 .org-empty{padding:44px 16px;text-align:center;font-size:13.5px;color:var(--text3)}
 .org-empty .sub{font-size:12px;margin-top:4px}
+/* 临时登记协力店 */
+.org-temp-entry{border-top:1px solid var(--border);padding:12px 16px calc(14px + env(safe-area-inset-bottom));text-align:center;font-size:13.5px;color:var(--text3);cursor:pointer}
+.org-temp-entry b{color:var(--primary);font-weight:600}
+.org-src-tag{display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:600;margin-right:6px;vertical-align:1px}
+.org-src-tag.sys{background:var(--primary-weak);color:var(--primary)}
+.org-src-tag.temp{background:#fdf0e3;color:#d97a12}
+.temp-field{margin-top:14px;text-align:left}
+.temp-field label{display:block;font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:600}
+.temp-field input{width:100%;height:40px;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;font-size:15px;outline:none;background:var(--bg)}
+.temp-field input:focus{border-color:var(--primary);background:#fff}
+.temp-note{font-size:12px;color:var(--text3);line-height:1.7;background:var(--bg);border-radius:8px;padding:10px 12px;margin-top:12px;text-align:left}
+.temp-err{display:none;font-size:12px;color:var(--danger);margin-top:6px;text-align:left}
+.temp-err.show{display:block}
 /* ---------- 考试须知（社外落页） ---------- */
 .notice-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 16px;font-size:13px;color:var(--text2);line-height:2.1}
 .notice-card div::before{content:'✓ ';color:var(--success);font-weight:700}
@@ -454,6 +478,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
       <input type="text" id="org-kw" placeholder="搜索所属组织" oninput="renderOrgList()">
     </div>
     <div class="org-list" id="org-list"></div>
+    <div class="org-temp-entry" onclick="openTempDialog()">未找到协力店？<b>临时登记</b></div>
   </div>
 </div>
 
@@ -465,6 +490,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     <div class="dlg-msg warn" id="cf-detail" style="display:none"></div>
     <div class="dlg-btns">
       <button class="btn btn-primary" onclick="closeConflict()">重新核对</button>
+    </div>
+  </div>
+</div>
+
+<!-- 临时登记协力店弹窗 -->
+<div class="dialog" id="temp-dialog" style="z-index:65" onclick="if(event.target===this)closeTempDialog()">
+  <div class="dialog-box" style="text-align:center">
+    <div class="dlg-title">临时登记协力店</div>
+    <div class="temp-field">
+      <label><b style="color:var(--danger);font-weight:400;margin-right:2px">*</b>协力店名称</label>
+      <input type="text" id="temp-org-name" placeholder="请输入协力店名称" autocomplete="off" oninput="hideTempErr()">
+      <div class="temp-err" id="err-temp"></div>
+    </div>
+    <div class="dlg-btns">
+      <button class="btn btn-outline" onclick="closeTempDialog()">取消</button>
+      <button class="btn btn-primary" onclick="confirmTempOrg()">确认</button>
     </div>
   </div>
 </div>
@@ -483,6 +524,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
       <div class="demo-row"><span class="demo-t">社外信息不一致</span><span class="demo-d">唯一码 DK9001 + 其他姓名 → 弹窗提示核对（已登记：韩梅梅 / 杭州协力店A）</span></div>
       <div class="demo-row"><span class="demo-t">社内编号冲突</span><span class="demo-d">唯一码填 DK1001（社内编号）→ 弹窗提示该编号已被社内人员使用</span></div>
       <div class="demo-row"><span class="demo-t">网络异常演示</span><span class="demo-d">唯一码填 DEMO-ERR → 提示提交失败，请稍后重试</span></div>
+      <div class="demo-row"><span class="demo-t">社外临时登记协力店</span><span class="demo-d">组织搜索弹层底部「未找到协力店？临时登记」→ 输入名称确认后回填并标记（不新增系统组织）</span></div>
       <div class="demo-row"><span class="demo-t">协力店过滤</span><span class="demo-d">搜索「上海」仅返回协力店（上海事务所被过滤）；搜索「abc」查看空结果</span></div>
       <div class="demo-row"><span class="demo-t">手机号校验</span><span class="demo-d">手机号填 123 提交 → 提示请输入正确的手机号</span></div>
     </div>
@@ -531,6 +573,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 
 <script>
 /* ================= 模拟数据 ================= */
+/* 题目配图（SVG 内嵌演示素材，与主应用一致） */
+var IMG_CYCLE = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="560" height="200" viewBox="0 0 560 200"><rect width="560" height="200" rx="10" fill="#f8fafc"/><text x="280" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">制冷系统循环示意图</text><rect x="42" y="78" width="108" height="62" rx="9" fill="#ffffff" stroke="#10b981" stroke-width="1.6"/><text x="96" y="114" text-anchor="middle" font-size="13" fill="#059669">压缩机</text><rect x="228" y="78" width="108" height="62" rx="9" fill="#ffffff" stroke="#10b981" stroke-width="1.6"/><text x="282" y="114" text-anchor="middle" font-size="13" fill="#059669">冷凝器</text><rect x="414" y="78" width="108" height="62" rx="9" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6"/><text x="468" y="114" text-anchor="middle" font-size="13" fill="#64748b">节流装置</text><line x1="152" y1="109" x2="222" y2="109" stroke="#10b981" stroke-width="2"/><polygon points="222,109 212,104 212,114" fill="#10b981"/><line x1="338" y1="109" x2="408" y2="109" stroke="#94a3b8" stroke-width="2"/><polygon points="408,109 398,104 398,114" fill="#94a3b8"/><path d="M 468 142 L 468 172 L 96 172 L 96 144" fill="none" stroke="#10b981" stroke-width="2"/><polygon points="96,142 91,152 101,152" fill="#10b981"/><text x="282" y="190" text-anchor="middle" font-size="11" fill="#94a3b8">制冷剂依次经过四大部件完成循环</text></svg>');
+var IMG_SAFE = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="560" height="180" viewBox="0 0 560 180"><rect width="560" height="180" rx="10" fill="#fffbeb"/><text x="280" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">维修安全检查要点提示</text><rect x="60" y="52" width="14" height="14" rx="3" fill="#10b981"/><text x="86" y="64" font-size="12.5" fill="#78350f">作业前挂牌上锁，告知相关人员</text><rect x="60" y="88" width="14" height="14" rx="3" fill="#10b981"/><text x="86" y="100" font-size="12.5" fill="#78350f">确认配电开关处于断开位置并验电</text><rect x="60" y="124" width="14" height="14" rx="3" fill="#10b981"/><text x="86" y="136" font-size="12.5" fill="#78350f">释放系统残压后方可拆装部件</text></svg>');
 var EXAM = {
   id: 'exam-2026-SE-THEORY-AIR',
   name: '2026年度SE理论考试-空调基础',
@@ -538,7 +583,7 @@ var EXAM = {
   startTime: '2026-09-01 09:00',
   endTime: '2026-09-30 18:00',
   duration: 45,
-  totalScore: 100,
+  totalScore: 140,
   passScore: 60,
   questions: [
     {id:1, type:'judge', score:5, stem:'多联机空调系统的制冷剂管路长度不应超过100米。',
@@ -560,11 +605,27 @@ var EXAM = {
       options:['定频泵','变频泵','一用一备','串联运行'], answer:['A','B','C'],
       explanation:'串联运行一般用于特殊的高扬程场景，不是常用配置。定频泵、变频泵和一用一备是常见配置方式。'},
     {id:7, type:'fill', score:10, stem:'空调能效比 EER 的英文全称是______。',
-      answer:'Energy Efficiency Ratio', accept:['energy efficiency ratio','energyefficiencyratio','eer'],
+      blanks:[{answer:'Energy Efficiency Ratio', accept:['energy efficiency ratio','energyefficiencyratio','eer']}],
       explanation:'EER = Energy Efficiency Ratio（能源效率比），是衡量空调制冷性能的重要指标。'},
     {id:8, type:'fill', score:10, stem:'空调选型中，俗称"1匹"对应的制冷量约为______W。',
-      answer:'2500', accept:['2500w','2500瓦','2500'],
+      blanks:[{answer:'2500', accept:['2500w','2500瓦','2500']}],
       explanation:'行业惯例1匹约等于2500W制冷量，是选型时常用的估算值。'},
+    {id:11, type:'fill', score:10, stem:'请填写空调制冷系统中主要部件的名称。',
+      blanks:[{lead:'制冷系统中，负责压缩制冷剂的是：', answer:'压缩机'},
+              {lead:'负责冷凝散热的是：', answer:'冷凝器'}],
+      explanation:'制冷系统四大部件：压缩机压缩制冷剂、冷凝器冷凝散热、节流装置降压、蒸发器蒸发吸热。'},
+    {id:12, type:'fill', score:10, stem:'请观察下图所示的制冷系统循环示意图，回答以下问题。', img:IMG_CYCLE,
+      blanks:[{lead:'负责对制冷剂进行压缩的部件是：', answer:'压缩机'},
+              {lead:'承担制冷剂降压节流作用的部件是：', answer:'节流装置', accept:['膨胀阀','节流阀']}],
+      explanation:'压缩机将低温低压制冷剂气体压缩为高温高压气体；节流装置将高压液体降压后供给蒸发器。'},
+    {id:13, type:'fill', compound:true, title:'故障诊断练习', img:IMG_SAFE, score:20,
+      subs:[
+        {text:'制冷系统检查', blanks:[{lead:'负责压缩制冷剂的是：', answer:'压缩机'},
+                                    {lead:'负责冷凝散热的是：', answer:'冷凝器'}]},
+        {text:'维修安全检查', blanks:[{lead:'维修前首先确认：', answer:'断电', accept:['切断电源','电源断开','停电']},
+                                    {lead:'维修完成后需要检查：', answer:'试运行', accept:['运行状态','试机']}]},
+      ],
+      explanation:'维修前必须断电验电并释放残压；维修完成后必须试运行确认并请客户签字。'},
     {id:9, type:'essay', score:10, stem:'请简述空调系统安装完成后需要进行哪些调试工作。',
       answer:null, explanation:'调试工作包括：冷媒压力测试、真空干燥、追加制冷剂、开机运行测试、参数设定与调整、系统平衡调试等。'},
     {id:10, type:'essay', score:10, stem:'请说明多联机空调系统与中央空调水系统的主要区别。',
@@ -599,6 +660,32 @@ function syncOrg(){
   $('user-org').value = p ? p.org : '';
 }
 
+/* ================= 填空题辅助：空位列表 / 答案数组 / 空位判分（多空按空均分） ================= */
+function fillBlanksOf(q){
+  if(q.compound) return q.subs.reduce(function(a, s2){ return a.concat(s2.blanks); }, []);
+  return q.blanks || [{answer:q.answer, accept:q.accept}];
+}
+function fillAnsArr(val, n){
+  var arr = Array.isArray(val) ? val.slice() : (val !== undefined && val !== null && String(val) !== '' ? [String(val)] : []);
+  while(arr.length < n) arr.push('');
+  return arr;
+}
+function blankOk(b, v){
+  var ans = String(v == null ? '' : v).trim().toLowerCase();
+  if(!ans) return false;
+  var acc = [String(b.answer).toLowerCase()].concat((b.accept || []).map(function(s2){ return String(s2).toLowerCase(); }));
+  return acc.indexOf(ans) >= 0;
+}
+function fillStemChips(text, n){
+  var parts = String(text || '').split(/(【空\d+】|_{2,}|（\s*）)/g);
+  var k = 0, out = '';
+  parts.forEach(function(seg){
+    if(!seg) return;
+    if(/^(【空\d+】|_{2,}|（\s*）)$/.test(seg) && k < n){ k++; out += '<span class="fill-chip">空' + k + '</span>'; }
+    else out += escapeHtml(seg);
+  });
+  return out;
+}
 var TYPE_MAP = {judge:'判断题',single:'单选题',multi:'多选题',fill:'填空题',essay:'简答题'};
 var LETTERS = ['A','B','C','D','E','F'];
 
@@ -638,7 +725,11 @@ function parseTime(str){
 function isAnswered(q, val){
   if(val === undefined || val === null) return false;
   if(q.type==='multi') return Array.isArray(val) && val.length>0;
-  if(q.type==='fill' || q.type==='essay') return String(val).trim()!=='';
+  if(q.type==='essay') return String(val).trim()!=='';
+  if(q.type==='fill'){
+    if(Array.isArray(val)) return val.some(function(v){ return String(v == null ? '' : v).trim() !== ''; });
+    return String(val == null ? '' : val).trim() !== '';
+  }
   return val !== '';
 }
 function gradeQuestion(q, val){
@@ -652,9 +743,12 @@ function gradeQuestion(q, val){
     return a===b ? {correct:true, score:q.score} : {correct:false, score:0};
   }
   if(q.type==='fill'){
-    var ans = String(val).trim().toLowerCase();
-    var acc = [String(q.answer).toLowerCase()].concat((q.accept||[]).map(function(s){return String(s).toLowerCase();}));
-    return acc.indexOf(ans)>=0 ? {correct:true, score:q.score} : {correct:false, score:0};
+    var blanks = fillBlanksOf(q);
+    var arr = fillAnsArr(val, blanks.length);
+    var per = Math.round(q.score / blanks.length * 10) / 10;
+    var got = 0, all = true;
+    blanks.forEach(function(b, i){ if(blankOk(b, arr[i])) got += per; else all = false; });
+    return {correct: all, score: got};
   }
   if(q.type==='essay'){ return {correct:null, score:0, pending:true}; }
   return {correct:false, score:0};
@@ -683,7 +777,7 @@ function renderInfo(){
 
 /* ================= 二期新增：身份选择 + 社外考生登记 ================= */
 var selIdentity = null;      /* 当前选择：internal / external */
-var extForm = { orgId:null, orgName:'', orgPath:'' };
+var extForm = { orgId:null, orgName:'', orgPath:'', orgTemp:false };
 var extPerson = null;        /* 校验通过的社外考生身份 */
 
 /* 协力店组织数据（含非协力店节点，演示类型过滤；正式系统来自组织架构接口） */
@@ -735,7 +829,7 @@ function clearExtForm(){
   $('ext-uid').value = '';
   $('ext-phone').value = '';
   $('org-kw').value = '';
-  extForm = { orgId:null, orgName:'', orgPath:'' };
+  extForm = { orgId:null, orgName:'', orgPath:'', orgTemp:false };
   $('ext-org-empty').style.display = 'flex';
   $('ext-org-sel').style.display = 'none';
   clearExtErrors();
@@ -775,12 +869,41 @@ function pickOrg(id){
   var o = null;
   for(var i=0;i<ORGS.length;i++){ if(ORGS[i].id === id){ o = ORGS[i]; break; } }
   if(!o) return;
-  extForm.orgId = o.id; extForm.orgName = o.name; extForm.orgPath = o.path;
+  extForm.orgId = o.id; extForm.orgName = o.name; extForm.orgPath = o.path; extForm.orgTemp = false;
   $('ext-org-name').textContent = o.name;
-  $('ext-org-path').textContent = o.path;
+  $('ext-org-path').innerHTML = '<span class="org-src-tag sys">系统组织</span>' + escapeHtml(o.path);
   $('ext-org-empty').style.display = 'none';
   $('ext-org-sel').style.display = 'flex';
   hideErr('err-org');
+  closeOrgSheet();
+}
+
+/* ---------- 临时登记协力店 ---------- */
+function openTempDialog(){
+  $('temp-org-name').value = '';
+  hideTempErr();
+  $('temp-dialog').classList.add('show');
+}
+function closeTempDialog(){ $('temp-dialog').classList.remove('show'); }
+function hideTempErr(){ $('err-temp').classList.remove('show'); }
+function confirmTempOrg(){
+  var name = $('temp-org-name').value.trim();
+  if(!name){
+    $('err-temp').textContent = '请输入协力店名称';
+    $('err-temp').classList.add('show');
+    return;
+  }
+  /* 临时登记：仅回填名称并标记，不新增系统组织，orgId 置空 */
+  extForm.orgId = null;
+  extForm.orgName = name;
+  extForm.orgPath = '';
+  extForm.orgTemp = true;
+  $('ext-org-name').textContent = name;
+  $('ext-org-path').innerHTML = '<span class="org-src-tag temp">临时登记</span>';
+  $('ext-org-empty').style.display = 'none';
+  $('ext-org-sel').style.display = 'flex';
+  hideErr('err-org');
+  closeTempDialog();
   closeOrgSheet();
 }
 
@@ -809,7 +932,7 @@ function submitExt(){
   var hasErr = false;
   if(!name){ showErr('err-name', '请输入姓名'); hasErr = true; }
   if(!code){ showErr('err-code', '请输入唯一码/担当号'); hasErr = true; }
-  if(!extForm.orgId){ showErr('err-org', '请选择所属组织'); hasErr = true; }
+  if(!extForm.orgName){ showErr('err-org', '请选择所属组织'); hasErr = true; }
   if(phone && !/^1[3-9]\d{9}$/.test(phone)){ showErr('err-phone', '请输入正确的手机号'); hasErr = true; }
   if(hasErr) return;
 
@@ -843,7 +966,7 @@ function submitExt(){
 
   /* 首次登记：创建社外考生身份记录 */
   extPerson = { code:code, name:name, orgId:extForm.orgId, orgName:extForm.orgName,
-                orgPath:extForm.orgPath, uid:uid, phone:phone };
+                orgPath:extForm.orgPath, orgTemp:!!extForm.orgTemp, uid:uid, phone:phone };
   EXT_REGS.push(extPerson);
   renderNotice();
   showPage('page-notice');
@@ -977,7 +1100,7 @@ function renderQ(){
   var q = EXAM.questions[curQ];
   $('q-type').textContent = TYPE_MAP[q.type];
   $('q-type').className = 'q-type ' + q.type;
-  $('q-stem').textContent = q.stem;
+  $('q-stem').innerHTML = q.type==='fill' ? fillStemChips(q.compound ? (q.title || '') : q.stem, fillBlanksOf(q).length) : escapeHtml(q.stem);
   var scoreEl = document.createElement('span');
   scoreEl.className = 'score';
   scoreEl.textContent = '('+q.score+'分)';
@@ -1007,12 +1130,67 @@ function renderQ(){
     });
   }
   else if(q.type==='fill'){
-    var inp = document.createElement('input');
-    inp.className = 'fill-input';
-    inp.placeholder = '请输入答案';
-    inp.value = val || '';
-    inp.addEventListener('input', function(){ saveAnswer(q.id, inp.value); });
-    body.appendChild(inp);
+    var blanks = fillBlanksOf(q);
+    var arr = fillAnsArr(val, blanks.length);
+    /* 题目图片：紧跟题干，不穿插小题 */
+    if(q.img){
+      var im = document.createElement('img');
+      im.className = 'q-img-h5';
+      im.src = q.img;
+      body.appendChild(im);
+    }
+    /* 引导句归题目内容区（带空N标记）：普通填空=题干下；组合大题=各小题下，全局编号 */
+    if(q.compound){
+      var gi = 0;
+      q.subs.forEach(function(s2, si){
+        var sub = document.createElement('div');
+        sub.className = si > 0 ? 'q-sub-h5' : 'q-sub-h5';
+        var st = document.createElement('div');
+        st.className = 'q-sub-title-h5';
+        st.textContent = '（' + (si + 1) + '）' + s2.text;
+        sub.appendChild(st);
+        s2.blanks.forEach(function(b){
+          gi++;
+          if(b.lead){
+            var ld = document.createElement('div');
+            ld.className = 'fill-lead-h5';
+            ld.innerHTML = '<span class="fill-chip">空' + gi + '</span><span>' + escapeHtml(b.lead) + '</span>';
+            sub.appendChild(ld);
+          }
+        });
+        body.appendChild(sub);
+      });
+    } else {
+      var ldw = document.createElement('div');
+      blanks.forEach(function(b, i){
+        if(b.lead){
+          var ld = document.createElement('div');
+          ld.className = 'fill-lead-h5';
+          ld.innerHTML = '<span class="fill-chip">空' + (i + 1) + '</span><span>' + escapeHtml(b.lead) + '</span>';
+          ldw.appendChild(ld);
+        }
+      });
+      if(ldw.childNodes.length) body.appendChild(ldw);
+    }
+    /* 作答区：全部输入框按空N顺序集中在最后 */
+    var area = document.createElement('div');
+    area.className = 'fill-area-h5';
+    blanks.forEach(function(b, i){
+      var row = document.createElement('div');
+      row.className = 'fill-row';
+      var lab = document.createElement('span');
+      lab.className = 'fill-num';
+      lab.textContent = '空' + (i + 1);
+      var inp = document.createElement('input');
+      inp.className = 'fill-input';
+      inp.placeholder = '请输入答案';
+      inp.value = arr[i] || '';
+      inp.addEventListener('input', function(){ saveBlank(q.id, i, inp.value); });
+      row.appendChild(lab);
+      row.appendChild(inp);
+      area.appendChild(row);
+    });
+    body.appendChild(area);
   }
   else if(q.type==='essay'){
     var ta = document.createElement('textarea');
@@ -1061,6 +1239,14 @@ function toggleMulti(qid, key, el){
 function saveAnswer(qid, val){
   if(!state.answers) state.answers = {};
   state.answers[qid] = val;
+  saveRec(state);
+  updateProgress();
+}
+/* 填空题按空保存：answers[qid] = ['答案1','答案2',...] */
+function saveBlank(qid, idx, v){
+  var arr = Array.isArray(state.answers[qid]) ? state.answers[qid].slice() : (state.answers[qid] ? [String(state.answers[qid])] : []);
+  arr[idx] = v;
+  state.answers[qid] = arr;
   saveRec(state);
   updateProgress();
 }
@@ -1186,8 +1372,17 @@ function fmtAnswerText(q, val, isCorrect){
       return v + '. ' + (idx>=0 ? q.options[idx] : '');
     }).join('、');
   }
-  if(q.type==='fill' || q.type==='essay'){
+  if(q.type==='essay'){
     return (val!==undefined && String(val).trim()!=='') ? String(val) : '未作答';
+  }
+  if(q.type==='fill'){
+    var blanks = fillBlanksOf(q);
+    var arr = fillAnsArr(val, blanks.length);
+    if(!arr.some(function(v){ return String(v == null ? '' : v).trim() !== ''; })) return '未作答';
+    return blanks.map(function(b, i){
+      var v = String(arr[i] == null ? '' : arr[i]).trim();
+      return '空' + (i + 1) + '：' + (v !== '' ? v : '未作答');
+    }).join('；');
   }
   return '';
 }
@@ -1202,7 +1397,7 @@ function fmtRightAnswer(q){
     var idx = LETTERS.indexOf(String(q.answer));
     return String(q.answer) + '. ' + (idx>=0 ? q.options[idx] : '');
   }
-  if(q.type==='fill') return q.answer;
+  if(q.type==='fill') return fillBlanksOf(q).map(function(b, i){ return '空' + (i + 1) + '：' + b.answer; }).join('；');
   return '';
 }
 
@@ -1225,7 +1420,7 @@ function goAnalysis(){
     if(q.type==='essay') tag = '<span class="tag pending">'+(val?'待阅卷':'未作答')+'</span>';
     else if(r.correct) tag = '<span class="tag correct">正确</span>';
     else tag = '<span class="tag wrong">错误</span>';
-    head.innerHTML = '<div class="q-txt"><span class="q-type '+q.type+'" style="font-size:11px">'+TYPE_MAP[q.type]+'</span> <b>'+idx+'.</b> '+q.stem+'</div>'+tag;
+    head.innerHTML = '<div class="q-txt"><span class="q-type '+q.type+'" style="font-size:11px">'+TYPE_MAP[q.type]+'</span> <b>'+idx+'.</b> '+escapeHtml(q.compound ? (q.title || '') : q.stem)+'</div>'+tag;
     card.appendChild(head);
 
     // 我的答案
