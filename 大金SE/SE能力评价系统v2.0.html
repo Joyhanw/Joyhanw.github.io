@@ -14642,8 +14642,8 @@ function renderQAi() {
       ${pts.map((p, i) => `<tr>
         <td><input class="input" style="width:60px;padding:3px 8px" type="number" min="0" value="${p.score}" data-change="qf-pt-score" data-i="${i}"></td>
         <td><input class="input" style="width:100%" value="${esc(p.key)}" placeholder="采分要点" data-change="qf-pt-key" data-i="${i}">${isBlank ? `<div style="font-size:11px;color:var(--g400);margin-top:2px">${esc('空' + (i + 1))}</div>` : ''}</td>
-        <td><input class="input" style="width:100%" value="${esc(p.syn)}" placeholder="AI自动生成，可修改" data-change="qf-pt-syn" data-i="${i}">${p._edited ? '<span class="badge badge-gray" style="font-size:10px;margin-top:2px">人工修改</span>' : ''}</td>
-        <td><input class="input" style="width:100%" value="${esc(p.neg || '')}" placeholder="选填，顿号分隔" data-change="qf-pt-neg" data-i="${i}"></td>
+        <td><input class="input" style="width:100%" value="${esc(p.syn)}" placeholder="存在多个时以“|”分隔" data-change="qf-pt-syn" data-i="${i}">${p._edited ? '<span class="badge badge-gray" style="font-size:10px;margin-top:2px">人工修改</span>' : ''}</td>
+        <td><input class="input" style="width:100%" value="${esc(p.neg || '')}" placeholder="选填，|分隔" data-change="qf-pt-neg" data-i="${i}"></td>
         <td><select class="select" style="width:100%" data-change="qf-pt-mode" data-i="${i}">${[Q_MODE_KW, Q_MODE_SEM].map(m => `<option${p.mode === m ? ' selected' : ''}>${m}</option>`).join('')}</select></td>
         <td><button class="btn btn-sm btn-danger" data-act="qf-pt-del" data-i="${i}" title="删除"><i class="ri-delete-bin-line"></i></button></td>
       </tr>`).join('')}
