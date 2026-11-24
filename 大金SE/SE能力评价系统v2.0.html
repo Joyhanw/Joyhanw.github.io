@@ -626,6 +626,8 @@ body.sb-collapsed .sb-toggle{left:64px}
 .wtip:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);background:var(--g800);color:#fff;font-size:12px;font-weight:400;padding:5px 10px;border-radius:6px;white-space:nowrap;z-index:60;box-shadow:var(--shadow-lg)}
 .wtip:hover::before{content:'';position:absolute;left:50%;bottom:calc(100% + 2px);transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--g800);z-index:60}
 .wtip.wide:hover::after{white-space:normal;width:250px;line-height:1.7;text-align:left;left:0;transform:none}
+.wtip.tip-b:hover::after{bottom:auto;top:calc(100% + 7px);white-space:normal;width:250px;line-height:1.7;text-align:left;left:0;transform:none}
+.wtip.tip-b:hover::before{bottom:auto;top:calc(100% + 2px);border-top-color:transparent;border-bottom-color:var(--g800)}
 .q-editable{min-height:64px;max-height:240px;overflow-y:auto;line-height:1.9;cursor:text}
 .q-editable:empty::before{content:attr(data-placeholder);color:var(--g400);pointer-events:none}
 .wtip.wide:hover::before{left:10px;transform:none}
@@ -2701,7 +2703,7 @@ function handleAct(act, el) {
     case 'qf-ai-gen-yes': { const st = window.__qEdit; st.confirmMode = null; qfAiGenApply(); break; }
     case 'qf-key-over-yes': { const st = window.__qEdit; const p = st.ai.points[+d.i]; if (p) { p.syn = qSynOf(p.key); p._edited = false; } st.confirmMode = null; renderQAi(); break; }
     case 'qf-gen-cancel': { const st = window.__qEdit; st.confirmMode = null; renderQAi(); break; }
-    case 'qf-blank-reset': { const st = window.__qEdit; if (st.subs && st.subs.length) { qfSubResetAll(); break; } const cnt = qCountBlanks(($('#q-f-text') || {}).value || ''); const cur = st.ai.points; while (cur.length < cnt) cur.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW }); if (cnt > 0 && cur.length > cnt) cur.length = cnt; if (cur.length === cnt) qDistScore(cur, +(($('#q-f-score') || {}).value || 0)); renderQAi(); break; }
+    case 'qf-blank-reset': { const st = window.__qEdit; if (st.subs && st.subs.length) { qfSubResetAll(); break; } const cnt = qCountBlanks(($('#q-f-text') || {}).value || ''); const cur = st.ai.points; while (cur.length < cnt) cur.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW, parse: '' }); if (cnt > 0 && cur.length > cnt) cur.length = cnt; if (cur.length === cnt) qDistScore(cur, +(($('#q-f-score') || {}).value || 0)); renderQAi(); break; }
     case 'qf-pt-add': { const st = window.__qEdit; st.ai.points.push({ score: 0, key: '', syn: '', neg: '', mode: st.type === '填空' ? Q_MODE_KW : Q_MODE_SEM }); renderQAi(); break; }
     case 'qf-pt-del': { const st = window.__qEdit; if (st.ai.points.length <= 1) { toast('至少保留一行采分点', 'error'); break; } if (st.subs && st.subs.length) { const di = +d.i, rsl = qSubRanges(); for (let x = 0; x < rsl.length; x++) { const r2 = rsl[x]; if (di >= r2.start && di < r2.start + r2.cnt) { st.ai.points.splice(di, 1); st.subs[x].blankCnt = Math.max(0, r2.cnt - 1); break; } } renderQSubs(); } else st.ai.points.splice(+d.i, 1); renderQAi(); qfUpdateSumTip(); break; }
     case 'qf-ai-fold': { const st = window.__qEdit; st.aiOpen = !st.aiOpen; renderQAi(); break; }
@@ -2715,6 +2717,7 @@ function handleAct(act, el) {
     case 'qf-sub-ins-main': qfSubInsertMain(); break;
     case 'qf-sub-text': qfSubTextSync(+d.s, el.value); break;
     case 'qf-sub-ans': { const st = window.__qEdit; const si = +d.s, bi = +d.b; const rr = qSubRangeOf(si); const p = st.ai.points[rr.start + bi]; if (p) { p.key = el.value.trim(); p.mode = qModeOf(p.key); if (!p._edited) p.syn = qSynOf(p.key); renderQAi(); } break; }
+    case 'qf-pt-parse': { const st = window.__qEdit; const p = st.ai.points[+d.i]; if (p) p.parse = el.value.trim(); break; }
     case 'qf-stem-ans': { const st = window.__qEdit; const p = st.ai.points[+d.b]; if (p) { p.key = el.value.trim(); p.mode = qModeOf(p.key); if (!p._edited) p.syn = qSynOf(p.key); renderQAi(); } break; }
     case 'qf-blank-sync-yes': qfBlankSyncYes(); break;
     case 'qf-blank-sync-no': { const st = window.__qEdit; st.pendingBlankSync = null; renderStemAns(); renderQSubs(); break; }
@@ -4430,12 +4433,12 @@ function seePracticeCards(list) {
       <span class="badge badge-blue">演示</span>
     </div>
     <div style="display:grid;grid-template-columns:1fr;gap:8px 18px;font-size:12.5px;color:var(--g600);line-height:1.7">
-      <div><i class="ri-file-list-2-line" style="color:var(--g400)"></i> 题目 5 题 · 普通填空 / 多空填空 / 多小题填空大题</div>
+      <div><i class="ri-file-list-2-line" style="color:var(--g400)"></i> 题目 6 题 · 普通填空 / 多空填空 / 带图填空 / 多小题填空大题</div>
     </div>
     <div style="display:flex;align-items:baseline;gap:6px">
       <span style="font-size:12.5px;color:var(--g500)">自动判分成绩：</span>
       <span style="font-size:24px;font-weight:800;color:var(--g400)">—</span>
-      <span style="font-size:13px;color:var(--g500)">/ 100 分</span>
+      <span style="font-size:13px;color:var(--g500)">/ 120 分</span>
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:2px">
       <button class="btn btn-primary btn-sm" data-act="exam-demo-start"><i class="ri-play-line"></i>开始考试</button>
@@ -5770,8 +5773,9 @@ function monthSeedRows() {
       const present = (m.id === 'SE001') || srand('ml', m.id, mo) < 0.88;
       if (!present) return;
       if (MONTH_LEDGER_DELETED.has(m.id + '|' + mo)) return;
+      const pc = srand('ml-p', m.id, mo) < 0.4 ? (srand('ml-pc', m.id, mo) < 0.2 ? 3 : (srand('ml-pc2', m.id, mo) < 0.4 ? 2 : 1)) : 0;
       rows.push({ name: m.name, id: m.id, month: mo, office: m.office, code: MONTH_OFFICE_CODES[m.office] || '',
-        praise: srand('ml-p', m.id, mo) < 0.4,
+        praise: pc > 0, praiseCnt: pc,
         mini: !MONTH_MINI_OFF[m.id + '|' + mo] && srand('ml-m', m.id, mo) < 0.75 });
     });
   });
@@ -5820,17 +5824,16 @@ function vMonthLedger(el) {
   </div>
   <div class="card mt16">
     <table class="tbl">
-      <tr><th>姓名</th><th>工号</th><th>评分日期</th><th>所属事务所</th><th>有无表扬信</th><th>是否正确使用小程序</th><th>操作</th></tr>
+      <tr><th>姓名</th><th>工号</th><th>评分日期</th><th>所属事务所</th><th>表扬信数（份）</th><th>操作</th></tr>
       ${pageRows.length ? pageRows.map(r => `<tr>
         <td>${alInnerBadge(r.name)}<span style="font-weight:600">${esc(r.name)}</span></td>
         <td class="mono">${esc(r.id)}</td>
         <td class="mono">${r.month}</td>
         <td>${esc(r.office)}</td>
-        <td>${r.praise ? '<span style="color:var(--e600)">有</span>' : '<span style="color:var(--g400)">无</span>'}</td>
-        <td>${kpiYesNo(r.mini)}</td>
+        <td>${(r.praiseCnt || (r.praise ? 1 : 0)) ? '<span style="color:var(--e600)">' + (r.praiseCnt || 1) + '</span>' : '<span style="color:var(--g400)">无</span>'}</td>
         <td style="white-space:nowrap"><button class="btn btn-sm btn-danger" data-act="ml-del" data-idx="${rows.indexOf(r)}"><i class="ri-delete-bin-line"></i>删除</button></td>
       </tr>`).join('')
-        : '<tr><td colspan="7"><div class="empty"><i class="ri-inbox-line"></i>无符合条件的月度评分辅助台账记录</div></td></tr>'}
+        : '<tr><td colspan="6"><div class="empty"><i class="ri-inbox-line"></i>无符合条件的月度评分辅助台账记录</div></td></tr>'}
     </table>
     <div class="pager">
       <span class="pager-info">共 ${total} 条 · 第 ${page} / ${pages} 页</span>
@@ -5850,7 +5853,7 @@ function openMonthImport() {
         <div style="display:flex;align-items:center;gap:12px">
           <div class="stat-ic ic-green"><i class="ri-file-excel-2-line"></i></div>
           <div style="flex:1"><div style="font-size:13.5px;font-weight:700;color:var(--g800)">月度评分辅助台账导入模板.xlsx</div>
-          <div style="font-size:11.5px;color:var(--g500);margin-top:2px">含字段：姓名 · 工号 · 评分日期 · 事务所编码 · 事务所名称 · 有无表扬信 · 是否正确使用小程序</div></div>
+          <div style="font-size:11.5px;color:var(--g500);margin-top:2px">含字段：姓名 · 工号 · 评分日期 · 事务所编码 · 事务所名称 · 表扬信数（份）</div></div>
           <button class="btn btn-outline btn-sm" data-act="toast" data-msg="模板已下载，请按模板整理数据"><i class="ri-download-2-line"></i>下载导入模板</button>
         </div>
       </div>
@@ -5890,11 +5893,11 @@ function runMonthImport() {
 function finishMonthImport() {
   if (!MONTH_LEDGER_IMPORTED) {
     MONTH_LEDGER_EXTRA.push(
-      { name: '张明辉', id: 'SE001', month: '2026.09', office: '上海事务所', praise: true,  mini: true },
-      { name: '李志远', id: 'SE002', month: '2026.09', office: '上海事务所', praise: false, mini: true },
-      { name: '王丽',   id: 'SE003', month: '2026.09', office: '上海事务所', praise: true,  mini: false },
-      { name: '孙雷',   id: 'SE006', month: '2026.09', office: '杭州事务所', praise: true,  mini: true },
-      { name: '周婷',   id: 'SE007', month: '2026.09', office: '杭州事务所', praise: false, mini: false });
+      { name: '张明辉', id: 'SE001', month: '2026.09', office: '上海事务所', praise: true,  praiseCnt: 2, mini: true },
+      { name: '李志远', id: 'SE002', month: '2026.09', office: '上海事务所', praise: false, praiseCnt: 0, mini: true },
+      { name: '王丽',   id: 'SE003', month: '2026.09', office: '上海事务所', praise: true,  praiseCnt: 1, mini: false },
+      { name: '孙雷',   id: 'SE006', month: '2026.09', office: '杭州事务所', praise: true,  praiseCnt: 1, mini: true },
+      { name: '周婷',   id: 'SE007', month: '2026.09', office: '杭州事务所', praise: false, praiseCnt: 0, mini: false });
     MONTH_LEDGER_IMPORTED = true;
   }
   closeModal(); toast('导入完成：成功 5 条，失败 5 条'); renderView(APP.view);
@@ -6000,6 +6003,7 @@ function kpiDrawerBody(r, idx) {
         <td>${kpiYesNo(o.nextDay)}</td>
         <td>${kpiYesNo(o.oneTime)}</td>
         <td>${kpiYesNo(o.threeDay)}</td>
+        
         ${APP.view === 'pb_members' ? '' : `<td><button class="btn btn-sm btn-danger" data-act="kpi-del-order" data-pidx="${idx}" data-oidx="${i}"><i class="ri-delete-bin-line"></i>删除</button></td>`}
       </tr>`).join('') : `<tr><td colspan="${APP.view === 'pb_members' ? 9 : 10}"><div class="empty"><i class="ri-inbox-line"></i>暂无工单明细</div></td></tr>`}
     </table>
@@ -6285,10 +6289,9 @@ function vPbBoard(el) {
   <div class="filter-bar">
     ${pbFilterBar()}
   </div>
-  <div class="grid grid-4 mt16">
+  <div class="grid grid-3 mt16">
     ${statMini('协力店数量', ov.stores + '<small>家</small>')}
     ${statMini('工单总量', ov.orders + '<small>单</small>')}
-    ${statMini('工单产值', wan(ov.value) + '<small>万元</small>')}
     ${statMini('参与人员数', ov.people + '<small>人</small>')}
   </div>
   <div class="grid grid-4 mt16">
@@ -6303,16 +6306,15 @@ function vPbBoard(el) {
       <a class="link" data-act="pb-all" style="font-size:12.5px;cursor:pointer">查看全部 →</a>
     </div>
     <table class="tbl">
-      <tr><th style="width:90px">排名</th><th>协力店名称</th><th>所属组织</th><th class="right">工单总量</th><th class="right">工单产值（万元）</th><th class="right">参与人员数</th><th class="right" style="width:160px">KPI得分</th></tr>
+      <tr><th style="width:90px">排名</th><th>协力店名称</th><th>所属组织</th><th class="right">工单总量</th><th class="right">参与人员数</th><th class="right" style="width:160px">KPI得分</th></tr>
       ${top.map((r, i) => `<tr>
         <td class="fw600">${i + 1}</td>
         <td><a href="javascript:;" data-act="pb-members" data-store="${r.store.id}" data-back="board" style="color:var(--e600);text-decoration:none;font-weight:600">${esc(r.store.name)}</a></td>
         <td style="font-size:12.5px;color:var(--g600)">${esc(r.store.org)}</td>
         <td class="right num">${r.orders}</td>
-        <td class="right num">${wan(r.value)}</td>
         <td class="right num">${r.people}</td>
         <td class="right num fw600">${r.score}</td></tr>`).join('')}
-      ${top.length ? '' : '<tr><td colspan="7"><div class="empty"><i class="ri-inbox-line"></i>暂无数据</div></td></tr>'}
+      ${top.length ? '' : '<tr><td colspan="6"><div class="empty"><i class="ri-inbox-line"></i>暂无数据</div></td></tr>'}
     </table>
   </div>
   </div>`;
@@ -6333,16 +6335,15 @@ function vPbRank(el) {
   </div>
   <div class="card mt16">
     <table class="tbl">
-      <tr><th style="width:90px">排名</th><th>协力店名称</th><th>所属组织</th><th class="right">工单总量</th><th class="right">工单产值（万元）</th><th class="right">参与人员数</th><th class="right" style="width:160px">KPI得分</th></tr>
+      <tr><th style="width:90px">排名</th><th>协力店名称</th><th>所属组织</th><th class="right">工单总量</th><th class="right">参与人员数</th><th class="right" style="width:160px">KPI得分</th></tr>
       ${pageRows.map((r, i) => `<tr>
         <td class="fw600">${(page - 1) * PS + i + 1}</td>
         <td><a href="javascript:;" data-act="pb-members" data-store="${r.store.id}" data-back="rank" style="color:var(--e600);text-decoration:none;font-weight:600">${esc(r.store.name)}</a></td>
         <td style="font-size:12.5px;color:var(--g600)">${esc(r.store.org)}</td>
         <td class="right num">${r.orders}</td>
-        <td class="right num">${wan(r.value)}</td>
         <td class="right num">${r.people}</td>
         <td class="right num fw600">${r.score}</td></tr>`).join('')}
-      ${pageRows.length ? '' : '<tr><td colspan="7"><div class="empty"><i class="ri-inbox-line"></i>暂无数据</div></td></tr>'}
+      ${pageRows.length ? '' : '<tr><td colspan="6"><div class="empty"><i class="ri-inbox-line"></i>暂无数据</div></td></tr>'}
     </table>
     <div class="pager">
       <span class="pager-info">共 ${total} 条 · 第 ${page} / ${pages} 页</span>
@@ -6407,7 +6408,7 @@ function downloadPbReport() {
   const rows = pbRows();
   const wan = v => (Math.round(v / 1000) / 10).toFixed(1);
   const tr = rows.map((r, i) =>
-    '<tr><td>' + (i + 1) + '</td><td>' + esc2(r.store.name) + '</td><td>' + esc2(r.store.org) + '</td><td>' + esc2(r.store.code) + '</td><td>' + r.orders + '</td><td>' + wan(r.value) + '</td><td>' + r.people + '</td><td><b>' + r.score + '</b></td></tr>').join('\n');
+    '<tr><td>' + (i + 1) + '</td><td>' + esc2(r.store.name) + '</td><td>' + esc2(r.store.org) + '</td><td>' + esc2(r.store.code) + '</td><td>' + r.orders + '</td><td>' + r.people + '</td><td><b>' + r.score + '</b></td></tr>').join('\n');
   const html = '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">' +
     '<meta name="viewport" content="width=device-width,initial-scale=1">' +
     '<title>协力店看板报告 ' + esc2(year) + '</title>' +
@@ -6431,7 +6432,6 @@ function downloadPbReport() {
     '<div class="kpis">' +
     '<div class="kpi"><div class="lb">协力店数量</div><div class="v">' + ov.stores + '<small> 家</small></div></div>' +
     '<div class="kpi"><div class="lb">工单总量</div><div class="v">' + ov.orders + '<small> 单</small></div></div>' +
-    '<div class="kpi"><div class="lb">工单产值</div><div class="v">' + wan(ov.value) + '<small> 万元</small></div></div>' +
     '<div class="kpi"><div class="lb">参与人员数</div><div class="v">' + ov.people + '<small> 人</small></div></div>' +
     '</div>' +
     '<div class="kpis">' +
@@ -6440,7 +6440,7 @@ function downloadPbReport() {
     '<div class="kpi"><div class="lb">一次完成率</div><div class="v">' + ov.once + '<small> %</small></div></div>' +
     '<div class="kpi"><div class="lb">三日内完成率</div><div class="v">' + ov.three + '<small> %</small></div></div>' +
     '</div>' +
-    '<table><thead><tr><th>排名</th><th>协力店名称</th><th>所属组织</th><th>协力店编码</th><th class="r">工单总量</th><th class="r">工单产值（万元）</th><th class="r">参与人员数</th><th class="r">KPI得分</th></tr></thead>' +
+    '<table><thead><tr><th>排名</th><th>协力店名称</th><th>所属组织</th><th>协力店编码</th><th class="r">工单总量</th><th class="r">参与人员数</th><th class="r">KPI得分</th></tr></thead>' +
     '<tbody>' + tr + '</tbody></table>' +
     '<div class="foot">本报告由 SE 能力评价系统生成 · 演示数据</div>' +
     '</div></body></html>';
@@ -6792,13 +6792,15 @@ function msOrders(mid, month) {
     const cday = cr < 0.74 ? 0 : (cr < 0.9 ? 1 + Math.floor(msRand('ms-cd1', mid, month, i) * 12) : 18 + Math.floor(msRand('ms-cd2', mid, month, i) * 18));
     const complete = msAddDays(first, cday);
     const vr = msRand('ms-v', mid, month, i);
-    const visits = vr < 0.72 ? 1 : (vr < 0.92 ? 2 : 3);
+    const visits = vr < 0.76 ? 1 : (vr < 0.96 ? 2 : 3);
     arr.push({
       no: 'WO' + month.replace('.', '') + String(i + 1).padStart(3, '0'), mid, month,
       cust: MS_CUSTS[Math.floor(msRand('ms-cu', mid, month, i) * MS_CUSTS.length)],
       model: PERF_MODELS[Math.floor(msRand('ms-mo', mid, month, i) * PERF_MODELS.length)],
       recv, first, complete, gap, visits,
-      parts: Math.floor(msRand('ms-pt', mid, month, i) * 5),
+      parts: (p2 => p2 < 0.4 ? 1 : p2 < 0.75 ? 2 : p2 < 0.94 ? 3 : 4)(msRand('ms-pt', mid, month, i)),
+      miniApp: msRand('ms-mi', mid, month, i) < 0.92,
+      badNote: msRand('ms-bn', mid, month, i) < 0.05,
       uOrder: msRand('ms-u', mid, month, i) < 0.2,
       sat: msRand('ms-s', mid, month, i) < 0.42,
       dissat: msRand('ms-ds', mid, month, i) < 0.05,
@@ -6812,8 +6814,9 @@ function msOrders(mid, month) {
 }
 function msAuxOf(mid, month) {
   const r = monthSeedRows().find(x => x.id === mid && x.month === month);
-  if (r) return { praise: !!r.praise, mini: !!r.mini, fromLedger: true };
-  return { praise: msRand('ms-ap', mid, month) < 0.4, mini: msRand('ms-am', mid, month) < 0.75, fromLedger: false };
+  if (r) return { praise: !!r.praise, praiseCnt: r.praiseCnt || (r.praise ? 1 : 0), mini: !!r.mini, fromLedger: true };
+  const p = msRand('ms-ap', mid, month) < 0.4;
+  return { praise: p, praiseCnt: p ? (msRand('ms-apc', mid, month) < 0.2 ? 3 : (msRand('ms-apc2', mid, month) < 0.4 ? 2 : 1)) : 0, mini: msRand('ms-am', mid, month) < 0.75, fromLedger: false };
 }
 /* 月度评分规则配置：规则驱动（编辑即生效，看板/排名/详情同源） */
 const MS_RULES = {
@@ -6826,19 +6829,19 @@ const MS_RULES = {
   pen: [
     { key: 'once',        name: '一次完成率过低',   req: '低于65%', type: 'pct',  th: 65, v: 0.1, st: '启用' },
     { key: 'three',       name: '三日完成率过低',   req: '低于85%', type: 'pct',  th: 85, v: 0.1, st: '启用' },
-    { key: 'jishangRate', name: '计上率过低',       req: '',        type: 'text', v: 0.1, st: '待确认' },
-    { key: 'jishangBad',  name: '计上不规范',       req: '',        type: 'text', v: 0.1, st: '待确认' },
-    { key: 'multiVisit',  name: '多次上门过高',     req: '',        type: 'text', v: 0.1, st: '暂缓' },
-    { key: 'multiPart',   name: '多部品过高',       req: '',        type: 'text', v: 0.1, st: '暂缓' },
+    { key: 'jishangRate', name: '计上率过低',       req: '低于85%', type: 'pct',  cmp: '<', th: 85, v: 0.1, st: '启用' },
+    { key: 'jishangBad',  name: '计上不规范',       req: '高于5%',  type: 'pct',  cmp: '>', th: 5, v: 0.1, st: '启用' },
+    { key: 'multiVisit',  name: '多次上门过高',     req: '超出2次', type: 'count', unit: '次', th: 2, v: 0.1, cap: 0.5, st: '启用' },
+    { key: 'multiPart',   name: '部品数量',         req: '超出3次', type: 'count', unit: '次', th: 3, v: 0.1, cap: 0.5, st: '启用' },
     { key: 'long30',      name: '长期未完工',       req: '≥30天',   type: 'days', cmp: '≥', th: 30, v: 0.1, st: '启用' },
-    { key: 'miniOff',     name: '保养未使用小程序', req: '未正确使用', type: 'cond', v: 0.1, st: '启用' },
+    { key: 'miniOff',     name: '使用保养小程序',   req: '否',      type: 'mini', v: 0.1, cap: 0.5, st: '启用' },
   ],
   examInt: [{ min: 90, v: 0.4 }, { min: 80, v: 0.3 }, { min: 70, v: 0.2 }, { min: 60, v: 0.1 }, { min: 0, v: -0.1 }],  /* 示例值，以客户评分模板为准，可编辑 */
-  u: { k: 0.5, cap: 0.5 },
+  u: { k: 0.1, cap: 0.5 },
   cert: { v: 0.1 },
   lv: { on: [false, false, false, true, true, true], v: [0, 0, 0, 0.5, 0.5, 0.5] },   /* 索引=技术等级 */
-  mini: { v: 0.1, st: '启用' },
-  praise: { v: 0.2, st: '启用' },
+  mini: { v: 0.1, cap: 0.5, st: '启用' },
+  praise: { v: 0.1, st: '启用' },
   cs: { sat: { v: 0.1, cap: 2 }, delay: { v: 0.1, st: '启用' }, dissat: { v: 0.1, st: '启用' } },
 };
 function msSeasonOf(region, month) {
@@ -6865,6 +6868,12 @@ function msScore(mid, month) {
   const disCnt = os.filter(o => o.dissat).length;
   const delayCnt = os.filter(o => o.delay).length;
   const notedCnt = os.filter(o => o.noted).length;
+  const badCnt = os.filter(o => o.badNote).length;
+  const miniYesCnt = os.filter(o => o.miniApp).length;
+  const miniNoCnt = os.length - miniYesCnt;
+  const pJr = msPenOf('jishangRate'), pJb = msPenOf('jishangBad'), pMv = msPenOf('multiVisit'), pMp = msPenOf('multiPart');
+  const visitOverCnt = os.filter(o => o.visits > (pMv.th != null ? pMv.th : 2)).length;
+  const partOverCnt = os.filter(o => o.parts > (pMp.th != null ? pMp.th : 3)).length;
   const aux = msAuxOf(mid, month);
   const exam = 60 + Math.floor(msRand('ms-ex', mid, month) * 40);   /* 当月最高一次考试成绩，按满分100换算百分比 */
   const certCnt = Math.floor(msRand('ms-ct', mid, month) * 4);
@@ -6879,19 +6888,25 @@ function msScore(mid, month) {
   const uBonus = r2(Math.min(uPct / 100 * MS_RULES.u.k, MS_RULES.u.cap));
   const certBonus = r2(certCnt * MS_RULES.cert.v);
   const lvBonus = MS_RULES.lv.on[lv] ? (MS_RULES.lv.v[lv] || 0) : 0;
-  const praiseBonus = aux.praise && MS_RULES.praise.st === '启用' ? MS_RULES.praise.v : 0;
-  const miniBonus = aux.mini && MS_RULES.mini.st === '启用' ? MS_RULES.mini.v : 0;
+  const praiseCnt = aux.praise ? 1 : 0;   /* 台账口径：有表扬信=1份；台账份数字段扩展后直接替换来源 */
+  const praiseBonus = MS_RULES.praise.st === '启用' ? r2(praiseCnt * MS_RULES.praise.v) : 0;
+  const miniBonus = r2(Math.min(MS_RULES.mini.st === '启用' ? miniYesCnt * MS_RULES.mini.v : 0, MS_RULES.mini.cap != null ? MS_RULES.mini.cap : 999));
   const pOnce = msPenOf('once'), pThree = msPenOf('three'), pLong = msPenOf('long30'), pMini = msPenOf('miniOff');
   const oncePen = pOnce.st === '启用' && onceRate < pOnce.th ? pOnce.v : 0;
   const threePen = pThree.st === '启用' && threeRate < pThree.th ? pThree.v : 0;
   const long30Pen = pLong.st === '启用' && long30Cnt > 0 ? pLong.v : 0;
-  const miniPen = pMini.st === '启用' && !aux.mini ? pMini.v : 0;
+  const notedRate = pct(notedCnt), badRate = pct(badCnt);
+  const jishangRatePen = pJr.st === '启用' && notedRate < pJr.th ? pJr.v : 0;
+  const jishangBadPen = pJb.st === '启用' && badRate > pJb.th ? pJb.v : 0;
+  const multiVisitPen = r2(Math.min(pMv.st === '启用' ? visitOverCnt * pMv.v : 0, pMv.cap != null ? pMv.cap : 999));
+  const multiPartPen = r2(Math.min(pMp.st === '启用' ? partOverCnt * pMp.v : 0, pMp.cap != null ? pMp.cap : 999));
+  const miniPen = r2(Math.min(pMini.st === '启用' ? miniNoCnt * pMini.v : 0, pMini.cap != null ? pMini.cap : 999));
   const satBonus = r2(Math.min(satCnt * MS_RULES.cs.sat.v, MS_RULES.cs.sat.cap));
   const delayPen = r2(delayCnt * MS_RULES.cs.delay.v);
   const disPen = r2(disCnt * MS_RULES.cs.dissat.v);
-  const tech = r2(Math.max(0, Math.min(MS_RULES.model.tech, base + examBonus + uBonus + certBonus + lvBonus + praiseBonus + miniBonus - oncePen - threePen - long30Pen - miniPen)));
+  const tech = r2(Math.max(0, Math.min(MS_RULES.model.tech, base + examBonus + uBonus + certBonus + lvBonus + praiseBonus + miniBonus - oncePen - threePen - long30Pen - jishangRatePen - jishangBadPen - multiVisitPen - multiPartPen - miniPen)));
   const cs = r2(Math.max(0, Math.min(MS_RULES.model.cs, satBonus - delayPen - disPen)));
-  return { month, mid, orders: os.length, season, th: tier.min, base, onceRate, threeRate, long30: long30Cnt, uCnt, uPct, satCnt, disCnt, delayCnt, notedCnt, aux, exam, certCnt, lv, examBonus, uBonus, certBonus, lvBonus, praiseBonus, miniBonus, oncePen, threePen, long30Pen, miniPen, satBonus, delayPen, disPen, tech, cs, score: r2(tech + cs) };
+  return { month, mid, orders: os.length, season, th: tier.min, base, onceRate, threeRate, long30: long30Cnt, uCnt, uPct, satCnt, disCnt, delayCnt, notedCnt, notedRate, badCnt, badRate, visitOverCnt, partOverCnt, miniYesCnt, miniNoCnt, praiseCnt, aux, exam, certCnt, lv, examBonus, uBonus, certBonus, lvBonus, praiseBonus, miniBonus, oncePen, threePen, long30Pen, jishangRatePen, jishangBadPen, multiVisitPen, multiPartPen, miniPen, satBonus, delayPen, disPen, tech, cs, score: r2(tech + cs) };
 }
 function msAvg(scores) { return scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length * 100) / 100 : 0; }
 function msOfficeRows(month, region) {
@@ -7056,7 +7071,7 @@ function vMsDetail(el) {
   const dtab = ms.dtab || 'base';
   const pill = (k, lab) => `<span data-act="ms-dtab" data-tab="${k}" style="padding:4px 14px;border-radius:999px;font-size:12px;line-height:1.4;white-space:nowrap;cursor:pointer;${dtab === k ? 'background:var(--e500);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(5,150,105,.28)' : 'color:var(--g500);font-weight:500'}">${lab}</span>`;
   const msTabs = `<div style="display:inline-flex;background:#f1f5f9;border-radius:999px;padding:3px;gap:2px">${pill('base', '基础分规则')}${pill('pen', '扣分规则')}${pill('add', '加分规则')}</div>`;
-  const penSum = -(s.oncePen + s.threePen + s.long30Pen + s.miniPen);
+  const penSum = -(s.oncePen + s.threePen + s.long30Pen + s.jishangRatePen + s.jishangBadPen + s.multiVisitPen + s.multiPartPen + s.miniPen);
   const addSum = s.examBonus + s.uBonus + s.certBonus + s.lvBonus + s.praiseBonus + s.miniBonus;
   const baseRows = `
     <table class="tbl">
@@ -7068,12 +7083,12 @@ function vMsDetail(el) {
       <tr><th>指标名称</th><th>统计结果</th><th class="right">扣分</th></tr>
       ${tr('一次完成率过低', link(s.onceRate + '%', 'once'), s.oncePen ? '-' + s.oncePen.toFixed(2) : '-', s.oncePen)}
       ${tr('三日完成率过低', link(s.threeRate + '%', 'three'), s.threePen ? '-' + s.threePen.toFixed(2) : '-', s.threePen)}
-      ${tr('计上率过低', gray('待统计'), '-')}
-      ${tr('计上不规范', gray('待统计'), '-')}
-      ${tr('多次上门过高', gray('待统计'), '-')}
-      ${tr('多部品过高', gray('待统计'), '-')}
-      ${tr('长期未完工（' + (msPenOf('long30').cmp || '≥') + msPenOf('long30').th + '天）', link(s.long30 + '件', 'long30'), s.long30Pen ? '-' + s.long30Pen.toFixed(2) : '-', s.long30Pen)}
-      ${tr('保养未使用小程序', s.aux.mini ? gray('否') : '<b>是</b>', s.miniPen ? '-' + s.miniPen.toFixed(2) : '-', s.miniPen)}
+      ${tr('计上率过低', link(s.notedRate + '%', 'jishangRate'), s.jishangRatePen ? '-' + s.jishangRatePen.toFixed(2) : '-', s.jishangRatePen)}
+      ${tr('计上不规范', link(s.badRate + '%', 'jishangBad'), s.jishangBadPen ? '-' + s.jishangBadPen.toFixed(2) : '-', s.jishangBadPen)}
+      ${tr('多次上门过高', link(s.visitOverCnt + '件', 'multiVisit'), s.multiVisitPen ? '-' + s.multiVisitPen.toFixed(2) : '-', s.multiVisitPen)}
+      ${tr('部品数量', link(s.partOverCnt + '件', 'multiPart'), s.multiPartPen ? '-' + s.multiPartPen.toFixed(2) : '-', s.multiPartPen)}
+      ${tr('长期未完工', link(s.long30 + '件', 'long30'), s.long30Pen ? '-' + s.long30Pen.toFixed(2) : '-', s.long30Pen)}
+      ${tr('使用保养小程序', link(s.miniNoCnt + '件未使用', 'miniOff'), s.miniPen ? '-' + s.miniPen.toFixed(2) : '-', s.miniPen)}
       ${tr('<b>合计</b>', '', penSum ? penSum.toFixed(2) : '-', !!penSum)}
     </table>`;
   const addRows = `
@@ -7083,8 +7098,8 @@ function vMsDetail(el) {
       ${tr('U单加分', link(s.uPct + '%', 'uorder'), '+' + s.uBonus.toFixed(2))}
       ${tr('有效证书', s.certCnt + '项', '+' + s.certBonus.toFixed(2))}
       ${tr('技术等级加分', s.lv + '级', '+' + s.lvBonus.toFixed(2))}
-      ${tr('保养正确使用小程序', `<a style="color:var(--e600);cursor:pointer" data-act="ms-aux-mini">${s.aux.mini ? '是' : '否'}</a>`, s.miniBonus ? '+' + s.miniBonus.toFixed(2) : '-')}
-      ${tr('表扬信', s.aux.praise ? `<a style="color:var(--e600);cursor:pointer" data-act="ms-aux">有</a>` : gray('无'), s.praiseBonus ? '+' + s.praiseBonus.toFixed(2) : '-')}
+      ${tr('使用保养小程序', link(s.miniYesCnt + '件', 'miniApp'), s.miniBonus ? '+' + s.miniBonus.toFixed(2) : '-')}
+      ${tr('表扬信', s.praiseCnt ? `<a style="color:var(--e600);cursor:pointer" data-act="ms-aux">${s.praiseCnt}</a>` : gray('无'), s.praiseBonus ? '+' + s.praiseBonus.toFixed(2) : '-')}
       ${tr('<b>合计</b>', '', '+' + addSum.toFixed(2), false)}
     </table>`;
   const techBody = dtab === 'pen' ? penRows : dtab === 'add' ? addRows : baseRows;
@@ -7267,8 +7282,10 @@ function saveMsBase(season) {
 }
 /* 2.2 扣分规则 */
 function msrPenReq(p) {
-  if (p.type === 'pct') return '低于' + p.th + '%';
+  if (p.type === 'pct') return (p.cmp === '>' ? '高于' : '低于') + p.th + '%';
   if (p.type === 'days') return (p.cmp || '≥') + p.th + '天';
+  if (p.type === 'count') return esc(p.req);
+  if (p.type === 'mini') return '否';
   return p.req ? esc(p.req) : '<span style="color:var(--g400)">待确认</span>';
 }
 function msrPenBody() {
@@ -7277,7 +7294,7 @@ function msrPenBody() {
     ${MS_RULES.pen.map(p => `<tr>
       <td style="font-weight:600">${esc(p.name)}</td>
       <td>${msrPenReq(p)}</td>
-      <td class="right">${p.v}分</td>
+      <td class="right">${p.type === 'count' || p.type === 'mini' ? p.v + '分/单' : p.v + '分'}</td>
       <td>${msStBadge(p.st)}</td>
       <td class="right">${msrEditBtn('msr-pen-edit', 'data-key="' + p.key + '"')}</td></tr>`).join('')}
     </table>
@@ -7287,14 +7304,17 @@ function msrPenBody() {
 function openMsPenEdit(key) {
   const p = msPenOf(key); if (!p.name) return;
   let reqField = '';
-  if (p.type === 'pct') reqField = `<div class="field2"><label><span style="color:var(--r500)">*</span> 百分比阈值</label><input type="number" min="0" max="100" class="input" id="pf-th" value="${p.th}"><div style="font-size:12px;color:var(--g400);margin-top:4px">低于该阈值触发扣分</div></div>`;
+  if (p.type === 'pct') reqField = `<div class="field2"><label><span style="color:var(--r500)">*</span> 百分比阈值 <span class="wtip tip-b" data-tip="${p.cmp === '>' ? '高于该阈值触发扣分' : '低于该阈值触发扣分'}"><i class="ri-error-warning-line" style="font-size:14px"></i></span></label><input type="number" min="0" max="100" class="input" id="pf-th" value="${p.th}"></div>`;
+  else if (p.type === 'count') reqField = `<div class="field2"><label><span style="color:var(--r500)">*</span> 超出次数 <span class="wtip tip-b" data-tip="单工单超出该值即计入超标工单，按超标工单数累计扣分"><i class="ri-error-warning-line" style="font-size:14px"></i></span></label><input type="number" min="0" class="input" id="pf-th" value="${p.th}"></div>`;
+  else if (p.type === 'mini') reqField = `<div class="field2"><label>判断条件</label><input class="input" value="否" readonly style="background:var(--g50);color:var(--g500)"></div>`;
   else if (p.type === 'days') reqField = `<div class="field2"><label><span style="color:var(--r500)">*</span> 指标要求</label><div style="display:flex;gap:8px;align-items:center"><select class="select" id="pf-cmp" style="width:80px">${['≥', '＞'].map(c => `<option${(p.cmp || '≥') === c ? ' selected' : ''}>${c}</option>`).join('')}</select><input type="number" min="1" class="input" id="pf-th" style="width:110px" value="${p.th}">天</div></div>`;
   else if (p.type === 'cond') reqField = `<div class="field2"><label>判断条件</label><input class="input" id="pf-req" value="${esc(p.req)}"></div>`;
   else reqField = `<div class="field2"><label>指标要求</label><input class="input" id="pf-req" value="${esc(p.req)}" placeholder="待客户确认后填写"></div>`;
   openModal(modalHead('编辑' + p.name, '') + `
     <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
       ${reqField}
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 扣分值</label><input type="number" step="0.1" min="0" class="input" id="pf-v" value="${p.v}"></div>
+      <div class="field2"><label><span style="color:var(--r500)">*</span> 扣分值${p.type === 'count' || p.type === 'mini' ? '（每单）' : ''}</label><input type="number" step="0.1" min="0" class="input" id="pf-v" value="${p.v}"></div>
+      ${(p.type === 'count' || p.type === 'mini') ? `<div class="field2"><label><span style="color:var(--r500)">*</span> 累计扣分上限</label><input type="number" step="0.1" min="0" class="input" id="pf-cap" value="${p.cap != null ? p.cap : ''}"></div>` : ''}
       <div class="field2"><label>状态</label><select class="select" id="pf-st">${['启用', '停用', '待确认', '暂缓'].map(s => `<option${p.st === s ? ' selected' : ''}>${s}</option>`).join('')}</select></div>
     </div></div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
@@ -7308,8 +7328,11 @@ function saveMsPen(key) {
   const req = (p.type === 'text' || p.type === 'cond') ? $('#pf-req').value.trim() : p.req;
   if ((p.type === 'text' || p.type === 'cond') && !req && st === '启用') { toast('指标要求未确认，状态不能设为启用'); return; }
   p.v = v; p.st = st;
-  if (p.type === 'pct' || p.type === 'days') p.th = +$('#pf-th').value;
-  if (p.type === 'days') p.cmp = $('#pf-cmp').value;
+  if (p.type === 'pct' || p.type === 'count') p.th = +$('#pf-th').value;
+  if (p.type === 'pct') p.req = (p.cmp === '>' ? '高于' : '低于') + p.th + '%';
+  if (p.type === 'count') { const cap = +$('#pf-cap').value; if (!(cap >= 0)) { toast('请输入有效累计上限'); return; } p.cap = cap; p.req = '超出' + p.th + '次'; }
+  if (p.type === 'mini') { const cap = +$('#pf-cap').value; if (!(cap >= 0)) { toast('请输入有效累计上限'); return; } p.cap = cap; }
+  if (p.type === 'days') { p.th = +$('#pf-th').value; p.cmp = $('#pf-cmp').value; }
   if (p.type === 'text' || p.type === 'cond') p.req = req;
   closeModal(); toast('扣分规则已保存'); renderView(APP.view);
 }
@@ -7320,11 +7343,11 @@ function msrBonusBody() {
   const lvScore = [3, 4, 5].filter(l => lv.on[l]).map(l => l + '级 ' + lv.v[l] + '分').join('、') || '—';
   const rows = [
     ['等级考试成绩', '按考试成绩百分比区间匹配', '按区间', 'msr-exam-edit', '配置区间'],
-    ['U单加分', 'U单数量÷总工单数量×' + MS_RULES.u.k, '最高' + MS_RULES.u.cap + '分', 'msr-u-edit', '编辑'],
+    ['U单加分', '按U单占比累计', MS_RULES.u.k + '分/单', 'msr-u-edit', '编辑'],
     ['有效证书', '每项有效证书', MS_RULES.cert.v + '分/项', 'msr-cert-edit', '编辑'],
     ['技术等级加分', lvTxt, lvScore, 'msr-lv-edit', '编辑'],
-    ['保养正确使用小程序', '正确使用', MS_RULES.mini.v + '分', 'msr-mini-edit', '编辑'],
-    ['表扬信', '有表扬信', MS_RULES.praise.v + '分', 'msr-praise-edit', '编辑'],
+    ['使用保养小程序', '按单累计', MS_RULES.mini.v + '分/单', 'msr-mini-edit', '编辑'],
+    ['表扬信', '按份数累计', MS_RULES.praise.v + '分/份', 'msr-praise-edit', '编辑'],
   ];
   return `<div class="card">
     <table class="tbl"><tr><th>指标项</th><th class="right">分值</th><th class="right">操作</th></tr>
@@ -7412,11 +7435,12 @@ function saveMsLv() {
 }
 function openMsBonusEdit(kind) {
   const r = MS_RULES[kind];
-  const name = kind === 'mini' ? '保养正确使用小程序' : '表扬信';
+  const name = kind === 'mini' ? '使用保养小程序' : '表扬信';
   openModal(modalHead('编辑' + name, '') + `
     <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field2"><label>判断条件</label><input class="input" value="${kind === 'mini' ? '正确使用' : '有表扬信'}" readonly style="background:var(--g50);color:var(--g500)"></div>
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 加分值</label><input type="number" step="0.1" min="0" class="input" id="nf-v" value="${r.v}"></div>
+      <div class="field2"><label>判断条件</label><input class="input" value="${kind === 'mini' ? '是' : '按表扬信数加分'}" readonly style="background:var(--g50);color:var(--g500)"></div>
+      <div class="field2"><label><span style="color:var(--r500)">*</span> 加分值${kind === 'mini' ? '（每单）' : '（每份）'}</label><input type="number" step="0.1" min="0" class="input" id="nf-v" value="${r.v}"></div>
+      ${kind === 'mini' ? `<div class="field2"><label><span style="color:var(--r500)">*</span> 累计加分上限</label><input type="number" step="0.1" min="0" class="input" id="nf-cap" value="${r.cap != null ? r.cap : ''}"></div>` : ''}
       <div class="field2"><label>状态</label><select class="select" id="nf-st">${['启用', '停用'].map(s => `<option${r.st === s ? ' selected' : ''}>${s}</option>`).join('')}</select></div>
     </div></div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
@@ -7425,6 +7449,7 @@ function openMsBonusEdit(kind) {
 function saveMsBonusEdit(kind) {
   const v = +$('#nf-v').value;
   if (!(v >= 0)) { toast('请输入有效分值'); return; }
+  if (kind === 'mini') { const cap = +$('#nf-cap').value; if (!(cap >= 0)) { toast('请输入有效累计上限'); return; } MS_RULES.mini.cap = cap; }
   MS_RULES[kind].v = v; MS_RULES[kind].st = $('#nf-st').value;
   closeModal(); toast('加分规则已保存'); renderView(APP.view);
 }
@@ -7544,6 +7569,7 @@ function msDrawerBody(mid, month) {
         <td>${kpiYesNo(o.gap <= 1)}</td>
         <td>${kpiYesNo(o.first === o.complete)}</td>
         <td>${kpiYesNo(msDayDiff(o.first, o.complete) <= 2)}</td>
+        
       </tr>`).join('') : '<tr><td colspan="9"><div class="empty"><i class="ri-inbox-line"></i>暂无工单明细</div></td></tr>'}
     </table>`;
 }
@@ -7556,14 +7582,15 @@ function openMsKpiDrawer(mid, month) {
 function openMsAuxRecordDrawer(mid, month) {
   const m = msMemberOf(mid); if (!m) return;
   const a = msAuxOf(mid, month);
+  const pc = a.praiseCnt || (a.praise ? 1 : 0);
   const row = (k, v) => `<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`;
   openDrawer(drawerHead('', '月度评分辅助台账', esc(m.name + ' · ' + MS_MONTH_LABEL(month))) + `
     ${row('姓名', alInnerBadge(m.name) + esc(m.name))}
     ${row('工号', esc(m.id))}
     ${row('评分日期', month)}
-    ${row('所属事务所', esc(m.office))}
-    ${row('有无表扬信', a.praise ? '<span style="color:var(--e600)">有</span>' : '<span style="color:var(--g400)">无</span>')}
-    ${row('是否正确使用小程序', kpiYesNo(a.mini))}
+    ${row('事务所编码', esc(MONTH_OFFICE_CODES[m.office] || '—'))}
+    ${row('事务所名称', esc(m.office))}
+    ${row('表扬信数（份）', pc ? '<span style="color:var(--e600)">' + pc + '</span>' : '<span style="color:var(--g400)">无</span>')}
   `);
 }
 function openMsOrderDrawer(o) {
@@ -7591,14 +7618,15 @@ function openMsOrderDrawer(o) {
 function openMsAuxDrawer(mid, month) {
   const m = msMemberOf(mid);
   const s = msScore(mid, month);
-  const recs = [1, 2].slice(0, 1 + Math.floor(msRand('ms-pr', mid, month) * 2)).map(i => ({
-    date: msAddDays(month.replace('.', '-') + '-05', Math.floor(msRand('ms-prd', mid, month, i) * 20)),
-    from: ['上海第一人民医院', '虹桥万象城物业', '杭州大厦客户服务中心', '广州天河写字楼租户'][Math.floor(msRand('ms-prf', mid, month, i) * 4)],
-  }));
+  const pc = s.aux.praiseCnt || (s.aux.praise ? 1 : 0);
   const row = (k, v) => `<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`;
-  openDrawer(drawerHead('', '表扬信记录', esc((m || {}).name + ' · ' + MS_MONTH_LABEL(month))) + `
-    ${s.aux.praise ? recs.map(r => row('表扬信', r.date + ' · ' + esc(r.from) + ' · 客户来信表扬服务及时、处理专业')).join('') : '<div class="empty"><i class="ri-inbox-line"></i>当月无表扬信记录</div>'}
-    <div style="font-size:12px;color:var(--g500);margin-top:12px">数据来源：月度评分辅助台账（台账管理）</div>
+  openDrawer(drawerHead('', '月度评分辅助台账', esc((m || {}).name + ' · ' + MS_MONTH_LABEL(month))) + `
+    ${row('姓名', alInnerBadge((m || {}).name) + esc((m || {}).name))}
+    ${row('工号', esc((m || {}).id))}
+    ${row('评分日期', month)}
+    ${row('事务所编码', esc(MONTH_OFFICE_CODES[(m || {}).office] || '—'))}
+    ${row('事务所名称', esc((m || {}).office))}
+    ${row('表扬信数（份）', pc ? '<span style="color:var(--e600)">' + pc + '</span>' : '<span style="color:var(--g400)">无</span>')}
   `);
 }
 
@@ -13514,7 +13542,7 @@ let examSEState = { id: null, qs: [], sel: {}, ans: {}, q: 0, deadline: 0, start
 const svgImg = s => 'data:image/svg+xml;utf8,' + encodeURIComponent(s);
 const DEMO_IMG_CYCLE = svgImg(`<svg xmlns="http://www.w3.org/2000/svg" width="560" height="200" viewBox="0 0 560 200"><rect width="560" height="200" rx="10" fill="#f8fafc"/><text x="280" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">制冷系统循环示意图</text><rect x="42" y="78" width="108" height="62" rx="9" fill="#ffffff" stroke="#10b981" stroke-width="1.6"/><text x="96" y="114" text-anchor="middle" font-size="13" fill="#059669">压缩机</text><rect x="228" y="78" width="108" height="62" rx="9" fill="#ffffff" stroke="#10b981" stroke-width="1.6"/><text x="282" y="114" text-anchor="middle" font-size="13" fill="#059669">冷凝器</text><rect x="414" y="78" width="108" height="62" rx="9" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6"/><text x="468" y="114" text-anchor="middle" font-size="13" fill="#64748b">节流装置</text><line x1="152" y1="109" x2="222" y2="109" stroke="#10b981" stroke-width="2"/><polygon points="222,109 212,104 212,114" fill="#10b981"/><line x1="338" y1="109" x2="408" y2="109" stroke="#94a3b8" stroke-width="2"/><polygon points="408,109 398,104 398,114" fill="#94a3b8"/><path d="M 468 142 L 468 172 L 96 172 L 96 144" fill="none" stroke="#10b981" stroke-width="2"/><polygon points="96,142 91,152 101,152" fill="#10b981"/><text x="282" y="190" text-anchor="middle" font-size="11" fill="#94a3b8">制冷剂依次经过四大部件完成循环</text></svg>`);
 const DEMO_IMG_SAFE = svgImg(`<svg xmlns="http://www.w3.org/2000/svg" width="560" height="180" viewBox="0 0 560 180"><rect width="560" height="180" rx="10" fill="#fffbeb"/><text x="280" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">维修安全检查要点提示</text><rect x="60" y="52" width="14" height="14" rx="3" fill="#10b981"/><text x="86" y="64" font-size="12.5" fill="#78350f">作业前挂牌上锁，告知相关人员</text><rect x="60" y="88" width="14" height="14" rx="3" fill="#10b981"/><text x="86" y="100" font-size="12.5" fill="#78350f">确认配电开关处于断开位置并验电</text><rect x="60" y="124" width="14" height="14" rx="3" fill="#10b981"/><text x="86" y="136" font-size="12.5" fill="#78350f">释放系统残压后方可拆装部件</text></svg>`);
-/* 演示卷 5 个题号：单选 10 + 判断 10 + 填空单空 10 + 填空多空 20 + 填空大题（2小题4空）50 = 100 分 */
+/* 演示卷 6 个题号：单选 10 + 判断 10 + 填空单空 10 + 填空多空 20 + 填空多空带图 20 + 填空大题（2小题4空）50 = 120 分 */
 const DEMO_FILL_QS = [
   { type: '单选', text: '售后服务工程师在与客户沟通时，以下哪种做法是正确的？', opts: ['A. 直接告知客户无法解决', 'B. 专业解答并告知处理进度', 'C. 使用技术术语不作解释', 'D. 只处理故障不回应咨询'], ans: [1], score: 10 },
   { type: '判断', text: '售后维修完成后，即使故障已排除，也必须进行试运行确认，并请客户签字确认。', opts: ['A. 正确', 'B. 错误'], ans: [0], score: 10 },
@@ -13523,12 +13551,16 @@ const DEMO_FILL_QS = [
     { lead: '制冷系统中，负责压缩制冷剂的是：', ans: ['压缩机'] },
     { lead: '负责冷凝散热的是：', ans: ['冷凝器'] },
   ] },
-  { type: '填空', compound: true, title: '故障诊断练习', stem: '某空调设备运行过程中出现制冷效果下降，请根据维修知识和下图回答以下问题。', img: [DEMO_IMG_CYCLE], score: 50, subs: [
+  { type: '填空', text: '请观察下图所示的制冷系统循环示意图，回答以下问题。', img: [DEMO_IMG_CYCLE], score: 20, blanks: [
+    { lead: '负责对制冷剂进行压缩的部件是：', ans: ['压缩机'] },
+    { lead: '承担制冷剂降压节流作用的部件是：', ans: ['节流装置', '膨胀阀', '节流阀'] },
+  ] },
+  { type: '填空', compound: true, title: '故障诊断练习', stem: '某空调设备运行过程中出现制冷效果下降，请根据维修知识和下图回答以下问题。', img: [DEMO_IMG_SAFE], score: 50, subs: [
     { text: '制冷系统检查', blanks: [
       { lead: '负责压缩制冷剂的是：', ans: ['压缩机'] },
       { lead: '负责冷凝散热的是：', ans: ['冷凝器'] },
     ] },
-    { text: '维修安全检查', img: [DEMO_IMG_SAFE], blanks: [
+    { text: '维修安全检查', blanks: [
       { lead: '维修前首先确认：', ans: ['断电', '切断电源', '电源断开'] },
       { lead: '维修完成后需要检查：', ans: ['试运行', '运行状态', '试机'] },
     ] },
@@ -13637,34 +13669,56 @@ function seNavRefresh() {
   const pg = $('#se-prog-txt');
   if (pg) pg.textContent = `已答 ${c.full}${c.part ? ` · 部分作答 ${c.part}` : ''} · 未答 ${c.none}`;
 }
-/* 普通填空题（单空/多空）：题干完整，每个空位独立输入框 */
+/* 题干空位标记：与题库编辑端同款蓝色chip（空1、空2…）；题干未写空位标记时不强插 */
+function fillStemChips(text, n) {
+  const parts = String(text || '').split(/(【空\d+】|_{2,}|（\s*）)/g);
+  let k = 0;
+  return parts.map(seg => {
+    if (!seg) return '';
+    if (/^(【空\d+】|_{2,}|（\s*）)$/.test(seg) && k < n) { k++; return '<span style="display:inline-block;background:#eef4ff;color:#2b6de8;border:1px solid #c6d9ff;border-radius:5px;padding:0 7px;font-size:12px;font-weight:700;margin:0 3px;vertical-align:middle;user-select:none">空' + k + '</span>'; }
+    return esc(seg);
+  }).join('');
+}
+/* 普通填空题（单空/多空/带图）：题目内容（题干chip→图片→引导句带空N标记）在上，全部输入框统一排在最后作答区，不与题目文字交替 */
 function fillBodyHTML(item, ansArr, qNo) {
-  const rows = item.blanks.map((b, i) =>
-    `${b.lead ? `<div class="fill-lead">${esc(b.lead)}</div>` : ''}<input class="fill-input" data-blank="${i}" placeholder="请输入答案" value="${esc(ansArr[i] || '')}">`
-  ).join('');
+  const n = item.blanks.length;
+  const leads = item.blanks.map((b, i) => b.lead ? '<div class="fill-lead" style="display:flex;align-items:center;gap:2px">' + '<span style="display:inline-block;background:#eef4ff;color:#2b6de8;border:1px solid #c6d9ff;border-radius:5px;padding:0 6px;font-size:12px;font-weight:700;margin-right:6px;vertical-align:middle;user-select:none">空' + (i + 1) + '</span>' + '<span>' + esc(b.lead) + '</span></div>' : '').join('');
+  const rows = item.blanks.map((b, i) => {
+    const lab = n > 1 ? `<span style="flex:none;font-size:12px;font-weight:700;color:#2b6de8;white-space:nowrap">空${i + 1}</span>` : '';
+    return `<div style="display:flex;align-items:center;gap:8px;margin-top:6px">${lab}<input class="fill-input" style="flex:1;margin-top:0" data-blank="${i}" placeholder="请输入答案" value="${esc(ansArr[i] || '')}"></div>`;
+  }).join('');
+  const boxed = item.blanks.some(b => b.lead) || n > 1;
   return `<div class="q-card">
-    <div style="font-size:14.5px;font-weight:600;color:var(--g800);line-height:1.7">${qNo}. ${esc(item.text)} <span style="font-size:12px;color:var(--g400);font-weight:400">（${item.score} 分）</span></div>
-    <div style="margin-top:6px">${rows}</div>
+    <div style="font-size:14.5px;font-weight:600;color:var(--g800);line-height:1.7">${qNo}. ${fillStemChips(item.text, n)} <span style="font-size:12px;color:var(--g400);font-weight:400">（${item.score} 分）</span></div>
+    ${(item.img || []).length ? `<div style="margin-top:10px">${item.img.map(src => `<img class="q-img" src="${src}" alt="题目图片">`).join('')}</div>` : ''}
+    ${leads ? `<div style="margin-top:4px">${leads}</div>` : ''}
+    <div style="${boxed ? 'margin-top:10px;padding-top:10px;border-top:1px dashed var(--g200)' : 'margin-top:6px'}">${rows}</div>
   </div>`;
 }
-/* 填空大题：公共题干+大题图 → 小题依次（小题图在下，空位输入框归属各小题），仍只占一个题号 */
+/* 填空大题：大题标题 → 图片 → 小题依次（仅题目内容：小题文字+引导句带空N标记归位）→ 底部作答区按顺序集中全部空位输入框，仍只占一个题号 */
 function compoundBodyHTML(item, ansArr, qNo) {
   let bi = 0;
+  const allImg = (item.img || []).slice();
+  (item.subs || []).forEach(s => (s.img || []).forEach(x => allImg.push(x)));
   const subs = item.subs.map((s, si) => {
-    const inputs = s.blanks.map(b => {
+    const leads = s.blanks.map(b => {
       const idx = bi++;
-      return `${b.lead ? `<div class="fill-lead">${esc(b.lead)}</div>` : ''}<input class="fill-input" data-blank="${idx}" placeholder="请输入答案" value="${esc(ansArr[idx] || '')}">`;
+      return b.lead ? '<div class="fill-lead" style="display:flex;align-items:center;gap:2px;margin-top:8px">' + '<span style="display:inline-block;background:#eef4ff;color:#2b6de8;border:1px solid #c6d9ff;border-radius:5px;padding:0 6px;font-size:12px;font-weight:700;margin-right:6px;vertical-align:middle;user-select:none">空' + (idx + 1) + '</span>' + '<span>' + esc(b.lead) + '</span></div>' : '';
     }).join('');
     return `<div class="q-sub">
       <div style="font-size:13.5px;font-weight:700;color:var(--g800)">（${si + 1}）${esc(s.text)}</div>
-      ${(s.img || []).length ? `<div style="margin-top:8px">${s.img.map(src => `<img class="q-img" src="${src}" alt="小题图片">`).join('')}</div>` : ''}
-      <div>${inputs}</div>
+      ${leads ? `<div>${leads}</div>` : ''}
     </div>`;
   }).join('');
+  const allBlanks = item.subs.reduce((a, s2) => a.concat(s2.blanks), []);
+  const inputs = allBlanks.map((b, idx) =>
+    `<div style="display:flex;align-items:center;gap:8px;margin-top:6px"><span style="flex:none;font-size:12px;font-weight:700;color:#2b6de8;white-space:nowrap">空${idx + 1}</span><input class="fill-input" style="flex:1;margin-top:0" data-blank="${idx}" placeholder="请输入答案" value="${esc(ansArr[idx] || '')}"></div>`
+  ).join('');
   return `<div class="q-card">
     <div style="font-size:14.5px;font-weight:600;color:var(--g800);line-height:1.7">${qNo}. ${esc(item.title || '')} <span style="font-size:12px;color:var(--g400);font-weight:400">（${item.score} 分）</span></div>
-    ${(item.img || []).length ? `<div style="margin-top:10px">${item.img.map(src => `<img class="q-img" src="${src}" alt="大题图片">`).join('')}</div>` : ''}
+    ${allImg.length ? `<div style="margin-top:10px">${allImg.map(src => `<img class="q-img" src="${src}" alt="大题图片">`).join('')}</div>` : ''}
     <div style="margin-top:12px">${subs}</div>
+    <div style="margin-top:11px;padding-top:11px;border-top:1px dashed var(--g200)">${inputs}</div>
   </div>`;
 }
 /* 图片放大预览：点击开/点任意处关，保持原始比例 */
@@ -14082,7 +14136,7 @@ function ensureQai(q) {
     else if (sum !== total) q.score = sum;             /* 导入解析带出分值：以空分值合计为准 */
   } else {
     qSplitPoints(q.ansText || '').forEach(c => pts.push({ score: 0, key: c, syn: qSynOf(c), neg: '', mode: Q_MODE_SEM }));
-    if (!pts.length) pts.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_SEM });
+    if (!pts.length) pts.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_SEM, parse: '' });
     qDistScore(pts, +q.score || 0);
   }
   q.ai = { on: q.ai ? q.ai.on !== false : true, points: pts, history: (q.ai && q.ai.history) || [] };
@@ -14150,8 +14204,8 @@ function qfInitAiForType(st) {
   if (st.type === '填空') {
     if (st.subs && st.subs.length) {
       st.ai.points = [];
-      st.subs.forEach(s2 => { for (let k = 0; k < (+s2.blankCnt || 0); k++) st.ai.points.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW }); });
-      if (!st.ai.points.length) st.ai.points.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW });
+      st.subs.forEach(s2 => { for (let k = 0; k < (+s2.blankCnt || 0); k++) st.ai.points.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW, parse: '' }); });
+      if (!st.ai.points.length) st.ai.points.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW, parse: '' });
       qRedistSubs();
       return;
     }
@@ -14163,7 +14217,7 @@ function qfInitAiForType(st) {
     });
   } else {
     st.ai.points = qSplitPoints(src).map(c => ({ score: 0, key: c, syn: qSynOf(c), neg: '', mode: Q_MODE_SEM }));
-    if (!st.ai.points.length) st.ai.points = [{ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_SEM }];
+    if (!st.ai.points.length) st.ai.points = [{ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_SEM, parse: '' }];
   }
   const total = +(($('#q-f-score') || {}).value || 0);
   if (total > 0) qDistScore(st.ai.points, total);
@@ -14173,7 +14227,7 @@ function qfValidateAi() {
   if (st.type !== '填空' && st.type !== '简答') return false;
   const pts = st.ai.points;
   if (!pts.length) { toast('请至少维护一行采分点', 'error'); return true; }
-  if (st.type === '填空' && pts.some(p => !p.key.trim())) { toast('请填写每个空的标准答案', 'error'); return true; }
+  if (st.type === '填空' && pts.some(p => !p.key.trim())) { toast('请填写每个空的正确答案', 'error'); return true; }
   if (st.type === '简答' && pts.some(p => !p.key.trim())) { toast('采分要点不能为空，请补全或重新生成', 'error'); return true; }
   const total = +(($('#q-f-score') || {}).value || 0);
   const sum = qPointsSum(pts);
@@ -14205,7 +14259,7 @@ function qfAiGenApply() {
   } else {
     const total = +(($('#q-f-score') || {}).value || 0);
     st.ai.points = qSplitPoints(srcText).map(c => ({ score: 0, key: c, syn: qSynOf(c), neg: '', mode: Q_MODE_SEM }));
-    if (!st.ai.points.length) st.ai.points = [{ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_SEM }];
+    if (!st.ai.points.length) st.ai.points = [{ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_SEM, parse: '' }];
     if (total > 0) qDistScore(st.ai.points, total);
   }
   renderQAi();
@@ -14314,7 +14368,7 @@ function qfSubInsertMain() {
   const det = qCountBlanks(qStemText());
   const cur = +st.stemBlankCnt || 0;
   if (det > cur) {
-    const add = Array.from({ length: det - cur }, () => ({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW }));
+    const add = Array.from({ length: det - cur }, () => ({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW, parse: '' }));
     st.ai.points.splice.apply(st.ai.points, [cur, 0].concat(add));
     st.stemBlankCnt = det;
   }
@@ -14329,7 +14383,7 @@ function qfStemTextSync(v) {
   if (det === cur) { if (el) el.innerHTML = qBlankPreviewHTML(v); qfUpdateBlankHint(); return; }
   if (det > cur) {
     if (st.ai.points.length === 1 && !String(st.ai.points[0].key || '').trim() && !cur) st.ai.points = [];
-    const add = Array.from({ length: det - cur }, () => ({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW }));
+    const add = Array.from({ length: det - cur }, () => ({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW, parse: '' }));
     st.ai.points.splice.apply(st.ai.points, [cur, 0].concat(add));
     st.stemBlankCnt = det;
     if (el) el.innerHTML = qBlankPreviewHTML(v);
@@ -14354,7 +14408,7 @@ function qfSubInsert(i) {
   s.text = qEditableText(el);
   qRenumberAll();
   const rr = qSubRangeOf(i);
-  st.ai.points.splice(rr.start + idx, 0, { score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW });
+  st.ai.points.splice(rr.start + idx, 0, { score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW, parse: '' });
   s.blankCnt = (+s.blankCnt || 0) + 1;
   st.pendingBlankSync = null;
   qRedistSubs();
@@ -14375,7 +14429,7 @@ function qfSubTextSync(i, v) {
     /* 清理无归属的遗留空行（新填空题初始自带的1行空采分点） */
     if (st.ai.points.length === 1 && !String(st.ai.points[0].key || '').trim() && qSubRanges().reduce((a, r) => a + r.cnt, 0) === 0) st.ai.points = [];
     const at = qSubRangeOf(i).start + cur;
-    const add = Array.from({ length: det - cur }, () => ({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW }));
+    const add = Array.from({ length: det - cur }, () => ({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW, parse: '' }));
     st.ai.points.splice.apply(st.ai.points, [at, 0].concat(add));
     s.blankCnt = det; st.pendingBlankSync = null;
     qRenumberAll();
@@ -14432,18 +14486,47 @@ function qfSubResetAll() {
   st.pendingBlankSync = null;
   const np = [];
   st.stemBlankCnt = qCountBlanks(qStemText());
-  for (let k = 0; k < st.stemBlankCnt; k++) np.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW });
-  (st.subs || []).forEach(s => { s.blankCnt = qCountBlanks(s.text); for (let k = 0; k < (+s.blankCnt || 0); k++) np.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW }); });
+  for (let k = 0; k < st.stemBlankCnt; k++) np.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW, parse: '' });
+  (st.subs || []).forEach(s => { s.blankCnt = qCountBlanks(s.text); for (let k = 0; k < (+s.blankCnt || 0); k++) np.push({ score: 0, key: '', syn: '', neg: '', mode: Q_MODE_KW, parse: '' }); });
   const old = st.ai.points; const n = Math.min(old.length, np.length);
-  for (let k = 0; k < n; k++) { np[k].key = old[k].key; np[k].syn = old[k].syn; np[k].neg = old[k].neg || ''; np[k].mode = old[k].mode; if (old[k]._edited) np[k]._edited = true; }
+  for (let k = 0; k < n; k++) { np[k].key = old[k].key; np[k].syn = old[k].syn; np[k].neg = old[k].neg || ''; np[k].mode = old[k].mode; np[k].parse = old[k].parse || ''; if (old[k]._edited) np[k]._edited = true; }
   st.ai.points = np;
   if (st.subs && st.subs.length) qRedistSubs(); else { const total = +(($('#q-f-score') || {}).value || 0); if (total > 0) qDistScore(st.ai.points, total); }
   renderStemAns(); renderQSubs(); renderQAi(); qfUpdateSumTip();
+}
+/* 填空题：按空位逐空的答案解析录入区（无小题=正确答案下方；有小题=所有小题模块下方；全局空编号） */
+function renderQParse() {
+  const box = $('#q-parse-box'); if (!box) return;
+  const st = window.__qEdit; if (!st) return;
+  const single = $('#q-parse-single-wrap');
+  if (st.type !== '填空') {
+    box.style.display = 'none'; box.innerHTML = '';
+    if (single) single.style.display = '';
+    return;
+  }
+  if (single) single.style.display = 'none';
+  const rs = qSubRanges();
+  const totalBlanks = rs.reduce((a, r2) => a + r2.cnt, 0);
+  if (totalBlanks <= 0) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  let rows = '';
+  rs.forEach(r2 => {
+    for (let bi = 0; bi < r2.cnt; bi++) {
+      const gi = r2.start + bi;
+      const p = st.ai.points[gi] || { parse: '' };
+      rows += '<div style="display:flex;align-items:center;gap:8px;margin-top:6px">' +
+        '<span style="font-size:12px;font-weight:700;color:#2b6de8;white-space:nowrap;width:34px">空' + (gi + 1) + '</span>' +
+        '<input class="input" style="flex:1" value="' + esc(p.parse || '') + '" placeholder="空' + (gi + 1) + '的答案解析" data-change="qf-pt-parse" data-i="' + gi + '">' +
+        '</div>';
+    }
+  });
+  box.style.display = '';
+  box.innerHTML = '<div style="border:1px solid var(--g200);border-radius:10px;background:#fff;padding:12px 14px"><div style="font-size:12.5px;font-weight:700;color:var(--g800)">答案解析（按空位顺序填写）</div>' + rows + '</div>';
 }
 /* 题干空位答案录入区（普通/组合模式均可用，全局编号） */
 function renderStemAns() {
   const box = $('#q-stem-ans-box'); if (!box) return;
   const st = window.__qEdit;
+  renderQParse();
   const on = st && st.type === '填空';
   if (!on) { box.style.display = 'none'; box.innerHTML = ''; return; }
   const n = +st.stemBlankCnt || 0;
@@ -14458,10 +14541,10 @@ function renderStemAns() {
       const p = st.ai.points[bi] || { key: '' };
       ans += '<div style="display:flex;align-items:center;gap:8px;margin-top:6px">' +
         '<span style="font-size:12px;font-weight:700;color:#2b6de8;white-space:nowrap;width:34px">空' + (bi + 1) + '</span>' +
-        '<input class="input" style="flex:1" value="' + esc(p.key) + '" placeholder="空' + (bi + 1) + '的标准答案" data-change="qf-stem-ans" data-b="' + bi + '">' +
+        '<input class="input" style="flex:1" value="' + esc(p.key) + '" placeholder="空' + (bi + 1) + '的正确答案" data-change="qf-stem-ans" data-b="' + bi + '">' +
         '<span style="font-size:11.5px;color:var(--g400);white-space:nowrap">' + (+p.score || 0) + ' 分</span></div>';
     }
-    html += '<div style="border:1px solid var(--g200);border-radius:10px;background:#fff;padding:12px 14px"><div style="font-size:12.5px;font-weight:700;color:var(--g800)">正确答案（按空位顺序填写）</div>' + ans + '</div>';
+    html += '<div style="border:1px solid var(--g200);border-radius:10px;background:#fff;padding:12px 14px"><div style="font-size:12.5px;font-weight:700;color:var(--g800)"><span class="req" style="color:var(--r500);margin-right:3px">*</span>正确答案（按空位顺序填写）</div>' + ans + '</div>';
   }
   box.innerHTML = html;
 }
@@ -14469,6 +14552,7 @@ function renderQSubs() {
   const wrap = $('#q-subs-wrap'); const box = $('#q-subs-box'); const bar = $('#q-sub-bar');
   if (!wrap || !box) return;
   const st = window.__qEdit;
+  renderQParse();
   if (!st) return;
   if (st.pendingBlankSync === undefined) st.pendingBlankSync = null;
   if (st.pendingSubDel === undefined) st.pendingSubDel = null;
@@ -14495,7 +14579,7 @@ function renderQSubs() {
       const g = r.start + bi + 1;
       return '<div style="display:flex;align-items:center;gap:8px;margin-top:6px">' +
         '<span style="font-size:12px;font-weight:700;color:#2b6de8;white-space:nowrap;width:34px">空' + g + '</span>' +
-        '<input class="input" style="flex:1" value="' + esc(p.key) + '" placeholder="空' + g + '的标准答案" data-change="qf-sub-ans" data-s="' + i + '" data-b="' + bi + '">' +
+        '<input class="input" style="flex:1" value="' + esc(p.key) + '" placeholder="空' + g + '的正确答案" data-change="qf-sub-ans" data-s="' + i + '" data-b="' + bi + '">' +
         '<span style="font-size:11.5px;color:var(--g400);white-space:nowrap">' + (+p.score || 0) + ' 分</span></div>';
     }).join('');
     return '<div style="border:1px solid var(--g200);border-radius:10px;background:#fff;padding:12px 14px;margin-bottom:10px">' +
@@ -14534,7 +14618,7 @@ function renderQAi() {
     <div data-act="qf-ai-fold" style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none">
       <i class="ri-sparkling-2-line" style="color:var(--a500)"></i>
       <div style="font-size:13.5px;font-weight:700;color:var(--g800)">AI阅卷配置</div>
-      <span class="wtip wide" data-tip="每个空位按顺序对应一行采分点，在此维护各空标准答案、分值与同义表述；简答题按参考答案自动拆分采分要点。"><i class="ri-error-warning-line" style="font-size:14px;color:var(--g400)"></i></span>
+      <span class="wtip wide" data-tip="每个空位按顺序对应一行采分点，在此维护各空采分要点、分值与同义表述；简答题按正确答案自动拆分采分要点。"><i class="ri-error-warning-line" style="font-size:14px;color:var(--g400)"></i></span>
       <div style="flex:1"></div>
       <span style="font-size:11.5px;color:var(--g400)">${st.aiOpen ? '收起' : '展开'}</span>
       <i class="${st.aiOpen ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'}" style="color:var(--g500)"></i>
@@ -14542,7 +14626,7 @@ function renderQAi() {
     ${st.aiOpen ? `
     <div style="margin-top:12px">
     ${st.confirmMode === 'gen' ? `<div style="display:flex;align-items:center;gap:10px;background:#fffbeb;border:1px solid #f2d3a8;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#92600a;flex-wrap:wrap"><i class="ri-alarm-warning-line"></i>AI重新生成将覆盖人工修改过的同义可接受表述<div style="flex:1"></div><button class="btn btn-sm" data-act="qf-gen-cancel">保留人工修改</button><button class="btn btn-primary btn-sm" data-act="qf-ai-gen-yes">覆盖并重新生成</button></div>` : ''}
-    ${st.confirmMode === 'key' ? `<div style="display:flex;align-items:center;gap:10px;background:#fffbeb;border:1px solid #f2d3a8;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#92600a;flex-wrap:wrap"><i class="ri-alarm-warning-line"></i>标准答案已修改，是否覆盖该行人工修改的同义表述？<div style="flex:1"></div><button class="btn btn-sm" data-act="qf-gen-cancel">保留人工修改</button><button class="btn btn-primary btn-sm" data-act="qf-key-over-yes" data-i="${st.pendingIdx}">覆盖重新生成</button></div>` : ''}
+    ${st.confirmMode === 'key' ? `<div style="display:flex;align-items:center;gap:10px;background:#fffbeb;border:1px solid #f2d3a8;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#92600a;flex-wrap:wrap"><i class="ri-alarm-warning-line"></i>正确答案已修改，是否覆盖该行人工修改的同义表述？<div style="flex:1"></div><button class="btn btn-sm" data-act="qf-gen-cancel">保留人工修改</button><button class="btn btn-primary btn-sm" data-act="qf-key-over-yes" data-i="${st.pendingIdx}">覆盖重新生成</button></div>` : ''}
     ${st.used ? `<div class="alert alert-warn" style="margin-bottom:10px;padding:8px 12px;font-size:12.5px"><i class="ri-history-line"></i>该试题已被考试引用，保存后将保留修改前的采分点历史版本${st.ai.history.length ? '（已有 ' + st.ai.history.length + ' 版）' : ''}</div>` : ''}
     ${st.ai.history.length ? `<details style="margin-bottom:10px;font-size:12.5px;color:var(--g600)"><summary style="cursor:pointer">查看历史采分点版本（${st.ai.history.length}）</summary>
       ${st.ai.history.map(h => `<div style="margin:6px 0;padding:8px 12px;background:#fff;border:1px solid var(--g200);border-radius:8px"><b>${esc(h.time)}</b> · ${h.points.length} 个采分点 · 合计 ${qPointsSum(h.points)} 分<div style="color:var(--g500);margin-top:2px">${esc(h.points.map(p => p.key).join('；'))}</div></div>`).join('')}
@@ -14580,12 +14664,18 @@ function openQuestionEdit(id) {
   let aiPts = null, aiOn = true, aiHistory = [], aiOrig = null, imgs = [], used = false, rowSubs = null, subs = [];
   if (q && isAq) {
     const cfg = ensureQai(q);
-    aiPts = cfg.points.map(p => ({ score: p.score, key: p.key, syn: p.syn, neg: p.neg || '', mode: p.mode, _edited: false }));
+    aiPts = cfg.points.map(p => ({ score: p.score, key: p.key, syn: p.syn, neg: p.neg || '', mode: p.mode, parse: p.parse || '', _edited: false }));
+    if (q && type === '填空') {
+      const bp = [];
+      if (q.subs && q.subs.length) q.subs.forEach(s2 => (s2.blanks || []).forEach(b => bp.push(b.parse || s2.parse || '')));
+      else (q.blanks || []).forEach(b => bp.push(b.parse || ''));
+      aiPts.forEach((p, i) => { if (bp[i] && !p.parse) p.parse = bp[i]; });
+    }
     aiOn = cfg.on !== false; aiHistory = (cfg.history || []).slice();
     aiOrig = JSON.parse(JSON.stringify(cfg.points.map(p => ({ score: p.score, key: p.key, syn: p.syn, neg: p.neg || '', mode: p.mode }))));
     used = qUsedInExam(q.id || null);
   } else if (isAq) {
-    aiPts = [{ score: 0, key: '', syn: '', neg: '', mode: type === '填空' ? Q_MODE_KW : Q_MODE_SEM }];
+    aiPts = [{ score: 0, key: '', syn: '', neg: '', mode: type === '填空' ? Q_MODE_KW : Q_MODE_SEM, parse: '' }];
   }
   if (q) { imgs = ensureQImgs(q).map(x => ({ src: x.src, target: x.target || '整道题' })); rowSubs = q.subs || null;
     subs = (q.subs && q.subs.length) ? q.subs.map(s2 => ({ text: s2.text || '', imgs: (s2.imgs || []).map(x => ({ ...x })), blankCnt: (s2.blanks || []).length })) : []; }
@@ -14612,10 +14702,11 @@ function openQuestionEdit(id) {
         </div>
         <div class="field2 full" id="q-stem-ans-box" style="display:none"></div>
         <div class="field2 full" id="q-subs-wrap" style="display:none"><div id="q-subs-box"></div></div>
+        <div class="field2 full" id="q-parse-box" style="display:none"></div>
         <div class="field2 full"><label id="q-opts-label"><span class="req">*</span>选项与正确答案</label>
           <div id="q-opts"></div></div>
+        <div class="field2 full" id="q-parse-single-wrap"><label>答案解析</label><textarea class="textarea" id="q-f-parse" placeholder="选填，用于成绩复盘展示">${q ? esc(q.parse || '') : ''}</textarea></div>
         <div class="field2 full" id="q-ai-wrap" style="display:none"><div id="q-ai-box"></div></div>
-        <div class="field2 full"><label>答案解析</label><textarea class="textarea" id="q-f-parse" placeholder="选填，用于成绩复盘展示">${q ? esc(q.parse || '') : ''}</textarea></div>
         <div class="field2"><label>状态</label><select class="select" id="q-f-status">${['启用', '停用'].map(s => `<option${q && q.status === s ? ' selected' : ''}>${s}</option>`).join('')}</select></div>
       </div>
     </div>
@@ -14715,14 +14806,14 @@ function renderQOpts() {
   const single = st.type !== '多选';
   const prevAns = $('#q-f-ans'); if (prevAns) st.ansText = prevAns.value;
   const isQA = st.type === '简答' || st.type === '填空';
-  const lab = $('#q-opts-label'); if (lab) lab.innerHTML = `<span class="req">*</span>` + (st.type === '简答' ? '参考答案' : st.type === '填空' ? '空位与采分点结构' : '选项与正确答案');
+  const lab = $('#q-opts-label'); if (lab) lab.innerHTML = `<span class="req">*</span>` + (st.type === '简答' ? '正确答案' : st.type === '填空' ? '空位与采分点结构' : '选项与正确答案');
   if (st.type === '填空') {
     box.innerHTML = '';
     if (fld) fld.style.display = 'none';
     return;
   }
   if (isQA) {
-    box.innerHTML = `<textarea class="textarea" id="q-f-ans" placeholder="填写参考答案，由AI自动拆分采分点并生成同义表述，可人工调整">${esc(st.ansText || '')}</textarea>`;
+    box.innerHTML = `<textarea class="textarea" id="q-f-ans" placeholder="填写正确答案，由AI自动拆分采分点并生成同义表述，可人工调整">${esc(st.ansText || '')}</textarea>`;
     return;
   }
   if (st.type === '判断') {
@@ -14757,7 +14848,7 @@ function doQSave() {
       ansText = st.type === '填空'
         ? st.ai.points.map(p => p.key.trim()).filter(Boolean).join('；')
         : ($('#q-f-ans').value || '').trim();
-      if (!ansText) { toast(st.type === '填空' ? '请填写每个空的标准答案' : '请填写参考答案', 'error'); return; }
+      if (!ansText) { toast(st.type === '填空' ? '请填写每个空的正确答案' : '请填写正确答案', 'error'); return; }
       r.blanks = st.type === '填空' ? st.ai.points.map(p => ({ a: p.key.trim() + (p.syn.trim() ? '、' + p.syn.trim() : ''), s: p.score })) : null;
       if (st.type === '填空' && st.subs && st.subs.length) {
         const rs = qSubRanges();
@@ -14805,14 +14896,14 @@ function doQSave() {
     rec = {
       text, type: saveType, cat1: ($('#q-f-cat1').value || '').trim() || '—', cat2: ($('#q-f-cat2').value || '').trim() || '未分类',
       diff: $('#q-f-diff').value, score: +$('#q-f-score').value || 5, status: $('#q-f-status').value,
-      opts: [], ans: [], ansText, parse: ($('#q-f-parse').value || '').trim(),
+      opts: [], ans: [], ansText, parse: st.type === '填空' ? '' : ($('#q-f-parse').value || '').trim(),
       ai: qfAiSnapshot(), imgs: st.imgs.map(x => ({ ...x })), subs: null, stem: '',
     };
     if (st.type === '填空') {
-      rec.blanks = st.ai.points.map(p => ({ a: p.key.trim() + (p.syn.trim() ? '、' + p.syn.trim() : ''), s: p.score }));
+      rec.blanks = st.ai.points.map(p => ({ a: p.key.trim() + (p.syn.trim() ? '、' + p.syn.trim() : ''), s: p.score, parse: p.parse || '' }));
       if (st.subs && st.subs.length) {
         const rs = qSubRanges();
-        rec.subs = st.subs.map((s2, i) => { const rr = rs[i + 1] || { start: 0, cnt: 0 }; return { text: s2.text, imgs: (s2.imgs || []).map(x => ({ ...x })), blanks: st.ai.points.slice(rr.start, rr.start + rr.cnt).map(p => ({ a: p.key.trim() + (p.syn.trim() ? '、' + p.syn.trim() : ''), s: p.score })) }; });
+        rec.subs = st.subs.map((s2, i) => { const rr = rs[i + 1] || { start: 0, cnt: 0 }; const bl = st.ai.points.slice(rr.start, rr.start + rr.cnt).map(p => ({ a: p.key.trim() + (p.syn.trim() ? '、' + p.syn.trim() : ''), s: p.score, parse: p.parse || '' })); return { text: s2.text, imgs: (s2.imgs || []).map(x => ({ ...x })), blanks: bl, parse: bl.map(b => b.parse).filter(Boolean).join('；') }; });
         rec.stem = text;
       }
     }
