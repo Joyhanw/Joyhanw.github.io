@@ -258,6 +258,9 @@ body.sb-collapsed .sb-toggle{left:64px}
 
 /* 表格 */
 .tbl{width:100%;border-collapse:collapse}
+/* 表格内拖拽横移容器 */
+.drag-x{cursor:grab;user-select:none}
+.drag-x.dragging{cursor:grabbing}
 .tbl th{font-size:12px;color:var(--g500);font-weight:600;text-align:left;padding:10px 12px;border-bottom:1px solid var(--g200);background:var(--g50);white-space:nowrap}
 .tbl td{padding:12px;border-bottom:1px solid var(--g100);font-size:13px;color:var(--g700);vertical-align:middle}
 .tbl tbody tr{transition:background .12s}
@@ -1645,6 +1648,8 @@ const PERF_CATS = ['安装调试', '故障维修', '定期保养', '巡检', '�
 const PERF_MODELS = ['FXMQ100', 'RXYQ16', 'FDMA80', 'RZQ71', 'VRV-X8', 'FTXS35'];
 const PERF_STATUS = ['已完工', '处理中', '待派工', '已取消'];
 const PERF_DEALERS = ['大金华东旗舰店', '沪东制冷工程', '申城暖通', '博越机电', '恒信环境'];
+/* 服务类型固定枚举（与KPI台账导入模板下拉选项一致） */
+const KPI_SVC_TYPES = ['维修（C）', '保养（Y）', '一次性清洗（Z）', '工事（R）', 'Solution（P）', '筑能平台（T）'];
 function perfOrders(seId) {
   const seed = seId.split('').reduce((s, c) => s + c.charCodeAt(0), 0);
   const n = 12 + (seed % 7); /* 12~18 条 */
@@ -1676,6 +1681,17 @@ function perfOrders(seId) {
       cust: PERF_DEALERS[k % PERF_DEALERS.length],
       value: 800 + (k % 60) * 120, /* 产值（元） */
       timely: ['当日', '次日', '2日内'][k % 3], /* 上门时效 */
+      svcType: KPI_SVC_TYPES[k % 6],   /* 服务类型 */
+      /* 扩展字段：原价区分/上门次数/部品数量/用户是否满意/是否使用保养小程序（列表与详情共用，粉色展示） */
+      origin: (k % 5) !== 0,
+      parts: 1 + (k % 4),
+      sat: (k % 10) < 6,
+      dissat: (k % 25) === 13,
+      miniApp: (k % 10) !== 3,
+      badNote: (k % 23) === 7,
+      jishangLow: (k % 17) === 5,
+      long30: (k % 19) === 11,
+      delay: (k % 9) === 4,   /* 次日未动单延迟 */
     });
   }
   return out;
@@ -2506,6 +2522,27 @@ document.addEventListener('change', e => {
   const el = e.target.closest('[data-change]');
   if (el) handleAct(el.dataset.change, el);
 });
+/* 表格横向拖拽滚动：按住 .drag-x 容器拖动即横移，位移超 3px 判定为拖拽并吞掉 click，不干扰按钮点击 */
+(function() {
+  let el = null, startX = 0, startLeft = 0, moved = false;
+  document.addEventListener('mousedown', e => {
+    const t = e.target.closest && e.target.closest('.drag-x');
+    if (!t) return;
+    el = t; moved = false; startX = e.clientX; startLeft = t.scrollLeft;
+  });
+  document.addEventListener('mousemove', e => {
+    if (!el) return;
+    const dx = e.clientX - startX;
+    if (!moved && Math.abs(dx) > 3) { moved = true; el.classList.add('dragging'); }
+    if (moved) { e.preventDefault(); el.scrollLeft = startLeft - dx; }
+  });
+  document.addEventListener('mouseup', () => {
+    if (el) { el.classList.remove('dragging'); el = null; }
+  });
+  document.addEventListener('click', e => {
+    if (moved) { moved = false; e.stopPropagation(); e.preventDefault(); }
+  }, true);
+})();
 
 function handleNav(view) {
   APP.view = view; APP.tab = {}; APP.defTaskId = null; APP.defResultId = null; APP.defSeTaskId = null; APP.defSeResultId = null;
@@ -3695,11 +3732,14 @@ function handleAct(act, el) {
     case 'ms-aux-mini': openMsAuxRecordDrawer(msMonthState().mid, msMonthState().month); break;
     /* 月度评分规则配置 */
     case 'msr-tab': { msRuleState().tab = d.tab; renderView(APP.view); break; }
+    case 'msr-bmenu': { msRuleState().bmenu = d.menu; renderView(APP.view); break; }
     case 'msr-sub': { msRuleState().sub = d.sub; renderView(APP.view); break; }
     case 'msr-btab': { msRuleState().btab = d.bt; renderView(APP.view); break; }
     case 'msr-bsub': { msRuleState().bsub = d.bsub; renderView(APP.view); break; }
     case 'msr-model-edit': openMsModelEdit(); break;
     case 'msr-model-save': saveMsModel(); break;
+    case 'msr-limit-edit': openMsLimitEdit(); break;
+    case 'msr-limit-save': saveMsLimit(); break;
     case 'msr-season-edit': openMsSeasonEdit(d.region); break;
     case 'msr-season-save': saveMsSeason(d.region); break;
     case 'msr-base-edit': openMsBaseEdit(d.season); break;
@@ -3724,6 +3764,7 @@ function handleAct(act, el) {
     case 'msr-delay-save': saveMsDelay(); break;
     case 'msr-dissat-edit': openMsDissatEdit(); break;
     case 'msr-dissat-save': saveMsDissat(); break;
+    case 'msr-toggle': msRuleToggle(d.kind, d.key); break;
     case 'ml-del': {
       closeDropdowns();
       const rows = ledgerRowsMonthly();
@@ -4242,10 +4283,20 @@ function _kpiDataTable(orders) {
       + '<td class="right">' + same + '</td>'
       + '<td class="right">' + day1 + '</td>'
       + '<td class="right">' + once + '</td>'
-      + '<td class="right">' + day3 + '</td></tr>';
+      + '<td class="right">' + day3 + '</td>'
+      + '<td>' + esc(o.svcType || '—') + '</td>'
+      + '<td>' + (o.origin ? '<span style="color:var(--e600)">U</span>' : '否') + '</td>'
+      + '<td>' + kpiYesNo((o.visits || 1) > 1) + '</td>'
+      + '<td>' + kpiYesNo((o.parts || 1) > 1) + '</td>'
+      + '<td>' + kpiYesNo(o.badNote) + '</td>'
+      + '<td>' + kpiYesNo(o.jishangLow) + '</td>'
+      + '<td>' + kpiYesNo(o.long30) + '</td>'
+      + '<td>' + kpiYesNo(o.delay) + '</td>'
+      + '<td>' + kpiYesNo(o.sat) + '</td>'
+      + '<td>' + kpiYesNo(o.miniApp) + '</td></tr>';
   }
-  return '<div class="card mt16" style="margin-top:0"><table class="tbl">'
-    + '<tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th class="right">当天出动率</th><th class="right">次日出动率</th><th class="right">一次完成率</th><th class="right">三天完成率</th></tr>'
+  return '<div class="card mt16 drag-x" style="margin-top:0;overflow-x:auto"><table class="tbl" style="min-width:1750px">'
+    + '<tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th class="right">当天出动率</th><th class="right">次日出动率</th><th class="right">一次完成率</th><th class="right">三天完成率</th><th style="color:#ec4899">服务类型</th><th style="color:#ec4899">原价区分</th><th style="color:#ec4899">是否多次上门</th><th style="color:#ec4899">是否多部品</th><th style="color:#ec4899">是否计上不规范</th><th style="color:#ec4899">是否计上</th><th style="color:#ec4899">是否长期未完工</th><th style="color:#ec4899">次日未动单延迟</th><th style="color:#ec4899">用户是否满意</th><th style="color:#ec4899">是否使用保养小程序</th></tr>'
     + rows + '</table></div>';
 }
 const SE_SELF_IDX = 0; // 工程师端固定为本人（张明辉，DEMO.members[0]）
@@ -5691,6 +5742,17 @@ function ensureKpiData() {
           recvDate, firstDate, completeDate,
           ucode, ptCode, ptName, org,
           model: PERF_MODELS[k % PERF_MODELS.length],
+          svcType: KPI_SVC_TYPES[k % 6],   /* 服务类型 */
+          origin: (k % 5) !== 0,
+          visits: 1 + (k % 3),
+          parts: 1 + (k % 4),
+          sat: (k % 10) < 6,
+          dissat: (k % 25) === 13,
+          miniApp: (k % 10) !== 3,
+          badNote: (k % 23) === 7,
+          jishangLow: (k % 17) === 5,
+          long30: (k % 19) === 11,
+          delay: (k % 9) === 4,   /* 次日未动单延迟 */
         });
       }
     });
@@ -5723,6 +5785,9 @@ function kpiInfoIcon(text) {
   return `<i class="ri-information-line" style="margin-left:4px;color:var(--g400);cursor:help" title="${esc(text)}"></i>`;
 }
 function kpiYesNo(v) { return v ? '<span style="color:var(--e600)">是</span>' : '<span style="color:var(--g400)">否</span>'; }
+/* 五个工单扩展字段（原价区分/上门次数/部品数量/用户是否满意/保养小程序）统一粉色展示 */
+function kpiPink(v) { return '<span style="color:#ec4899;font-weight:600">' + v + '</span>'; }
+function kpiPinkYesNo(v) { return kpiPink(v ? '是' : '否'); }
 function kpiRows() {
   ensureKpiData();
   const q = APP.q.kpi || {};
@@ -5991,8 +6056,8 @@ function kpiDrawerBody(r, idx) {
       ${statMini('一次完成率', f.once + '%')}
       ${statMini('三天完成率', f.three + '%')}
     </div>
-    <table class="tbl">
-      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th>${APP.view === 'pb_members' ? '' : '<th>操作</th>'}</tr>
+    <div class="drag-x" style="overflow-x:auto"><table class="tbl" style="min-width:1750px">
+      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th><th style="color:#ec4899">服务类型</th><th style="color:#ec4899">原价区分</th><th style="color:#ec4899">是否多次上门</th><th style="color:#ec4899">是否多部品</th><th style="color:#ec4899">是否计上不规范</th><th style="color:#ec4899">是否计上</th><th style="color:#ec4899">是否长期未完工</th><th style="color:#ec4899">次日未动单延迟</th><th style="color:#ec4899">用户是否满意</th><th style="color:#ec4899">是否使用保养小程序</th>${APP.view === 'pb_members' ? '' : '<th>操作</th>'}</tr>
       ${orders.length ? orders.map(({ o, i }) => `<tr>
         <td class="mono">${o.no}</td>
         <td>${o.recvDate}</td>
@@ -6003,10 +6068,19 @@ function kpiDrawerBody(r, idx) {
         <td>${kpiYesNo(o.nextDay)}</td>
         <td>${kpiYesNo(o.oneTime)}</td>
         <td>${kpiYesNo(o.threeDay)}</td>
-        
+        <td>${esc(o.svcType || '—')}</td>
+        <td>${o.origin ? '<span style="color:var(--e600)">U</span>' : '否'}</td>
+        <td>${kpiYesNo((o.visits || 0) > 1)}</td>
+        <td>${kpiYesNo((o.parts || 0) > 1)}</td>
+        <td>${kpiYesNo(o.badNote)}</td>
+        <td>${kpiYesNo(o.jishangLow)}</td>
+        <td>${kpiYesNo(o.long30)}</td>
+        <td>${kpiYesNo(o.delay)}</td>
+        <td>${kpiYesNo(o.sat)}</td>
+        <td>${kpiYesNo(o.miniApp)}</td>
         ${APP.view === 'pb_members' ? '' : `<td><button class="btn btn-sm btn-danger" data-act="kpi-del-order" data-pidx="${idx}" data-oidx="${i}"><i class="ri-delete-bin-line"></i>删除</button></td>`}
-      </tr>`).join('') : `<tr><td colspan="${APP.view === 'pb_members' ? 9 : 10}"><div class="empty"><i class="ri-inbox-line"></i>暂无工单明细</div></td></tr>`}
-    </table>
+      </tr>`).join('') : `<tr><td colspan="${APP.view === 'pb_members' ? 19 : 20}"><div class="empty"><i class="ri-inbox-line"></i>暂无工单明细</div></td></tr>`}
+    </table></div>
   `;
 }
 function doKpiOrderQuery(idx) {
@@ -6127,6 +6201,17 @@ function ensurePbData() {
             ucode, ptCode: st.code, ptName: st.name,
             org: st.org + ' / ' + st.name,
             model: PERF_MODELS[kk % PERF_MODELS.length],
+            svcType: KPI_SVC_TYPES[kk % 6],   /* 服务类型 */
+            origin: (kk % 5) !== 0,
+            visits: 1 + (kk % 3),
+            parts: 1 + (kk % 4),
+            sat: (kk % 10) < 6,
+            dissat: (kk % 25) === 13,
+            miniApp: (kk % 10) !== 3,
+            badNote: (kk % 23) === 7,
+            jishangLow: (kk % 17) === 5,
+            long30: (kk % 19) === 11,
+            delay: (kk % 9) === 4,   /* 次日未动单延迟 */
           });
         }
       });
@@ -6663,6 +6748,11 @@ function openLedgerOrder(mid, idx) {
     ${row('SE姓名', m.name)}${row('事务所', m.office)}
     ${row('客户', o.cust)}${row('机型型号', o.model)}
     ${row('产值', '¥' + o.value.toLocaleString())}${row('计上日期', o.noteDate)}${row('上门时效', o.timely)}
+    ${row('服务类型', esc(o.svcType || '—'))}${row('原价区分', o.origin ? '<span style="color:var(--e600)">U</span>' : kpiPink('否'))}${row('是否多次上门', kpiPinkYesNo((o.visits || 1) > 1))}
+    ${row('是否多部品', kpiPinkYesNo((o.parts || 1) > 1))}${row('是否计上不规范', kpiPinkYesNo(!!o.badNote))}
+    ${row('是否计上', kpiPinkYesNo(!!o.jishangLow))}${row('是否长期未完工', kpiPinkYesNo(!!o.long30))}${row('次日未动单延迟', kpiPinkYesNo(!!o.delay))}
+    ${row('用户是否满意', kpiPinkYesNo(!!o.sat))}
+    ${row('是否使用保养小程序', kpiPinkYesNo(!!o.miniApp))}
   `);
 }
 /* 实操台账详情 */
@@ -6750,7 +6840,7 @@ function msPool() {
   const pool = [];
   MS_ORG.forEach(rg => rg.offices.forEach(of => {
     DEMO.members.filter(m => m.type === '内' && m.office === of).forEach(m => {
-      pool.push({ id: m.id, name: m.name, office: of, region: rg.name, level: m.level || '3级技师', ucode: (MS_OFFICE_CODES[of] || 'SH01') + (m.seDutyNo || m.id.replace('SE', 'D')), real: true });
+      pool.push({ id: m.id, name: m.name, office: of, region: rg.name, level: m.level || '3级技师', ucode: (MS_OFFICE_CODES[of] || 'SH01') + (m.seDutyNo || m.id.replace('SE', 'D')), real: true, duty: true });
       used.add(m.name);
     });
     let gi = 0;
@@ -6759,7 +6849,7 @@ function msPool() {
       gi++;
       if (used.has(nm)) continue;
       used.add(nm);
-      pool.push({ id: 'SE' + (100 + pool.length), name: nm, office: of, region: rg.name, level: MS_LEVELS[Math.floor(msRand('ms-lv', of, gi) * MS_LEVELS.length)], ucode: (MS_OFFICE_CODES[of] || 'SH01') + 'D' + (100 + pool.length), real: false });
+      pool.push({ id: 'SE' + (100 + pool.length), name: nm, office: of, region: rg.name, level: MS_LEVELS[Math.floor(msRand('ms-lv', of, gi) * MS_LEVELS.length)], ucode: (MS_OFFICE_CODES[of] || 'SH01') + 'D' + (100 + pool.length), real: false, duty: msRand('ms-duty', of, gi) > 0.05 });
     }
   }));
   MS_POOL = pool;
@@ -6805,6 +6895,9 @@ function msOrders(mid, month) {
       sat: msRand('ms-s', mid, month, i) < 0.42,
       dissat: msRand('ms-ds', mid, month, i) < 0.05,
       noted: msRand('ms-nt', mid, month, i) < 0.9,
+      svcType: KPI_SVC_TYPES[i % 6],   /* 服务类型 */
+      origin: msRand('ms-op', mid, month, i) < 0.8,
+      jishangLow: msRand('ms-jl', mid, month, i) < 0.06,
       delay: gap >= 2,
       long30: msDayDiff(recv, complete) >= 30,
     });
@@ -6821,28 +6914,38 @@ function msAuxOf(mid, month) {
 /* 月度评分规则配置：规则驱动（编辑即生效，看板/排名/详情同源） */
 const MS_RULES = {
   model: { cycle: '月度', total: 5, tech: 3, cs: 2 },
+  limit: { add: 5, deduct: 5 },   /* 统一加分上限 / 统一扣分上限（各指标累计通用） */
   season: { 华东区域: { peak: [6, 7, 8, 9] }, 华南区域: { peak: [6, 7, 8, 9] } },   /* 旺季月份，淡季自动取余 */
   base: {
     peak: [{ min: 50, s: 3 }, { min: 40, s: 2.8 }, { min: 0, s: 2.5 }],
     off:  [{ min: 15, s: 3 }, { min: 10, s: 2.8 }, { min: 0, s: 2.5 }],
   },
   pen: [
-    { key: 'once',        name: '一次完成率过低',   req: '低于65%', type: 'pct',  th: 65, v: 0.1, st: '启用' },
-    { key: 'three',       name: '三日完成率过低',   req: '低于85%', type: 'pct',  th: 85, v: 0.1, st: '启用' },
-    { key: 'jishangRate', name: '计上率过低',       req: '低于85%', type: 'pct',  cmp: '<', th: 85, v: 0.1, st: '启用' },
-    { key: 'jishangBad',  name: '计上不规范',       req: '高于5%',  type: 'pct',  cmp: '>', th: 5, v: 0.1, st: '启用' },
-    { key: 'multiVisit',  name: '多次上门过高',     req: '超出2次', type: 'count', unit: '次', th: 2, v: 0.1, cap: 0.5, st: '启用' },
-    { key: 'multiPart',   name: '部品数量',         req: '超出3次', type: 'count', unit: '次', th: 3, v: 0.1, cap: 0.5, st: '启用' },
-    { key: 'long30',      name: '长期未完工',       req: '≥30天',   type: 'days', cmp: '≥', th: 30, v: 0.1, st: '启用' },
-    { key: 'miniOff',     name: '使用保养小程序',   req: '否',      type: 'mini', v: 0.1, cap: 0.5, st: '启用' },
+    { key: 'once',        name: '一次完成率过低',   type: 'rate', cmp: '≤', th: 65, v: 0.1, st: '启用',
+      tip: '一次完成率＝一次完成工单数÷总工单数×100%。满足配置阈值时，扣除固定分值' },
+    { key: 'three',       name: '三日完成率过低',   type: 'rate', cmp: '≤', th: 85, v: 0.1, st: '启用',
+      tip: '三日完成率＝三日内完成工单数÷总工单数×100%。满足配置阈值时，扣除固定分值' },
+    { key: 'jishangRate', name: '计上率过低',       type: 'flagRate', cond: '是', cmp: '≤', th: 85, v: 0.1, st: '启用',
+      tip: '计上率＝KPI台账「是否计上=是」的工单数÷当月有效KPI总工单数×100%。' },
+    { key: 'jishangBad',  name: '计上不规范',       type: 'ratio', cond: '是', v: 0.5, st: '启用',
+      tip: '扣分＝KPI台账「是否计上不规范=是」的工单数÷当月有效KPI总工单数×扣分系数。' },
+    { key: 'multiVisit',  name: '多次上门过高',     type: 'ratio', cond: '是', v: 0.5, st: '启用',
+      tip: '扣分＝KPI台账「是否多次上门=是」的工单数÷当月有效KPI总工单数×扣分系数。' },
+    { key: 'multiPart',   name: '多部品过高',       type: 'ratio', cond: '是', v: 0.5, st: '启用',
+      tip: '扣分＝KPI台账「是否多部品=是」的工单数÷当月有效KPI总工单数×扣分系数。' },
+    { key: 'long30',      name: '长期未完工',       type: 'flag', cond: '是', v: 0.1, st: '启用',
+      tip: '扣分＝KPI台账「是否长期未完工=是」的工单数×每件扣分值。' },
+    { key: 'miniOff',     name: '使用保养小程序',   type: 'flag', cond: '否', v: 0.1, st: '启用',
+      tip: '扣分＝KPI台账「是否使用保养小程序=否」的工单数×每件扣分值。' },
   ],
   examInt: [{ min: 90, v: 0.4 }, { min: 80, v: 0.3 }, { min: 70, v: 0.2 }, { min: 60, v: 0.1 }, { min: 0, v: -0.1 }],  /* 示例值，以客户评分模板为准，可编辑 */
-  u: { k: 0.1, cap: 0.5 },
-  cert: { v: 0.1 },
-  lv: { on: [false, false, false, true, true, true], v: [0, 0, 0, 0.5, 0.5, 0.5] },   /* 索引=技术等级 */
-  mini: { v: 0.1, cap: 0.5, st: '启用' },
-  praise: { v: 0.1, st: '启用' },
-  cs: { sat: { v: 0.1, cap: 2 }, delay: { v: 0.1, st: '启用' }, dissat: { v: 0.1, st: '启用' } },
+  exam: { st: '启用' },
+  u: { k: 0.5, cond: '有', st: '启用' },
+  cert: { v: 0.1, cond: '有', st: '启用' },
+  lv: { on: [false, false, false, true, true, true], v: [0, 0, 0, 0.5, 0.5, 0.5], st: '启用' },   /* 索引=技术等级 */
+  mini: { v: 0.1, cond: '是', st: '启用' },
+  praise: { v: 0.1, cnt: 1, st: '启用' },
+  cs: { sat: { v: 0.1, cond: '是', st: '启用' }, delay: { v: 0.1, cond: '是', st: '启用' }, dissat: { v: 0.1, cond: '否', st: '启用' } },
 };
 function msSeasonOf(region, month) {
   const cfg = MS_RULES.season[region];
@@ -6872,8 +6975,6 @@ function msScore(mid, month) {
   const miniYesCnt = os.filter(o => o.miniApp).length;
   const miniNoCnt = os.length - miniYesCnt;
   const pJr = msPenOf('jishangRate'), pJb = msPenOf('jishangBad'), pMv = msPenOf('multiVisit'), pMp = msPenOf('multiPart');
-  const visitOverCnt = os.filter(o => o.visits > (pMv.th != null ? pMv.th : 2)).length;
-  const partOverCnt = os.filter(o => o.parts > (pMp.th != null ? pMp.th : 3)).length;
   const aux = msAuxOf(mid, month);
   const exam = 60 + Math.floor(msRand('ms-ex', mid, month) * 40);   /* 当月最高一次考试成绩，按满分100换算百分比 */
   const certCnt = Math.floor(msRand('ms-ct', mid, month) * 4);
@@ -6885,28 +6986,39 @@ function msScore(mid, month) {
   const base = tier.s;
   const onceRate = pct(onceCnt), threeRate = pct(threeCnt), uPct = pct(uCnt);
   const examBonus = msExamBonusOf(exam);
-  const uBonus = r2(Math.min(uPct / 100 * MS_RULES.u.k, MS_RULES.u.cap));
-  const certBonus = r2(certCnt * MS_RULES.cert.v);
+  const capAdd = MS_RULES.limit.add, capDed = MS_RULES.limit.deduct;   /* 统一加/扣分上限 */
+  const cmpFns = { '＜': (a, b) => a < b, '≤': (a, b) => a <= b, '＝': (a, b) => a === b, '＞': (a, b) => a > b, '≥': (a, b) => a >= b };
+  const uBonus = r2(Math.min(uCnt / tot * MS_RULES.u.k, capAdd));   /* U单占比不提前四舍五入，结果保留2位 */
+  const certBonus = r2(Math.min(certCnt * MS_RULES.cert.v, capAdd));
   const lvBonus = MS_RULES.lv.on[lv] ? (MS_RULES.lv.v[lv] || 0) : 0;
   const praiseCnt = aux.praise ? 1 : 0;   /* 台账口径：有表扬信=1份；台账份数字段扩展后直接替换来源 */
-  const praiseBonus = MS_RULES.praise.st === '启用' ? r2(praiseCnt * MS_RULES.praise.v) : 0;
-  const miniBonus = r2(Math.min(MS_RULES.mini.st === '启用' ? miniYesCnt * MS_RULES.mini.v : 0, MS_RULES.mini.cap != null ? MS_RULES.mini.cap : 999));
+  const praiseBonus = MS_RULES.praise.st === '启用' && (cmpFns[MS_RULES.praise.cmp || '≥'] || cmpFns['≥'])(praiseCnt, MS_RULES.praise.cnt || 1) ? r2(Math.min(praiseCnt * MS_RULES.praise.v, capAdd)) : 0;
+  const miniBonus = r2(Math.min(MS_RULES.mini.st === '启用' ? miniYesCnt * MS_RULES.mini.v : 0, capAdd));
   const pOnce = msPenOf('once'), pThree = msPenOf('three'), pLong = msPenOf('long30'), pMini = msPenOf('miniOff');
-  const oncePen = pOnce.st === '启用' && onceRate < pOnce.th ? pOnce.v : 0;
-  const threePen = pThree.st === '启用' && threeRate < pThree.th ? pThree.v : 0;
-  const long30Pen = pLong.st === '启用' && long30Cnt > 0 ? pLong.v : 0;
+  const hit = (p, val) => p.th != null && (cmpFns[p.cmp || '≤'])(val, p.th);
+  const oncePen = pOnce.st === '启用' && hit(pOnce, onceRate) ? pOnce.v : 0;
+  const threePen = pThree.st === '启用' && hit(pThree, threeRate) ? pThree.v : 0;
+  const long30Pen = pLong.st === '启用' && long30Cnt > 0 && pLong.cond === '是' ? pLong.v : 0;
+  const jsBadCnt = os.filter(o => (pJb.cond === '否' ? !o.badNote : !!o.badNote)).length;
+  const visitCnt = os.filter(o => (pMv.cond === '否' ? !(o.visits > 1) : o.visits > 1)).length;
+  const partCnt = os.filter(o => (pMp.cond === '否' ? !(o.parts > 1) : o.parts > 1)).length;
+  const jsrCnt = os.filter(o => (pJr.cond === '否' ? !o.noted : !!o.noted)).length;   /* 计上率分母口径：是否计上=判断条件 */
+  const jsBadRate = pct(jsBadCnt), visitRate = pct(visitCnt), partRate = pct(partCnt);
+  const jsrRate = pct(jsrCnt);
   const notedRate = pct(notedCnt), badRate = pct(badCnt);
-  const jishangRatePen = pJr.st === '启用' && notedRate < pJr.th ? pJr.v : 0;
-  const jishangBadPen = pJb.st === '启用' && badRate > pJb.th ? pJb.v : 0;
-  const multiVisitPen = r2(Math.min(pMv.st === '启用' ? visitOverCnt * pMv.v : 0, pMv.cap != null ? pMv.cap : 999));
-  const multiPartPen = r2(Math.min(pMp.st === '启用' ? partOverCnt * pMp.v : 0, pMp.cap != null ? pMp.cap : 999));
-  const miniPen = r2(Math.min(pMini.st === '启用' ? miniNoCnt * pMini.v : 0, pMini.cap != null ? pMini.cap : 999));
-  const satBonus = r2(Math.min(satCnt * MS_RULES.cs.sat.v, MS_RULES.cs.sat.cap));
-  const delayPen = r2(delayCnt * MS_RULES.cs.delay.v);
-  const disPen = r2(disCnt * MS_RULES.cs.dissat.v);
+  /* 计上率过低：计上率命中阈值 → 扣固定分值一次，不按件累计 */
+  const jishangRatePen = pJr.st === '启用' && hit(pJr, jsrRate) ? pJr.v : 0;
+  /* 占比扣分：扣分＝符合判断条件的工单数÷当月有效工单总数×扣分系数（占比不提前四舍五入，结果保留2位） */
+  const jishangBadPen = pJb.st === '启用' ? r2(jsBadCnt / tot * pJb.v) : 0;
+  const multiVisitPen = pMv.st === '启用' ? r2(visitCnt / tot * pMv.v) : 0;
+  const multiPartPen = pMp.st === '启用' ? r2(partCnt / tot * pMp.v) : 0;
+  const miniPen = r2(Math.min(pMini.st === '启用' ? (pMini.cond === '否' ? miniNoCnt : miniYesCnt) * pMini.v : 0, capDed));
+  const satBonus = r2(Math.min(satCnt * MS_RULES.cs.sat.v, capAdd));
+  const delayPen = r2(Math.min(delayCnt * MS_RULES.cs.delay.v, capDed));
+  const disPen = r2(Math.min(disCnt * MS_RULES.cs.dissat.v, capDed));
   const tech = r2(Math.max(0, Math.min(MS_RULES.model.tech, base + examBonus + uBonus + certBonus + lvBonus + praiseBonus + miniBonus - oncePen - threePen - long30Pen - jishangRatePen - jishangBadPen - multiVisitPen - multiPartPen - miniPen)));
   const cs = r2(Math.max(0, Math.min(MS_RULES.model.cs, satBonus - delayPen - disPen)));
-  return { month, mid, orders: os.length, season, th: tier.min, base, onceRate, threeRate, long30: long30Cnt, uCnt, uPct, satCnt, disCnt, delayCnt, notedCnt, notedRate, badCnt, badRate, visitOverCnt, partOverCnt, miniYesCnt, miniNoCnt, praiseCnt, aux, exam, certCnt, lv, examBonus, uBonus, certBonus, lvBonus, praiseBonus, miniBonus, oncePen, threePen, long30Pen, jishangRatePen, jishangBadPen, multiVisitPen, multiPartPen, miniPen, satBonus, delayPen, disPen, tech, cs, score: r2(tech + cs) };
+  return { month, mid, orders: os.length, season, th: tier.min, base, onceCnt, onceRate, threeCnt, threeRate, long30: long30Cnt, uCnt, uPct, satCnt, disCnt, delayCnt, notedCnt, notedRate, badCnt, badRate, jsrCnt, jsrRate, jsBadCnt, jsBadRate, visitCnt, visitRate, partCnt, partRate, miniYesCnt, miniNoCnt, praiseCnt, aux, exam, certCnt, lv, examBonus, uBonus, certBonus, lvBonus, praiseBonus, miniBonus, oncePen, threePen, long30Pen, jishangRatePen, jishangBadPen, multiVisitPen, multiPartPen, miniPen, satBonus, delayPen, disPen, tech, cs, score: r2(tech + cs) };
 }
 function msAvg(scores) { return scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length * 100) / 100 : 0; }
 function msOfficeRows(month, region) {
@@ -6976,7 +7088,8 @@ function vMsBoard(el) {
     ${msMonthInput()}
     ${msOrgMulti()}
   </div>
-  <div class="grid grid-2 mt16">
+  <div class="grid grid-3 mt16">
+    ${statMini('在岗人数', pool.filter(m => m.duty !== false).length + '<small>人</small>')}
     ${statMini('工程师人数', pool.length + '<small>人</small>')}
     ${statMini('平均得分', avg.toFixed(2) + '<small>分</small>')}
   </div>
@@ -7075,38 +7188,38 @@ function vMsDetail(el) {
   const addSum = s.examBonus + s.uBonus + s.certBonus + s.lvBonus + s.praiseBonus + s.miniBonus;
   const baseRows = `
     <table class="tbl">
-      <tr><th>指标名称</th><th>统计结果</th><th class="right">得分</th></tr>
+      <tr><th>指标项</th><th>统计结果</th><th class="right">得分</th></tr>
       ${tr('月度工单量基础分', link(s.orders + '件', 'volume'), s.base.toFixed(2) + '分')}
     </table>`;
   const penRows = `
     <table class="tbl">
-      <tr><th>指标名称</th><th>统计结果</th><th class="right">扣分</th></tr>
-      ${tr('一次完成率过低', link(s.onceRate + '%', 'once'), s.oncePen ? '-' + s.oncePen.toFixed(2) : '-', s.oncePen)}
-      ${tr('三日完成率过低', link(s.threeRate + '%', 'three'), s.threePen ? '-' + s.threePen.toFixed(2) : '-', s.threePen)}
-      ${tr('计上率过低', link(s.notedRate + '%', 'jishangRate'), s.jishangRatePen ? '-' + s.jishangRatePen.toFixed(2) : '-', s.jishangRatePen)}
-      ${tr('计上不规范', link(s.badRate + '%', 'jishangBad'), s.jishangBadPen ? '-' + s.jishangBadPen.toFixed(2) : '-', s.jishangBadPen)}
-      ${tr('多次上门过高', link(s.visitOverCnt + '件', 'multiVisit'), s.multiVisitPen ? '-' + s.multiVisitPen.toFixed(2) : '-', s.multiVisitPen)}
-      ${tr('部品数量', link(s.partOverCnt + '件', 'multiPart'), s.multiPartPen ? '-' + s.multiPartPen.toFixed(2) : '-', s.multiPartPen)}
+      <tr><th>指标项</th><th>统计结果</th><th class="right">扣分</th></tr>
+      ${tr('一次完成率过低', link(s.onceCnt + '件', 'once'), s.oncePen ? '-' + s.oncePen.toFixed(2) : '-', s.oncePen)}
+      ${tr('三日完成率过低', link(s.threeCnt + '件', 'three'), s.threePen ? '-' + s.threePen.toFixed(2) : '-', s.threePen)}
+      ${tr('计上率过低', link(s.jsrCnt + '件', 'jishangRate'), s.jishangRatePen ? '-' + s.jishangRatePen.toFixed(2) : '-', s.jishangRatePen)}
+      ${tr('计上不规范', link(s.jsBadCnt + '件', 'jishangBad'), s.jishangBadPen ? '-' + s.jishangBadPen.toFixed(2) : '-', s.jishangBadPen)}
+      ${tr('多次上门过高', link(s.visitCnt + '件', 'multiVisit'), s.multiVisitPen ? '-' + s.multiVisitPen.toFixed(2) : '-', s.multiVisitPen)}
+      ${tr('多部品过高', link(s.partCnt + '件', 'multiPart'), s.multiPartPen ? '-' + s.multiPartPen.toFixed(2) : '-', s.multiPartPen)}
       ${tr('长期未完工', link(s.long30 + '件', 'long30'), s.long30Pen ? '-' + s.long30Pen.toFixed(2) : '-', s.long30Pen)}
-      ${tr('使用保养小程序', link(s.miniNoCnt + '件未使用', 'miniOff'), s.miniPen ? '-' + s.miniPen.toFixed(2) : '-', s.miniPen)}
+      ${tr('使用保养小程序', link(s.miniNoCnt + '件', 'miniOff'), s.miniPen ? '-' + s.miniPen.toFixed(2) : '-', s.miniPen)}
       ${tr('<b>合计</b>', '', penSum ? penSum.toFixed(2) : '-', !!penSum)}
     </table>`;
   const addRows = `
     <table class="tbl">
-      <tr><th>指标名称</th><th>统计结果</th><th class="right">加分</th></tr>
-      ${tr('等级考试成绩', s.exam + '%', '+' + s.examBonus.toFixed(2))}
-      ${tr('U单加分', link(s.uPct + '%', 'uorder'), '+' + s.uBonus.toFixed(2))}
+      <tr><th>指标项</th><th>统计结果</th><th class="right">加分</th></tr>
+      ${tr('等级考试成绩', s.exam + '分', '+' + s.examBonus.toFixed(2))}
+      ${tr('U单加分', link(s.uCnt + '件', 'uorder'), '+' + s.uBonus.toFixed(2))}
       ${tr('有效证书', s.certCnt + '项', '+' + s.certBonus.toFixed(2))}
       ${tr('技术等级加分', s.lv + '级', '+' + s.lvBonus.toFixed(2))}
       ${tr('使用保养小程序', link(s.miniYesCnt + '件', 'miniApp'), s.miniBonus ? '+' + s.miniBonus.toFixed(2) : '-')}
-      ${tr('表扬信', s.praiseCnt ? `<a style="color:var(--e600);cursor:pointer" data-act="ms-aux">${s.praiseCnt}</a>` : gray('无'), s.praiseBonus ? '+' + s.praiseBonus.toFixed(2) : '-')}
+      ${tr('表扬信', s.praiseCnt ? `<a style="color:var(--e600);cursor:pointer" data-act="ms-aux">${s.praiseCnt}份</a>` : gray('无'), s.praiseBonus ? '+' + s.praiseBonus.toFixed(2) : '-')}
       ${tr('<b>合计</b>', '', '+' + addSum.toFixed(2), false)}
     </table>`;
   const techBody = dtab === 'pen' ? penRows : dtab === 'add' ? addRows : baseRows;
   const techRows = `${msTabs}<div style="margin-top:12px">${techBody}</div>`;
   const csRows = `
     <table class="tbl">
-      <tr><th>指标名称</th><th>统计结果</th><th class="right">加扣分</th></tr>
+      <tr><th>指标项</th><th>统计结果</th><th class="right">加扣分</th></tr>
       ${tr('用户满意评价', link(s.satCnt + '件', 'sat'), '+' + s.satBonus.toFixed(2))}
       ${tr('当日/次日未动单延迟', link(s.delayCnt + '件', 'delay'), s.delayPen ? '-' + s.delayPen.toFixed(2) : '-')}
       ${tr('不满意评价（SE服务类）', link(s.disCnt + '件', 'dissat'), s.disPen ? '-' + s.disPen.toFixed(2) : '-')}
@@ -7127,7 +7240,7 @@ function vMsDetail(el) {
 
 /* ---- 页面：月度评分规则配置 ---- */
 function msRuleState() {
-  if (!APP.q.msRule) APP.q.msRule = { tab: 'model', sub: 'base', btab: 'peak', bsub: 'season' };
+  if (!APP.q.msRule) APP.q.msRule = { tab: 'base', bmenu: 'model', sub: 'base', btab: 'peak', bsub: 'season' };
   return APP.q.msRule;
 }
 function msStBadge(st) {
@@ -7154,12 +7267,33 @@ function msOffMonths(region) {
 function msrEditBtn(act, param, label) {
   return `<button class="btn btn-sm" style="white-space:nowrap" data-act="${act}" ${param}><i class="ri-edit-line"></i>${label || '编辑'}</button>`;
 }
+function msToggleBtn(kind, key, st) {
+  const on = st === '启用';
+  return `<button class="btn btn-sm" style="white-space:nowrap" data-act="msr-toggle" data-kind="${kind}" data-key="${key}" title="${on ? '停用' : '启用'}"><i class="ri-${on ? 'pause' : 'play'}-line"></i>${on ? '停用' : '启用'}</button>`;
+}
+function msRuleToggle(kind, key) {
+  const holder = kind === 'pen' ? msPenOf(key) : kind === 'cs' ? MS_RULES.cs[key] : MS_RULES[key];
+  if (!holder || holder.st == null) return;
+  holder.st = holder.st === '启用' ? '停用' : '启用';
+  toast((holder.name || '规则') + (holder.st === '启用' ? '已启用' : '已停用'));
+  renderView(APP.view);
+}
 function vMsRule(el) {
   const st = msRuleState();
-  const tabHtml = `<div class="tabs mt16">${[['model', '评分模型配置'], ['tech', '技术力评分配置'], ['cs', 'CS服务评分配置']].map(t => `<span class="tab${st.tab === t[0] ? ' active' : ''}" data-act="msr-tab" data-tab="${t[0]}">${t[1]}</span>`).join('')}</div>`;
-  el.innerHTML = tabHtml + (st.tab === 'model' ? msrModelBody() : st.tab === 'tech' ? msrTechBody(st) : msrCsBody());
+  const tabHtml = `<div class="tabs mt16">${[['base', '评分基础配置'], ['tech', '技术力评分配置'], ['cs', 'CS服务评分配置']].map(t => `<span class="tab${st.tab === t[0] ? ' active' : ''}" data-act="msr-tab" data-tab="${t[0]}">${t[1]}</span>`).join('')}</div>`;
+  el.innerHTML = tabHtml + (st.tab === 'base' ? msrBaseLayout(st) : st.tab === 'tech' ? msrTechBody(st) : msrCsBody());
 }
-/* Tab1 评分模型配置 */
+/* Tab1 评分基础配置（左侧二级菜单：评分模型配置 | 加扣分上限配置） */
+function msrBaseLayout(st) {
+  const subs = [['model', '评分模型配置'], ['limit', '加扣分上限配置']];
+  return `<div class="mt16" style="display:flex;gap:16px;align-items:flex-start">
+    <div class="card" style="width:190px;flex:none;padding:8px">
+      ${subs.map(s => `<div style="padding:9px 12px;border-radius:8px;font-size:13.5px;cursor:pointer;${st.bmenu === s[0] ? 'background:var(--e50);color:var(--e600);font-weight:600' : 'color:var(--g600)'}" data-act="msr-bmenu" data-menu="${s[0]}">${s[1]}</div>`).join('')}
+    </div>
+    <div style="flex:1;min-width:0">${st.bmenu === 'limit' ? msrLimitBody() : msrModelBody()}</div>
+  </div>`;
+}
+/* Tab1 评分基础配置 · 评分模型配置 */
 function msrModelBody() {
   const m = MS_RULES.model;
   return `<div class="card mt16">
@@ -7179,7 +7313,7 @@ function openMsModelEdit() {
   openModal(modalHead('编辑评分模型', '') + `
     <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field2"><label><span style="color:var(--r500)">*</span> 评分周期</label>
-        <select class="select" id="mf-cycle">${['月度', '季度', '年度'].map(c => `<option${m.cycle === c ? ' selected' : ''}>${c}</option>`).join('')}</select></div>
+        <input class="input" id="mf-cycle" value="${esc(m.cycle)}" readonly style="background:var(--g50);color:var(--g500)"></div>
       ${num('mf-total', '评分总分', m.total)}
       ${num('mf-tech', '技术力', m.tech)}
       ${num('mf-cs', 'CS服务', m.cs)}
@@ -7193,6 +7327,35 @@ function saveMsModel() {
   if (Math.round((tech + cs) * 10) !== Math.round(total * 10)) { toast('技术力 + CS服务 必须等于评分总分'); return; }
   MS_RULES.model = { cycle: $('#mf-cycle').value, total, tech, cs };
   closeModal(); toast('评分模型已保存'); renderView(APP.view);
+}
+/* 评分基础配置 · 加扣分上限配置（各指标累计上限统一维护） */
+function msrLimitBody() {
+  const l = MS_RULES.limit;
+  return `<div class="card mt16">
+    <div class="card-title"><span style="flex:1"></span>${msrEditBtn('msr-limit-edit', '')}</div>
+    <table class="tbl"><tr><th style="width:50%">配置项</th><th>配置值</th></tr>
+      <tr><td style="color:var(--g600)">统一加分上限</td><td style="font-weight:600">${l.add}分</td></tr>
+      <tr><td style="color:var(--g600)">统一扣分上限</td><td style="font-weight:600">${l.deduct}分</td></tr>
+    </table>
+  </div>
+  ${tlInfo('用于统一维护月度评分的加分、扣分累计上限。当月全部加分指标的加分合计、全部扣分指标的扣分合计分别不超过对应上限，达到上限后不再继续累计。')}`;
+}
+function openMsLimitEdit() {
+  const l = MS_RULES.limit;
+  const num = (id, label, val) => `<div class="field2"><label><span style="color:var(--r500)">*</span> ${label}</label><input type="number" step="0.1" min="0" class="input" id="${id}" value="${val}"></div>`;
+  openModal(modalHead('编辑加扣分上限', '') + `
+    <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
+      ${num('lf-add', '统一加分上限（分）', l.add)}
+      ${num('lf-deduct', '统一扣分上限（分）', l.deduct)}
+    </div></div>
+    <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
+      <button class="btn btn-primary" data-act="msr-limit-save"><i class="ri-check-line"></i>确定</button></div>`);
+}
+function saveMsLimit() {
+  const add = +$('#lf-add').value, deduct = +$('#lf-deduct').value;
+  if (!(add >= 0) || !(deduct >= 0)) { toast('请输入有效的上限分值'); return; }
+  MS_RULES.limit = { add, deduct };
+  closeModal(); toast('加扣分上限已保存'); renderView(APP.view);
 }
 /* Tab2 技术力评分配置 */
 function msrTechBody(st) {
@@ -7282,11 +7445,9 @@ function saveMsBase(season) {
 }
 /* 2.2 扣分规则 */
 function msrPenReq(p) {
-  if (p.type === 'pct') return (p.cmp === '>' ? '高于' : '低于') + p.th + '%';
-  if (p.type === 'days') return (p.cmp || '≥') + p.th + '天';
-  if (p.type === 'count') return esc(p.req);
-  if (p.type === 'mini') return '否';
-  return p.req ? esc(p.req) : '<span style="color:var(--g400)">待确认</span>';
+  if (p.type === 'rate' || p.type === 'flagRate') return esc((p.cmp || '≤') + (p.th != null ? p.th + '%' : ' —%'));
+  if (p.type === 'flag' || p.type === 'ratio') return esc(p.cond || '是');
+  return '<span style="color:var(--g400)">待确认</span>';
 }
 function msrPenBody() {
   return `<div class="card">
@@ -7294,67 +7455,71 @@ function msrPenBody() {
     ${MS_RULES.pen.map(p => `<tr>
       <td style="font-weight:600">${esc(p.name)}</td>
       <td>${msrPenReq(p)}</td>
-      <td class="right">${p.type === 'count' || p.type === 'mini' ? p.v + '分/单' : p.v + '分'}</td>
+      <td class="right">${p.type === 'ratio' ? '占比 × ' + p.v + '分' : p.type === 'flag' ? '-' + p.v + '分/件' : '-' + p.v + '分'}</td>
       <td>${msStBadge(p.st)}</td>
-      <td class="right">${msrEditBtn('msr-pen-edit', 'data-key="' + p.key + '"')}</td></tr>`).join('')}
+      <td class="right">${msrEditBtn('msr-pen-edit', 'data-key="' + p.key + '"')} ${msToggleBtn('pen', p.key, p.st)}</td></tr>`).join('')}
     </table>
   </div>
   ${tlInfo('用于维护月度技术力评分中的扣分指标、指标要求及扣分标准。系统根据工程师当月工单及相关业务数据，匹配已启用的扣分规则，自动计算对应扣分。')}`;
 }
 function openMsPenEdit(key) {
   const p = msPenOf(key); if (!p.name) return;
-  let reqField = '';
-  if (p.type === 'pct') reqField = `<div class="field2"><label><span style="color:var(--r500)">*</span> 百分比阈值 <span class="wtip tip-b" data-tip="${p.cmp === '>' ? '高于该阈值触发扣分' : '低于该阈值触发扣分'}"><i class="ri-error-warning-line" style="font-size:14px"></i></span></label><input type="number" min="0" max="100" class="input" id="pf-th" value="${p.th}"></div>`;
-  else if (p.type === 'count') reqField = `<div class="field2"><label><span style="color:var(--r500)">*</span> 超出次数 <span class="wtip tip-b" data-tip="单工单超出该值即计入超标工单，按超标工单数累计扣分"><i class="ri-error-warning-line" style="font-size:14px"></i></span></label><input type="number" min="0" class="input" id="pf-th" value="${p.th}"></div>`;
-  else if (p.type === 'mini') reqField = `<div class="field2"><label>判断条件</label><input class="input" value="否" readonly style="background:var(--g50);color:var(--g500)"></div>`;
-  else if (p.type === 'days') reqField = `<div class="field2"><label><span style="color:var(--r500)">*</span> 指标要求</label><div style="display:flex;gap:8px;align-items:center"><select class="select" id="pf-cmp" style="width:80px">${['≥', '＞'].map(c => `<option${(p.cmp || '≥') === c ? ' selected' : ''}>${c}</option>`).join('')}</select><input type="number" min="1" class="input" id="pf-th" style="width:110px" value="${p.th}">天</div></div>`;
-  else if (p.type === 'cond') reqField = `<div class="field2"><label>判断条件</label><input class="input" id="pf-req" value="${esc(p.req)}"></div>`;
-  else reqField = `<div class="field2"><label>指标要求</label><input class="input" id="pf-req" value="${esc(p.req)}" placeholder="待客户确认后填写"></div>`;
+  const tip = t => ` <span class="wtip tip-b" data-tip="${t}"><i class="ri-error-warning-line" style="font-size:14px"></i></span>`;
+  const vField = lab => `<div class="field2"><label><span style="color:var(--r500)">*</span> ${lab || '扣分值（每件）'}</label><input type="number" step="0.1" min="0" class="input" id="pf-v" value="${p.v}"></div>`;
+  const condField = t => `<div class="field2"><label>判断条件${t ? tip(t) : ''}</label><select class="select" id="pf-cond" style="width:110px">${['是', '否'].map(c => `<option${(p.cond || '是') === c ? ' selected' : ''}>${c}</option>`).join('')}</select></div>`;
+  const pctField = t => `<div class="field2"><label><span style="color:var(--r500)">*</span> 百分比阈值${t ? tip(t) : ''}</label>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select class="select" id="pf-cmp" style="width:70px">${['＜', '≤', '＝', '＞', '≥'].map(c => `<option${(p.cmp || '≤') === c ? ' selected' : ''}>${c}</option>`).join('')}</select>
+      <input type="number" min="0" max="100" class="input" id="pf-th" style="width:90px" value="${p.th != null ? p.th : ''}">
+      <span style="font-size:13.5px;color:var(--g600)">%</span>
+    </div></div>`;
+  const coefField = t => `<div class="field2"><label><span style="color:var(--r500)">*</span> 扣分系数（分）${t ? tip(t) : ''}</label><input type="number" step="0.1" min="0" class="input" id="pf-v" value="${p.v}"></div>`;
+  let fields = '';
+  if (p.type === 'rate') fields = pctField(p.tip) + vField('扣分值（分）');
+  else if (p.type === 'flagRate') fields = condField(p.tip) + pctField('') + vField('扣分值（分）');
+  else if (p.type === 'ratio') fields = condField(p.tip) + coefField('');
+  else fields = condField(p.tip) + vField();
   openModal(modalHead('编辑' + p.name, '') + `
-    <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
-      ${reqField}
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 扣分值${p.type === 'count' || p.type === 'mini' ? '（每单）' : ''}</label><input type="number" step="0.1" min="0" class="input" id="pf-v" value="${p.v}"></div>
-      ${(p.type === 'count' || p.type === 'mini') ? `<div class="field2"><label><span style="color:var(--r500)">*</span> 累计扣分上限</label><input type="number" step="0.1" min="0" class="input" id="pf-cap" value="${p.cap != null ? p.cap : ''}"></div>` : ''}
-      <div class="field2"><label>状态</label><select class="select" id="pf-st">${['启用', '停用', '待确认', '暂缓'].map(s => `<option${p.st === s ? ' selected' : ''}>${s}</option>`).join('')}</select></div>
+    <div class="modal-body" style="min-height:220px"><div class="form-grid" style="grid-template-columns:1fr 1fr">
+      ${fields}
     </div></div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
-      <button class="btn btn-primary" data-act="msr-pen-save" data-key="${key}"><i class="ri-check-line"></i>保存</button></div>`);
+      <button class="btn btn-primary" data-act="msr-pen-save" data-key="${key}"><i class="ri-check-line"></i>确定</button></div>`);
 }
 function saveMsPen(key) {
   const p = msPenOf(key); if (!p.name) return;
   const v = +$('#pf-v').value;
   if (!(v >= 0)) { toast('请输入有效扣分值'); return; }
-  const st = $('#pf-st').value;
-  const req = (p.type === 'text' || p.type === 'cond') ? $('#pf-req').value.trim() : p.req;
-  if ((p.type === 'text' || p.type === 'cond') && !req && st === '启用') { toast('指标要求未确认，状态不能设为启用'); return; }
-  p.v = v; p.st = st;
-  if (p.type === 'pct' || p.type === 'count') p.th = +$('#pf-th').value;
-  if (p.type === 'pct') p.req = (p.cmp === '>' ? '高于' : '低于') + p.th + '%';
-  if (p.type === 'count') { const cap = +$('#pf-cap').value; if (!(cap >= 0)) { toast('请输入有效累计上限'); return; } p.cap = cap; p.req = '超出' + p.th + '次'; }
-  if (p.type === 'mini') { const cap = +$('#pf-cap').value; if (!(cap >= 0)) { toast('请输入有效累计上限'); return; } p.cap = cap; }
-  if (p.type === 'days') { p.th = +$('#pf-th').value; p.cmp = $('#pf-cmp').value; }
-  if (p.type === 'text' || p.type === 'cond') p.req = req;
+  p.v = v;
+  if (p.type === 'rate' || p.type === 'flagRate') {
+    const cmp = $('#pf-cmp').value, th = $('#pf-th').value === '' ? null : +$('#pf-th').value;
+    if (th != null && !(th >= 0 && th <= 100)) { toast('百分比阈值范围为0～100'); return; }
+    p.cmp = cmp; p.th = th;
+    if ($('#pf-cond')) p.cond = $('#pf-cond').value;
+  }
+  else if (p.type === 'flag' || p.type === 'ratio') p.cond = $('#pf-cond').value;
   closeModal(); toast('扣分规则已保存'); renderView(APP.view);
 }
 /* 2.3 加分规则 */
+function msTipIc(t) { return ` <span class="wtip tip-b" data-tip="${t}"><i class="ri-error-warning-line" style="font-size:14px"></i></span>`; }
 function msrBonusBody() {
   const lv = MS_RULES.lv;
-  const lvTxt = [3, 4, 5].filter(l => lv.on[l]).map(l => l + '级').join('、') || '<span style="color:var(--g400)">未启用</span>';
-  const lvScore = [3, 4, 5].filter(l => lv.on[l]).map(l => l + '级 ' + lv.v[l] + '分').join('、') || '—';
+  const lvOn = [1, 2, 3, 4, 5].filter(l => lv.on[l]);
+  const examReq = MS_RULES.examInt.map((x, i, a) => (i === a.length - 1 ? a[a.length - 2].min + '%以下' : '≥' + x.min + '%') + ' ' + (x.v >= 0 ? '+' : '') + x.v + '分').join('、');
   const rows = [
-    ['等级考试成绩', '按考试成绩百分比区间匹配', '按区间', 'msr-exam-edit', '配置区间'],
-    ['U单加分', '按U单占比累计', MS_RULES.u.k + '分/单', 'msr-u-edit', '编辑'],
-    ['有效证书', '每项有效证书', MS_RULES.cert.v + '分/项', 'msr-cert-edit', '编辑'],
-    ['技术等级加分', lvTxt, lvScore, 'msr-lv-edit', '编辑'],
-    ['使用保养小程序', '按单累计', MS_RULES.mini.v + '分/单', 'msr-mini-edit', '编辑'],
-    ['表扬信', '按份数累计', MS_RULES.praise.v + '分/份', 'msr-praise-edit', '编辑'],
+    { key: 'exam',   name: '等级考试成绩',   req: examReq, score: '按区间', act: 'msr-exam-edit', label: '配置区间', st: MS_RULES.exam.st },
+    { key: 'u',      name: 'U单加分',        req: esc(MS_RULES.u.cond || '有'), score: '占比 × ' + MS_RULES.u.k + '分', act: 'msr-u-edit', label: '编辑', st: MS_RULES.u.st },
+    { key: 'cert',   name: '有效证书',       req: esc(MS_RULES.cert.cond || '有'), score: MS_RULES.cert.v + '分/份', act: 'msr-cert-edit', label: '编辑', st: MS_RULES.cert.st },
+    { key: 'lv',     name: '技术等级加分',   req: lvOn.length ? lvOn.map(l => l + '级 +' + lv.v[l] + '分').join('、') : '—', score: lvOn.length ? '按等级' : '—', act: 'msr-lv-edit', label: '编辑', st: MS_RULES.lv.st },
+    { key: 'mini',   name: '使用保养小程序', req: esc(MS_RULES.mini.cond || '是'), score: MS_RULES.mini.v + '分/件', act: 'msr-mini-edit', label: '编辑', st: MS_RULES.mini.st },
+    { key: 'praise', name: '表扬信',         req: esc((MS_RULES.praise.cmp || '≥') + (MS_RULES.praise.cnt || 1) + '份'), score: MS_RULES.praise.v + '分/份', act: 'msr-praise-edit', label: '编辑', st: MS_RULES.praise.st },
   ];
   return `<div class="card">
-    <table class="tbl"><tr><th>指标项</th><th class="right">分值</th><th class="right">操作</th></tr>
-    ${rows.map(r => `<tr><td style="font-weight:600">${r[0]}</td><td class="right">${r[2]}</td><td class="right">${msrEditBtn(r[3], '', r[4])}</td></tr>`).join('')}
+    <table class="tbl"><tr><th>指标项</th><th>指标要求</th><th class="right">加分值</th><th>状态</th><th class="right">操作</th></tr>
+    ${rows.map(r => `<tr><td style="font-weight:600">${r.name}</td><td>${r.req}</td><td class="right">${r.score}</td><td>${msStBadge(r.st)}</td><td class="right">${msrEditBtn(r.act, '', r.label)} ${msToggleBtn('bonus', r.key, r.st)}</td></tr>`).join('')}
     </table>
   </div>
-  ${tlInfo('用于维护月度技术力评分中的加分指标及对应分值，包括等级考试、U单、有效证书、技术等级等。系统根据工程师当月符合条件的数据，按照已配置的规则计算加分。')}`;
+  ${tlInfo('用于维护月度技术力评分中的加分指标、指标要求及加分标准。系统根据工程师当月符合条件的数据，按照已启用的加分规则自动计算加分。')}`;
 }
 function openMsExamEdit() {
   const a = MS_RULES.examInt;
@@ -7368,7 +7533,7 @@ function openMsExamEdit() {
   openModal(modalHead('等级考试成绩区间配置', '') + `
     <div class="modal-body">
       <table class="tbl"><tr><th>成绩比例区间</th><th>对应加扣分</th></tr>${rows}</table>
-      <div style="font-size:12px;color:var(--g400);margin-top:8px">取当月考试成绩最高的一次，按实际满分换算百分比后匹配区间</div>
+      <div style="font-size:12px;color:var(--g400);margin-top:8px">取当月最高考试成绩，按成绩÷试卷满分×100%匹配对应加扣分区间。</div>
     </div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
       <button class="btn btn-primary" data-act="msr-exam-save"><i class="ri-check-line"></i>保存</button></div>`);
@@ -7381,32 +7546,35 @@ function saveMsExam() {
   closeModal(); toast('考试区间已保存'); renderView(APP.view);
 }
 function openMsUEdit() {
+  const r = MS_RULES.u;
   openModal(modalHead('编辑U单加分', '') + `
     <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 加分系数</label><input type="number" step="0.1" min="0" class="input" id="uf-k" value="${MS_RULES.u.k}"></div>
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 最高加分</label><input type="number" step="0.1" min="0" class="input" id="uf-cap" value="${MS_RULES.u.cap}"></div>
+      <div class="field2"><label>判断条件${msTipIc('加分＝KPI台账「原价区分=U」的工单数÷当月有效KPI总工单数×加分系数。')}</label><select class="select" id="uf-cond" style="width:110px">${['有', '无'].map(c => `<option${(r.cond || '有') === c ? ' selected' : ''}>${c}</option>`).join('')}</select></div>
+      <div class="field2"><label><span style="color:var(--r500)">*</span> 加分系数（分）</label><input type="number" step="0.1" min="0" class="input" id="uf-k" value="${r.k}"></div>
     </div></div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
       <button class="btn btn-primary" data-act="msr-u-save"><i class="ri-check-line"></i>保存</button></div>`);
 }
 function saveMsU() {
-  const k = +$('#uf-k').value, cap = +$('#uf-cap').value;
-  if (!(k >= 0 && cap >= 0)) { toast('请输入有效数值'); return; }
-  MS_RULES.u = { k, cap };
+  const k = +$('#uf-k').value;
+  if (!(k >= 0)) { toast('请输入有效数值'); return; }
+  MS_RULES.u = { ...MS_RULES.u, k, cond: $('#uf-cond').value };
   closeModal(); toast('U单加分规则已保存'); renderView(APP.view);
 }
 function openMsCertEdit() {
+  const r = MS_RULES.cert;
   openModal(modalHead('编辑有效证书加分', '') + `
     <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 每项加分值</label><input type="number" step="0.1" min="0" class="input" id="cf-v" value="${MS_RULES.cert.v}"></div>
+      <div class="field2"><label>判断条件${msTipIc('加分＝有效证书份数×每份加分值。')}</label><select class="select" id="cf-cond" style="width:110px">${['有', '无'].map(c => `<option${(r.cond || '有') === c ? ' selected' : ''}>${c}</option>`).join('')}</select></div>
+      <div class="field2"><label><span style="color:var(--r500)">*</span> 加分值（每份）</label><input type="number" step="0.1" min="0" class="input" id="cf-v" value="${r.v}"></div>
     </div></div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
       <button class="btn btn-primary" data-act="msr-cert-save"><i class="ri-check-line"></i>保存</button></div>`);
 }
 function saveMsCert() {
   const v = +$('#cf-v').value;
-  if (!(v >= 0)) { toast('请输入有效分值'); return; }
-  MS_RULES.cert.v = v;
+  if (!(v >= 0)) { toast('请输入有效数值'); return; }
+  MS_RULES.cert = { ...MS_RULES.cert, v, cond: $('#cf-cond').value };
   closeModal(); toast('有效证书加分已保存'); renderView(APP.view);
 }
 function openMsLvEdit() {
@@ -7418,7 +7586,7 @@ function openMsLvEdit() {
   openModal(modalHead('编辑技术等级加分', '') + `
     <div class="modal-body">
       <table class="tbl"><tr><th>技术等级</th><th style="width:110px">参与加分</th><th>加分值</th></tr>${rows}</table>
-      <div style="font-size:12px;color:var(--g400);margin-top:8px">按当前年度已生效的技术等级判断</div>
+      <div style="font-size:12px;color:var(--g400);margin-top:8px">根据评分月份适用的技术等级，匹配对应加分值。</div>
     </div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
       <button class="btn btn-primary" data-act="msr-lv-save"><i class="ri-check-line"></i>保存</button></div>`);
@@ -7436,79 +7604,86 @@ function saveMsLv() {
 function openMsBonusEdit(kind) {
   const r = MS_RULES[kind];
   const name = kind === 'mini' ? '使用保养小程序' : '表扬信';
+  const condField = kind === 'mini'
+    ? `<div class="field2"><label>判断条件${msTipIc('加分＝KPI台账「是否使用保养小程序=是」的工单数×每件加分值。')}</label><select class="select" id="nf-cond" style="width:110px">${['是', '否'].map(c => `<option${(r.cond || '是') === c ? ' selected' : ''}>${c}</option>`).join('')}</select></div>`
+    : `<div class="field2"><label><span style="color:var(--r500)">*</span> 判断条件${msTipIc('加分＝当月表扬信份数×每份加分值。')}</label><div style="display:flex;gap:8px;align-items:center"><select class="select" id="nf-pcmp" style="width:96px">${['≥', '＞', '≤', '＜', '＝'].map(c => `<option value="${c}"${(MS_RULES.praise.cmp || '≥') === c ? ' selected' : ''}>${c}</option>`).join('')}</select><input type="number" min="1" class="input" id="nf-cnt" style="width:90px" value="${r.cnt || 1}"><span style="font-size:13.5px;color:var(--g600)">份</span></div></div>`;
   openModal(modalHead('编辑' + name, '') + `
     <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field2"><label>判断条件</label><input class="input" value="${kind === 'mini' ? '是' : '按表扬信数加分'}" readonly style="background:var(--g50);color:var(--g500)"></div>
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 加分值${kind === 'mini' ? '（每单）' : '（每份）'}</label><input type="number" step="0.1" min="0" class="input" id="nf-v" value="${r.v}"></div>
-      ${kind === 'mini' ? `<div class="field2"><label><span style="color:var(--r500)">*</span> 累计加分上限</label><input type="number" step="0.1" min="0" class="input" id="nf-cap" value="${r.cap != null ? r.cap : ''}"></div>` : ''}
-      <div class="field2"><label>状态</label><select class="select" id="nf-st">${['启用', '停用'].map(s => `<option${r.st === s ? ' selected' : ''}>${s}</option>`).join('')}</select></div>
+      ${condField}
+      <div class="field2"><label><span style="color:var(--r500)">*</span> ${kind === 'praise' ? '加分值（每份）' : '加分值（每件）'}</label><input type="number" step="0.1" min="0" class="input" id="nf-v" value="${r.v}"></div>
     </div></div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
       <button class="btn btn-primary" data-act="msr-${kind}-save"><i class="ri-check-line"></i>保存</button></div>`);
 }
 function saveMsBonusEdit(kind) {
   const v = +$('#nf-v').value;
-  if (!(v >= 0)) { toast('请输入有效分值'); return; }
-  if (kind === 'mini') { const cap = +$('#nf-cap').value; if (!(cap >= 0)) { toast('请输入有效累计上限'); return; } MS_RULES.mini.cap = cap; }
-  MS_RULES[kind].v = v; MS_RULES[kind].st = $('#nf-st').value;
+  if (!(v >= 0)) { toast('请输入有效数值'); return; }
+  if (kind === 'praise') {
+    const cnt = +$('#nf-cnt').value;
+    if (!(cnt >= 1)) { toast('请输入有效份数'); return; }
+    MS_RULES.praise = { ...MS_RULES.praise, v, cnt, cmp: $('#nf-pcmp').value };
+  }
+  else { MS_RULES[kind].v = v; MS_RULES[kind].cond = $('#nf-cond').value; }
   closeModal(); toast('加分规则已保存'); renderView(APP.view);
 }
 /* Tab3 CS服务评分配置 */
 function msrCsBody() {
   const cs = MS_RULES.cs;
   return `<div class="card mt16">
-    <table class="tbl"><tr><th>指标项</th><th class="right">分值</th><th class="right">操作</th></tr>
-      <tr><td style="font-weight:600">用户满意评价</td><td class="right">+${cs.sat.v}分/件</td><td class="right">${msrEditBtn('msr-sat-edit', '')}</td></tr>
-      <tr><td style="font-weight:600">当日/次日未动单延迟</td><td class="right">-${cs.delay.v}分/件</td><td class="right">${msrEditBtn('msr-delay-edit', '')}</td></tr>
-      <tr><td style="font-weight:600">不满意评价（SE服务类）</td><td class="right">-${cs.dissat.v}分/件</td><td class="right">${msrEditBtn('msr-dissat-edit', '')}</td></tr>
+    <table class="tbl"><tr><th>指标项</th><th>指标要求</th><th class="right">加/扣分值</th><th>状态</th><th class="right">操作</th></tr>
+      <tr><td style="font-weight:600">用户满意评价</td><td>${esc(cs.sat.cond || '是')}</td><td class="right">+${cs.sat.v}分/件</td><td>${msStBadge(cs.sat.st)}</td><td class="right">${msrEditBtn('msr-sat-edit', '')} ${msToggleBtn('cs', 'sat', cs.sat.st)}</td></tr>
+      <tr><td style="font-weight:600">当日/次日未动单延迟</td><td>${esc(cs.delay.cond || '是')}</td><td class="right">-${cs.delay.v}分/件</td><td>${msStBadge(cs.delay.st)}</td><td class="right">${msrEditBtn('msr-delay-edit', '')} ${msToggleBtn('cs', 'delay', cs.delay.st)}</td></tr>
+      <tr><td style="font-weight:600">不满意评价（SE服务类）</td><td>${esc(cs.dissat.cond || '否')}</td><td class="right">-${cs.dissat.v}分/件</td><td>${msStBadge(cs.dissat.st)}</td><td class="right">${msrEditBtn('msr-dissat-edit', '')} ${msToggleBtn('cs', 'dissat', cs.dissat.st)}</td></tr>
     </table>
   </div>
-  ${tlInfo('用于维护月度CS服务评分指标及加扣分标准。系统根据工程师当月工单满意度、服务评价及相关业务数据，按照已启用的规则自动计算CS服务得分。')}`;
+  ${tlInfo('用于维护月度CS服务评分指标的判断条件及加扣分标准。系统根据工程师当月工单满意度、服务评价及相关业务数据，按照已启用的规则自动计算CS服务得分。')}`;
 }
 function openMsSatEdit() {
   const r = MS_RULES.cs.sat;
   openModal(modalHead('编辑用户满意评价', '') + `
-    <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 单件加分值</label><input type="number" step="0.1" min="0" class="input" id="sat-v" value="${r.v}"></div>
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 累计加分上限</label><input type="number" step="0.1" min="0" class="input" id="sat-cap" value="${r.cap}"></div>
+    <div class="modal-body" style="min-height:220px"><div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field2"><label>判断条件${msTipIc('加分＝KPI台账「用户是否满意=是」的工单数×每件加分值。')}</label><select class="select" id="sat-cond" style="width:110px">${['是', '否'].map(c => `<option${(r.cond || '是') === c ? ' selected' : ''}>${c}</option>`).join('')}</select></div>
+      <div class="field2"><label><span style="color:var(--r500)">*</span> 加分值（每件）</label><input type="number" step="0.1" min="0" class="input" id="sat-v" value="${r.v}"></div>
     </div></div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
-      <button class="btn btn-primary" data-act="msr-sat-save"><i class="ri-check-line"></i>保存</button></div>`);
+      <button class="btn btn-primary" data-act="msr-sat-save"><i class="ri-check-line"></i>确定</button></div>`);
 }
 function saveMsSat() {
-  const v = +$('#sat-v').value, cap = +$('#sat-cap').value;
-  if (!(v >= 0 && cap >= 0)) { toast('请输入有效数值'); return; }
-  MS_RULES.cs.sat = { v, cap };
+  const v = +$('#sat-v').value;
+  if (!(v >= 0)) { toast('请输入有效数值'); return; }
+  MS_RULES.cs.sat = { ...MS_RULES.cs.sat, v, cond: $('#sat-cond').value };
   closeModal(); toast('用户满意评价规则已保存'); renderView(APP.view);
 }
 function openMsDelayEdit() {
+  const r = MS_RULES.cs.delay;
   openModal(modalHead('编辑当日/次日未动单延迟', '') + `
-    <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field2"><label>指标要求</label><input class="input" value="待确认" readonly style="background:var(--g50);color:var(--g500)"></div>
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 单件扣分值</label><input type="number" step="0.1" min="0" class="input" id="dl-v" value="${MS_RULES.cs.delay.v}"></div>
+    <div class="modal-body" style="min-height:220px"><div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field2"><label>判断条件${msTipIc('扣分＝KPI台账「是否当日/次日未动单延迟=是」的工单数×每件扣分值。')}</label><select class="select" id="dl-cond" style="width:110px">${['是', '否'].map(c => `<option${(r.cond || '是') === c ? ' selected' : ''}>${c}</option>`).join('')}</select></div>
+      <div class="field2"><label><span style="color:var(--r500)">*</span> 扣分值（每件）</label><input type="number" step="0.1" min="0" class="input" id="dl-v" value="${r.v}"></div>
     </div></div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
-      <button class="btn btn-primary" data-act="msr-delay-save"><i class="ri-check-line"></i>保存</button></div>`);
+      <button class="btn btn-primary" data-act="msr-delay-save"><i class="ri-check-line"></i>确定</button></div>`);
 }
 function saveMsDelay() {
   const v = +$('#dl-v').value;
-  if (!(v >= 0)) { toast('请输入有效扣分值'); return; }
-  MS_RULES.cs.delay.v = v;
+  if (!(v >= 0)) { toast('请输入有效数值'); return; }
+  MS_RULES.cs.delay = { ...MS_RULES.cs.delay, v, cond: $('#dl-cond').value };
   closeModal(); toast('延迟扣分规则已保存'); renderView(APP.view);
 }
 function openMsDissatEdit() {
+  const r = MS_RULES.cs.dissat;
   openModal(modalHead('编辑不满意评价（SE服务类）', '') + `
-    <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
-      <div class="field2"><label>判断条件</label><input class="input" value="不满意工单按件累计" readonly style="background:var(--g50);color:var(--g500)"></div>
-      <div class="field2"><label><span style="color:var(--r500)">*</span> 单件扣分值</label><input type="number" step="0.1" min="0" class="input" id="ds-v" value="${MS_RULES.cs.dissat.v}"></div>
+    <div class="modal-body" style="min-height:220px"><div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field2"><label>判断条件${msTipIc('扣分＝KPI台账「用户是否满意=否」的工单数×每件扣分值。')}</label><select class="select" id="ds-cond" style="width:110px">${['是', '否'].map(c => `<option${(r.cond || '否') === c ? ' selected' : ''}>${c}</option>`).join('')}</select></div>
+      <div class="field2"><label><span style="color:var(--r500)">*</span> 扣分值（每件）</label><input type="number" step="0.1" min="0" class="input" id="ds-v" value="${r.v}"></div>
     </div></div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
-      <button class="btn btn-primary" data-act="msr-dissat-save"><i class="ri-check-line"></i>保存</button></div>`);
+      <button class="btn btn-primary" data-act="msr-dissat-save"><i class="ri-check-line"></i>确定</button></div>`);
 }
 function saveMsDissat() {
   const v = +$('#ds-v').value;
-  if (!(v >= 0)) { toast('请输入有效扣分值'); return; }
-  MS_RULES.cs.dissat.v = v;
+  if (!(v >= 0)) { toast('请输入有效数值'); return; }
+  MS_RULES.cs.dissat = { ...MS_RULES.cs.dissat, v, cond: $('#ds-cond').value };
   closeModal(); toast('不满意扣分规则已保存'); renderView(APP.view);
 }
 
@@ -7557,8 +7732,8 @@ function msDrawerBody(mid, month) {
       ${statMini('一次完成率', f.once + '%')}
       ${statMini('三天完成率', f.three + '%')}
     </div>
-    <table class="tbl">
-      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th></tr>
+    <div class="drag-x" style="overflow-x:auto"><table class="tbl" style="min-width:1750px">
+      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th><th style="color:#ec4899">服务类型</th><th style="color:#ec4899">原价区分</th><th style="color:#ec4899">是否多次上门</th><th style="color:#ec4899">是否多部品</th><th style="color:#ec4899">是否计上不规范</th><th style="color:#ec4899">是否计上</th><th style="color:#ec4899">是否长期未完工</th><th style="color:#ec4899">次日未动单延迟</th><th style="color:#ec4899">用户是否满意</th><th style="color:#ec4899">是否使用保养小程序</th></tr>
       ${orders.length ? orders.map(o => `<tr>
         <td class="mono">${o.no}</td>
         <td style="white-space:nowrap">${o.recv}</td>
@@ -7569,9 +7744,18 @@ function msDrawerBody(mid, month) {
         <td>${kpiYesNo(o.gap <= 1)}</td>
         <td>${kpiYesNo(o.first === o.complete)}</td>
         <td>${kpiYesNo(msDayDiff(o.first, o.complete) <= 2)}</td>
-        
-      </tr>`).join('') : '<tr><td colspan="9"><div class="empty"><i class="ri-inbox-line"></i>暂无工单明细</div></td></tr>'}
-    </table>`;
+        <td>${esc(o.svcType || '—')}</td>
+        <td>${o.origin ? '<span style="color:var(--e600)">U</span>' : '否'}</td>
+        <td>${kpiYesNo(o.visits > 1)}</td>
+        <td>${kpiYesNo(o.parts > 1)}</td>
+        <td>${kpiYesNo(o.badNote)}</td>
+        <td>${kpiYesNo(o.jishangLow)}</td>
+        <td>${kpiYesNo(o.long30)}</td>
+        <td>${kpiYesNo(o.delay)}</td>
+        <td>${kpiYesNo(o.sat)}</td>
+        <td>${kpiYesNo(o.miniApp)}</td>
+      </tr>`).join('') : '<tr><td colspan="19"><div class="empty"><i class="ri-inbox-line"></i>暂无工单明细</div></td></tr>'}
+    </table></div>`;
 }
 function openMsKpiDrawer(mid, month) {
   const m = msMemberOf(mid); if (!m) return;
@@ -7606,13 +7790,20 @@ function openMsOrderDrawer(o) {
     ${row('受理日期', o.recv)}
     ${row('实际首次上门日', o.first)}
     ${row('完工日', o.complete)}
-    ${row('上门次数', o.visits + '次')}
-    ${row('部品数量', o.parts + '件')}
+    ${row('服务类型', esc(o.svcType || '—'))}
+    ${row('原价区分', o.origin ? '<span style="color:var(--e600)">U</span>' : kpiPink('否'))}
+    ${row('是否多次上门', kpiPinkYesNo(o.visits > 1))}
+    ${row('是否多部品', kpiPinkYesNo(o.parts > 1))}
+    ${row('是否计上不规范', kpiPinkYesNo(o.badNote))}
+    ${row('是否计上', kpiPinkYesNo(o.jishangLow))}
+    ${row('是否长期未完工', kpiPinkYesNo(o.long30))}
+    ${row('次日未动单延迟', kpiPinkYesNo(o.delay))}
     ${row('计上日期', o.noted ? o.first : '未计上')}
     ${row('一次完成', o.first === o.complete ? '是' : '否')}
     ${row('三日内完成', msDayDiff(o.first, o.complete) <= 2 ? '是' : '否')}
     ${row('U单', o.uOrder ? '是' : '否')}
-    ${row('用户评价', o.sat ? '满意' : (o.dissat ? '不满意' : '—'))}
+    ${row('用户是否满意', o.dissat ? kpiPink('否') : kpiPinkYesNo(o.sat))}
+    ${row('是否使用保养小程序', kpiPinkYesNo(o.miniApp))}
   `);
 }
 function openMsAuxDrawer(mid, month) {
