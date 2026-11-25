@@ -1691,7 +1691,7 @@ function perfOrders(seId) {
       badNote: (k % 23) === 7,
       jishangLow: (k % 17) === 5,
       long30: (k % 19) === 11,
-      delay: (k % 9) === 4,   /* 次日未动单延迟 */
+      delay: (k % 9) === 4,   /* 当日/次日未动单延迟 */
     });
   }
   return out;
@@ -4285,7 +4285,7 @@ function _kpiDataTable(orders) {
       + '<td class="right">' + once + '</td>'
       + '<td class="right">' + day3 + '</td>'
       + '<td>' + esc(o.svcType || '—') + '</td>'
-      + '<td>' + (o.origin ? '<span style="color:var(--e600)">U</span>' : '否') + '</td>'
+      + '<td>' + (o.origin ? '<span style="color:var(--e600)">U</span>' : '-') + '</td>'
       + '<td>' + kpiYesNo((o.visits || 1) > 1) + '</td>'
       + '<td>' + kpiYesNo((o.parts || 1) > 1) + '</td>'
       + '<td>' + kpiYesNo(o.badNote) + '</td>'
@@ -4296,7 +4296,7 @@ function _kpiDataTable(orders) {
       + '<td>' + kpiYesNo(o.miniApp) + '</td></tr>';
   }
   return '<div class="card mt16 drag-x" style="margin-top:0;overflow-x:auto"><table class="tbl" style="min-width:1750px">'
-    + '<tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th class="right">当天出动率</th><th class="right">次日出动率</th><th class="right">一次完成率</th><th class="right">三天完成率</th><th style="color:#ec4899">服务类型</th><th style="color:#ec4899">原价区分</th><th style="color:#ec4899">是否多次上门</th><th style="color:#ec4899">是否多部品</th><th style="color:#ec4899">是否计上不规范</th><th style="color:#ec4899">是否计上</th><th style="color:#ec4899">是否长期未完工</th><th style="color:#ec4899">次日未动单延迟</th><th style="color:#ec4899">用户是否满意</th><th style="color:#ec4899">是否使用保养小程序</th></tr>'
+    + '<tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th class="right">当天出动率</th><th class="right">次日出动率</th><th class="right">一次完成率</th><th class="right">三天完成率</th><th style="color:#ec4899">服务类型</th><th style="color:#ec4899">原价区分</th><th style="color:#ec4899">是否多次上门</th><th style="color:#ec4899">是否多部品</th><th style="color:#ec4899">计上不规范</th><th style="color:#ec4899">是否计上</th><th style="color:#ec4899">是否长期未完工</th><th style="color:#ec4899">当日/次日未动单延迟</th><th style="color:#ec4899">用户是否满意</th><th style="color:#ec4899">是否使用保养小程序</th></tr>'
     + rows + '</table></div>';
 }
 const SE_SELF_IDX = 0; // 工程师端固定为本人（张明辉，DEMO.members[0]）
@@ -5752,7 +5752,7 @@ function ensureKpiData() {
           badNote: (k % 23) === 7,
           jishangLow: (k % 17) === 5,
           long30: (k % 19) === 11,
-          delay: (k % 9) === 4,   /* 次日未动单延迟 */
+          delay: (k % 9) === 4,   /* 当日/次日未动单延迟 */
         });
       }
     });
@@ -6057,7 +6057,7 @@ function kpiDrawerBody(r, idx) {
       ${statMini('三天完成率', f.three + '%')}
     </div>
     <div class="drag-x" style="overflow-x:auto"><table class="tbl" style="min-width:1750px">
-      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th><th style="color:#ec4899">服务类型</th><th style="color:#ec4899">原价区分</th><th style="color:#ec4899">是否多次上门</th><th style="color:#ec4899">是否多部品</th><th style="color:#ec4899">是否计上不规范</th><th style="color:#ec4899">是否计上</th><th style="color:#ec4899">是否长期未完工</th><th style="color:#ec4899">次日未动单延迟</th><th style="color:#ec4899">用户是否满意</th><th style="color:#ec4899">是否使用保养小程序</th>${APP.view === 'pb_members' ? '' : '<th>操作</th>'}</tr>
+      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th><th style="color:#ec4899">服务类型</th><th style="color:#ec4899">原价区分</th><th style="color:#ec4899">是否多次上门</th><th style="color:#ec4899">是否多部品</th><th style="color:#ec4899">计上不规范</th><th style="color:#ec4899">是否计上</th><th style="color:#ec4899">是否长期未完工</th><th style="color:#ec4899">当日/次日未动单延迟</th><th style="color:#ec4899">用户是否满意</th><th style="color:#ec4899">是否使用保养小程序</th>${APP.view === 'pb_members' ? '' : '<th>操作</th>'}</tr>
       ${orders.length ? orders.map(({ o, i }) => `<tr>
         <td class="mono">${o.no}</td>
         <td>${o.recvDate}</td>
@@ -6069,7 +6069,7 @@ function kpiDrawerBody(r, idx) {
         <td>${kpiYesNo(o.oneTime)}</td>
         <td>${kpiYesNo(o.threeDay)}</td>
         <td>${esc(o.svcType || '—')}</td>
-        <td>${o.origin ? '<span style="color:var(--e600)">U</span>' : '否'}</td>
+        <td>${o.origin ? '<span style="color:var(--e600)">U</span>' : '-'}</td>
         <td>${kpiYesNo((o.visits || 0) > 1)}</td>
         <td>${kpiYesNo((o.parts || 0) > 1)}</td>
         <td>${kpiYesNo(o.badNote)}</td>
@@ -6211,7 +6211,7 @@ function ensurePbData() {
             badNote: (kk % 23) === 7,
             jishangLow: (kk % 17) === 5,
             long30: (kk % 19) === 11,
-            delay: (kk % 9) === 4,   /* 次日未动单延迟 */
+            delay: (kk % 9) === 4,   /* 当日/次日未动单延迟 */
           });
         }
       });
@@ -6748,9 +6748,9 @@ function openLedgerOrder(mid, idx) {
     ${row('SE姓名', m.name)}${row('事务所', m.office)}
     ${row('客户', o.cust)}${row('机型型号', o.model)}
     ${row('产值', '¥' + o.value.toLocaleString())}${row('计上日期', o.noteDate)}${row('上门时效', o.timely)}
-    ${row('服务类型', esc(o.svcType || '—'))}${row('原价区分', o.origin ? '<span style="color:var(--e600)">U</span>' : kpiPink('否'))}${row('是否多次上门', kpiPinkYesNo((o.visits || 1) > 1))}
-    ${row('是否多部品', kpiPinkYesNo((o.parts || 1) > 1))}${row('是否计上不规范', kpiPinkYesNo(!!o.badNote))}
-    ${row('是否计上', kpiPinkYesNo(!!o.jishangLow))}${row('是否长期未完工', kpiPinkYesNo(!!o.long30))}${row('次日未动单延迟', kpiPinkYesNo(!!o.delay))}
+    ${row('服务类型', esc(o.svcType || '—'))}${row('原价区分', o.origin ? '<span style="color:var(--e600)">U</span>' : '-')}${row('是否多次上门', kpiPinkYesNo((o.visits || 1) > 1))}
+    ${row('是否多部品', kpiPinkYesNo((o.parts || 1) > 1))}${row('计上不规范', kpiPinkYesNo(!!o.badNote))}
+    ${row('是否计上', kpiPinkYesNo(!!o.jishangLow))}${row('是否长期未完工', kpiPinkYesNo(!!o.long30))}${row('当日/次日未动单延迟', kpiPinkYesNo(!!o.delay))}
     ${row('用户是否满意', kpiPinkYesNo(!!o.sat))}
     ${row('是否使用保养小程序', kpiPinkYesNo(!!o.miniApp))}
   `);
@@ -6928,7 +6928,7 @@ const MS_RULES = {
     { key: 'jishangRate', name: '计上率过低',       type: 'flagRate', cond: '是', cmp: '≤', th: 85, v: 0.1, st: '启用',
       tip: '计上率＝KPI台账「是否计上=是」的工单数÷当月有效KPI总工单数×100%。' },
     { key: 'jishangBad',  name: '计上不规范',       type: 'ratio', cond: '是', v: 0.5, st: '启用',
-      tip: '扣分＝KPI台账「是否计上不规范=是」的工单数÷当月有效KPI总工单数×扣分系数。' },
+      tip: '扣分＝KPI台账「计上不规范=是」的工单数÷当月有效KPI总工单数×扣分系数。' },
     { key: 'multiVisit',  name: '多次上门过高',     type: 'ratio', cond: '是', v: 0.5, st: '启用',
       tip: '扣分＝KPI台账「是否多次上门=是」的工单数÷当月有效KPI总工单数×扣分系数。' },
     { key: 'multiPart',   name: '多部品过高',       type: 'ratio', cond: '是', v: 0.5, st: '启用',
@@ -7733,7 +7733,7 @@ function msDrawerBody(mid, month) {
       ${statMini('三天完成率', f.three + '%')}
     </div>
     <div class="drag-x" style="overflow-x:auto"><table class="tbl" style="min-width:1750px">
-      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th><th style="color:#ec4899">服务类型</th><th style="color:#ec4899">原价区分</th><th style="color:#ec4899">是否多次上门</th><th style="color:#ec4899">是否多部品</th><th style="color:#ec4899">是否计上不规范</th><th style="color:#ec4899">是否计上</th><th style="color:#ec4899">是否长期未完工</th><th style="color:#ec4899">次日未动单延迟</th><th style="color:#ec4899">用户是否满意</th><th style="color:#ec4899">是否使用保养小程序</th></tr>
+      <tr><th>作业单号</th><th>受理日期</th><th>实际首次上门日</th><th>完工日</th><th>机型型号</th><th>当天出动</th><th>次日上门</th><th>一次完成</th><th>三天完成</th><th style="color:#ec4899">服务类型</th><th style="color:#ec4899">原价区分</th><th style="color:#ec4899">是否多次上门</th><th style="color:#ec4899">是否多部品</th><th style="color:#ec4899">计上不规范</th><th style="color:#ec4899">是否计上</th><th style="color:#ec4899">是否长期未完工</th><th style="color:#ec4899">当日/次日未动单延迟</th><th style="color:#ec4899">用户是否满意</th><th style="color:#ec4899">是否使用保养小程序</th></tr>
       ${orders.length ? orders.map(o => `<tr>
         <td class="mono">${o.no}</td>
         <td style="white-space:nowrap">${o.recv}</td>
@@ -7745,7 +7745,7 @@ function msDrawerBody(mid, month) {
         <td>${kpiYesNo(o.first === o.complete)}</td>
         <td>${kpiYesNo(msDayDiff(o.first, o.complete) <= 2)}</td>
         <td>${esc(o.svcType || '—')}</td>
-        <td>${o.origin ? '<span style="color:var(--e600)">U</span>' : '否'}</td>
+        <td>${o.origin ? '<span style="color:var(--e600)">U</span>' : '-'}</td>
         <td>${kpiYesNo(o.visits > 1)}</td>
         <td>${kpiYesNo(o.parts > 1)}</td>
         <td>${kpiYesNo(o.badNote)}</td>
@@ -7791,13 +7791,13 @@ function openMsOrderDrawer(o) {
     ${row('实际首次上门日', o.first)}
     ${row('完工日', o.complete)}
     ${row('服务类型', esc(o.svcType || '—'))}
-    ${row('原价区分', o.origin ? '<span style="color:var(--e600)">U</span>' : kpiPink('否'))}
+    ${row('原价区分', o.origin ? '<span style="color:var(--e600)">U</span>' : '-')}
     ${row('是否多次上门', kpiPinkYesNo(o.visits > 1))}
     ${row('是否多部品', kpiPinkYesNo(o.parts > 1))}
-    ${row('是否计上不规范', kpiPinkYesNo(o.badNote))}
+    ${row('计上不规范', kpiPinkYesNo(o.badNote))}
     ${row('是否计上', kpiPinkYesNo(o.jishangLow))}
     ${row('是否长期未完工', kpiPinkYesNo(o.long30))}
-    ${row('次日未动单延迟', kpiPinkYesNo(o.delay))}
+    ${row('当日/次日未动单延迟', kpiPinkYesNo(o.delay))}
     ${row('计上日期', o.noted ? o.first : '未计上')}
     ${row('一次完成', o.first === o.complete ? '是' : '否')}
     ${row('三日内完成', msDayDiff(o.first, o.complete) <= 2 ? '是' : '否')}
