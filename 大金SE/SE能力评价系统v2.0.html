@@ -3732,14 +3732,11 @@ function handleAct(act, el) {
     case 'ms-aux-mini': openMsAuxRecordDrawer(msMonthState().mid, msMonthState().month); break;
     /* 月度评分规则配置 */
     case 'msr-tab': { msRuleState().tab = d.tab; renderView(APP.view); break; }
-    case 'msr-bmenu': { msRuleState().bmenu = d.menu; renderView(APP.view); break; }
     case 'msr-sub': { msRuleState().sub = d.sub; renderView(APP.view); break; }
     case 'msr-btab': { msRuleState().btab = d.bt; renderView(APP.view); break; }
     case 'msr-bsub': { msRuleState().bsub = d.bsub; renderView(APP.view); break; }
     case 'msr-model-edit': openMsModelEdit(); break;
     case 'msr-model-save': saveMsModel(); break;
-    case 'msr-limit-edit': openMsLimitEdit(); break;
-    case 'msr-limit-save': saveMsLimit(); break;
     case 'msr-season-edit': openMsSeasonEdit(d.region); break;
     case 'msr-season-save': saveMsSeason(d.region); break;
     case 'msr-base-edit': openMsBaseEdit(d.season); break;
@@ -7018,7 +7015,9 @@ function msScore(mid, month) {
   const disPen = r2(Math.min(disCnt * MS_RULES.cs.dissat.v, capDed));
   const tech = r2(Math.max(0, Math.min(MS_RULES.model.tech, base + examBonus + uBonus + certBonus + lvBonus + praiseBonus + miniBonus - oncePen - threePen - long30Pen - jishangRatePen - jishangBadPen - multiVisitPen - multiPartPen - miniPen)));
   const cs = r2(Math.max(0, Math.min(MS_RULES.model.cs, satBonus - delayPen - disPen)));
-  return { month, mid, orders: os.length, season, th: tier.min, base, onceCnt, onceRate, threeCnt, threeRate, long30: long30Cnt, uCnt, uPct, satCnt, disCnt, delayCnt, notedCnt, notedRate, badCnt, badRate, jsrCnt, jsrRate, jsBadCnt, jsBadRate, visitCnt, visitRate, partCnt, partRate, miniYesCnt, miniNoCnt, praiseCnt, aux, exam, certCnt, lv, examBonus, uBonus, certBonus, lvBonus, praiseBonus, miniBonus, oncePen, threePen, long30Pen, jishangRatePen, jishangBadPen, multiVisitPen, multiPartPen, miniPen, satBonus, delayPen, disPen, tech, cs, score: r2(tech + cs) };
+  const addSum = r2((examBonus > 0 ? examBonus : 0) + uBonus + certBonus + lvBonus + praiseBonus + miniBonus);   /* 其他加分：技术力正向合计 */
+  const dedSum = r2((examBonus < 0 ? examBonus : 0) - oncePen - threePen - long30Pen - jishangRatePen - jishangBadPen - multiVisitPen - multiPartPen - miniPen);   /* 其他扣分：技术力负向合计（含考试负分） */
+  return { month, mid, orders: os.length, season, th: tier.min, base, onceCnt, onceRate, threeCnt, threeRate, long30: long30Cnt, uCnt, uPct, satCnt, disCnt, delayCnt, notedCnt, notedRate, badCnt, badRate, jsrCnt, jsrRate, jsBadCnt, jsBadRate, visitCnt, visitRate, partCnt, partRate, miniYesCnt, miniNoCnt, praiseCnt, aux, exam, certCnt, lv, examBonus, uBonus, certBonus, lvBonus, praiseBonus, miniBonus, oncePen, threePen, long30Pen, jishangRatePen, jishangBadPen, multiVisitPen, multiPartPen, miniPen, satBonus, delayPen, disPen, tech, cs, addSum, dedSum, score: r2(base + cs + addSum + dedSum) };
 }
 function msAvg(scores) { return scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length * 100) / 100 : 0; }
 function msOfficeRows(month, region) {
@@ -7031,7 +7030,7 @@ function msOfficeRows(month, region) {
 function msMemberRows(month, office) {
   return msPool().filter(m => m.office === office).map(m => {
     const s = msScore(m.id, month);
-    return { m, tech: s.tech, cs: s.cs, score: s.score };
+    return { m, base: s.base, cs: s.cs, add: s.addSum, ded: s.dedSum, score: s.score };
   });
 }
 
@@ -7130,14 +7129,16 @@ function vMsMember(el) {
   </div>
   <div class="card mt16">
     <table class="tbl">
-      <tr><th style="width:80px">排名</th><th>姓名</th><th>所属事务所</th><th class="right">综合得分</th><th class="right">技术力</th><th class="right">CS服务</th></tr>
+      <tr><th style="width:80px">排名</th><th>姓名</th><th>所属事务所</th><th class="right">月度综合得分</th><th class="right">技术力基础分</th><th class="right">CS服务得分</th><th class="right">其他加分</th><th class="right">其他扣分</th></tr>
       ${rows.map((r, i) => `<tr>
         <td>${(page - 1) * 10 + i + 1}</td>
         <td>${alInnerBadge(r.m.name)} <a style="color:var(--e600);cursor:pointer;font-weight:600" data-act="ms-member" data-mid="${r.m.id}">${esc(r.m.name)}</a></td>
         <td style="color:var(--g500)">${esc(r.m.office)}</td>
         <td class="right" style="font-weight:700">${r.score.toFixed(2)}</td>
-        <td class="right">${r.tech.toFixed(2)}</td>
+        <td class="right">${r.base.toFixed(2)}</td>
         <td class="right">${r.cs.toFixed(2)}</td>
+        <td class="right" style="color:var(--e600)">${r.add > 0 ? '+' : ''}${r.add.toFixed(2)}</td>
+        <td class="right" style="color:var(--r600)">${r.ded.toFixed(2)}</td>
       </tr>`).join('')}
     </table>
     <div class="pager">
@@ -7168,17 +7169,25 @@ function vMsDetail(el) {
       </div>
       <div style="font-size:12px;color:var(--g500);margin-top:8px">技术等级：${esc(m.level || '-')}</div>
     </div>
-    <div style="text-align:center;padding:0 28px;border-left:1px solid var(--g200)">
-      <div style="font-size:38px;font-weight:700;color:var(--g900);line-height:1.15">${s.score.toFixed(2)}<small style="font-size:13px;font-weight:400;color:var(--g500)">分</small></div>
-      <div style="font-size:11.5px;color:var(--g500);margin-top:2px">月度综合得分（满分${MS_RULES.model.total}分）</div>
+    <div style="text-align:center;padding:0 18px;border-left:1px solid var(--g200)">
+      <div style="font-size:38px;font-weight:700;color:var(--e600);line-height:1.15">${s.score.toFixed(2)}<small style="font-size:14px;font-weight:400;color:var(--g500)"> / ${MS_RULES.model.total}</small></div>
+      <div style="font-size:11.5px;color:var(--g500);margin-top:2px">月度综合得分</div>
     </div>
-    <div style="text-align:center;padding:0 28px;border-left:1px solid var(--g200)">
-      <div style="font-size:22px;font-weight:700;color:var(--g900)">${s.tech.toFixed(2)}<small style="font-size:12px;font-weight:400;color:var(--g500)"> / ${MS_RULES.model.tech}</small></div>
-      <div style="font-size:11.5px;color:var(--g500);margin-top:2px">技术力</div>
+    <div style="text-align:center;padding:0 18px;border-left:1px solid var(--g200)">
+      <div style="font-size:22px;font-weight:700;color:var(--g900)">${s.base.toFixed(2)}<small style="font-size:12px;font-weight:400;color:var(--g500)"> / ${MS_RULES.model.tech}</small></div>
+      <div style="font-size:11.5px;color:var(--g500);margin-top:2px">技术力基础分</div>
     </div>
-    <div style="text-align:center;padding:0 28px;border-left:1px solid var(--g200)">
+    <div style="text-align:center;padding:0 18px;border-left:1px solid var(--g200)">
       <div style="font-size:22px;font-weight:700;color:var(--g900)">${s.cs.toFixed(2)}<small style="font-size:12px;font-weight:400;color:var(--g500)"> / ${MS_RULES.model.cs}</small></div>
-      <div style="font-size:11.5px;color:var(--g500);margin-top:2px">CS服务</div>
+      <div style="font-size:11.5px;color:var(--g500);margin-top:2px">CS服务得分</div>
+    </div>
+    <div style="text-align:center;padding:0 18px;border-left:1px solid var(--g200)">
+      <div style="font-size:22px;font-weight:700;color:var(--e600)">${s.addSum > 0 ? '+' : ''}${s.addSum.toFixed(2)}</div>
+      <div style="font-size:11.5px;color:var(--g500);margin-top:2px">其他加分</div>
+    </div>
+    <div style="text-align:center;padding:0 18px;border-left:1px solid var(--g200)">
+      <div style="font-size:22px;font-weight:700;color:var(--r600)">${s.dedSum.toFixed(2)}</div>
+      <div style="font-size:11.5px;color:var(--g500);margin-top:2px">其他扣分</div>
     </div>
   </div></div>`;
   const dtab = ms.dtab || 'base';
@@ -7240,7 +7249,7 @@ function vMsDetail(el) {
 
 /* ---- 页面：月度评分规则配置 ---- */
 function msRuleState() {
-  if (!APP.q.msRule) APP.q.msRule = { tab: 'base', bmenu: 'model', sub: 'base', btab: 'peak', bsub: 'season' };
+  if (!APP.q.msRule) APP.q.msRule = { tab: 'base', sub: 'base', btab: 'peak', bsub: 'season' };
   return APP.q.msRule;
 }
 function msStBadge(st) {
@@ -7280,20 +7289,10 @@ function msRuleToggle(kind, key) {
 }
 function vMsRule(el) {
   const st = msRuleState();
-  const tabHtml = `<div class="tabs mt16">${[['base', '评分基础配置'], ['tech', '技术力评分配置'], ['cs', 'CS服务评分配置']].map(t => `<span class="tab${st.tab === t[0] ? ' active' : ''}" data-act="msr-tab" data-tab="${t[0]}">${t[1]}</span>`).join('')}</div>`;
-  el.innerHTML = tabHtml + (st.tab === 'base' ? msrBaseLayout(st) : st.tab === 'tech' ? msrTechBody(st) : msrCsBody());
+  const tabHtml = `<div class="tabs mt16">${[['base', '评分模型配置'], ['tech', '技术力评分配置'], ['cs', 'CS服务评分配置']].map(t => `<span class="tab${st.tab === t[0] ? ' active' : ''}" data-act="msr-tab" data-tab="${t[0]}">${t[1]}</span>`).join('')}</div>`;
+  el.innerHTML = tabHtml + (st.tab === 'base' ? msrModelBody() : st.tab === 'tech' ? msrTechBody(st) : msrCsBody());
 }
-/* Tab1 评分基础配置（左侧二级菜单：评分模型配置 | 加扣分上限配置） */
-function msrBaseLayout(st) {
-  const subs = [['model', '评分模型配置'], ['limit', '加扣分上限配置']];
-  return `<div class="mt16" style="display:flex;gap:16px;align-items:flex-start">
-    <div class="card" style="width:190px;flex:none;padding:8px">
-      ${subs.map(s => `<div style="padding:9px 12px;border-radius:8px;font-size:13.5px;cursor:pointer;${st.bmenu === s[0] ? 'background:var(--e50);color:var(--e600);font-weight:600' : 'color:var(--g600)'}" data-act="msr-bmenu" data-menu="${s[0]}">${s[1]}</div>`).join('')}
-    </div>
-    <div style="flex:1;min-width:0">${st.bmenu === 'limit' ? msrLimitBody() : msrModelBody()}</div>
-  </div>`;
-}
-/* Tab1 评分基础配置 · 评分模型配置 */
+/* Tab1 评分模型配置 */
 function msrModelBody() {
   const m = MS_RULES.model;
   return `<div class="card mt16">
@@ -7326,36 +7325,8 @@ function saveMsModel() {
   if (!(total > 0) || tech < 0 || cs < 0) { toast('请输入有效的分值'); return; }
   if (Math.round((tech + cs) * 10) !== Math.round(total * 10)) { toast('技术力 + CS服务 必须等于评分总分'); return; }
   MS_RULES.model = { cycle: $('#mf-cycle').value, total, tech, cs };
+  MS_RULES.base.peak[0].s = tech; MS_RULES.base.off[0].s = tech;   /* 最高档基础分同步评分模型的技术力分值 */
   closeModal(); toast('评分模型已保存'); renderView(APP.view);
-}
-/* 评分基础配置 · 加扣分上限配置（各指标累计上限统一维护） */
-function msrLimitBody() {
-  const l = MS_RULES.limit;
-  return `<div class="card mt16">
-    <div class="card-title"><span style="flex:1"></span>${msrEditBtn('msr-limit-edit', '')}</div>
-    <table class="tbl"><tr><th style="width:50%">配置项</th><th>配置值</th></tr>
-      <tr><td style="color:var(--g600)">统一加分上限</td><td style="font-weight:600">${l.add}分</td></tr>
-      <tr><td style="color:var(--g600)">统一扣分上限</td><td style="font-weight:600">${l.deduct}分</td></tr>
-    </table>
-  </div>
-  ${tlInfo('用于统一维护月度评分的加分、扣分累计上限。当月全部加分指标的加分合计、全部扣分指标的扣分合计分别不超过对应上限，达到上限后不再继续累计。')}`;
-}
-function openMsLimitEdit() {
-  const l = MS_RULES.limit;
-  const num = (id, label, val) => `<div class="field2"><label><span style="color:var(--r500)">*</span> ${label}</label><input type="number" step="0.1" min="0" class="input" id="${id}" value="${val}"></div>`;
-  openModal(modalHead('编辑加扣分上限', '') + `
-    <div class="modal-body"><div class="form-grid" style="grid-template-columns:1fr 1fr">
-      ${num('lf-add', '统一加分上限（分）', l.add)}
-      ${num('lf-deduct', '统一扣分上限（分）', l.deduct)}
-    </div></div>
-    <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
-      <button class="btn btn-primary" data-act="msr-limit-save"><i class="ri-check-line"></i>确定</button></div>`);
-}
-function saveMsLimit() {
-  const add = +$('#lf-add').value, deduct = +$('#lf-deduct').value;
-  if (!(add >= 0) || !(deduct >= 0)) { toast('请输入有效的上限分值'); return; }
-  MS_RULES.limit = { add, deduct };
-  closeModal(); toast('加扣分上限已保存'); renderView(APP.view);
 }
 /* Tab2 技术力评分配置 */
 function msrTechBody(st) {
@@ -7424,13 +7395,17 @@ function openMsBaseEdit(season) {
   const tiers = MS_RULES.base[season];
   const rows = tiers.map((t, i) => {
     const last = i === tiers.length - 1;
+    const sField = i === 0
+      ? `<input type="number" step="0.1" min="0" class="input bf-s" style="width:110px;background:var(--g50);color:var(--g500)" value="${MS_RULES.model.tech}" readonly>`
+      : `<input type="number" step="0.1" min="0" class="input bf-s" style="width:110px" value="${t.s}">`;
     return `<tr>
       <td>${last ? tiers[i - 1].min + '件以下' : `<input type="number" min="1" class="input bf-min" style="width:110px" value="${t.min}">件及以上`}</td>
-      <td><input type="number" step="0.1" min="0" class="input bf-s" style="width:110px" value="${t.s}"></td></tr>`;
+      <td>${sField}</td></tr>`;
   }).join('');
   openModal(modalHead('编辑' + (season === 'peak' ? '旺季' : '淡季') + '工单量基础分', '') + `
     <div class="modal-body">
       <table class="tbl"><tr><th>工单量要求</th><th>基础分</th></tr>${rows}</table>
+      <div style="font-size:12px;color:var(--g400);margin-top:6px">最高档基础分取「评分模型配置」的技术力分值（${MS_RULES.model.tech}分），如需调整请在评分模型配置中修改</div>
     </div>
     <div class="modal-foot"><button class="btn" data-act="close-modal">取消</button>
       <button class="btn btn-primary" data-act="msr-base-save" data-season="${season}"><i class="ri-check-line"></i>保存</button></div>`);
@@ -7440,7 +7415,7 @@ function saveMsBase(season) {
   const vs = Array.from(document.querySelectorAll('.bf-s')).map(x => +x.value);
   if (mins.some(m => !(m > 0)) || vs.some(v => !(v >= 0))) { toast('请输入有效数值'); return; }
   if (!(mins[0] > mins[1])) { toast('工单量阈值需逐档递减'); return; }
-  MS_RULES.base[season] = [{ min: mins[0], s: vs[0] }, { min: mins[1], s: vs[1] }, { min: 0, s: vs[2] }];
+  MS_RULES.base[season] = [{ min: mins[0], s: MS_RULES.model.tech }, { min: mins[1], s: vs[1] }, { min: 0, s: vs[2] }];
   closeModal(); toast('基础分规则已保存'); renderView(APP.view);
 }
 /* 2.2 扣分规则 */
